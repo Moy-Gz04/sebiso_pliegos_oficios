@@ -194,7 +194,7 @@ btnConfirmar.addEventListener(
                 const respuestaDB =
                 await fetch(
 
-                    'http://localhost:3000/api/registros',
+                    'https://sebiso-pliegos-oficios-1.onrender.com/api/registros',
 
                     {
 

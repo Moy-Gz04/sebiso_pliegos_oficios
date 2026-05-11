@@ -11,6 +11,7 @@ const router = express.Router();
 router.post("/login", async (req, res) => {
   try {
     const { usuario, password } = req.body;
+    console.log("BODY:", req.body);
 
     const result = await pool.query(
       "SELECT * FROM usuarios WHERE usuario = $1",
@@ -58,7 +59,7 @@ router.post("/login", async (req, res) => {
       area: user.area,
     });
   } catch (error) {
-    console.log(error);
+    console.error("ERROR LOGIN:", error);
 
     res.status(500).json({
       error: "Error servidor",
