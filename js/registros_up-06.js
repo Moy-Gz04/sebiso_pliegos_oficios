@@ -54,7 +54,7 @@ async function cargarRegistros(){
                CAMBIO A UP-06
             ========================= */
 
-            "http://localhost:3000/api/registros/UP-06"
+            "https://sebiso-pliegos-oficios-1.onrender.com/api/registros/UP-06"
 
         );
 
@@ -186,7 +186,7 @@ btnConfirmarEliminar.addEventListener(
             const response =
             await fetch(
 
-                `http://localhost:3000/api/registros/${codigoEliminar}`,
+                `https://sebiso-pliegos-oficios-1.onrender.com/api/registros/${codigoEliminar}`,
 
                 {
 
