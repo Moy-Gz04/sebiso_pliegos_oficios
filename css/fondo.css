@@ -1,0 +1,22 @@
+body{
+
+    background-color:whitesmoke;
+
+    background-image:
+    url("../img/fondo-pattern.png");
+
+    background-repeat:repeat;
+
+    background-size:120px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    height:100vh;
+
+    overflow:hidden;
+
+}

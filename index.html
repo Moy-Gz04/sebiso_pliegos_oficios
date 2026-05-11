@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Acceso al Sistema</title>
+
+<link rel="stylesheet" href="css/login.css">
+<link rel="stylesheet" href="css/fondo.css">
+
+</head>
+
+<body>
+
+<div class="login-container">
+
+    <div class="login-header">
+
+        <img
+                src="img/logo.png"
+                class="logo-sidebar">
+
+        <p>Acceso autorizado únicamente</p>
+
+    </div>
+
+    <div class="login-body">
+
+        <!-- USUARIO -->
+
+        <div class="form-group">
+
+            <label>Usuario</label>
+
+            <input
+            type="text"
+            id="usuario"
+            name="username"
+            placeholder="Ingrese usuario"
+            autocomplete="off">
+
+        </div>
+
+        <!-- PASSWORD -->
+
+        <div class="form-group">
+
+            <label>Contraseña</label>
+
+            <div class="password-container">
+
+                <input
+                type="password"
+                id="password"
+                name="current-password"
+                placeholder="Ingrese contraseña"
+                autocomplete="current-password">
+
+                <span
+                    class="toggle-password"
+                    onclick="togglePassword()">
+
+                    👁
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <!-- BOTÓN LOGIN -->
+
+        <button onclick="login()">
+            Iniciar Sesión
+        </button>
+
+        <!-- ERROR -->
+
+        <div id="error"></div>
+
+        <!-- FOOTER -->
+
+        <div class="footer">
+            Gobierno Digital • Sistema Interno
+        </div>
+
+    </div>
+
+</div>
+
+<script src="js/login.js"></script>
+
+</body>
+</html>

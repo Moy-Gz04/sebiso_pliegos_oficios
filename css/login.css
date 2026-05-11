@@ -1,0 +1,290 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:#f4f6f9;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    min-height:100vh;
+
+    padding:20px;
+}
+
+/* =========================
+   CONTENEDOR LOGIN
+========================= */
+
+.login-container{
+
+    width:100%;
+
+    max-width:420px;
+
+    background:white;
+
+    border-radius:14px;
+
+    overflow:hidden;
+
+    box-shadow:
+    0 10px 30px rgba(0,0,0,.12);
+
+    border-top:8px solid #7a1f1f;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.login-header{
+
+    background:#611232;
+
+    color:white;
+
+    text-align:center;
+
+    padding:30px 25px;
+}
+
+.login-header img{
+
+    width:300px;
+
+    max-width:100%;
+
+    height:auto;
+
+    object-fit:contain;
+
+    margin-bottom:18px;
+}
+
+.login-header h1{
+
+    font-size:24px;
+
+    margin-bottom:6px;
+
+    font-weight:700;
+}
+
+.login-header p{
+
+    font-size:14px;
+
+    opacity:.9;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.login-body{
+
+    padding:35px;
+}
+
+/* =========================
+   FORM GROUP
+========================= */
+
+.form-group{
+
+    margin-bottom:22px;
+}
+
+label{
+
+    display:block;
+
+    margin-bottom:8px;
+
+    font-weight:700;
+
+    color:#333;
+
+    font-size:14px;
+}
+
+/* =========================
+   INPUTS
+========================= */
+
+input{
+
+    width:100%;
+
+    padding:13px 14px;
+
+    border:1px solid #d2d2d2;
+
+    border-radius:10px;
+
+    font-size:15px;
+
+    transition:.2s;
+
+    background:#fafafa;
+}
+
+input:focus{
+
+    outline:none;
+
+    border-color:#611232;
+
+    background:white;
+
+    box-shadow:
+    0 0 0 3px rgba(97,18,50,.12);
+}
+
+/* =========================
+   PASSWORD
+========================= */
+
+.password-container{
+
+    position:relative;
+
+    display:flex;
+
+    align-items:center;
+}
+
+.password-container input{
+
+    padding-right:50px;
+}
+
+.toggle-password{
+
+    position:absolute;
+
+    right:15px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    user-select:none;
+
+    color:#777;
+
+    transition:.2s;
+}
+
+.toggle-password:hover{
+
+    color:#611232;
+
+    transform:scale(1.08);
+}
+
+/* =========================
+   BOTÓN LOGIN
+========================= */
+
+button{
+
+    width:100%;
+
+    background:#611232;
+
+    color:white;
+
+    border:none;
+
+    padding:14px;
+
+    font-size:16px;
+
+    font-weight:700;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:
+    0 4px 10px rgba(97,18,50,.2);
+}
+
+button:hover{
+
+    background:#7a1f1f;
+
+    transform:translateY(-2px);
+}
+
+/* =========================
+   ERROR
+========================= */
+
+#error{
+
+    margin-top:16px;
+
+    color:#c62828;
+
+    text-align:center;
+
+    font-size:14px;
+
+    font-weight:600;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+.footer{
+
+    text-align:center;
+
+    margin-top:28px;
+
+    font-size:12px;
+
+    color:#777;
+
+    line-height:1.5;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:500px){
+
+    .login-body{
+
+        padding:25px;
+    }
+
+    .login-header{
+
+        padding:25px 20px;
+    }
+
+    .login-header h1{
+
+        font-size:20px;
+    }
+
+}
+
+
+
