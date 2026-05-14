@@ -106,20 +106,30 @@ btnGuardar.addEventListener(
                 "anioPresupuesto"
             ).value;
 
-            const saldo =
+            const saldoAutorizado =
             document.getElementById(
-                "saldoMensual"
+                "saldoAutorizado"
             ).value;
 
-            const oficio =
+            const saldoModificado =
             document.getElementById(
-                "oficioPDF"
+                "saldoModificado"
+            ).value || 0;
+
+            const oficioAutorizacion =
+            document.getElementById(
+                "oficioAutorizacionPDF"
             ).files[0];
 
-            if(!saldo){
+            const oficioAdecuacion =
+            document.getElementById(
+                "oficioAdecuacionPDF"
+            ).files[0];
+
+            if(!saldoAutorizado){
 
                 alert(
-                    "Ingrese saldo mensual"
+                    "Ingrese saldo autorizado"
                 );
 
                 return;
@@ -155,15 +165,29 @@ btnGuardar.addEventListener(
             );
 
             formData.append(
-                "saldo_mensual",
-                saldo
+                "saldo_autorizado",
+                saldoAutorizado
             );
 
-            if(oficio){
+            formData.append(
+                "saldo_modificado",
+                saldoModificado
+            );
+
+            if(oficioAutorizacion){
 
                 formData.append(
-                    "oficio",
-                    oficio
+                    "oficio_autorizacion",
+                    oficioAutorizacion
+                );
+
+            }
+
+            if(oficioAdecuacion){
+
+                formData.append(
+                    "oficio_adecuacion",
+                    oficioAdecuacion
                 );
 
             }
@@ -204,11 +228,19 @@ btnGuardar.addEventListener(
             );
 
             document.getElementById(
-                "saldoMensual"
+                "saldoAutorizado"
             ).value = "";
 
             document.getElementById(
-                "oficioPDF"
+                "saldoModificado"
+            ).value = "";
+
+            document.getElementById(
+                "oficioAutorizacionPDF"
+            ).value = "";
+
+            document.getElementById(
+                "oficioAdecuacionPDF"
             ).value = "";
 
             cargarHistorial();
@@ -242,10 +274,6 @@ async function cargarHistorial(){
             "selectArea"
         ).value.trim();
 
-        /* =========================
-           INGRESOS
-        ========================= */
-
         const respuesta =
         await fetch(
 
@@ -273,7 +301,13 @@ async function cargarHistorial(){
 
         let ultimoSaldo = data.length
 
-            ? data[0].saldo_restante
+            ?
+
+            (
+                parseFloat(data[0].saldo_autorizado || 0)
+                +
+                parseFloat(data[0].saldo_modificado || 0)
+            )
 
             : 0;
 
@@ -292,7 +326,7 @@ async function cargarHistorial(){
                     <td>
 
                         $${parseFloat(
-                            registro.saldo_disponible || 0
+                            registro.saldo_autorizado || 0
                         ).toFixed(2)}
 
                     </td>
@@ -300,7 +334,7 @@ async function cargarHistorial(){
                     <td>
 
                         $${parseFloat(
-                            registro.gastado_mes || 0
+                            registro.saldo_modificado || 0
                         ).toFixed(2)}
 
                     </td>
@@ -308,7 +342,11 @@ async function cargarHistorial(){
                     <td>
 
                         $${parseFloat(
-                            registro.saldo_restante || 0
+                            (
+                                parseFloat(registro.saldo_autorizado || 0)
+                                +
+                                parseFloat(registro.saldo_modificado || 0)
+                            )
                         ).toFixed(2)}
 
                     </td>
@@ -316,12 +354,36 @@ async function cargarHistorial(){
                     <td>
 
                         ${
-                            registro.oficio_pdf
+                            registro.oficio_autorizacion
 
                             ?
 
                             `<a
-                                href="${API}/uploads/oficios/${registro.oficio_pdf}"
+                                href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
+                                target="_blank"
+                                class="btn-pdf"
+                            >
+
+                                Ver PDF
+
+                            </a>`
+
+                            :
+
+                            'Sin PDF'
+                        }
+
+                    </td>
+
+                    <td>
+
+                        ${
+                            registro.oficio_adecuacion
+
+                            ?
+
+                            `<a
+                                href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
                                 target="_blank"
                                 class="btn-pdf"
                             >
@@ -386,8 +448,6 @@ async function cargarHistorial(){
 
         const gastos =
         await gastosRespuesta.json();
-
-        console.log(gastos);
 
         if(Array.isArray(gastos)){
 
@@ -625,54 +685,79 @@ async function editarRegistro(id){
         ).value = registro.anio;
 
         document.getElementById(
-            "editSaldo"
+            "editSaldoAutorizado"
         ).value =
-        registro.saldo_mensual;
+        registro.saldo_autorizado;
+
+        document.getElementById(
+            "editSaldoModificado"
+        ).value =
+        registro.saldo_modificado;
 
         document.getElementById(
             "editDisponible"
         ).innerHTML =
         `$${parseFloat(
-            registro.saldo_disponible || 0
-        ).toFixed(2)}`;
-
-        document.getElementById(
-            "editGastado"
-        ).innerHTML =
-        `$${parseFloat(
-            registro.gastado_mes || 0
-        ).toFixed(2)}`;
-
-        document.getElementById(
-            "editRestante"
-        ).innerHTML =
-        `$${parseFloat(
-            registro.saldo_restante || 0
+            (
+                parseFloat(registro.saldo_autorizado || 0)
+                +
+                parseFloat(registro.saldo_modificado || 0)
+            )
         ).toFixed(2)}`;
 
         document.getElementById(
             "editPDFActual"
         ).innerHTML =
 
-            registro.oficio_pdf
-
-            ?
-
             `
-            <a
-                href="${API}/uploads/oficios/${registro.oficio_pdf}"
-                target="_blank"
-                class="btn-pdf"
-            >
+            <div style="display:flex; flex-direction:column; gap:8px;">
 
-                Ver PDF Actual
+                ${
+                    registro.oficio_autorizacion
 
-            </a>
-            `
+                    ?
 
-            :
+                    `
+                    <a
+                        href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
+                        target="_blank"
+                        class="btn-pdf"
+                    >
 
-            'Sin PDF';
+                        Ver Oficio Autorización
+
+                    </a>
+                    `
+
+                    :
+
+                    'Sin Oficio Autorización'
+                }
+
+                ${
+                    registro.oficio_adecuacion
+
+                    ?
+
+                    `
+                    <a
+                        href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
+                        target="_blank"
+                        class="btn-pdf"
+                    >
+
+                        Ver Oficio Adecuación
+
+                    </a>
+                    `
+
+                    :
+
+                    'Sin Oficio Adecuación'
+                }
+
+            </div>
+            `;
 
         document.getElementById(
             "modalEditar"
@@ -733,9 +818,14 @@ document.getElementById(
                 "editId"
             ).value;
 
-            const saldo =
+            const saldoAutorizado =
             document.getElementById(
-                "editSaldo"
+                "editSaldoAutorizado"
+            ).value;
+
+            const saldoModificado =
+            document.getElementById(
+                "editSaldoModificado"
             ).value;
 
             const mes =
@@ -748,17 +838,27 @@ document.getElementById(
                 "editAnio"
             ).value;
 
-            const pdf =
+            const pdfAutorizacion =
             document.getElementById(
-                "editPDF"
+                "editPDFAutorizacion"
+            ).files[0];
+
+            const pdfAdecuacion =
+            document.getElementById(
+                "editPDFAdecuacion"
             ).files[0];
 
             const formData =
             new FormData();
 
             formData.append(
-                "saldo_mensual",
-                saldo
+                "saldo_autorizado",
+                saldoAutorizado
+            );
+
+            formData.append(
+                "saldo_modificado",
+                saldoModificado
             );
 
             formData.append(
@@ -771,11 +871,20 @@ document.getElementById(
                 anio
             );
 
-            if(pdf){
+            if(pdfAutorizacion){
 
                 formData.append(
-                    "oficio",
-                    pdf
+                    "oficio_autorizacion",
+                    pdfAutorizacion
+                );
+
+            }
+
+            if(pdfAdecuacion){
+
+                formData.append(
+                    "oficio_adecuacion",
+                    pdfAdecuacion
                 );
 
             }

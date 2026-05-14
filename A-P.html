@@ -172,37 +172,73 @@
 
                 </div>
 
-                <!-- SALDO -->
+                <!-- SALDO AUTORIZADO -->
 
                 <div class="fila">
 
                     <label>
 
-                        SALDO MENSUAL
+                        SALDO AUTORIZADO
 
                     </label>
 
                     <input
                         type="number"
-                        id="saldoMensual"
-                        placeholder="Ingrese saldo mensual"
+                        id="saldoAutorizado"
+                        placeholder="Ingrese saldo autorizado"
                     >
 
                 </div>
 
-                <!-- OFICIO -->
+                <!-- SALDO MODIFICADO -->
 
                 <div class="fila">
 
                     <label>
 
-                        OFICIO
+                        SALDO MODIFICADO
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="saldoModificado"
+                        placeholder="Ingrese saldo modificado"
+                    >
+
+                </div>
+
+                <!-- OFICIO AUTORIZACIÓN -->
+
+                <div class="fila">
+
+                    <label>
+
+                        OFICIO AUTORIZACIÓN
 
                     </label>
 
                     <input
                         type="file"
-                        id="oficioPDF"
+                        id="oficioAutorizacionPDF"
+                        accept=".pdf"
+                    >
+
+                </div>
+
+                <!-- OFICIO ADECUACIÓN -->
+
+                <div class="fila">
+
+                    <label>
+
+                        OFICIO ADECUACIÓN
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="oficioAdecuacionPDF"
                         accept=".pdf"
                     >
 
@@ -274,10 +310,21 @@
                                 <tr>
 
                                     <th>MES</th>
+
+                                    <th>AUTORIZADO</th>
+
+                                    <th>MODIFICADO</th>
+
                                     <th>DISPONIBLE</th>
+
                                     <th>GASTADO</th>
+
                                     <th>RESTANTE</th>
-                                    <th>OFICIO</th>
+
+                                    <th>AUTORIZACIÓN</th>
+
+                                    <th>ADECUACIÓN</th>
+
                                     <th>ACCIONES</th>
 
                                 </tr>
@@ -485,9 +532,21 @@
 
                 <div class="edit-info">
 
-                    <span>PDF ACTUAL</span>
+                    <span>PDF AUTORIZACIÓN</span>
 
-                    <strong id="editPDFActual">
+                    <strong id="editPDFAutorizacion">
+
+                        Sin PDF
+
+                    </strong>
+
+                </div>
+
+                <div class="edit-info">
+
+                    <span>PDF ADECUACIÓN</span>
+
+                    <strong id="editPDFAdecuacion">
 
                         Sin PDF
 
@@ -497,36 +556,71 @@
 
             </div>
 
-            <!-- SALDO -->
+            <!-- SALDO AUTORIZADO -->
 
             <div class="fila">
 
                 <label>
 
-                    SALDO MENSUAL
+                    SALDO AUTORIZADO
 
                 </label>
 
                 <input
                     type="number"
-                    id="editSaldo"
+                    id="editSaldoAutorizado"
                 >
 
             </div>
 
-            <!-- PDF -->
+            <!-- SALDO MODIFICADO -->
 
             <div class="fila">
 
                 <label>
 
-                    NUEVO OFICIO PDF
+                    SALDO MODIFICADO
+
+                </label>
+
+                <input
+                    type="number"
+                    id="editSaldoModificado"
+                >
+
+            </div>
+
+            <!-- PDF AUTORIZACIÓN -->
+
+            <div class="fila">
+
+                <label>
+
+                    NUEVO PDF AUTORIZACIÓN
 
                 </label>
 
                 <input
                     type="file"
-                    id="editPDF"
+                    id="editPDFAutorizacion"
+                    accept=".pdf"
+                >
+
+            </div>
+
+            <!-- PDF ADECUACIÓN -->
+
+            <div class="fila">
+
+                <label>
+
+                    NUEVO PDF ADECUACIÓN
+
+                </label>
+
+                <input
+                    type="file"
+                    id="editPDFAdecuacionInput"
                     accept=".pdf"
                 >
 

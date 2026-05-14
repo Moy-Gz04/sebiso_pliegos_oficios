@@ -50,6 +50,10 @@ const storage = multer.diskStorage({
 
             Date.now() +
 
+            '-' +
+
+            Math.round(Math.random() * 1E9) +
+
             path.extname(
 
                 file.originalname
@@ -107,7 +111,25 @@ router.post(
 
     '/crear',
 
-    upload.single('oficio'),
+    upload.fields([
+
+        {
+
+            name:'oficio_autorizacion',
+
+            maxCount:1
+
+        },
+
+        {
+
+            name:'oficio_adecuacion',
+
+            maxCount:1
+
+        }
+
+    ]),
 
     async (req, res) => {
 
@@ -118,7 +140,9 @@ router.post(
                 area_id,
                 anio,
                 mes,
-                saldo_mensual
+
+                saldo_autorizado,
+                saldo_modificado
 
             } = req.body;
 
@@ -131,7 +155,7 @@ router.post(
                 !area_id ||
                 !anio ||
                 !mes ||
-                !saldo_mensual
+                !saldo_autorizado
 
             ){
 
@@ -188,68 +212,56 @@ router.post(
             }
 
             /* =========================
-               BUSCAR SALDO ANTERIOR
+               CALCULAR DISPONIBLE
             ========================= */
 
-            const saldoAnterior =
-            await pool.query(
-
-                `
-                SELECT saldo_restante
-
-                FROM presupuestos_mensuales
-
-                WHERE area_id = $1
-
-                ORDER BY id DESC
-
-                LIMIT 1
-                `,
-                [area_id]
-
-            );
-
-            let saldo_arrastrado = 0;
-
-            if(
-                saldoAnterior.rows.length > 0
-            ){
-
-                saldo_arrastrado =
-                parseFloat(
-
-                    saldoAnterior
-                    .rows[0]
-                    .saldo_restante
-
-                );
-
-            }
-
-            /* =========================
-               CALCULAR
-            ========================= */
-
-            const saldo_disponible =
+            const disponible =
 
                 parseFloat(
-                    saldo_mensual
+                    saldo_autorizado || 0
                 )
 
                 +
 
-                saldo_arrastrado;
+                parseFloat(
+                    saldo_modificado || 0
+                );
 
             /* =========================
-               PDF
+               PDFs
             ========================= */
 
-            let oficio_pdf = null;
+            let oficio_autorizacion = null;
 
-            if(req.file){
+            let oficio_adecuacion = null;
 
-                oficio_pdf =
-                req.file.filename;
+            if(
+
+                req.files &&
+                req.files.oficio_autorizacion
+
+            ){
+
+                oficio_autorizacion =
+
+                req.files
+                .oficio_autorizacion[0]
+                .filename;
+
+            }
+
+            if(
+
+                req.files &&
+                req.files.oficio_adecuacion
+
+            ){
+
+                oficio_adecuacion =
+
+                req.files
+                .oficio_adecuacion[0]
+                .filename;
 
             }
 
@@ -268,14 +280,16 @@ router.post(
                     anio,
                     mes,
 
-                    saldo_mensual,
-                    saldo_arrastrado,
+                    saldo_autorizado,
+                    saldo_modificado,
+
                     saldo_disponible,
 
                     gastado_mes,
                     saldo_restante,
 
-                    oficio_pdf
+                    oficio_autorizacion,
+                    oficio_adecuacion
 
                 )
 
@@ -287,12 +301,14 @@ router.post(
 
                     $4,
                     $5,
+
                     $6,
 
                     0,
                     $6,
 
-                    $7
+                    $7,
+                    $8
 
                 )
 
@@ -304,13 +320,13 @@ router.post(
                     anio,
                     mes,
 
-                    saldo_mensual,
+                    saldo_autorizado,
+                    saldo_modificado,
 
-                    saldo_arrastrado,
+                    disponible,
 
-                    saldo_disponible,
-
-                    oficio_pdf
+                    oficio_autorizacion,
+                    oficio_adecuacion
 
                 ]
 
@@ -421,7 +437,25 @@ router.put(
 
     '/editar/:id',
 
-    upload.single('oficio'),
+    upload.fields([
+
+        {
+
+            name:'oficio_autorizacion',
+
+            maxCount:1
+
+        },
+
+        {
+
+            name:'oficio_adecuacion',
+
+            maxCount:1
+
+        }
+
+    ]),
 
     async(req, res) => {
 
@@ -432,19 +466,17 @@ router.put(
 
             const {
 
-                saldo_mensual,
+                saldo_autorizado,
+                saldo_modificado,
+
                 mes,
                 anio
 
             } = req.body;
 
-            /* =========================
-               VALIDACIONES
-            ========================= */
-
             if(
 
-                !saldo_mensual ||
+                !saldo_autorizado ||
                 !mes ||
                 !anio
 
@@ -462,7 +494,7 @@ router.put(
             }
 
             /* =========================
-               BUSCAR REGISTRO
+               BUSCAR
             ========================= */
 
             const existe =
@@ -546,46 +578,53 @@ router.put(
             }
 
             /* =========================
-               NUEVOS CÁLCULOS
+               CALCULAR
             ========================= */
 
-            const nuevoDisponible =
+            const disponible =
 
                 parseFloat(
-                    saldo_mensual
+                    saldo_autorizado || 0
                 )
 
                 +
 
                 parseFloat(
-                    registro
-                    .saldo_arrastrado
+                    saldo_modificado || 0
                 );
 
-            const nuevoRestante =
+            const restante =
 
-                nuevoDisponible
+                disponible
 
                 -
 
                 parseFloat(
-                    registro.gastado_mes
+                    registro.gastado_mes || 0
                 );
 
             /* =========================
-               PDF
+               PDFs
             ========================= */
 
-            let nuevoPDF =
-            registro.oficio_pdf;
+            let nuevoPDFAutorizacion =
+            registro.oficio_autorizacion;
 
-            if(req.file){
+            let nuevoPDFAdecuacion =
+            registro.oficio_adecuacion;
 
-                /* =========================
-                   BORRAR PDF VIEJO
-                ========================= */
+            /* =========================
+               PDF AUTORIZACION
+            ========================= */
 
-                if(registro.oficio_pdf){
+            if(
+
+                req.files &&
+                req.files.oficio_autorizacion
+
+            ){
+
+                if(registro.oficio_autorizacion){
 
                     const rutaVieja =
 
@@ -593,26 +632,62 @@ router.put(
 
                             uploadPath,
 
-                            registro.oficio_pdf
+                            registro.oficio_autorizacion
 
                         );
 
-                    if(
-                        fs.existsSync(
-                            rutaVieja
-                        )
-                    ){
+                    if(fs.existsSync(rutaVieja)){
 
-                        fs.unlinkSync(
-                            rutaVieja
-                        );
+                        fs.unlinkSync(rutaVieja);
 
                     }
 
                 }
 
-                nuevoPDF =
-                req.file.filename;
+                nuevoPDFAutorizacion =
+
+                req.files
+                .oficio_autorizacion[0]
+                .filename;
+
+            }
+
+            /* =========================
+               PDF ADECUACION
+            ========================= */
+
+            if(
+
+                req.files &&
+                req.files.oficio_adecuacion
+
+            ){
+
+                if(registro.oficio_adecuacion){
+
+                    const rutaVieja =
+
+                        path.join(
+
+                            uploadPath,
+
+                            registro.oficio_adecuacion
+
+                        );
+
+                    if(fs.existsSync(rutaVieja)){
+
+                        fs.unlinkSync(rutaVieja);
+
+                    }
+
+                }
+
+                nuevoPDFAdecuacion =
+
+                req.files
+                .oficio_adecuacion[0]
+                .filename;
 
             }
 
@@ -632,31 +707,35 @@ router.put(
 
                     anio = $2,
 
-                    saldo_mensual = $3,
+                    saldo_autorizado = $3,
 
-                    saldo_disponible = $4,
+                    saldo_modificado = $4,
 
-                    saldo_restante = $5,
+                    saldo_disponible = $5,
 
-                    oficio_pdf = $6
+                    saldo_restante = $6,
 
-                WHERE id = $7
+                    oficio_autorizacion = $7,
+
+                    oficio_adecuacion = $8
+
+                WHERE id = $9
 
                 RETURNING *
                 `,
                 [
 
                     mes,
-
                     anio,
 
-                    saldo_mensual,
+                    saldo_autorizado,
+                    saldo_modificado,
 
-                    nuevoDisponible,
+                    disponible,
+                    restante,
 
-                    nuevoRestante,
-
-                    nuevoPDF,
+                    nuevoPDFAutorizacion,
+                    nuevoPDFAdecuacion,
 
                     id
 
@@ -710,10 +789,6 @@ router.delete(
             const { id } =
             req.params;
 
-            /* =========================
-               BUSCAR
-            ========================= */
-
             const existe =
             await pool.query(
 
@@ -745,10 +820,10 @@ router.delete(
             existe.rows[0];
 
             /* =========================
-               BORRAR PDF
+               BORRAR PDFs
             ========================= */
 
-            if(registro.oficio_pdf){
+            if(registro.oficio_autorizacion){
 
                 const rutaPDF =
 
@@ -756,19 +831,33 @@ router.delete(
 
                         uploadPath,
 
-                        registro.oficio_pdf
+                        registro.oficio_autorizacion
 
                     );
 
-                if(
-                    fs.existsSync(
-                        rutaPDF
-                    )
-                ){
+                if(fs.existsSync(rutaPDF)){
 
-                    fs.unlinkSync(
-                        rutaPDF
+                    fs.unlinkSync(rutaPDF);
+
+                }
+
+            }
+
+            if(registro.oficio_adecuacion){
+
+                const rutaPDF =
+
+                    path.join(
+
+                        uploadPath,
+
+                        registro.oficio_adecuacion
+
                     );
+
+                if(fs.existsSync(rutaPDF)){
+
+                    fs.unlinkSync(rutaPDF);
 
                 }
 
