@@ -256,7 +256,9 @@
 
     </div>
 
-    <!-- MODAL -->
+    <!-- =========================
+         MODAL GUARDADO
+    ========================= -->
 
     <div class="modal" id="modalGuardado">
 
@@ -286,6 +288,97 @@
         </div>
 
     </div>
+
+    <!-- =========================
+         MODAL EDITAR
+    ========================= -->
+
+    <div
+        class="modal"
+        id="modalEditar"
+    >
+
+        <div class="modal-contenido">
+
+            <h2>
+
+                Editar Presupuesto
+
+            </h2>
+
+            <br>
+
+            <input
+                type="hidden"
+                id="editId"
+            >
+
+            <!-- SALDO -->
+
+            <div class="fila">
+
+                <label>
+
+                    SALDO MENSUAL
+
+                </label>
+
+                <input
+                    type="number"
+                    id="editSaldo"
+                >
+
+            </div>
+
+            <!-- PDF -->
+
+            <div class="fila">
+
+                <label>
+
+                    NUEVO OFICIO PDF
+
+                </label>
+
+                <input
+                    type="file"
+                    id="editPDF"
+                    accept=".pdf"
+                >
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="modal-botones">
+
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="cerrarModalEditar()"
+                >
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-principal"
+                    id="btnActualizar"
+                >
+
+                    Guardar Cambios
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- OVERLAY -->
 
     <div id="overlay"></div>
 

@@ -413,4 +413,321 @@ router.get(
 
 );
 
+/* =========================
+   EDITAR PRESUPUESTO
+========================= */
+
+router.put(
+
+    '/editar/:id',
+
+    upload.single('oficio'),
+
+    async(req, res) => {
+
+        try{
+
+            const { id } =
+            req.params;
+
+            const {
+
+                saldo_mensual
+
+            } = req.body;
+
+            /* =========================
+               BUSCAR REGISTRO
+            ========================= */
+
+            const existe =
+            await pool.query(
+
+                `
+                SELECT *
+                FROM presupuestos_mensuales
+                WHERE id = $1
+                `,
+                [id]
+
+            );
+
+            if(
+                existe.rows.length === 0
+            ){
+
+                return res.status(404)
+                .json({
+
+                    ok:false,
+
+                    msg:'Registro no encontrado'
+
+                });
+
+            }
+
+            const registro =
+            existe.rows[0];
+
+            /* =========================
+               NUEVOS CÁLCULOS
+            ========================= */
+
+            const nuevoDisponible =
+
+                parseFloat(
+                    saldo_mensual
+                )
+
+                +
+
+                parseFloat(
+                    registro
+                    .saldo_arrastrado
+                );
+
+            const nuevoRestante =
+
+                nuevoDisponible
+
+                -
+
+                parseFloat(
+                    registro.gastado_mes
+                );
+
+            /* =========================
+               PDF
+            ========================= */
+
+            let nuevoPDF =
+            registro.oficio_pdf;
+
+            if(req.file){
+
+                /* BORRAR PDF VIEJO */
+
+                if(registro.oficio_pdf){
+
+                    const rutaVieja =
+
+                        path.join(
+
+                            uploadPath,
+
+                            registro.oficio_pdf
+
+                        );
+
+                    if(
+                        fs.existsSync(
+                            rutaVieja
+                        )
+                    ){
+
+                        fs.unlinkSync(
+                            rutaVieja
+                        );
+
+                    }
+
+                }
+
+                nuevoPDF =
+                req.file.filename;
+
+            }
+
+            /* =========================
+               UPDATE
+            ========================= */
+
+            const actualizado =
+            await pool.query(
+
+                `
+                UPDATE presupuestos_mensuales
+
+                SET
+
+                    saldo_mensual = $1,
+
+                    saldo_disponible = $2,
+
+                    saldo_restante = $3,
+
+                    oficio_pdf = $4
+
+                WHERE id = $5
+
+                RETURNING *
+                `,
+                [
+
+                    saldo_mensual,
+
+                    nuevoDisponible,
+
+                    nuevoRestante,
+
+                    nuevoPDF,
+
+                    id
+
+                ]
+
+            );
+
+            res.json({
+
+                ok:true,
+
+                registro:
+                actualizado.rows[0]
+
+            });
+
+        }
+
+        catch(error){
+
+            console.log(error);
+
+            res.status(500).json({
+
+                ok:false,
+
+                msg:'Error editando'
+
+            });
+
+        }
+
+    }
+
+);
+
+/* =========================
+   ELIMINAR PRESUPUESTO
+========================= */
+
+router.delete(
+
+    '/:id',
+
+    async(req, res) => {
+
+        try{
+
+            const { id } =
+            req.params;
+
+            /* =========================
+               BUSCAR
+            ========================= */
+
+            const existe =
+            await pool.query(
+
+                `
+                SELECT *
+                FROM presupuestos_mensuales
+                WHERE id = $1
+                `,
+                [id]
+
+            );
+
+            if(
+                existe.rows.length === 0
+            ){
+
+                return res.status(404)
+                .json({
+
+                    ok:false,
+
+                    msg:'No encontrado'
+
+                });
+
+            }
+
+            const registro =
+            existe.rows[0];
+
+            /* =========================
+               BORRAR PDF
+            ========================= */
+
+            if(registro.oficio_pdf){
+
+                const rutaPDF =
+
+                    path.join(
+
+                        uploadPath,
+
+                        registro.oficio_pdf
+
+                    );
+
+                if(
+                    fs.existsSync(
+                        rutaPDF
+                    )
+                ){
+
+                    fs.unlinkSync(
+                        rutaPDF
+                    );
+
+                }
+
+            }
+
+            /* =========================
+               DELETE
+            ========================= */
+
+            await pool.query(
+
+                `
+                DELETE FROM
+                presupuestos_mensuales
+                WHERE id = $1
+                `,
+                [id]
+
+            );
+
+            res.json({
+
+                ok:true,
+
+                msg:'Registro eliminado'
+
+            });
+
+        }
+
+        catch(error){
+
+            console.log(error);
+
+            res.status(500).json({
+
+                ok:false,
+
+                msg:'Error eliminando'
+
+            });
+
+        }
+
+    }
+
+);
+
 module.exports = router;
