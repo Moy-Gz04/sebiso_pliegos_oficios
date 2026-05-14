@@ -91,16 +91,6 @@ btnGuardar.addEventListener(
             ).files[0];
 
             /* =========================
-               DEBUG
-            ========================= */
-
-            console.log(area);
-
-            console.log(
-                mapaAreas[area]
-            );
-
-            /* =========================
                VALIDACIONES
             ========================= */
 
@@ -231,10 +221,6 @@ btnGuardar.addEventListener(
             document.getElementById(
                 "oficioPDF"
             ).value = "";
-
-            /* =========================
-               RECARGAR HISTORIAL
-            ========================= */
 
             cargarHistorial();
 
@@ -450,15 +436,282 @@ async function eliminarRegistro(id){
    EDITAR
 ========================= */
 
-function editarRegistro(id){
+async function editarRegistro(id){
 
-    alert(
+    try{
 
-        `Editar registro ID: ${id}`
+        const area =
+        document.getElementById(
+            "selectArea"
+        ).value.trim();
 
-    );
+        const respuesta =
+        await fetch(
+
+            `${API}/api/presupuestos/${area}`
+
+        );
+
+        const data =
+        await respuesta.json();
+
+        const registro =
+        data.find(
+
+            item => item.id === id
+
+        );
+
+        if(!registro){
+
+            alert(
+                "Registro no encontrado"
+            );
+
+            return;
+
+        }
+
+        /* =========================
+           CARGAR DATOS
+        ========================= */
+
+        document.getElementById(
+            "editId"
+        ).value = registro.id;
+
+        document.getElementById(
+            "editMes"
+        ).value = registro.mes;
+
+        document.getElementById(
+            "editAnio"
+        ).value = registro.anio;
+
+        document.getElementById(
+            "editSaldo"
+        ).value =
+        registro.saldo_mensual;
+
+        document.getElementById(
+            "editDisponible"
+        ).innerHTML =
+        `$${parseFloat(
+            registro.saldo_disponible || 0
+        ).toFixed(2)}`;
+
+        document.getElementById(
+            "editGastado"
+        ).innerHTML =
+        `$${parseFloat(
+            registro.gastado_mes || 0
+        ).toFixed(2)}`;
+
+        document.getElementById(
+            "editRestante"
+        ).innerHTML =
+        `$${parseFloat(
+            registro.saldo_restante || 0
+        ).toFixed(2)}`;
+
+        document.getElementById(
+            "editPDFActual"
+        ).innerHTML =
+
+            registro.oficio_pdf
+
+            ?
+
+            `
+            <a
+                href="${API}/uploads/oficios/${registro.oficio_pdf}"
+                target="_blank"
+                class="btn-pdf"
+            >
+                Ver PDF Actual
+            </a>
+            `
+
+            :
+
+            'Sin PDF';
+
+        /* =========================
+           ABRIR MODAL
+        ========================= */
+
+        document.getElementById(
+            "modalEditar"
+        ).style.display = "flex";
+
+        document.getElementById(
+            "overlay"
+        ).style.display = "block";
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        alert(
+            "Error cargando registro"
+        );
+
+    }
 
 }
+
+/* =========================
+   CERRAR MODAL
+========================= */
+
+function cerrarModalEditar(){
+
+    document.getElementById(
+        "modalEditar"
+    ).style.display = "none";
+
+    document.getElementById(
+        "overlay"
+    ).style.display = "none";
+
+}
+
+/* =========================
+   ACTUALIZAR
+========================= */
+
+document.getElementById(
+
+    "btnActualizar"
+
+).addEventListener(
+
+    "click",
+
+    async () => {
+
+        try{
+
+            const id =
+            document.getElementById(
+                "editId"
+            ).value;
+
+            const saldo =
+            document.getElementById(
+                "editSaldo"
+            ).value;
+
+            const mes =
+            document.getElementById(
+                "editMes"
+            ).value;
+
+            const anio =
+            document.getElementById(
+                "editAnio"
+            ).value;
+
+            const pdf =
+            document.getElementById(
+                "editPDF"
+            ).files[0];
+
+            const formData =
+            new FormData();
+
+            formData.append(
+
+                "saldo_mensual",
+
+                saldo
+
+            );
+
+            formData.append(
+
+                "mes",
+
+                mes
+
+            );
+
+            formData.append(
+
+                "anio",
+
+                anio
+
+            );
+
+            if(pdf){
+
+                formData.append(
+
+                    "oficio",
+
+                    pdf
+
+                );
+
+            }
+
+            const respuesta =
+            await fetch(
+
+                `${API}/api/presupuestos/editar/${id}`,
+
+                {
+
+                    method:"PUT",
+
+                    body:formData
+
+                }
+
+            );
+
+            const data =
+            await respuesta.json();
+
+            if(data.ok){
+
+                alert(
+                    "Registro actualizado"
+                );
+
+                cerrarModalEditar();
+
+                cargarHistorial();
+
+            }
+
+            else{
+
+                alert(
+                    data.msg ||
+                    "Error actualizando"
+                );
+
+            }
+
+        }
+
+        catch(error){
+
+            console.log(error);
+
+            alert(
+                "Error servidor"
+            );
+
+        }
+
+    }
+
+);
 
 /* =========================
    CAMBIO ÁREA
