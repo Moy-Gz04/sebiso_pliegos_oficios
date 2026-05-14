@@ -2,6 +2,10 @@ up 01
 USER: admin 
 PASSWORD: 1234
 
+up 01 CA
+USER: UPCA 
+PASSWORD: upCAgobmx
+
 up 04
 USER: UP04 
 PASSWORD: UP04_2026#
