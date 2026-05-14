@@ -125,6 +125,9 @@ async function cargarRegistros(){
 
         data.forEach((registro) => {
 
+            const pagado =
+            registro.pagado === true;
+
             tbody.innerHTML += `
 
                 <tr>
@@ -184,6 +187,7 @@ async function cargarRegistros(){
                             class="input-cantidad"
                             id="cantidad-${registro.id}"
                             placeholder="$0.00"
+                            ${pagado ? 'disabled' : ''}
                         >
 
                     </td>
@@ -191,11 +195,26 @@ async function cargarRegistros(){
                     <td>
 
                         <button
-                            class="btn-pagar"
-                            onclick="pagarRegistro(${registro.id})"
+
+                            class="${
+                                pagado
+                                ? 'btn-pagado'
+                                : 'btn-pagar'
+                            }"
+
+                            ${
+                                pagado
+                                ? 'disabled'
+                                : `onclick="pagarRegistro(${registro.id})"`
+                            }
+
                         >
 
-                            PAGAR
+                            ${
+                                pagado
+                                ? 'PAGADO'
+                                : 'PAGAR'
+                            }
 
                         </button>
 

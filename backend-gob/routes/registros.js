@@ -12,22 +12,46 @@ router.get('/:area', async (req, res) => {
 
     try{
 
-        const area = req.params.area;
+        const area =
+        req.params.area;
 
-        const result = await pool.query(
+        const result =
+        await pool.query(
 
             `
-            SELECT *
-            FROM registros
-            WHERE area = $1
-            ORDER BY fecha DESC
+            SELECT
+
+                r.*,
+
+                CASE
+
+                    WHEN g.id IS NOT NULL
+                    THEN true
+
+                    ELSE false
+
+                END AS pagado
+
+            FROM registros r
+
+            LEFT JOIN gastos g
+
+            ON g.registro_id = r.id
+
+            WHERE r.area = $1
+
+            ORDER BY r.fecha DESC
             `,
 
             [area]
 
         );
 
-        res.json(result.rows);
+        res.json(
+
+            result.rows
+
+        );
 
     }
 
@@ -113,8 +137,6 @@ router.post('/', async (req, res) => {
 
 });
 
-module.exports = router;
-
 /* =========================
    ELIMINAR REGISTRO
 ========================= */
@@ -159,3 +181,5 @@ router.delete('/:id', async (req, res) => {
     }
 
 });
+
+module.exports = router;
