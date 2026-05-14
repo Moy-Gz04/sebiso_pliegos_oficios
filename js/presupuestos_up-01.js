@@ -380,56 +380,62 @@ async function cargarHistorial(){
         const gastosRespuesta =
         await fetch(
 
-            `${API}/api/gastos/historial/${area}`
+            `${API}/api/gastos/${area}`
 
         );
 
         const gastos =
         await gastosRespuesta.json();
 
-        gastos.forEach((gasto) => {
+        console.log(gastos);
 
-            tbodyGastos.innerHTML += `
+        if(Array.isArray(gastos)){
 
-                <tr>
+            gastos.forEach((gasto) => {
 
-                    <td>
+                tbodyGastos.innerHTML += `
 
-                        ${formatearFecha(
-                            gasto.fecha
-                        )}
+                    <tr>
 
-                    </td>
+                        <td>
 
-                    <td>
+                            ${formatearFecha(
+                                gasto.fecha
+                            )}
 
-                        ${gasto.persona}
+                        </td>
 
-                    </td>
+                        <td>
 
-                    <td>
+                            ${gasto.persona}
 
-                        $${parseFloat(
-                            gasto.cantidad || 0
-                        ).toFixed(2)}
+                        </td>
 
-                    </td>
+                        <td>
 
-                    <td>
+                            $${parseFloat(
+                                gasto.cantidad || 0
+                            ).toFixed(2)}
 
-                        ${
-                            gasto.observacion ||
+                        </td>
 
-                            'Sin observación'
-                        }
+                        <td>
 
-                    </td>
+                            ${
+                                gasto.observacion ||
 
-                </tr>
+                                'Sin observación'
+                            }
 
-            `;
+                        </td>
 
-        });
+                    </tr>
+
+                `;
+
+            });
+
+        }
 
     }
 
