@@ -1,243 +1,122 @@
-const API =
+const express = require('express');
 
-"https://sebiso-pliegos-oficios-1.onrender.com";
+const pool = require('../database/db');
 
-/* =========================
-   ELEMENTOS
-========================= */
-
-const tbody =
-document.getElementById(
-    "tbodyRegistros"
-);
-
-const selectArea =
-document.getElementById(
-    "selectArea"
-);
-
-const saldoDisponible =
-document.getElementById(
-    "saldoDisponible"
-);
+const router = express.Router();
 
 /* =========================
-   MAPA ÁREAS
+   OBTENER REGISTROS
 ========================= */
 
-const mapaAreas = {
-
-    "UP-01":"UP-01-DESPACHO",
-
-    "UP-04":"UP-04-DGFA",
-
-    "UP-05":"UP-05-Subse_I_D",
-
-    "UP-06":"UP-06-DGOLP",
-
-    "UP-07":"UP-07-MIGRANTES",
-
-    "UP-08":"UP-08-ASISTENCIA",
-
-    "UP-13":"UP-13-SSPSyFA",
-
-    "UP-14":"UP-14-DISCAPACIDAD",
-
-    "UP-15":"UP-15-SSDSyH",
-
-    "UP-16":"UP-16"
-
-};
-
-/* =========================
-   CARGAR REGISTROS
-========================= */
-
-async function cargarRegistros(){
+router.get('/:area', async (req, res) => {
 
     try{
 
         const area =
-        selectArea.value;
+        req.params.area;
 
-        const areaPresupuesto =
-        mapaAreas[area];
+        const result =
+        await pool.query(
 
-        /* =========================
-           REGISTROS
-        ========================= */
+            `
+            SELECT
 
-        const respuesta =
-        await fetch(
+                r.*,
 
-            `${API}/api/registros/${area}`
+                CASE
+
+                    WHEN g.id IS NOT NULL
+                    THEN true
+
+                    ELSE false
+
+                END AS pagado
+
+            FROM registros r
+
+            LEFT JOIN gastos g
+
+            ON g.registro_id = r.id
+
+            WHERE r.area = $1
+
+            ORDER BY r.fecha DESC
+            `,
+
+            [area]
 
         );
 
-        const data =
-        await respuesta.json();
+        res.json(
 
-        /* =========================
-           PRESUPUESTOS
-        ========================= */
-
-        const presupuestoRespuesta =
-        await fetch(
-
-            `${API}/api/presupuestos/${areaPresupuesto}`
+            result.rows
 
         );
 
-        const presupuestos =
-        await presupuestoRespuesta.json();
+    }
 
-        let saldo = 0;
+    catch(error){
 
-        if(
+        console.log(error);
 
-            presupuestos.length > 0
+        res.status(500).json({
 
-        ){
+            error:
+            'Error obteniendo registros'
 
-            saldo =
-            parseFloat(
+        });
 
-                presupuestos[0]
-                .saldo_restante || 0
+    }
 
-            );
+});
 
-        }
+/* =========================
+   GUARDAR REGISTRO
+========================= */
 
-        saldoDisponible.innerHTML =
+router.post('/', async (req, res) => {
 
-            `$${saldo.toFixed(2)}`;
+    try{
 
-        /* =========================
-           LIMPIAR TABLA
-        ========================= */
+        const {
 
-        tbody.innerHTML = "";
+            codigo,
+            area,
+            persona,
+            oficio_pdf,
+            pliego_pdf
 
-        /* =========================
-           INSERTAR REGISTROS
-        ========================= */
+        } = req.body;
 
-        data.forEach((registro) => {
+        await pool.query(
 
-            const pagado =
-            registro.pagado === true;
+            `
+            INSERT INTO registros(
 
-            tbody.innerHTML += `
+                codigo,
+                area,
+                persona,
+                oficio_pdf,
+                pliego_pdf
 
-                <tr>
+            )
 
-                    <td>
+            VALUES($1,$2,$3,$4,$5)
+            `,
 
-                        ${registro.codigo}
+            [
+                codigo,
+                area,
+                persona,
+                oficio_pdf,
+                pliego_pdf
+            ]
 
-                    </td>
+        );
 
-                    <td>
+        res.json({
 
-                        ${registro.persona}
-
-                    </td>
-
-                    <td>
-
-                        ${formatearFecha(
-                            registro.fecha
-                        )}
-
-                    </td>
-
-                    <td>
-
-                        <a
-                            href="${registro.oficio_pdf}"
-                            target="_blank"
-                            class="btn-link"
-                        >
-
-                            Ver Oficio
-
-                        </a>
-
-                    </td>
-
-                    <td>
-
-                        <a
-                            href="${registro.pliego_pdf}"
-                            target="_blank"
-                            class="btn-link"
-                        >
-
-                            Ver Pliego
-
-                        </a>
-
-                    </td>
-
-                    <td>
-
-                        ${
-                            pagado
-
-                            ?
-
-                            `
-                            <input
-                                type="number"
-                                class="input-cantidad"
-                                value="PAGADO"
-                                disabled
-                            >
-                            `
-
-                            :
-
-                            `
-                            <input
-                                type="number"
-                                class="input-cantidad"
-                                id="cantidad-${registro.id}"
-                                placeholder="$0.00"
-                            >
-                            `
-                        }
-
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="${
-                                pagado
-                                ? 'btn-pagado'
-                                : 'btn-pagar'
-                            }"
-                            ${
-                                pagado
-                                ? 'disabled'
-                                : `onclick="pagarRegistro(${registro.id})"`
-                            }
-                        >
-
-                            ${
-                                pagado
-                                ? 'PAGADO'
-                                : 'PAGAR'
-                            }
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            `;
+            success:true
 
         });
 
@@ -247,110 +126,44 @@ async function cargarRegistros(){
 
         console.log(error);
 
-        alert(
-            "Error cargando registros"
-        );
+        res.status(500).json({
+
+            error:
+            'Error guardando registro'
+
+        });
 
     }
 
-}
+});
 
 /* =========================
-   PAGAR
+   ELIMINAR REGISTRO
 ========================= */
 
-async function pagarRegistro(id){
+router.delete('/:id', async (req, res) => {
 
     try{
 
-        const cantidad =
-        document.getElementById(
-            `cantidad-${id}`
-        ).value;
+        const id =
+        req.params.id;
 
-        if(
+        await pool.query(
 
-            !cantidad ||
+            `
+            DELETE FROM registros
+            WHERE codigo = $1
+            `,
 
-            parseFloat(cantidad) <= 0
-
-        ){
-
-            alert(
-                "Ingrese una cantidad válida"
-            );
-
-            return;
-
-        }
-
-        const confirmar =
-        confirm(
-
-            `¿Registrar pago de $${cantidad}?`
+            [id]
 
         );
 
-        if(!confirmar){
+        res.json({
 
-            return;
+            success:true
 
-        }
-
-        const respuesta =
-        await fetch(
-
-            `${API}/api/gastos/registrar`,
-
-            {
-
-                method:"POST",
-
-                headers:{
-
-                    "Content-Type":
-                    "application/json"
-
-                },
-
-                body:JSON.stringify({
-
-                    registro_id:id,
-
-                    cantidad
-
-                })
-
-            }
-
-        );
-
-        const data =
-        await respuesta.json();
-
-        console.log(data);
-
-        if(data.ok){
-
-            alert(
-                "Pago registrado"
-            );
-
-            cargarRegistros();
-
-        }
-
-        else{
-
-            alert(
-
-                data.msg ||
-
-                "Error registrando pago"
-
-            );
-
-        }
+        });
 
     }
 
@@ -358,41 +171,15 @@ async function pagarRegistro(id){
 
         console.log(error);
 
-        alert(
-            "Error servidor"
-        );
+        res.status(500).json({
+
+            error:
+            'Error eliminando registro'
+
+        });
 
     }
 
-}
+});
 
-/* =========================
-   FORMATEAR FECHA
-========================= */
-
-function formatearFecha(fecha){
-
-    return new Date(fecha)
-    .toLocaleString(
-        "es-MX"
-    );
-
-}
-
-/* =========================
-   CAMBIO ÁREA
-========================= */
-
-selectArea.addEventListener(
-
-    "change",
-
-    cargarRegistros
-
-);
-
-/* =========================
-   INIT
-========================= */
-
-cargarRegistros();
+module.exports = router;
