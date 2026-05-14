@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>
+
+        Pagos Presupuestales
+
+    </title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ssidebar.css">
+    <link rel="stylesheet" href="css/pagos.css">
+    <link rel="stylesheet" href="css/gastos.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenido">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="titulo-principal">
+
+                SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+
+            </div>
+
+            <div class="subtitulo">
+
+                REGISTRO DE PAGOS PRESUPUESTALES
+
+            </div>
+
+        </div>
+
+        <br><br>
+
+        <!-- CONTENEDOR -->
+
+        <div class="contenedor-pagos">
+
+            <!-- TOP -->
+
+            <div class="top-pagos">
+
+                <!-- SELECT ÁREA -->
+
+                <div class="fila fila-top">
+
+                    <label>
+
+                        ÁREA PRESUPUESTAL
+
+                    </label>
+
+                    <select id="selectArea">
+
+                        <option value="UP-01">
+
+                            UP-01
+
+                        </option>
+
+                        <option value="UP-04">
+
+                            UP-04
+
+                        </option>
+
+                        <option value="UP-05">
+
+                            UP-05
+
+                        </option>
+
+                        <option value="UP-06">
+
+                            UP-06
+
+                        </option>
+
+                        <option value="UP-07">
+
+                            UP-07
+
+                        </option>
+
+                        <option value="UP-08">
+
+                            UP-08
+
+                        </option>
+
+                        <option value="UP-13">
+
+                            UP-13
+
+                        </option>
+
+                        <option value="UP-14">
+
+                            UP-14
+
+                        </option>
+
+                        <option value="UP-15">
+
+                            UP-15
+
+                        </option>
+
+                        <option value="UP-16">
+
+                            UP-16
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- SALDO -->
+
+                <div class="saldo-card">
+
+                    <span>
+
+                        SALDO DISPONIBLE
+
+                    </span>
+
+                    <h2 id="saldoDisponible">
+
+                        $0.00
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <!-- TABLA -->
+
+            <div class="tabla-container">
+
+                <h2>
+
+                    REGISTROS DEL ÁREA
+
+                </h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>ID</th>
+
+                            <th>PERSONA</th>
+
+                            <th>FECHA Y HORA</th>
+
+                            <th>OFICIO PDF</th>
+
+                            <th>PLIEGO PDF</th>
+
+                            <th>CANTIDAD</th>
+
+                            <th>PAGAR</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tbodyRegistros">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- SCRIPTS -->
+
+    <script src="js/sidebar_CP.js"></script>
+    <script src="js/gastos.js"></script>
+
+</body>
+
+</html>

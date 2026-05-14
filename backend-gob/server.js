@@ -30,6 +30,9 @@ require('./routes/registros');
 const presupuestosRoutes =
 require('./routes/presupuestos');
 
+const gastosRoutes =
+require('./routes/gastos.routes');
+
 /* =========================
    MIDDLEWARES
 ========================= */
@@ -103,6 +106,18 @@ app.use(
     '/api/presupuestos',
 
     presupuestosRoutes
+
+);
+
+/* =========================
+   GASTOS
+========================= */
+
+app.use(
+
+    '/api/gastos',
+
+    gastosRoutes
 
 );
 
