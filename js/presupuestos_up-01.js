@@ -11,9 +11,14 @@ document.getElementById(
     "btnGuardarPresupuesto"
 );
 
-const tbodyHistorial =
+const tbodyIngresos =
 document.getElementById(
-    "tbodyHistorial"
+    "tbodyIngresos"
+);
+
+const tbodyGastos =
+document.getElementById(
+    "tbodyGastos"
 );
 
 const saldoDisponible =
@@ -111,10 +116,6 @@ btnGuardar.addEventListener(
                 "oficioPDF"
             ).files[0];
 
-            /* =========================
-               VALIDACIONES
-            ========================= */
-
             if(!saldo){
 
                 alert(
@@ -135,60 +136,37 @@ btnGuardar.addEventListener(
 
             }
 
-            /* =========================
-               FORM DATA
-            ========================= */
-
             const formData =
             new FormData();
 
             formData.append(
-
                 "area_id",
-
                 mapaAreas[area]
-
             );
 
             formData.append(
-
                 "mes",
-
                 mes
-
             );
 
             formData.append(
-
                 "anio",
-
                 anio
-
             );
 
             formData.append(
-
                 "saldo_mensual",
-
                 saldo
-
             );
 
             if(oficio){
 
                 formData.append(
-
                     "oficio",
-
                     oficio
-
                 );
 
             }
-
-            /* =========================
-               FETCH
-            ========================= */
 
             const respuesta =
             await fetch(
@@ -208,12 +186,6 @@ btnGuardar.addEventListener(
             const data =
             await respuesta.json();
 
-            console.log(data);
-
-            /* =========================
-               RESPUESTA
-            ========================= */
-
             if(!data.ok){
 
                 alert(
@@ -230,10 +202,6 @@ btnGuardar.addEventListener(
             alert(
                 "Registro guardado"
             );
-
-            /* =========================
-               LIMPIAR
-            ========================= */
 
             document.getElementById(
                 "saldoMensual"
@@ -274,6 +242,10 @@ async function cargarHistorial(){
             "selectArea"
         ).value.trim();
 
+        /* =========================
+           INGRESOS
+        ========================= */
+
         const respuesta =
         await fetch(
 
@@ -284,12 +256,6 @@ async function cargarHistorial(){
         const data =
         await respuesta.json();
 
-        console.log(data);
-
-        /* =========================
-           ORDENAR MÁS RECIENTE
-        ========================= */
-
         data.sort((a, b) => {
 
             if(b.anio !== a.anio){
@@ -298,15 +264,12 @@ async function cargarHistorial(){
 
             }
 
-            return ordenMeses[b.mes] - ordenMeses[a.mes];
+            return ordenMeses[b.mes]
+            - ordenMeses[a.mes];
 
         });
 
-        tbodyHistorial.innerHTML = "";
-
-        /* =========================
-           ÚLTIMO SALDO
-        ========================= */
+        tbodyIngresos.innerHTML = "";
 
         let ultimoSaldo = data.length
 
@@ -316,30 +279,38 @@ async function cargarHistorial(){
 
         data.forEach((registro) => {
 
-            tbodyHistorial.innerHTML += `
+            tbodyIngresos.innerHTML += `
 
                 <tr>
 
                     <td>
+
                         ${registro.mes} ${registro.anio}
+
                     </td>
 
                     <td>
+
                         $${parseFloat(
                             registro.saldo_disponible || 0
                         ).toFixed(2)}
+
                     </td>
 
                     <td>
+
                         $${parseFloat(
                             registro.gastado_mes || 0
                         ).toFixed(2)}
+
                     </td>
 
                     <td>
+
                         $${parseFloat(
                             registro.saldo_restante || 0
                         ).toFixed(2)}
+
                     </td>
 
                     <td>
@@ -354,7 +325,9 @@ async function cargarHistorial(){
                                 target="_blank"
                                 class="btn-pdf"
                             >
+
                                 Ver PDF
+
                             </a>`
 
                             :
@@ -370,14 +343,18 @@ async function cargarHistorial(){
                             class="btn-editar"
                             onclick="editarRegistro(${registro.id})"
                         >
+
                             Editar
+
                         </button>
 
                         <button
                             class="btn-eliminar"
                             onclick="eliminarRegistro(${registro.id})"
                         >
+
                             Eliminar
+
                         </button>
 
                     </td>
@@ -394,6 +371,66 @@ async function cargarHistorial(){
                 ultimoSaldo || 0
             ).toFixed(2)}`;
 
+        /* =========================
+           GASTOS
+        ========================= */
+
+        tbodyGastos.innerHTML = "";
+
+        const gastosRespuesta =
+        await fetch(
+
+            `${API}/api/gastos/${area}`
+
+        );
+
+        const gastos =
+        await gastosRespuesta.json();
+
+        gastos.forEach((gasto) => {
+
+            tbodyGastos.innerHTML += `
+
+                <tr>
+
+                    <td>
+
+                        ${formatearFecha(
+                            gasto.fecha
+                        )}
+
+                    </td>
+
+                    <td>
+
+                        ${gasto.persona}
+
+                    </td>
+
+                    <td>
+
+                        $${parseFloat(
+                            gasto.cantidad || 0
+                        ).toFixed(2)}
+
+                    </td>
+
+                    <td>
+
+                        ${
+                            gasto.observacion ||
+
+                            'Sin observación'
+                        }
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
     }
 
     catch(error){
@@ -405,6 +442,19 @@ async function cargarHistorial(){
 }
 
 /* =========================
+   FORMATEAR FECHA
+========================= */
+
+function formatearFecha(fecha){
+
+    return new Date(fecha)
+    .toLocaleString(
+        "es-MX"
+    );
+
+}
+
+/* =========================
    ELIMINAR
 ========================= */
 
@@ -412,9 +462,7 @@ async function eliminarRegistro(id){
 
     const confirmar =
     confirm(
-
         "¿Eliminar registro?"
-
     );
 
     if(!confirmar){
@@ -514,10 +562,6 @@ async function editarRegistro(id){
 
         }
 
-        /* =========================
-           CARGAR DATOS
-        ========================= */
-
         document.getElementById(
             "editId"
         ).value = registro.id;
@@ -570,17 +614,15 @@ async function editarRegistro(id){
                 target="_blank"
                 class="btn-pdf"
             >
+
                 Ver PDF Actual
+
             </a>
             `
 
             :
 
             'Sin PDF';
-
-        /* =========================
-           ABRIR MODAL
-        ========================= */
 
         document.getElementById(
             "modalEditar"
@@ -665,37 +707,25 @@ document.getElementById(
             new FormData();
 
             formData.append(
-
                 "saldo_mensual",
-
                 saldo
-
             );
 
             formData.append(
-
                 "mes",
-
                 mes
-
             );
 
             formData.append(
-
                 "anio",
-
                 anio
-
             );
 
             if(pdf){
 
                 formData.append(
-
                     "oficio",
-
                     pdf
-
                 );
 
             }

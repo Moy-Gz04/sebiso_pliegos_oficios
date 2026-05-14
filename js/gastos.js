@@ -22,6 +22,34 @@ document.getElementById(
 );
 
 /* =========================
+   MAPA ÁREAS
+========================= */
+
+const mapaAreas = {
+
+    "UP-01":"UP-01-DESPACHO",
+
+    "UP-04":"UP-04-DGFA",
+
+    "UP-05":"UP-05-Subse_I_D",
+
+    "UP-06":"UP-06-DGOLP",
+
+    "UP-07":"UP-07-MIGRANTES",
+
+    "UP-08":"UP-08-ASISTENCIA",
+
+    "UP-13":"UP-13-SSPSyFA",
+
+    "UP-14":"UP-14-DISCAPACIDAD",
+
+    "UP-15":"UP-15-SSDSyH",
+
+    "UP-16":"UP-16"
+
+};
+
+/* =========================
    CARGAR REGISTROS
 ========================= */
 
@@ -32,6 +60,9 @@ async function cargarRegistros(){
         const area =
         selectArea.value;
 
+        const areaPresupuesto =
+        mapaAreas[area];
+
         /* =========================
            REGISTROS
         ========================= */
@@ -39,7 +70,7 @@ async function cargarRegistros(){
         const respuesta =
         await fetch(
 
-            `${API}/api/gastos/${area}`
+            `${API}/api/registros/${area}`
 
         );
 
@@ -53,7 +84,7 @@ async function cargarRegistros(){
         const presupuestoRespuesta =
         await fetch(
 
-            `${API}/api/presupuestos/${area}`
+            `${API}/api/presupuestos/${areaPresupuesto}`
 
         );
 
@@ -82,7 +113,15 @@ async function cargarRegistros(){
 
             `$${saldo.toFixed(2)}`;
 
+        /* =========================
+           LIMPIAR TABLA
+        ========================= */
+
         tbody.innerHTML = "";
+
+        /* =========================
+           INSERTAR REGISTROS
+        ========================= */
 
         data.forEach((registro) => {
 
@@ -254,6 +293,8 @@ async function pagarRegistro(id){
 
         const data =
         await respuesta.json();
+
+        console.log(data);
 
         if(data.ok){
 

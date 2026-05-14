@@ -311,7 +311,7 @@ router.post(
             const nuevoGastado =
 
                 parseFloat(
-                    presupuesto.gastado_mes
+                    presupuesto.gastado_mes || 0
                 )
 
                 +
@@ -325,6 +325,38 @@ router.post(
                 -
 
                 monto;
+
+            /* =========================
+               GUARDAR GASTO
+            ========================= */
+
+            await pool.query(
+
+                `
+                INSERT INTO gastos(
+
+                    registro_id,
+                    area,
+                    persona,
+                    cantidad
+
+                )
+
+                VALUES($1,$2,$3,$4)
+                `,
+                [
+
+                    registro.id,
+
+                    registro.area,
+
+                    registro.persona,
+
+                    monto
+
+                ]
+
+            );
 
             /* =========================
                ACTUALIZAR PRESUPUESTO
