@@ -11,7 +11,7 @@ const PAGINA_INICIO =
 'A-P.html';
 
 const PAGINA_REGISTROS =
-'R_UNIDADES.html';
+'G-U-P.html';
 
 /* =========================
    SIDEBAR
@@ -52,7 +52,7 @@ document.getElementById(
                     window.location.href='${PAGINA_INICIO}'
                 ">
 
-                Inicio
+                Presupuestos
 
             </button>
 
@@ -68,7 +68,7 @@ document.getElementById(
                     window.location.href='${PAGINA_REGISTROS}'
                 ">
 
-                Registros
+                Pliegos
 
             </button>
 

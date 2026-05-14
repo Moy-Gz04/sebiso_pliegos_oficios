@@ -1,0 +1,526 @@
+/* =========================
+   CONTENEDOR
+========================= */
+
+.contenedor-pagos{
+
+    width:100%;
+}
+
+/* =========================
+   TOP
+========================= */
+
+.top-pagos{
+
+    width:90%;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:space-between;
+
+    gap:25px;
+
+    margin:0 auto 30px auto;
+}
+
+/* =========================
+   FILA TOP
+========================= */
+
+.fila-top{
+
+    flex:1;
+}
+
+/* =========================
+   FILA
+========================= */
+
+.fila{
+
+    width:100%;
+
+    display:flex;
+
+    align-items:center;
+}
+
+/* =========================
+   LABEL
+========================= */
+
+.fila label{
+
+    width:260px;
+
+    min-width:260px;
+
+    height:55px;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    background:#7a0026;
+
+    color:white;
+
+    padding:0 22px;
+
+    border-radius:14px 0 0 14px;
+
+    font-weight:700;
+
+    font-size:15px;
+
+    line-height:18px;
+}
+
+/* =========================
+   SELECT
+========================= */
+
+.fila select{
+
+    flex:1;
+
+    height:55px;
+
+    border:none;
+
+    background:white;
+
+    padding:0 55px 0 18px;
+
+    font-size:15px;
+
+    outline:none;
+
+    border-radius:0 14px 14px 0;
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    -moz-appearance:none;
+
+    cursor:pointer;
+
+    color:#111827;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%237a0026' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+
+    background-position:right 18px center;
+
+    background-size:16px;
+}
+
+/* =========================
+   SALDO
+========================= */
+
+.saldo-card{
+
+    min-width:220px;
+
+    max-width:240px;
+
+    background:white;
+
+    padding:18px 24px;
+
+    border-radius:18px;
+
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+
+    text-align:center;
+
+    display:flex;
+
+    flex-direction:column;
+
+    justify-content:center;
+}
+
+.saldo-card span{
+
+    display:block;
+
+    color:#6b7280;
+
+    font-size:13px;
+
+    margin-bottom:6px;
+
+    font-weight:500;
+}
+
+.saldo-card h2{
+
+    font-size:32px;
+
+    color:#0f172a;
+
+    font-weight:800;
+
+    margin:0;
+
+    line-height:1.1;
+}
+
+/* =========================
+   TABLA CONTENEDOR
+========================= */
+
+.tabla-container{
+
+    width:90%;
+
+    background:white;
+
+    margin:auto;
+
+    border-radius:24px;
+
+    padding:35px;
+
+    box-shadow:0 2px 12px rgba(0,0,0,.08);
+
+    overflow:hidden;
+}
+
+/* =========================
+   TÍTULO
+========================= */
+
+.tabla-container h2{
+
+    margin-bottom:28px;
+
+    color:#111827;
+
+    font-size:20px;
+
+    font-weight:700;
+}
+
+/* =========================
+   WRAPPER RESPONSIVE
+========================= */
+
+.tabla-responsive{
+
+    width:100%;
+
+    overflow-x:auto;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.tabla-container table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    table-layout:auto;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.tabla-container thead{
+
+    background:#f3f4f6;
+}
+
+.tabla-container th{
+
+    padding:18px 14px;
+
+    text-align:center;
+
+    font-size:14px;
+
+    color:#374151;
+
+    border-bottom:1px solid #e5e7eb;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+/* =========================
+   BODY
+========================= */
+
+.tabla-container td{
+
+    padding:22px 14px;
+
+    text-align:center;
+
+    border-bottom:1px solid #e5e7eb;
+
+    color:#4b5563;
+
+    font-size:14px;
+
+    vertical-align:middle;
+
+    word-break:break-word;
+}
+
+/* =========================
+   LINKS PDF
+========================= */
+
+.btn-link{
+
+    color:#7a0026;
+
+    text-decoration:none;
+
+    font-weight:700;
+
+    transition:.2s;
+
+    white-space:nowrap;
+}
+
+.btn-link:hover{
+
+    text-decoration:underline;
+
+    color:#5c001d;
+}
+
+/* =========================
+   INPUT CANTIDAD
+========================= */
+
+.input-cantidad{
+
+    width:140px;
+
+    max-width:100%;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#f3f4f6;
+
+    padding:0 14px;
+
+    outline:none;
+
+    font-size:14px;
+
+    color:#111827;
+
+    text-align:center;
+
+    transition:.2s;
+}
+
+.input-cantidad:focus{
+
+    background:#e5e7eb;
+
+    box-shadow:0 0 0 3px rgba(122,0,38,.15);
+}
+
+/* =========================
+   BOTÓN PAGAR
+========================= */
+
+.btn-pagar{
+
+    width:115px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#7a0026;
+
+    color:white;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    white-space:nowrap;
+}
+
+.btn-pagar:hover{
+
+    background:#5c001d;
+
+    transform:translateY(-1px);
+}
+
+/* =========================
+   FILAS HOVER
+========================= */
+
+.tabla-container tbody tr{
+
+    transition:.2s;
+}
+
+.tabla-container tbody tr:hover{
+
+    background:#fafafa;
+}
+
+/* =========================
+   SCROLL
+========================= */
+
+.tabla-responsive::-webkit-scrollbar{
+
+    height:10px;
+}
+
+.tabla-responsive::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1200px){
+
+    .tabla-container{
+
+        width:95%;
+    }
+
+    .top-pagos{
+
+        width:95%;
+    }
+
+}
+
+@media(max-width:900px){
+
+    .top-pagos{
+
+        width:95%;
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .tabla-container{
+
+        width:95%;
+
+        padding:22px;
+    }
+
+    .saldo-card{
+
+        width:100%;
+    }
+
+    .fila{
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .fila label{
+
+        width:100%;
+
+        min-width:100%;
+
+        border-radius:14px 14px 0 0;
+
+        justify-content:center;
+
+        text-align:center;
+    }
+
+    .fila select{
+
+        border-radius:0 0 14px 14px;
+    }
+
+    .tabla-container table{
+
+        min-width:850px;
+    }
+
+}
+
+@media(max-width:600px){
+
+    .tabla-container{
+
+        padding:15px;
+    }
+
+    .tabla-container th{
+
+        font-size:13px;
+
+        padding:14px 10px;
+    }
+
+    .tabla-container td{
+
+        font-size:13px;
+
+        padding:18px 10px;
+    }
+
+    .btn-pagar{
+
+        width:100px;
+
+        font-size:13px;
+    }
+
+    .input-cantidad{
+
+        width:120px;
+    }
+
+    .saldo-card h2{
+
+        font-size:36px;
+    }
+
+}
