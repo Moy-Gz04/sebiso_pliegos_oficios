@@ -290,93 +290,194 @@
     </div>
 
     <!-- =========================
-         MODAL EDITAR
-    ========================= -->
+     MODAL EDITAR
+========================= -->
 
-    <div
-        class="modal"
-        id="modalEditar"
+<div
+    class="modal"
+    id="modalEditar"
+>
+
+    <div class="modal-contenido modal-editar">
+
+    <h2>
+
+        Editar Presupuesto
+
+    </h2>
+
+    <input
+        type="hidden"
+        id="editId"
     >
 
-        <div class="modal-contenido">
+    <!-- PERIODO -->
 
-            <h2>
+    <div class="fila-periodo">
 
-                Editar Presupuesto
+        <div class="campo-periodo">
 
-            </h2>
+            <label>
 
-            <br>
+                MES
 
-            <input
-                type="hidden"
-                id="editId"
-            >
+            </label>
 
-            <!-- SALDO -->
+            <select id="editMes">
 
-            <div class="fila">
+                <option value="ENERO">ENERO</option>
+                <option value="FEBRERO">FEBRERO</option>
+                <option value="MARZO">MARZO</option>
+                <option value="ABRIL">ABRIL</option>
+                <option value="MAYO">MAYO</option>
+                <option value="JUNIO">JUNIO</option>
+                <option value="JULIO">JULIO</option>
+                <option value="AGOSTO">AGOSTO</option>
+                <option value="SEPTIEMBRE">SEPTIEMBRE</option>
+                <option value="OCTUBRE">OCTUBRE</option>
+                <option value="NOVIEMBRE">NOVIEMBRE</option>
+                <option value="DICIEMBRE">DICIEMBRE</option>
 
-                <label>
+            </select>
 
-                    SALDO MENSUAL
+        </div>
 
-                </label>
+        <div class="campo-periodo">
 
-                <input
-                    type="number"
-                    id="editSaldo"
-                >
+            <label>
 
-            </div>
+                AÑO
 
-            <!-- PDF -->
+            </label>
 
-            <div class="fila">
+            <select id="editAnio">
 
-                <label>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
 
-                    NUEVO OFICIO PDF
-
-                </label>
-
-                <input
-                    type="file"
-                    id="editPDF"
-                    accept=".pdf"
-                >
-
-            </div>
-
-            <!-- BOTONES -->
-
-            <div class="modal-botones">
-
-                <button
-                    type="button"
-                    class="btn-secundario"
-                    onclick="cerrarModalEditar()"
-                >
-
-                    Cancelar
-
-                </button>
-
-                <button
-                    type="button"
-                    class="btn-principal"
-                    id="btnActualizar"
-                >
-
-                    Guardar Cambios
-
-                </button>
-
-            </div>
+            </select>
 
         </div>
 
     </div>
+
+    <!-- INFO -->
+
+    <div class="edit-grid">
+
+        <div class="edit-info">
+
+            <span>DISPONIBLE</span>
+
+            <strong id="editDisponible">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+        <div class="edit-info">
+
+            <span>GASTADO</span>
+
+            <strong id="editGastado">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+        <div class="edit-info">
+
+            <span>RESTANTE</span>
+
+            <strong id="editRestante">
+
+                $0.00
+
+            </strong>
+
+        </div>
+
+        <div class="edit-info">
+
+            <span>PDF ACTUAL</span>
+
+            <strong id="editPDFActual">
+
+                Sin PDF
+
+            </strong>
+
+        </div>
+
+    </div>
+
+    <!-- SALDO -->
+
+    <div class="fila">
+
+        <label>
+
+            SALDO MENSUAL
+
+        </label>
+
+        <input
+            type="number"
+            id="editSaldo"
+        >
+
+    </div>
+
+    <!-- PDF -->
+
+    <div class="fila">
+
+        <label>
+
+            NUEVO OFICIO PDF
+
+        </label>
+
+        <input
+            type="file"
+            id="editPDF"
+            accept=".pdf"
+        >
+
+    </div>
+
+    <!-- BOTONES -->
+
+    <div class="modal-botones">
+
+        <button
+            type="button"
+            class="btn-secundario"
+            onclick="cerrarModalEditar()"
+        >
+
+            Cancelar
+
+        </button>
+
+        <button
+            type="button"
+            class="btn-principal"
+            id="btnActualizar"
+        >
+
+            Guardar Cambios
+
+        </button>
+
+    </div>
+
+</div>
 
     <!-- OVERLAY -->
 

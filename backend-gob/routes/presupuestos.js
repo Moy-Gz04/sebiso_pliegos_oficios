@@ -432,9 +432,34 @@ router.put(
 
             const {
 
-                saldo_mensual
+                saldo_mensual,
+                mes,
+                anio
 
             } = req.body;
+
+            /* =========================
+               VALIDACIONES
+            ========================= */
+
+            if(
+
+                !saldo_mensual ||
+                !mes ||
+                !anio
+
+            ){
+
+                return res.status(400)
+                .json({
+
+                    ok:false,
+
+                    msg:'Campos incompletos'
+
+                });
+
+            }
 
             /* =========================
                BUSCAR REGISTRO
@@ -469,6 +494,56 @@ router.put(
 
             const registro =
             existe.rows[0];
+
+            /* =========================
+               VALIDAR DUPLICADO
+            ========================= */
+
+            const duplicado =
+            await pool.query(
+
+                `
+                SELECT id
+                FROM presupuestos_mensuales
+                WHERE
+
+                area_id = $1
+
+                AND mes = $2
+
+                AND anio = $3
+
+                AND id != $4
+                `,
+                [
+
+                    registro.area_id,
+
+                    mes,
+
+                    anio,
+
+                    id
+
+                ]
+
+            );
+
+            if(
+                duplicado.rows.length > 0
+            ){
+
+                return res.status(400)
+                .json({
+
+                    ok:false,
+
+                    msg:
+                    'Ya existe otro registro para ese periodo'
+
+                });
+
+            }
 
             /* =========================
                NUEVOS CÁLCULOS
@@ -506,7 +581,9 @@ router.put(
 
             if(req.file){
 
-                /* BORRAR PDF VIEJO */
+                /* =========================
+                   BORRAR PDF VIEJO
+                ========================= */
 
                 if(registro.oficio_pdf){
 
@@ -551,19 +628,27 @@ router.put(
 
                 SET
 
-                    saldo_mensual = $1,
+                    mes = $1,
 
-                    saldo_disponible = $2,
+                    anio = $2,
 
-                    saldo_restante = $3,
+                    saldo_mensual = $3,
 
-                    oficio_pdf = $4
+                    saldo_disponible = $4,
 
-                WHERE id = $5
+                    saldo_restante = $5,
+
+                    oficio_pdf = $6
+
+                WHERE id = $7
 
                 RETURNING *
                 `,
                 [
+
+                    mes,
+
+                    anio,
 
                     saldo_mensual,
 
@@ -582,6 +667,8 @@ router.put(
             res.json({
 
                 ok:true,
+
+                msg:'Registro actualizado',
 
                 registro:
                 actualizado.rows[0]
