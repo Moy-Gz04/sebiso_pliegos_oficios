@@ -7,7 +7,11 @@
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Control Presupuestal</title>
+    <title>
+
+        Control Presupuestal
+
+    </title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ssidebar.css">
@@ -178,11 +182,7 @@
 
                     </label>
 
-                    <input
-                        type="number"
-                        id="saldoMensual"
-                        placeholder="Ingrese saldo mensual"
-                    >
+                    <input type="number" id="saldoMensual" placeholder="Ingrese saldo mensual">
 
                 </div>
 
@@ -196,20 +196,13 @@
 
                     </label>
 
-                    <input
-                        type="file"
-                        id="oficioPDF"
-                        accept=".pdf"
-                    >
+                    <input type="file" id="oficioPDF" accept=".pdf">
 
                 </div>
 
                 <!-- BOTÓN -->
 
-                <button
-                    type="button"
-                    id="btnGuardarPresupuesto"
-                >
+                <button type="button" id="btnGuardarPresupuesto">
 
                     GUARDAR REGISTRO
 
@@ -217,38 +210,103 @@
 
             </div>
 
+            <!-- =========================
+                 HISTORIAL
+            ========================= -->
+
             <!-- HISTORIAL -->
 
             <div class="historial-container">
 
-                <h2>
+                <!-- TABS -->
 
-                    HISTORIAL MENSUAL
+                <div class="tabs-historial">
 
-                </h2>
+                    <button class="tab-btn active" id="btnIngresos" onclick="mostrarIngresos()">
 
-                <table>
+                        INGRESOS
 
-                    <thead>
+                    </button>
 
-                        <tr>
+                    <button class="tab-btn" id="btnGastos" onclick="mostrarGastos()">
 
-                            <th>MES</th>
-                            <th>DISPONIBLE</th>
-                            <th>GASTADO</th>
-                            <th>RESTANTE</th>
-                            <th>OFICIO</th>
-                            <th>ACCIONES</th>
+                        GASTOS
 
-                        </tr>
+                    </button>
 
-                    </thead>
+                </div>
 
-                    <tbody id="tbodyHistorial">
+                <!-- =========================
+         TABLA INGRESOS
+    ========================= -->
 
-                    </tbody>
+                <div id="contenedorIngresos">
 
-                </table>
+                    <h2>
+
+                        HISTORIAL DE INGRESOS
+
+                    </h2>
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>MES</th>
+                                <th>DISPONIBLE</th>
+                                <th>GASTADO</th>
+                                <th>RESTANTE</th>
+                                <th>OFICIO</th>
+                                <th>ACCIONES</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tbodyIngresos">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+                <!-- =========================
+         TABLA GASTOS
+    ========================= -->
+
+                <div id="contenedorGastos" style="display:none;">
+
+                    <h2>
+
+                        HISTORIAL DE GASTOS
+
+                    </h2>
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+
+                                <th>FECHA</th>
+                                <th>PERSONA</th>
+                                <th>CANTIDAD</th>
+                                <th>OBSERVACIÓN</th>
+
+                            </tr>
+
+                        </thead>
+
+                        <tbody id="tbodyGastos">
+
+                        </tbody>
+
+                    </table>
+
+                </div>
 
             </div>
 
@@ -276,10 +334,7 @@
 
             </p>
 
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModal('modalGuardado')">
+            <button type="button" class="btn-principal" onclick="cerrarModal('modalGuardado')">
 
                 Aceptar
 
@@ -290,194 +345,175 @@
     </div>
 
     <!-- =========================
-     MODAL EDITAR
-========================= -->
+         MODAL EDITAR
+    ========================= -->
 
-<div
-    class="modal"
-    id="modalEditar"
->
+    <div class="modal" id="modalEditar">
 
-    <div class="modal-contenido modal-editar">
+        <div class="modal-contenido modal-editar">
 
-    <h2>
+            <h2>
 
-        Editar Presupuesto
+                Editar Presupuesto
 
-    </h2>
+            </h2>
 
-    <input
-        type="hidden"
-        id="editId"
-    >
+            <input type="hidden" id="editId">
 
-    <!-- PERIODO -->
+            <!-- PERIODO -->
 
-    <div class="fila-periodo">
+            <div class="fila-periodo">
 
-        <div class="campo-periodo">
+                <div class="campo-periodo">
 
-            <label>
+                    <label>
 
-                MES
+                        MES
 
-            </label>
+                    </label>
 
-            <select id="editMes">
+                    <select id="editMes">
 
-                <option value="ENERO">ENERO</option>
-                <option value="FEBRERO">FEBRERO</option>
-                <option value="MARZO">MARZO</option>
-                <option value="ABRIL">ABRIL</option>
-                <option value="MAYO">MAYO</option>
-                <option value="JUNIO">JUNIO</option>
-                <option value="JULIO">JULIO</option>
-                <option value="AGOSTO">AGOSTO</option>
-                <option value="SEPTIEMBRE">SEPTIEMBRE</option>
-                <option value="OCTUBRE">OCTUBRE</option>
-                <option value="NOVIEMBRE">NOVIEMBRE</option>
-                <option value="DICIEMBRE">DICIEMBRE</option>
+                        <option value="ENERO">ENERO</option>
+                        <option value="FEBRERO">FEBRERO</option>
+                        <option value="MARZO">MARZO</option>
+                        <option value="ABRIL">ABRIL</option>
+                        <option value="MAYO">MAYO</option>
+                        <option value="JUNIO">JUNIO</option>
+                        <option value="JULIO">JULIO</option>
+                        <option value="AGOSTO">AGOSTO</option>
+                        <option value="SEPTIEMBRE">SEPTIEMBRE</option>
+                        <option value="OCTUBRE">OCTUBRE</option>
+                        <option value="NOVIEMBRE">NOVIEMBRE</option>
+                        <option value="DICIEMBRE">DICIEMBRE</option>
 
-            </select>
+                    </select>
 
-        </div>
+                </div>
 
-        <div class="campo-periodo">
+                <div class="campo-periodo">
 
-            <label>
+                    <label>
 
-                AÑO
+                        AÑO
 
-            </label>
+                    </label>
 
-            <select id="editAnio">
+                    <select id="editAnio">
 
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
+                        <option value="2026">2026</option>
+                        <option value="2027">2027</option>
+                        <option value="2028">2028</option>
 
-            </select>
+                    </select>
+
+                </div>
+
+            </div>
+
+            <!-- INFO -->
+
+            <div class="edit-grid">
+
+                <div class="edit-info">
+
+                    <span>DISPONIBLE</span>
+
+                    <strong id="editDisponible">
+
+                        $0.00
+
+                    </strong>
+
+                </div>
+
+                <div class="edit-info">
+
+                    <span>GASTADO</span>
+
+                    <strong id="editGastado">
+
+                        $0.00
+
+                    </strong>
+
+                </div>
+
+                <div class="edit-info">
+
+                    <span>RESTANTE</span>
+
+                    <strong id="editRestante">
+
+                        $0.00
+
+                    </strong>
+
+                </div>
+
+                <div class="edit-info">
+
+                    <span>PDF ACTUAL</span>
+
+                    <strong id="editPDFActual">
+
+                        Sin PDF
+
+                    </strong>
+
+                </div>
+
+            </div>
+
+            <!-- SALDO -->
+
+            <div class="fila">
+
+                <label>
+
+                    SALDO MENSUAL
+
+                </label>
+
+                <input type="number" id="editSaldo">
+
+            </div>
+
+            <!-- PDF -->
+
+            <div class="fila">
+
+                <label>
+
+                    NUEVO OFICIO PDF
+
+                </label>
+
+                <input type="file" id="editPDF" accept=".pdf">
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="modal-botones">
+
+                <button type="button" class="btn-secundario" onclick="cerrarModalEditar()">
+
+                    Cancelar
+
+                </button>
+
+                <button type="button" class="btn-principal" id="btnActualizar">
+
+                    Guardar Cambios
+
+                </button>
+
+            </div>
 
         </div>
 
     </div>
-
-    <!-- INFO -->
-
-    <div class="edit-grid">
-
-        <div class="edit-info">
-
-            <span>DISPONIBLE</span>
-
-            <strong id="editDisponible">
-
-                $0.00
-
-            </strong>
-
-        </div>
-
-        <div class="edit-info">
-
-            <span>GASTADO</span>
-
-            <strong id="editGastado">
-
-                $0.00
-
-            </strong>
-
-        </div>
-
-        <div class="edit-info">
-
-            <span>RESTANTE</span>
-
-            <strong id="editRestante">
-
-                $0.00
-
-            </strong>
-
-        </div>
-
-        <div class="edit-info">
-
-            <span>PDF ACTUAL</span>
-
-            <strong id="editPDFActual">
-
-                Sin PDF
-
-            </strong>
-
-        </div>
-
-    </div>
-
-    <!-- SALDO -->
-
-    <div class="fila">
-
-        <label>
-
-            SALDO MENSUAL
-
-        </label>
-
-        <input
-            type="number"
-            id="editSaldo"
-        >
-
-    </div>
-
-    <!-- PDF -->
-
-    <div class="fila">
-
-        <label>
-
-            NUEVO OFICIO PDF
-
-        </label>
-
-        <input
-            type="file"
-            id="editPDF"
-            accept=".pdf"
-        >
-
-    </div>
-
-    <!-- BOTONES -->
-
-    <div class="modal-botones">
-
-        <button
-            type="button"
-            class="btn-secundario"
-            onclick="cerrarModalEditar()"
-        >
-
-            Cancelar
-
-        </button>
-
-        <button
-            type="button"
-            class="btn-principal"
-            id="btnActualizar"
-        >
-
-            Guardar Cambios
-
-        </button>
-
-    </div>
-
-</div>
 
     <!-- OVERLAY -->
 

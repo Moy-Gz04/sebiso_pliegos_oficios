@@ -1,3 +1,7 @@
+/* =========================
+   CONTENEDOR
+========================= */
+
 .contenedor-presupuesto{
 
     width:100%;
@@ -141,8 +145,9 @@
     margin-bottom:18px;
 }
 
-/* HACE QUE LABEL + INPUT
-   SE VEAN UNA SOLA PIEZA */
+/* =========================
+   LABELS
+========================= */
 
 .fila label{
 
@@ -170,6 +175,10 @@
 
     margin:0;
 }
+
+/* =========================
+   INPUTS
+========================= */
 
 .fila input,
 .fila select{
@@ -322,6 +331,65 @@ input[type="file"]::file-selector-button:hover{
 }
 
 /* =========================
+   TABS
+========================= */
+
+.tabs-tablas{
+
+    display:flex;
+
+    gap:12px;
+
+    margin-bottom:30px;
+}
+
+.tab-btn{
+
+    border:none;
+
+    height:42px;
+
+    padding:0 24px;
+
+    border-radius:12px;
+
+    background:#e5e7eb;
+
+    color:#374151;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.25s;
+}
+
+.tab-btn:hover{
+
+    background:#d1d5db;
+}
+
+.tab-btn.activo{
+
+    background:#7a0026;
+
+    color:white;
+}
+
+/* =========================
+   TABLA RESPONSIVE
+========================= */
+
+.tabla-responsive{
+
+    width:100%;
+
+    overflow-x:auto;
+}
+
+/* =========================
    TABLA
 ========================= */
 
@@ -330,6 +398,8 @@ input[type="file"]::file-selector-button:hover{
     width:100%;
 
     border-collapse:collapse;
+
+    min-width:800px;
 }
 
 .historial-container thead{
@@ -348,6 +418,8 @@ input[type="file"]::file-selector-button:hover{
     color:#374151;
 
     border-bottom:1px solid #e5e7eb;
+
+    white-space:nowrap;
 }
 
 .historial-container td{
@@ -398,9 +470,10 @@ input[type="file"]::file-selector-button:hover{
     gap:8px;
 }
 
-/* BOTONES MÁS PEQUEÑOS
-   Y BONITOS. Porque antes
-   parecían botones nucleares. */
+/* =========================
+   BOTONES
+========================= */
+
 .btn-editar,
 .btn-eliminar{
 
@@ -639,6 +712,22 @@ input[type="file"]::file-selector-button:hover{
 }
 
 /* =========================
+   SCROLL TABLA
+========================= */
+
+.tabla-responsive::-webkit-scrollbar{
+
+    height:10px;
+}
+
+.tabla-responsive::-webkit-scrollbar-thumb{
+
+    background:#d1d5db;
+
+    border-radius:20px;
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
@@ -702,7 +791,16 @@ input[type="file"]::file-selector-button:hover{
 
         grid-template-columns:1fr;
     }
+
+    .tabs-tablas{
+
+        flex-direction:column;
+    }
 }
+
+/* =========================
+   SELECT FLECHA
+========================= */
 
 .fila select{
 
