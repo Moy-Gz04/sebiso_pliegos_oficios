@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Control Presupuestal</title>
+
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/ssidebar.css">
+    <link rel="stylesheet" href="css/presupuestos.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenido">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="titulo-principal">
+
+                SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+
+            </div>
+
+            <div class="subtitulo">
+
+                CONTROL PRESUPUESTAL DE UNIDADES PRESUPUESTALES
+
+            </div>
+
+        </div>
+
+        <br><br>
+
+        <!-- CONTENEDOR -->
+
+        <div class="contenedor-presupuesto">
+
+            <!-- TOP -->
+
+            <div class="top-presupuesto">
+
+                <!-- ÁREA -->
+
+                <div class="fila">
+
+                    <label>
+
+                        ÁREA PRESUPUESTAL
+
+                    </label>
+
+                    <select id="selectArea">
+
+                        <option value="UP-01-DESPACHO">UP-01-DESPACHO</option>
+
+                        <option value="UP-01-C_A">UP-01-C_A</option>
+
+                        <option value="UP-01-S-DRM">UP-01-S-DRM</option>
+
+                        <option value="UP-04-DGFA">UP-04-DGFA</option>
+
+                        <option value="UP-05-Subse_I_D">UP-05-Subse_I_D</option>
+
+                        <option value="UP-06-DGOLP">UP-06-DGOLP</option>
+
+                        <option value="UP-07-MIGRANTES">UP-07-MIGRANTES</option>
+
+                        <option value="UP-08-ASISTENCIA">UP-08-ASISTENCIA</option>
+
+                        <option value="UP-13-SSPSyFA">UP-13-SSPSyFA</option>
+
+                        <option value="UP-14-DISCAPACIDAD">UP-14-DISCAPACIDAD</option>
+
+                        <option value="UP-15-SSDSyH">UP-15-SSDSyH</option>
+
+                        <option value="UP-16">UP-16</option>
+
+                    </select>
+
+                </div>
+
+                <!-- SALDO -->
+
+                <div class="saldo-card">
+
+                    <span>
+
+                        SALDO DISPONIBLE
+
+                    </span>
+
+                    <h2 id="saldoDisponible">
+
+                        $0.00
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <!-- FORMULARIO -->
+
+            <div class="form-presupuesto">
+
+                <!-- PERIODO -->
+
+                <div class="fila-periodo">
+
+                    <div class="campo-periodo">
+
+                        <label>
+
+                            MES
+
+                        </label>
+
+                        <select id="mesPresupuesto">
+
+                            <option value="ENERO">ENERO</option>
+                            <option value="FEBRERO">FEBRERO</option>
+                            <option value="MARZO">MARZO</option>
+                            <option value="ABRIL">ABRIL</option>
+                            <option value="MAYO">MAYO</option>
+                            <option value="JUNIO">JUNIO</option>
+                            <option value="JULIO">JULIO</option>
+                            <option value="AGOSTO">AGOSTO</option>
+                            <option value="SEPTIEMBRE">SEPTIEMBRE</option>
+                            <option value="OCTUBRE">OCTUBRE</option>
+                            <option value="NOVIEMBRE">NOVIEMBRE</option>
+                            <option value="DICIEMBRE">DICIEMBRE</option>
+
+                        </select>
+
+                    </div>
+
+                    <div class="campo-periodo">
+
+                        <label>
+
+                            AÑO
+
+                        </label>
+
+                        <select id="anioPresupuesto">
+
+                            <option value="2026">2026</option>
+                            <option value="2027">2027</option>
+                            <option value="2028">2028</option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+                <!-- SALDO -->
+
+                <div class="fila">
+
+                    <label>
+
+                        SALDO MENSUAL
+
+                    </label>
+
+                    <input
+                        type="number"
+                        id="saldoMensual"
+                        placeholder="Ingrese saldo mensual"
+                    >
+
+                </div>
+
+                <!-- OFICIO -->
+
+                <div class="fila">
+
+                    <label>
+
+                        OFICIO
+
+                    </label>
+
+                    <input
+                        type="file"
+                        id="oficioPDF"
+                        accept=".pdf"
+                    >
+
+                </div>
+
+                <!-- BOTÓN -->
+
+                <button
+                    type="button"
+                    id="btnGuardarPresupuesto"
+                >
+
+                    GUARDAR REGISTRO
+
+                </button>
+
+            </div>
+
+            <!-- HISTORIAL -->
+
+            <div class="historial-container">
+
+                <h2>
+
+                    HISTORIAL MENSUAL
+
+                </h2>
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th>MES</th>
+                            <th>DISPONIBLE</th>
+                            <th>GASTADO</th>
+                            <th>RESTANTE</th>
+                            <th>OFICIO</th>
+                            <th>ACCIONES</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tbodyHistorial">
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- MODAL -->
+
+    <div class="modal" id="modalGuardado">
+
+        <div class="modal-contenido">
+
+            <h2>
+
+                Registro guardado
+
+            </h2>
+
+            <p>
+
+                El presupuesto fue registrado correctamente.
+
+            </p>
+
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="cerrarModal('modalGuardado')">
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <div id="overlay"></div>
+
+    <!-- SCRIPTS -->
+
+    <script src="js/sidebar_CP.js"></script>
+    <script src="js/presupuestos_up-01.js"></script>
+
+</body>
+
+</html>
