@@ -33,7 +33,7 @@ const mapaPresupuestos = {
 };
 
 /* =========================
-   OBTENER REGISTROS
+   OBTENER GASTOS
 ========================= */
 
 router.get(
@@ -47,21 +47,31 @@ router.get(
             const { area } =
             req.params;
 
+            /* =========================
+               EXTRAER CLAVE
+            ========================= */
+
+            const clave =
+            area
+            .split('-')
+            .slice(0,2)
+            .join('-');
+
             const data =
             await pool.query(
 
                 `
                 SELECT *
 
-                FROM registros
+                FROM gastos
 
-                WHERE area LIKE $1
+                WHERE area = $1
 
                 ORDER BY fecha DESC
                 `,
                 [
 
-                    `${area}%`
+                    clave
 
                 ]
 
@@ -83,7 +93,7 @@ router.get(
 
                 ok:false,
 
-                msg:'Error obteniendo registros'
+                msg:'Error obteniendo gastos'
 
             });
 
@@ -339,12 +349,11 @@ router.post(
                     registro_id,
                     area,
                     persona,
-                    cantidad,
-                    fecha
+                    cantidad
 
                 )
 
-                VALUES($1,$2,$3,$4,$5,NOW())
+                VALUES($1,$2,$3,$4,$5)
                 `,
                 [
 
