@@ -55,7 +55,8 @@ router.get(
             area
             .split('-')
             .slice(0,2)
-            .join('-');
+            .join('-')
+            .trim();
 
             const data =
             await pool.query(
@@ -65,13 +66,13 @@ router.get(
 
                 FROM gastos
 
-                WHERE area = $1
+                WHERE TRIM(area) LIKE $1
 
                 ORDER BY fecha DESC
                 `,
                 [
 
-                    clave
+                    `${clave}%`
 
                 ]
 
