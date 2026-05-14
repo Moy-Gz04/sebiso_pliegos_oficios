@@ -335,16 +335,20 @@ router.post(
                 `
                 INSERT INTO gastos(
 
+                    presupuesto_id,
                     registro_id,
                     area,
                     persona,
-                    cantidad
+                    cantidad,
+                    fecha
 
                 )
 
-                VALUES($1,$2,$3,$4)
+                VALUES($1,$2,$3,$4,$5,NOW())
                 `,
                 [
+
+                    presupuesto.id,
 
                     registro.id,
 
