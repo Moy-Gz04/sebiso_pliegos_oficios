@@ -380,7 +380,7 @@ async function cargarHistorial(){
         const gastosRespuesta =
         await fetch(
 
-            `${API}/api/gastos/${area}`
+            `${API}/api/gastos/historial/${area}`
 
         );
 
@@ -451,6 +451,50 @@ function formatearFecha(fecha){
     .toLocaleString(
         "es-MX"
     );
+
+}
+
+/* =========================
+   TABS HISTORIAL
+========================= */
+
+function mostrarIngresos(){
+
+    document.getElementById(
+        "contenedorIngresos"
+    ).style.display = "block";
+
+    document.getElementById(
+        "contenedorGastos"
+    ).style.display = "none";
+
+    document.getElementById(
+        "btnIngresos"
+    ).classList.add("activo");
+
+    document.getElementById(
+        "btnGastos"
+    ).classList.remove("activo");
+
+}
+
+function mostrarGastos(){
+
+    document.getElementById(
+        "contenedorIngresos"
+    ).style.display = "none";
+
+    document.getElementById(
+        "contenedorGastos"
+    ).style.display = "block";
+
+    document.getElementById(
+        "btnGastos"
+    ).classList.add("activo");
+
+    document.getElementById(
+        "btnIngresos"
+    ).classList.remove("activo");
 
 }
 
