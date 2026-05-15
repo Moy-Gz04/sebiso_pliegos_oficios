@@ -385,10 +385,6 @@ input[type="file"]::file-selector-button:hover{
     transform:translateY(-1px);
 }
 
-/* =========================
-   TAB ACTIVO
-========================= */
-
 .tab-btn.activo{
 
     background:#d6c48a;
@@ -397,7 +393,7 @@ input[type="file"]::file-selector-button:hover{
 }
 
 /* =========================
-   TABLA RESPONSIVE
+   TABLA
 ========================= */
 
 .tabla-responsive{
@@ -408,10 +404,6 @@ input[type="file"]::file-selector-button:hover{
 
     border-radius:14px;
 }
-
-/* =========================
-   TABLA
-========================= */
 
 .historial-container table{
 
@@ -438,8 +430,6 @@ input[type="file"]::file-selector-button:hover{
     color:#374151;
 
     border-bottom:1px solid #e5e7eb;
-
-    white-space:normal;
 }
 
 .historial-container td{
@@ -453,8 +443,6 @@ input[type="file"]::file-selector-button:hover{
     color:#4b5563;
 
     font-size:13px;
-
-    white-space:normal;
 }
 
 .historial-container th,
@@ -570,83 +558,321 @@ input[type="file"]::file-selector-button:hover{
 
     position:fixed;
 
-    top:0;
+    inset:0;
 
-    left:0;
-
-    width:100%;
-
-    height:100%;
+    z-index:9999;
 
     justify-content:center;
 
     align-items:center;
 
-    z-index:9999;
+    padding:20px;
+
+    overflow-y:auto;
 }
+
+/* =========================
+   OVERLAY
+========================= */
+
+#overlay{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.55);
+
+    backdrop-filter:blur(5px);
+
+    z-index:9998;
+}
+
+/* =========================
+   CONTENIDO MODAL
+========================= */
 
 .modal-contenido{
 
-    width:750px;
+    width:100%;
 
-    max-width:95%;
+    max-width:720px;
 
-    background:white;
+    background:#ffffff;
 
-    border-radius:18px;
+    border-radius:24px;
 
-    padding:30px;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
+    padding:28px;
 
     position:relative;
 
     z-index:10000;
+
+    box-shadow:
+        0 25px 60px rgba(0,0,0,.25),
+        0 10px 25px rgba(0,0,0,.15);
+
+    animation:animModal .25s ease;
+
+    margin:auto;
 }
+
+/* =========================
+   ANIMACION
+========================= */
+
+@keyframes animModal{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(20px)
+            scale(.96);
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+    }
+}
+
+/* =========================
+   MODAL EDITAR
+========================= */
+
+.modal-editar{
+
+    width:100%;
+
+    max-width:720px;
+}
+
+/* =========================
+   TITULO
+========================= */
 
 .modal-contenido h2{
 
+    text-align:center;
+
+    font-size:30px;
+
+    font-weight:800;
+
     color:#111827;
 
-    margin-bottom:10px;
+    margin-bottom:25px;
 }
 
-.modal-contenido p{
+/* =========================
+   GRID INFO
+========================= */
 
-    color:#4b5563;
+.edit-grid{
 
-    font-size:14px;
+    display:grid;
+
+    grid-template-columns:1fr 1fr;
+
+    gap:14px;
+
+    margin-bottom:22px;
 }
 
-.modal-botones{
+.edit-info{
+
+    background:#f3f4f6;
+
+    border-radius:16px;
+
+    padding:18px;
+
+    min-height:95px;
 
     display:flex;
 
-    justify-content:flex-end;
+    flex-direction:column;
 
-    gap:12px;
+    justify-content:center;
 
-    margin-top:25px;
+    align-items:center;
+
+    text-align:center;
+}
+
+.edit-info span{
+
+    font-size:13px;
+
+    color:#6b7280;
+
+    margin-bottom:6px;
+
+    font-weight:500;
+}
+
+.edit-info strong{
+
+    font-size:16px;
+
+    color:#111827;
+
+    font-weight:800;
+}
+
+/* =========================
+   FILAS MODAL
+========================= */
+
+.modal-editar .fila{
+
+    display:flex;
+
+    align-items:stretch;
+
+    margin-bottom:16px;
+}
+
+/* =========================
+   LABEL MODAL
+========================= */
+
+.modal-editar .fila label{
+
+    width:220px;
+
+    min-width:220px;
+
+    min-height:52px;
+
+    background:#7a0026;
+
+    color:white;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    padding:10px 14px;
+
+    font-size:14px;
+
+    font-weight:700;
+
+    border-radius:14px 0 0 14px;
+
+    line-height:1.2;
+}
+
+/* =========================
+   INPUT MODAL
+========================= */
+
+.modal-editar .fila input,
+.modal-editar .fila select{
+
+    flex:1;
+
+    min-height:52px;
+
+    border:none;
+
+    background:#d6c48a;
+
+    padding:0 16px;
+
+    font-size:15px;
+
+    color:#111827;
+
+    outline:none;
+
+    border-radius:0 14px 14px 0;
+}
+
+/* =========================
+   FILE INPUT MODAL
+========================= */
+
+.modal-editar input[type="file"]{
+
+    padding:8px 12px !important;
+
+    display:flex;
+
+    align-items:center;
+}
+
+.modal-editar input[type="file"]::file-selector-button{
+
+    background:#7a0026;
+
+    color:white;
+
+    border:none;
+
+    height:38px;
+
+    padding:0 14px;
+
+    border-radius:8px;
+
+    cursor:pointer;
+
+    font-weight:700;
+
+    margin-right:12px;
+
+    transition:.25s;
+}
+
+.modal-editar input[type="file"]::file-selector-button:hover{
+
+    background:#5c001d;
 }
 
 /* =========================
    BOTONES MODAL
 ========================= */
 
-.btn-principal,
-.btn-secundario{
+.modal-botones{
+
+    display:flex;
+
+    gap:14px;
+
+    margin-top:25px;
+}
+
+.modal-botones button{
+
+    flex:1;
+
+    height:50px;
 
     border:none;
 
-    padding:12px 18px;
+    border-radius:14px;
 
-    border-radius:10px;
+    font-size:15px;
+
+    font-weight:700;
 
     cursor:pointer;
 
-    font-weight:600;
-
-    transition:.3s;
+    transition:.25s;
 }
 
 .btn-principal{
@@ -659,6 +885,8 @@ input[type="file"]::file-selector-button:hover{
 .btn-principal:hover{
 
     background:#5c001d;
+
+    transform:translateY(-2px);
 }
 
 .btn-secundario{
@@ -674,82 +902,10 @@ input[type="file"]::file-selector-button:hover{
 }
 
 /* =========================
-   OVERLAY
-========================= */
-
-#overlay{
-
-    display:none;
-
-    position:fixed;
-
-    top:0;
-
-    left:0;
-
-    width:100%;
-
-    height:100%;
-
-    background:rgba(0,0,0,.4);
-
-    z-index:9998;
-}
-
-/* =========================
-   MODAL EDITAR
-========================= */
-
-.modal-editar{
-
-    width:850px;
-
-    max-width:95%;
-}
-
-.edit-grid{
-
-    display:grid;
-
-    grid-template-columns:1fr 1fr;
-
-    gap:15px;
-
-    margin-bottom:25px;
-}
-
-.edit-info{
-
-    background:#f3f4f6;
-
-    border-radius:12px;
-
-    padding:15px;
-}
-
-.edit-info span{
-
-    display:block;
-
-    font-size:12px;
-
-    color:#6b7280;
-
-    margin-bottom:5px;
-}
-
-.edit-info strong{
-
-    font-size:16px;
-
-    color:#111827;
-}
-
-/* =========================
    RESPONSIVE
 ========================= */
 
-@media(max-width:900px){
+@media(max-width:768px){
 
     .top-presupuesto{
 
@@ -802,11 +958,6 @@ input[type="file"]::file-selector-button:hover{
         flex-direction:column;
     }
 
-    .modal-contenido{
-
-        width:95%;
-    }
-
     .edit-grid{
 
         grid-template-columns:1fr;
@@ -835,6 +986,46 @@ input[type="file"]::file-selector-button:hover{
         font-size:11px;
 
         padding:0 10px;
+    }
+
+    .modal{
+
+        padding:12px;
+    }
+
+    .modal-contenido{
+
+        padding:20px;
+    }
+
+    .modal-contenido h2{
+
+        font-size:24px;
+    }
+
+    .modal-editar .fila{
+
+        flex-direction:column;
+    }
+
+    .modal-editar .fila label{
+
+        width:100%;
+
+        min-width:100%;
+
+        border-radius:14px 14px 0 0;
+    }
+
+    .modal-editar .fila input,
+    .modal-editar .fila select{
+
+        border-radius:0 0 14px 14px;
+    }
+
+    .modal-botones{
+
+        flex-direction:column;
     }
 }
 
