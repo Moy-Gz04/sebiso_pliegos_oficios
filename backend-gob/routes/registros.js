@@ -30,7 +30,12 @@ router.get('/:area', async (req, res) => {
 
                     ELSE false
 
-                END AS pagado
+                END AS pagado,
+
+                COALESCE(
+                    g.cantidad,
+                    0
+                ) AS cantidad_pagada
 
             FROM registros r
 
@@ -40,7 +45,11 @@ router.get('/:area', async (req, res) => {
 
             WHERE r.area = $1
 
-            ORDER BY r.fecha DESC
+            ORDER BY
+
+                pagado ASC,
+
+                r.fecha DESC
             `,
 
             [area]
