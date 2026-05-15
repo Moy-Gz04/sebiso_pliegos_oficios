@@ -213,10 +213,8 @@ btnGuardar.addEventListener(
             if(!data.ok){
 
                 alert(
-
                     data.msg ||
                     "Error al guardar"
-
                 );
 
                 return;
@@ -301,13 +299,7 @@ async function cargarHistorial(){
 
         let ultimoSaldo = data.length
 
-            ?
-
-            (
-                parseFloat(data[0].saldo_autorizado || 0)
-                +
-                parseFloat(data[0].saldo_modificado || 0)
-            )
+            ? data[0].saldo_restante
 
             : 0;
 
@@ -342,11 +334,7 @@ async function cargarHistorial(){
                     <td>
 
                         $${parseFloat(
-                            (
-                                parseFloat(registro.saldo_autorizado || 0)
-                                +
-                                parseFloat(registro.saldo_modificado || 0)
-                            )
+                            registro.saldo_disponible || 0
                         ).toFixed(2)}
 
                     </td>
@@ -433,200 +421,11 @@ async function cargarHistorial(){
                 ultimoSaldo || 0
             ).toFixed(2)}`;
 
-        /* =========================
-           GASTOS
-        ========================= */
-
-        tbodyGastos.innerHTML = "";
-
-        const gastosRespuesta =
-        await fetch(
-
-            `${API}/api/gastos/${area}`
-
-        );
-
-        const gastos =
-        await gastosRespuesta.json();
-
-        if(Array.isArray(gastos)){
-
-            gastos.forEach((gasto) => {
-
-                tbodyGastos.innerHTML += `
-
-                    <tr>
-
-                        <td>
-
-                            ${formatearFecha(
-                                gasto.fecha
-                            )}
-
-                        </td>
-
-                        <td>
-
-                            ${gasto.persona}
-
-                        </td>
-
-                        <td>
-
-                            $${parseFloat(
-                                gasto.cantidad || 0
-                            ).toFixed(2)}
-
-                        </td>
-
-                        <td>
-
-                            ${
-                                gasto.observacion ||
-
-                                'Sin observación'
-                            }
-
-                        </td>
-
-                    </tr>
-
-                `;
-
-            });
-
-        }
-
     }
 
     catch(error){
 
         console.log(error);
-
-    }
-
-}
-
-/* =========================
-   FORMATEAR FECHA
-========================= */
-
-function formatearFecha(fecha){
-
-    return new Date(fecha)
-    .toLocaleString(
-        "es-MX"
-    );
-
-}
-
-/* =========================
-   TABS HISTORIAL
-========================= */
-
-function mostrarIngresos(){
-
-    document.getElementById(
-        "contenedorIngresos"
-    ).style.display = "block";
-
-    document.getElementById(
-        "contenedorGastos"
-    ).style.display = "none";
-
-    document.getElementById(
-        "btnIngresos"
-    ).classList.add("activo");
-
-    document.getElementById(
-        "btnGastos"
-    ).classList.remove("activo");
-
-}
-
-function mostrarGastos(){
-
-    document.getElementById(
-        "contenedorIngresos"
-    ).style.display = "none";
-
-    document.getElementById(
-        "contenedorGastos"
-    ).style.display = "block";
-
-    document.getElementById(
-        "btnGastos"
-    ).classList.add("activo");
-
-    document.getElementById(
-        "btnIngresos"
-    ).classList.remove("activo");
-
-}
-
-/* =========================
-   ELIMINAR
-========================= */
-
-async function eliminarRegistro(id){
-
-    const confirmar =
-    confirm(
-        "¿Eliminar registro?"
-    );
-
-    if(!confirmar){
-
-        return;
-
-    }
-
-    try{
-
-        const respuesta =
-        await fetch(
-
-            `${API}/api/presupuestos/${id}`,
-
-            {
-
-                method:"DELETE"
-
-            }
-
-        );
-
-        const data =
-        await respuesta.json();
-
-        if(data.ok){
-
-            alert(
-                "Registro eliminado"
-            );
-
-            cargarHistorial();
-
-        }
-
-        else{
-
-            alert(
-                data.msg ||
-                "Error eliminando"
-            );
-
-        }
-
-    }
-
-    catch(error){
-
-        console.log(error);
-
-        alert(
-            "Error servidor"
-        );
 
     }
 
@@ -698,66 +497,70 @@ async function editarRegistro(id){
             "editDisponible"
         ).innerHTML =
         `$${parseFloat(
-            (
-                parseFloat(registro.saldo_autorizado || 0)
-                +
-                parseFloat(registro.saldo_modificado || 0)
-            )
+            registro.saldo_disponible || 0
         ).toFixed(2)}`;
 
         document.getElementById(
-            "editPDFActual"
+            "editGastado"
+        ).innerHTML =
+        `$${parseFloat(
+            registro.gastado_mes || 0
+        ).toFixed(2)}`;
+
+        document.getElementById(
+            "editRestante"
+        ).innerHTML =
+        `$${parseFloat(
+            registro.saldo_restante || 0
+        ).toFixed(2)}`;
+
+        document.getElementById(
+            "editPDFAutorizacionActual"
         ).innerHTML =
 
+            registro.oficio_autorizacion
+
+            ?
+
             `
-            <div style="display:flex; flex-direction:column; gap:8px;">
+            <a
+                href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
+                target="_blank"
+                class="btn-pdf"
+            >
 
-                ${
-                    registro.oficio_autorizacion
+                Ver PDF
 
-                    ?
+            </a>
+            `
 
-                    `
-                    <a
-                        href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
-                        target="_blank"
-                        class="btn-pdf"
-                    >
+            :
 
-                        Ver Oficio Autorización
+            'Sin PDF';
 
-                    </a>
-                    `
+        document.getElementById(
+            "editPDFAdecuacionActual"
+        ).innerHTML =
 
-                    :
+            registro.oficio_adecuacion
 
-                    'Sin Oficio Autorización'
-                }
+            ?
 
-                ${
-                    registro.oficio_adecuacion
+            `
+            <a
+                href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
+                target="_blank"
+                class="btn-pdf"
+            >
 
-                    ?
+                Ver PDF
 
-                    `
-                    <a
-                        href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
-                        target="_blank"
-                        class="btn-pdf"
-                    >
+            </a>
+            `
 
-                        Ver Oficio Adecuación
+            :
 
-                    </a>
-                    `
-
-                    :
-
-                    'Sin Oficio Adecuación'
-                }
-
-            </div>
-            `;
+            'Sin PDF';
 
         document.getElementById(
             "modalEditar"
@@ -943,6 +746,131 @@ document.getElementById(
     }
 
 );
+
+/* =========================
+   ELIMINAR
+========================= */
+
+async function eliminarRegistro(id){
+
+    const confirmar =
+    confirm(
+        "¿Eliminar registro?"
+    );
+
+    if(!confirmar){
+
+        return;
+
+    }
+
+    try{
+
+        const respuesta =
+        await fetch(
+
+            `${API}/api/presupuestos/${id}`,
+
+            {
+
+                method:"DELETE"
+
+            }
+
+        );
+
+        const data =
+        await respuesta.json();
+
+        if(data.ok){
+
+            alert(
+                "Registro eliminado"
+            );
+
+            cargarHistorial();
+
+        }
+
+        else{
+
+            alert(
+                data.msg ||
+                "Error eliminando"
+            );
+
+        }
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        alert(
+            "Error servidor"
+        );
+
+    }
+
+}
+
+/* =========================
+   FORMATEAR FECHA
+========================= */
+
+function formatearFecha(fecha){
+
+    return new Date(fecha)
+    .toLocaleString(
+        "es-MX"
+    );
+
+}
+
+/* =========================
+   TABS
+========================= */
+
+function mostrarIngresos(){
+
+    document.getElementById(
+        "contenedorIngresos"
+    ).style.display = "block";
+
+    document.getElementById(
+        "contenedorGastos"
+    ).style.display = "none";
+
+    document.getElementById(
+        "btnIngresos"
+    ).classList.add("activo");
+
+    document.getElementById(
+        "btnGastos"
+    ).classList.remove("activo");
+
+}
+
+function mostrarGastos(){
+
+    document.getElementById(
+        "contenedorIngresos"
+    ).style.display = "none";
+
+    document.getElementById(
+        "contenedorGastos"
+    ).style.display = "block";
+
+    document.getElementById(
+        "btnGastos"
+    ).classList.add("activo");
+
+    document.getElementById(
+        "btnIngresos"
+    ).classList.remove("activo");
+
+}
 
 /* =========================
    CAMBIO ÁREA
