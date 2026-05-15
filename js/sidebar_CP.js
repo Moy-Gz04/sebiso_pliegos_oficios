@@ -4,7 +4,7 @@ window.location.pathname
 .pop();
 
 /* =========================
-   ARCHIVOS UP-01
+   ARCHIVOS
 ========================= */
 
 const PAGINA_INICIO =
@@ -12,6 +12,9 @@ const PAGINA_INICIO =
 
 const PAGINA_REGISTROS =
 'G-U-P.html';
+
+const PAGINA_PAGOS =
+'G.html';
 
 /* =========================
    SIDEBAR
@@ -40,6 +43,8 @@ document.getElementById(
 
         <nav class="sidebar-menu">
 
+            <!-- PRESUPUESTOS -->
+
             <button
                 type="button"
                 class="menu-btn ${
@@ -56,6 +61,8 @@ document.getElementById(
 
             </button>
 
+            <!-- PLIEGOS -->
+
             <button
                 type="button"
                 class="menu-btn ${
@@ -69,6 +76,24 @@ document.getElementById(
                 ">
 
                 Pliegos
+
+            </button>
+
+            <!-- PAGOS REALIZADOS -->
+
+            <button
+                type="button"
+                class="menu-btn ${
+                    paginaActual === PAGINA_PAGOS
+                    ? "activo"
+                    : ""
+                }"
+
+                onclick="
+                    window.location.href='${PAGINA_PAGOS}'
+                ">
+
+                Pagos Realizados
 
             </button>
 

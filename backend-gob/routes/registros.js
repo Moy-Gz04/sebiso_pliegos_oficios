@@ -165,7 +165,7 @@ router.delete('/:id', async (req, res) => {
 
             `
             DELETE FROM registros
-            WHERE codigo = $1
+            WHERE id = $1
             `,
 
             [id]
