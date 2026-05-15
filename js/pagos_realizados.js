@@ -57,16 +57,27 @@ async function cargarPagados(){
         const data =
         await respuesta.json();
 
+        console.log(data);
+
         /* =========================
            SOLO PAGADOS
         ========================= */
 
         registrosPagados =
 
-            data.filter(
+            data.filter((registro) => {
 
-                registro => registro.pagado
-            );
+                return (
+
+                    registro.pagado == true ||
+
+                    registro.pagado == "true" ||
+
+                    registro.pagado == 1
+
+                );
+
+            });
 
         pintarTabla(
             registrosPagados
@@ -126,13 +137,13 @@ function pintarTabla(registros){
 
                 <td>
 
-                    ${registro.codigo}
+                    ${registro.codigo || '-'}
 
                 </td>
 
                 <td>
 
-                    ${registro.persona}
+                    ${registro.persona || '-'}
 
                 </td>
 
@@ -146,29 +157,49 @@ function pintarTabla(registros){
 
                 <td>
 
-                    <a
-                        href="${registro.oficio_pdf}"
-                        target="_blank"
-                        class="btn-pdf"
-                    >
+                    ${
+                        registro.oficio_pdf
 
-                        Ver Oficio
+                        ?
 
-                    </a>
+                        `<a
+                            href="${registro.oficio_pdf}"
+                            target="_blank"
+                            class="btn-pdf"
+                        >
+
+                            Ver Oficio
+
+                        </a>`
+
+                        :
+
+                        'Sin PDF'
+                    }
 
                 </td>
 
                 <td>
 
-                    <a
-                        href="${registro.pliego_pdf}"
-                        target="_blank"
-                        class="btn-pdf"
-                    >
+                    ${
+                        registro.pliego_pdf
 
-                        Ver Pliego
+                        ?
 
-                    </a>
+                        `<a
+                            href="${registro.pliego_pdf}"
+                            target="_blank"
+                            class="btn-pdf"
+                        >
+
+                            Ver Pliego
+
+                        </a>`
+
+                        :
+
+                        'Sin PDF'
+                    }
 
                 </td>
 
@@ -257,6 +288,12 @@ inputBusqueda.addEventListener(
 ========================= */
 
 function formatearFecha(fecha){
+
+    if(!fecha){
+
+        return '-';
+
+    }
 
     return new Date(fecha)
     .toLocaleString(

@@ -43,7 +43,7 @@ router.get('/:area', async (req, res) => {
 
             ON g.registro_id = r.id
 
-            WHERE r.area = $1
+            WHERE TRIM(r.area) LIKE $1
 
             ORDER BY
 
@@ -52,7 +52,11 @@ router.get('/:area', async (req, res) => {
                 r.fecha DESC
             `,
 
-            [area]
+            [
+
+                `${area}%`
+
+            ]
 
         );
 
