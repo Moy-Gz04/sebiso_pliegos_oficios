@@ -1,0 +1,217 @@
+*{
+
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+
+    background:#f4f6f9;
+}
+
+.contenido{
+
+    padding:30px;
+}
+
+.topbar{
+
+    width:100%;
+    background:#fff;
+    border-radius:15px;
+    padding:25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.titulo-principal{
+
+    font-size:24px;
+    font-weight:bold;
+    color:#222;
+}
+
+.subtitulo{
+
+    margin-top:8px;
+    color:#666;
+}
+
+.contenedor-presupuesto{
+
+    margin-top:25px;
+    background:#fff;
+    border-radius:20px;
+    padding:25px;
+    box-shadow:0 2px 10px rgba(0,0,0,.08);
+}
+
+.top-presupuesto{
+
+    display:flex;
+    justify-content:space-between;
+    align-items:end;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.fila{
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.fila label{
+
+    font-size:14px;
+    font-weight:bold;
+    color:#444;
+}
+
+.fila input,
+select{
+
+    height:45px;
+    border:1px solid #dcdcdc;
+    border-radius:10px;
+    padding:0 15px;
+    background:#fff;
+}
+
+.saldo-card{
+
+    min-width:260px;
+    background:#0f172a;
+    color:#fff;
+    padding:20px;
+    border-radius:18px;
+}
+
+.saldo-card span{
+
+    font-size:13px;
+    opacity:.8;
+}
+
+.saldo-card h2{
+
+    margin-top:10px;
+    font-size:32px;
+}
+
+.filtros-container{
+
+    margin-top:30px;
+}
+
+.fila-periodo{
+
+    display:flex;
+    gap:20px;
+    flex-wrap:wrap;
+}
+
+.campo-periodo{
+
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+}
+
+.cards-resumen{
+
+    margin-top:30px;
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:20px;
+}
+
+.card-resumen{
+
+    background:#f8fafc;
+    border:1px solid #e2e8f0;
+    border-radius:16px;
+    padding:20px;
+}
+
+.card-resumen span{
+
+    display:block;
+    color:#666;
+    margin-bottom:10px;
+}
+
+.card-resumen strong{
+
+    font-size:26px;
+    color:#111;
+}
+
+.historial-container{
+
+    margin-top:40px;
+}
+
+.tabs-tablas{
+
+    display:flex;
+    gap:15px;
+    margin-bottom:25px;
+}
+
+.tab-btn{
+
+    border:none;
+    padding:14px 22px;
+    border-radius:12px;
+    background:#e5e7eb;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.tab-btn.activo{
+
+    background:#0f172a;
+    color:#fff;
+}
+
+.tabla-responsive{
+
+    width:100%;
+    overflow:auto;
+}
+
+table{
+
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+
+thead{
+
+    background:#0f172a;
+    color:#fff;
+}
+
+th,
+td{
+
+    padding:15px;
+    text-align:left;
+    border-bottom:1px solid #ececec;
+}
+
+tbody tr:hover{
+
+    background:#f8fafc;
+}
+
+a{
+
+    color:#2563eb;
+    text-decoration:none;
+    font-weight:bold;
+}

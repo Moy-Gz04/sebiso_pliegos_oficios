@@ -1,0 +1,105 @@
+/* =========================
+   ESTATUS
+========================= */
+
+.badge-estatus{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    padding:7px 16px;
+
+    border-radius:20px;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    background:transparent;
+
+    border:2px solid;
+
+    min-width:100px;
+}
+
+/* CREADO */
+
+.badge-creado{
+
+    color:#f39c12;
+
+    border-color:#f39c12;
+}
+
+/* ENVIADO */
+
+.badge-enviado{
+
+    color:#1976d2;
+
+    border-color:#1976d2;
+}
+
+/* ACEPTADO */
+
+.badge-aceptado{
+
+    color:#2e7d32;
+
+    border-color:#2e7d32;
+}
+
+/* RECHAZADO */
+
+.badge-rechazado{
+
+    color:#c62828;
+
+    border-color:#c62828;
+}
+
+/* =========================
+   OBSERVACIONES
+========================= */
+
+.textarea-observaciones{
+
+    width:220px;
+
+    min-height:70px;
+
+    resize:none;
+
+    border:1px solid #cdbb86;
+
+    background:#f8f5ed;
+
+    border-radius:12px;
+
+    padding:10px 12px;
+
+    font-size:11px;
+
+    color:#333;
+
+    outline:none;
+
+    transition:.2s;
+
+    line-height:1.4;
+}
+
+.textarea-observaciones:focus{
+
+    border-color:#6A1028;
+
+    background:white;
+}
+
+.textarea-observaciones::placeholder{
+
+    color:#8a8a8a;
+}

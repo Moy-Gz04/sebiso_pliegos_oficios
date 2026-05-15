@@ -70,6 +70,7 @@ router.get(
 
                 ORDER BY fecha DESC
                 `,
+
                 [
 
                     `${clave}%`
@@ -114,7 +115,16 @@ router.post(
 
     async(req, res) => {
 
+        const client =
+        await pool.connect();
+
         try{
+
+            await client.query(
+
+                'BEGIN'
+
+            );
 
             const {
 
@@ -123,6 +133,10 @@ router.post(
 
             } = req.body;
 
+            /* =========================
+               VALIDAR CAMPOS
+            ========================= */
+
             if(
 
                 !registro_id ||
@@ -130,6 +144,10 @@ router.post(
                 !cantidad
 
             ){
+
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return res.status(400)
                 .json({
@@ -145,7 +163,23 @@ router.post(
             const monto =
             parseFloat(cantidad);
 
-            if(monto <= 0){
+            /* =========================
+               VALIDAR MONTO
+            ========================= */
+
+            if(
+
+                isNaN(monto)
+
+                ||
+
+                monto <= 0
+
+            ){
+
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return res.status(400)
                 .json({
@@ -163,13 +197,14 @@ router.post(
             ========================= */
 
             const existe =
-            await pool.query(
+            await client.query(
 
                 `
                 SELECT *
                 FROM registros
                 WHERE id = $1
                 `,
+
                 [
 
                     registro_id
@@ -183,6 +218,10 @@ router.post(
                 existe.rows.length === 0
 
             ){
+
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return res.status(404)
                 .json({
@@ -199,6 +238,74 @@ router.post(
             existe.rows[0];
 
             /* =========================
+               VALIDAR ESTATUS
+            ========================= */
+
+            if(
+
+                registro.estatus !== 'Enviado'
+
+            ){
+
+                await client.query(
+                    'ROLLBACK'
+                );
+
+                return res.status(400)
+                .json({
+
+                    ok:false,
+
+                    msg:'El registro no está disponible para pago'
+
+                });
+
+            }
+
+            /* =========================
+               VALIDAR DOBLE PAGO
+            ========================= */
+
+            const yaPagado =
+            await client.query(
+
+                `
+                SELECT id
+                FROM gastos
+                WHERE registro_id = $1
+                LIMIT 1
+                `,
+
+                [
+
+                    registro_id
+
+                ]
+
+            );
+
+            if(
+
+                yaPagado.rows.length > 0
+
+            ){
+
+                await client.query(
+                    'ROLLBACK'
+                );
+
+                return res.status(400)
+                .json({
+
+                    ok:false,
+
+                    msg:'Este registro ya fue pagado'
+
+                });
+
+            }
+
+            /* =========================
                ÁREA PRESUPUESTAL
             ========================= */
 
@@ -208,6 +315,10 @@ router.post(
             ];
 
             if(!areaPresupuestal){
+
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return res.status(400)
                 .json({
@@ -225,7 +336,7 @@ router.post(
             ========================= */
 
             const presupuestoQuery =
-            await pool.query(
+            await client.query(
 
                 `
                 SELECT
@@ -265,6 +376,7 @@ router.post(
 
                 LIMIT 1
                 `,
+
                 [
 
                     areaPresupuestal
@@ -278,6 +390,10 @@ router.post(
                 presupuestoQuery.rows.length === 0
 
             ){
+
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return res.status(404)
                 .json({
@@ -299,10 +415,16 @@ router.post(
 
             const saldoActual =
             parseFloat(
+
                 presupuesto.saldo_restante
+
             );
 
             if(monto > saldoActual){
+
+                await client.query(
+                    'ROLLBACK'
+                );
 
                 return res.status(400)
                 .json({
@@ -338,10 +460,10 @@ router.post(
                 monto;
 
             /* =========================
-               GUARDAR GASTO
+               INSERTAR GASTO
             ========================= */
 
-            await pool.query(
+            await client.query(
 
                 `
                 INSERT INTO gastos(
@@ -356,6 +478,7 @@ router.post(
 
                 VALUES($1,$2,$3,$4,$5)
                 `,
+
                 [
 
                     presupuesto.id,
@@ -376,7 +499,7 @@ router.post(
                ACTUALIZAR PRESUPUESTO
             ========================= */
 
-            await pool.query(
+            await client.query(
 
                 `
                 UPDATE presupuestos_mensuales
@@ -389,6 +512,7 @@ router.post(
 
                 WHERE id = $3
                 `,
+
                 [
 
                     nuevoGastado,
@@ -398,6 +522,42 @@ router.post(
                     presupuesto.id
 
                 ]
+
+            );
+
+            /* =========================
+               ACTUALIZAR ESTATUS
+            ========================= */
+
+            await client.query(
+
+                `
+                UPDATE registros
+
+                SET
+
+                    estatus = 'Aceptado',
+
+                    fecha_revision = NOW()
+
+                WHERE id = $1
+                `,
+
+                [
+
+                    registro.id
+
+                ]
+
+            );
+
+            /* =========================
+               COMMIT
+            ========================= */
+
+            await client.query(
+
+                'COMMIT'
 
             );
 
@@ -425,6 +585,10 @@ router.post(
 
         catch(error){
 
+            await client.query(
+                'ROLLBACK'
+            );
+
             console.log(error);
 
             res.status(500).json({
@@ -434,6 +598,12 @@ router.post(
                 msg:'Error registrando gasto'
 
             });
+
+        }
+
+        finally{
+
+            client.release();
 
         }
 

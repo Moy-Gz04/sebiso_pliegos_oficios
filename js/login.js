@@ -48,7 +48,7 @@ async function login(){
             // REDIRECCIÓN
 
             window.location.href =
-            `${data.area}.html`;
+            `p-up/${data.area}.html`;
 
         }
 

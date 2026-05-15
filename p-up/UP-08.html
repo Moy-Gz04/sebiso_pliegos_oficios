@@ -1,0 +1,425 @@
+<script>
+
+const token = localStorage.getItem('token');
+
+const area = localStorage.getItem('area');
+
+if(!token){
+
+    window.location.href = 'index.html';
+
+}
+
+if(area !== 'UP-08'){
+
+    window.location.href = 'index.html';
+
+}
+
+</script>
+
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Generar Pliegos</title>
+
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/ssidebar.css">
+
+</head>
+
+<body>
+
+  <!-- SIDEBAR -->
+
+  <div id="sidebar-container"></div>
+
+  <!-- CONTENIDO -->
+
+  <div class="contenido">
+
+    <!-- TOPBAR -->
+
+    <div class="topbar">
+
+      <div class="titulo-principal">
+        SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+      </div>
+
+      <div class="subtitulo">
+        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP_08 - ASISTENCIA
+      </div>
+
+    </div>
+
+    <br><br>
+
+    <!-- FORMULARIO -->
+
+    <form id="formulario"
+      action="https://script.google.com/macros/s/AKfycbwfeLpwaL14GopoqlC_SvBMK5Z4VHIyj6IKrgNtOGRbdW7Xhu3VHux1zDGAcCJYx68p/exec"
+      method="POST">
+
+      <div class="contenedor">
+
+        <!-- PANEL IZQUIERDO -->
+
+        <div class="panel-izquierdo">
+
+          <table class="tabla-personas">
+
+            <thead>
+
+              <tr>
+                <th>Nombre</th>
+                <th>Selección</th>
+              </tr>
+
+            </thead>
+
+            <tbody id="listaPersonas"></tbody>
+
+          </table>
+
+        </div>
+
+        <!-- PANEL DERECHO -->
+
+        <div class="panel-derecho">
+
+          <!-- ZONA -->
+
+          <div class="fila">
+
+            <label>ZONA Y TARIFA</label>
+
+            <div class="grupo-flex">
+
+              <select id="zona" name="zona">
+              </select>
+
+            </div>
+
+          </div>
+
+          <!-- MUNICIPIO -->
+
+          <div class="fila">
+
+            <label>MUNICIPIO</label>
+
+            <input type="text" name="municipio" placeholder="Municipio" required>
+
+          </div>
+
+          <!-- DÍA -->
+
+          <div class="fila">
+
+            <label>DÍA</label>
+
+            <div class="grupo-flex">
+
+              <div class="campo-mini">
+
+                <span>Día Inicio</span>
+
+                <select id="diaInicio" name="diaInicio">
+                </select>
+
+              </div>
+
+              <div class="campo-mini">
+
+                <span>Día Fin</span>
+
+                <select id="diaFin" name="diaFin">
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- MES -->
+
+          <div class="fila">
+
+            <label>MES</label>
+
+            <div class="grupo-flex">
+
+              <select id="mes" name="mes">
+              </select>
+
+            </div>
+
+          </div>
+
+          <!-- MOTIVO -->
+
+          <div class="fila">
+
+            <label>
+              MOTIVO DE LA COMISIÓN
+            </label>
+
+            <textarea name="motivo" required></textarea>
+
+          </div>
+
+          <!-- ACTIVIDADES -->
+
+          <div class="fila">
+
+            <label>
+              REPORTE DE ACTIVIDADES
+            </label>
+
+            <textarea name="actividades" required></textarea>
+
+          </div>
+
+          <!-- LOCALIDADES -->
+
+          <div class="fila">
+
+            <label>
+              LOCALIDADES VISITADAS
+            </label>
+
+            <textarea name="localidades" required></textarea>
+
+          </div>
+
+          <!-- FECHA -->
+
+          <div class="fila">
+
+            <label>FECHA OFICIO</label>
+
+            <div class="grupo-flex">
+
+              <div class="campo-mini">
+
+                <span>Día</span>
+
+                <select id="diaF" name="diaF">
+                </select>
+
+              </div>
+
+              <div class="campo-mini">
+
+                <span>Mes</span>
+
+                <select id="mesF" name="mesF">
+                </select>
+
+              </div>
+
+              <div class="campo-mini">
+
+                <span>Año</span>
+
+                <select id="anoF" name="anoF">
+                </select>
+
+              </div>
+
+            </div>
+
+          </div>
+
+          <!-- BOTÓN -->
+
+          <button type="button" id="btnEnviar">
+
+            GENERAR PLIEGOS
+
+          </button>
+
+          <!-- LOADER -->
+
+          <div id="loader">
+            Generando PDFs...
+          </div>
+
+          <div id="estado"></div>
+
+        </div>
+
+      </div>
+
+    </form>
+
+    <!-- TABLA RESULTADOS -->
+
+    <table id="tablaResultados" style="display:none;">
+
+      <tr>
+
+        <th>ID</th>
+
+        <th>Persona</th>
+
+        <th>Fecha y Hora</th>
+
+        <th>Oficio PDF</th>
+
+        <th>Pliego PDF</th>
+
+      </tr>
+
+      <tbody id="tbodyResultados"></tbody>
+
+    </table>
+
+  </div>
+
+  <!-- SCRIPTS -->
+
+
+  <!-- =========================
+     MODAL CONFIRMACIÓN
+========================= -->
+
+  <div class="modal" id="modalConfirmacion">
+
+    <div class="modal-contenido">
+
+      <h2>
+        ¿Seguro que deseas generar los PDFs?
+      </h2>
+
+      <p>
+        Se generarán los oficios y pliegos seleccionados.
+      </p>
+
+      <div class="modal-botones">
+
+        <button type="button" class="btn-secundario" onclick="cerrarModal('modalConfirmacion')">
+
+          Cancelar
+
+        </button>
+
+        <button type="button" class="btn-principal" id="confirmarGeneracion">
+
+          Generar
+
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+     MODAL CARGANDO
+========================= -->
+
+  <div class="modal" id="modalCarga">
+
+    <div class="modal-contenido modal-carga">
+
+      <h2>Generando PDFs...</h2>
+
+      <p>
+        Espere un momento
+      </p>
+
+      <div class="barra-carga">
+
+        <div class="barra-progreso"></div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+     MODAL ÉXITO
+========================= -->
+
+  <div class="modal" id="modalExito">
+
+    <div class="modal-contenido">
+
+      <h2>
+        PDFs generados correctamente
+      </h2>
+
+      <p>
+        Los documentos ya están disponibles.
+      </p>
+
+      <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
+
+        Aceptar
+
+      </button>
+
+    </div>
+
+  </div>
+
+  <!-- =========================
+     MODAL LOGOUT
+========================= -->
+
+<div class="modal" id="modalLogout">
+
+    <div class="modal-contenido">
+
+        <h2>
+            ¿Cerrar sesión?
+        </h2>
+
+        <p>
+            Se cerrará tu sesión actual.
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalLogout')">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarLogout">
+
+                Cerrar Sesión
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+  <div id="overlay"></div>
+  <script src="../js-cat/catalogos_up-08.js"></script>
+  <script src="../js-app/app_up-08.js"></script>
+  <script src="../js-sid/sidebar_up-08.js"></script>
+</body>
+
+</html>
