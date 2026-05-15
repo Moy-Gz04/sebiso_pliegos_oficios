@@ -78,6 +78,26 @@ async function cargarRegistros(){
         await respuesta.json();
 
         /* =========================
+           SOLO NO PAGADOS
+        ========================= */
+
+        const registrosNoPagados =
+
+            data.filter((registro) => {
+
+                return !(
+
+                    registro.pagado == true ||
+
+                    registro.pagado == "true" ||
+
+                    registro.pagado == 1
+
+                );
+
+            });
+
+        /* =========================
            PRESUPUESTOS
         ========================= */
 
@@ -120,13 +140,34 @@ async function cargarRegistros(){
         tbody.innerHTML = "";
 
         /* =========================
+           SIN REGISTROS
+        ========================= */
+
+        if(registrosNoPagados.length === 0){
+
+            tbody.innerHTML = `
+
+                <tr>
+
+                    <td colspan="7">
+
+                        No hay registros pendientes
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+        /* =========================
            INSERTAR REGISTROS
         ========================= */
 
-        data.forEach((registro) => {
-
-            const pagado =
-            registro.pagado === true;
+        registrosNoPagados.forEach((registro) => {
 
             tbody.innerHTML += `
 
@@ -187,7 +228,6 @@ async function cargarRegistros(){
                             class="input-cantidad"
                             id="cantidad-${registro.id}"
                             placeholder="$0.00"
-                            ${pagado ? 'disabled' : ''}
                         >
 
                     </td>
@@ -195,26 +235,11 @@ async function cargarRegistros(){
                     <td>
 
                         <button
-
-                            class="${
-                                pagado
-                                ? 'btn-pagado'
-                                : 'btn-pagar'
-                            }"
-
-                            ${
-                                pagado
-                                ? 'disabled'
-                                : `onclick="pagarRegistro(${registro.id})"`
-                            }
-
+                            class="btn-pagar"
+                            onclick="pagarRegistro(${registro.id})"
                         >
 
-                            ${
-                                pagado
-                                ? 'PAGADO'
-                                : 'PAGAR'
-                            }
+                            PAGAR
 
                         </button>
 
@@ -312,8 +337,6 @@ async function pagarRegistro(id){
 
         const data =
         await respuesta.json();
-
-        console.log(data);
 
         if(data.ok){
 
