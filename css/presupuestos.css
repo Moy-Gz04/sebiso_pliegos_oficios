@@ -404,7 +404,9 @@ input[type="file"]::file-selector-button:hover{
 
     width:100%;
 
-    overflow-x:auto;
+    overflow:hidden;
+
+    border-radius:14px;
 }
 
 /* =========================
@@ -417,7 +419,7 @@ input[type="file"]::file-selector-button:hover{
 
     border-collapse:collapse;
 
-    min-width:1300px;
+    table-layout:fixed;
 }
 
 .historial-container thead{
@@ -437,12 +439,12 @@ input[type="file"]::file-selector-button:hover{
 
     border-bottom:1px solid #e5e7eb;
 
-    white-space:nowrap;
+    white-space:normal;
 }
 
 .historial-container td{
 
-    padding:13px;
+    padding:18px 10px;
 
     text-align:center;
 
@@ -451,6 +453,16 @@ input[type="file"]::file-selector-button:hover{
     color:#4b5563;
 
     font-size:13px;
+
+    white-space:normal;
+}
+
+.historial-container th,
+.historial-container td{
+
+    word-wrap:break-word;
+
+    overflow-wrap:break-word;
 }
 
 /* =========================
@@ -479,13 +491,13 @@ input[type="file"]::file-selector-button:hover{
 
     display:flex;
 
-    flex-direction:row;
-
     align-items:center;
 
     justify-content:center;
 
-    gap:10px;
+    gap:8px;
+
+    flex-wrap:wrap;
 }
 
 /* =========================
@@ -497,7 +509,7 @@ input[type="file"]::file-selector-button:hover{
 
     width:auto;
 
-    min-width:90px;
+    min-width:85px;
 
     height:34px;
 
@@ -576,6 +588,8 @@ input[type="file"]::file-selector-button:hover{
 .modal-contenido{
 
     width:750px;
+
+    max-width:95%;
 
     background:white;
 
@@ -689,6 +703,8 @@ input[type="file"]::file-selector-button:hover{
 .modal-editar{
 
     width:850px;
+
+    max-width:95%;
 }
 
 .edit-grid{
@@ -730,22 +746,6 @@ input[type="file"]::file-selector-button:hover{
 }
 
 /* =========================
-   SCROLL TABLA
-========================= */
-
-.tabla-responsive::-webkit-scrollbar{
-
-    height:10px;
-}
-
-.tabla-responsive::-webkit-scrollbar-thumb{
-
-    background:#d1d5db;
-
-    border-radius:20px;
-}
-
-/* =========================
    RESPONSIVE
 ========================= */
 
@@ -768,6 +768,8 @@ input[type="file"]::file-selector-button:hover{
     .historial-container{
 
         width:95%;
+
+        padding:18px;
     }
 
     .saldo-card{
@@ -802,7 +804,7 @@ input[type="file"]::file-selector-button:hover{
 
     .modal-contenido{
 
-        width:90%;
+        width:95%;
     }
 
     .edit-grid{
@@ -815,6 +817,24 @@ input[type="file"]::file-selector-button:hover{
         flex-direction:column;
 
         align-items:stretch;
+    }
+
+    .historial-container th,
+    .historial-container td{
+
+        font-size:11px;
+
+        padding:10px 6px;
+    }
+
+    .btn-editar,
+    .btn-eliminar{
+
+        min-width:70px;
+
+        font-size:11px;
+
+        padding:0 10px;
     }
 }
 
