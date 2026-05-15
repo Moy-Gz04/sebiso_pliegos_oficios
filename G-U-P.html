@@ -5,20 +5,17 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
 
-        Historial de Pagos
+        Pagos Presupuestales
 
     </title>
 
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ssidebar.css">
-    <link rel="stylesheet" href="css/pagos_realizados.css">
+    <link rel="stylesheet" href="css/gastos.css">
 
 </head>
 
@@ -44,7 +41,7 @@
 
             <div class="subtitulo">
 
-                HISTORIAL DE PAGOS REALIZADOS
+                REGISTRO DE PAGOS PRESUPUESTALES
 
             </div>
 
@@ -60,7 +57,7 @@
 
             <div class="top-pagos">
 
-                <!-- ÁREA -->
+                <!-- SELECT ÁREA -->
 
                 <div class="fila fila-top">
 
@@ -72,69 +69,57 @@
 
                     <select id="selectArea">
 
-                        <option value="UP-01-DESPACHO">
+                        <option value="UP-01">
 
-                            UP-01-DESPACHO
-
-                        </option>
-
-                        <option value="UP-01-C_A">
-
-                            UP-01-C_A
+                            UP-01
 
                         </option>
 
-                        <option value="UP-01-S-DRM">
+                        <option value="UP-04">
 
-                            UP-01-S-DRM
-
-                        </option>
-
-                        <option value="UP-04-DGFA">
-
-                            UP-04-DGFA
+                            UP-04
 
                         </option>
 
-                        <option value="UP-05-Subse_I_D">
+                        <option value="UP-05">
 
-                            UP-05-Subse_I_D
-
-                        </option>
-
-                        <option value="UP-06-DGOLP">
-
-                            UP-06-DGOLP
+                            UP-05
 
                         </option>
 
-                        <option value="UP-07-MIGRANTES">
+                        <option value="UP-06">
 
-                            UP-07-MIGRANTES
-
-                        </option>
-
-                        <option value="UP-08-ASISTENCIA">
-
-                            UP-08-ASISTENCIA
+                            UP-06
 
                         </option>
 
-                        <option value="UP-13-SSPSyFA">
+                        <option value="UP-07">
 
-                            UP-13-SSPSyFA
-
-                        </option>
-
-                        <option value="UP-14-DISCAPACIDAD">
-
-                            UP-14-DISCAPACIDAD
+                            UP-07
 
                         </option>
 
-                        <option value="UP-15-SSDSyH">
+                        <option value="UP-08">
 
-                            UP-15-SSDSyH
+                            UP-08
+
+                        </option>
+
+                        <option value="UP-13">
+
+                            UP-13
+
+                        </option>
+
+                        <option value="UP-14">
+
+                            UP-14
+
+                        </option>
+
+                        <option value="UP-15">
+
+                            UP-15
 
                         </option>
 
@@ -148,21 +133,21 @@
 
                 </div>
 
-                <!-- BUSCADOR -->
+                <!-- SALDO -->
 
-                <div class="fila fila-top">
+                <div class="saldo-card">
 
-                    <label>
+                    <span>
 
-                        BUSCAR
+                        SALDO DISPONIBLE
 
-                    </label>
+                    </span>
 
-                    <input
-                        type="text"
-                        id="inputBusqueda"
-                        placeholder="Buscar por persona o fecha..."
-                    >
+                    <h2 id="saldoDisponible">
+
+                        $0.00
+
+                    </h2>
 
                 </div>
 
@@ -172,55 +157,41 @@
 
             <div class="tabla-container">
 
-                <div class="tabla-header">
+                <h2>
 
-                    <h2>
+                    REGISTROS DEL ÁREA
 
-                        PAGOS REALIZADOS
+                </h2>
 
-                    </h2>
+                <table>
 
-                    <span id="contadorResultados">
+                    <thead>
 
-                        0 registros
+                        <tr>
 
-                    </span>
+                            <th>ID</th>
 
-                </div>
+                            <th>PERSONA</th>
 
-                <div class="tabla-responsive">
+                            <th>FECHA Y HORA</th>
 
-                    <table>
+                            <th>OFICIO PDF</th>
 
-                        <thead>
+                            <th>PLIEGO PDF</th>
 
-                            <tr>
+                            <th>CANTIDAD</th>
 
-                                <th>ID</th>
+                            <th>PAGAR</th>
 
-                                <th>PERSONA</th>
+                        </tr>
 
-                                <th>FECHA Y HORA</th>
+                    </thead>
 
-                                <th>OFICIO PDF</th>
+                    <tbody id="tbodyRegistros">
 
-                                <th>PLIEGO PDF</th>
+                    </tbody>
 
-                                <th>CANTIDAD</th>
-
-                                <th>ESTATUS</th>
-
-                            </tr>
-
-                        </thead>
-
-                        <tbody id="tbodyPagados">
-
-                        </tbody>
-
-                    </table>
-
-                </div>
+                </table>
 
             </div>
 
@@ -231,7 +202,7 @@
     <!-- SCRIPTS -->
 
     <script src="js/sidebar_CP.js"></script>
-    <script src="js/pagos_realizados.js"></script>
+    <script src="js/gastos.js"></script>
 
 </body>
 
