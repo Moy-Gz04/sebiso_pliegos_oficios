@@ -78,20 +78,16 @@ async function cargarRegistros(){
         await respuesta.json();
 
         /* =========================
-           SOLO NO PAGADOS
+           SOLO ENVIADOS
         ========================= */
 
-        const registrosNoPagados =
+        const registrosPendientes =
 
             data.filter((registro) => {
 
-                return !(
+                return (
 
-                    registro.pagado == true ||
-
-                    registro.pagado == "true" ||
-
-                    registro.pagado == 1
+                    registro.estatus === "Enviado"
 
                 );
 
@@ -143,15 +139,15 @@ async function cargarRegistros(){
            SIN REGISTROS
         ========================= */
 
-        if(registrosNoPagados.length === 0){
+        if(registrosPendientes.length === 0){
 
             tbody.innerHTML = `
 
                 <tr>
 
-                    <td colspan="7">
+                    <td colspan="11">
 
-                        No hay registros pendientes
+                        No hay registros pendientes de revisión
 
                     </td>
 
@@ -167,7 +163,7 @@ async function cargarRegistros(){
            INSERTAR REGISTROS
         ========================= */
 
-        registrosNoPagados.forEach((registro) => {
+        registrosPendientes.forEach((registro) => {
 
             tbody.innerHTML += `
 
@@ -221,6 +217,39 @@ async function cargarRegistros(){
 
                     </td>
 
+                    <!-- OBSERVACIONES ÁREA -->
+
+                    <td>
+
+                        <textarea
+                            class="textarea-obs"
+                            readonly>${registro.observaciones || ''}</textarea>
+
+                    </td>
+
+                    <!-- OBSERVACIONES ADMIN -->
+
+                    <td>
+
+                        <textarea
+                            class="textarea-obs-admin"
+                            id="obs-admin-${registro.codigo}"
+                            placeholder="Motivo del rechazo...">${registro.observaciones_admin || ''}</textarea>
+
+                    </td>
+
+                    <!-- ESTATUS -->
+
+                    <td>
+
+                        ${obtenerBadgeAdmin(
+                            registro.estatus
+                        )}
+
+                    </td>
+
+                    <!-- CANTIDAD -->
+
                     <td>
 
                         <input
@@ -232,14 +261,36 @@ async function cargarRegistros(){
 
                     </td>
 
+                    <!-- PAGAR -->
+
                     <td>
 
                         <button
                             class="btn-pagar"
-                            onclick="pagarRegistro(${registro.id})"
+                            onclick="pagarRegistro(
+                                ${registro.id},
+                                '${registro.codigo}'
+                            )"
                         >
 
                             PAGAR
+
+                        </button>
+
+                    </td>
+
+                    <!-- RECHAZAR -->
+
+                    <td>
+
+                        <button
+                            class="btn-rechazar"
+                            onclick="rechazarRegistro(
+                                '${registro.codigo}'
+                            )"
+                        >
+
+                            RECHAZAR
 
                         </button>
 
@@ -266,16 +317,76 @@ async function cargarRegistros(){
 }
 
 /* =========================
+   BADGE ESTATUS
+========================= */
+
+function obtenerBadgeAdmin(estatus){
+
+    if(estatus === "Enviado"){
+
+        return `
+
+            <span
+                class="badge-estatus badge-revision">
+
+                A Revisar
+
+            </span>
+
+        `;
+
+    }
+
+    if(estatus === "Aceptado"){
+
+        return `
+
+            <span
+                class="badge-estatus badge-aceptado">
+
+                Aceptado
+
+            </span>
+
+        `;
+
+    }
+
+    if(estatus === "Rechazado"){
+
+        return `
+
+            <span
+                class="badge-estatus badge-rechazado">
+
+                Rechazado
+
+            </span>
+
+        `;
+
+    }
+
+}
+
+/* =========================
    PAGAR
 ========================= */
 
-async function pagarRegistro(id){
+async function pagarRegistro(
+
+    id,
+    codigo
+
+){
 
     try{
 
         const cantidad =
         document.getElementById(
+
             `cantidad-${id}`
+
         ).value;
 
         if(
@@ -306,6 +417,10 @@ async function pagarRegistro(id){
             return;
 
         }
+
+        /* =========================
+           REGISTRAR GASTO
+        ========================= */
 
         const respuesta =
         await fetch(
@@ -338,17 +453,7 @@ async function pagarRegistro(id){
         const data =
         await respuesta.json();
 
-        if(data.ok){
-
-            alert(
-                "Pago registrado"
-            );
-
-            cargarRegistros();
-
-        }
-
-        else{
+        if(!data.ok){
 
             alert(
 
@@ -358,7 +463,44 @@ async function pagarRegistro(id){
 
             );
 
+            return;
+
         }
+
+        /* =========================
+           CAMBIAR ESTATUS
+        ========================= */
+
+        await fetch(
+
+            `${API}/api/registros/estatus/${codigo}`,
+
+            {
+
+                method:'PUT',
+
+                headers:{
+
+                    'Content-Type':
+                    'application/json'
+
+                },
+
+                body:JSON.stringify({
+
+                    estatus:'Aceptado'
+
+                })
+
+            }
+
+        );
+
+        alert(
+            "Pago registrado"
+        );
+
+        cargarRegistros();
 
     }
 
@@ -368,6 +510,120 @@ async function pagarRegistro(id){
 
         alert(
             "Error servidor"
+        );
+
+    }
+
+}
+
+/* =========================
+   RECHAZAR
+========================= */
+
+async function rechazarRegistro(codigo){
+
+    try{
+
+        const observacionesAdmin =
+        document.getElementById(
+
+            `obs-admin-${codigo}`
+
+        ).value;
+
+        if(
+
+            !observacionesAdmin.trim()
+
+        ){
+
+            alert(
+
+                "Debes escribir una observación"
+
+            );
+
+            return;
+
+        }
+
+        /* =========================
+           GUARDAR OBSERVACIÓN
+        ========================= */
+
+        await fetch(
+
+            `${API}/api/registros/observaciones-admin/${codigo}`,
+
+            {
+
+                method:'PUT',
+
+                headers:{
+
+                    'Content-Type':
+                    'application/json'
+
+                },
+
+                body:JSON.stringify({
+
+                    observaciones_admin:
+                    observacionesAdmin
+
+                })
+
+            }
+
+        );
+
+        /* =========================
+           CAMBIAR ESTATUS
+        ========================= */
+
+        await fetch(
+
+            `${API}/api/registros/estatus/${codigo}`,
+
+            {
+
+                method:'PUT',
+
+                headers:{
+
+                    'Content-Type':
+                    'application/json'
+
+                },
+
+                body:JSON.stringify({
+
+                    estatus:'Rechazado'
+
+                })
+
+            }
+
+        );
+
+        alert(
+
+            'Registro rechazado'
+
+        );
+
+        cargarRegistros();
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        alert(
+
+            'Error rechazando registro'
+
         );
 
     }

@@ -1,0 +1,233 @@
+<script>
+
+    /* =========================
+       VALIDAR LOGIN
+    ========================= */
+
+    const token =
+        localStorage.getItem('token');
+
+    /* =========================
+       ÁREA PERMITIDA
+       CAMBIAR SOLO ESTA PARTE
+    ========================= */
+
+    const AREA = 'UP-08';
+
+    const area =
+        localStorage.getItem('area');
+
+    if (!token) {
+
+        window.location.href =
+            'index.html';
+
+    }
+
+    if (area !== AREA) {
+
+        window.location.href =
+            'index.html';
+
+    }
+
+</script>
+
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>Registros</title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/ssidebar.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenido">
+
+        <!-- ENCABEZADO -->
+
+        <div class="topbar">
+
+            <div class="titulo-principal">
+                SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+            </div>
+
+            <div class="subtitulo">
+                REVISIÓN DE REGISTROS      <br>UP_08 - ASISTENCIA
+            </div>
+
+        </div>
+
+        <br><br>
+
+        <!-- TABLA -->
+
+        <table id="tablaResultados">
+
+            <thead>
+
+                <tr>
+
+                    <th>ID</th>
+
+                    <th>Persona</th>
+
+                    <th>Fecha y Hora</th>
+
+                    <th>Oficio PDF</th>
+
+                    <th>Pliego PDF</th>
+
+                    <th>Eliminar</th>
+
+                </tr>
+
+            </thead>
+
+            <tbody id="tbodyResultados">
+
+                <!-- REGISTROS -->
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+    <!-- =========================
+     MODAL ELIMINAR
+========================= -->
+
+<div class="modal" id="modalEliminar">
+
+    <div class="modal-contenido">
+
+        <h2>
+            ¿Eliminar registro?
+        </h2>
+
+        <p>
+            Esta acción no se puede deshacer.
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalEliminar')">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarEliminar">
+
+                Eliminar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ÉXITO
+========================= -->
+
+<div class="modal" id="modalExito">
+
+    <div class="modal-contenido">
+
+        <h2>
+            Registro eliminado
+        </h2>
+
+        <p>
+            El registro fue eliminado correctamente.
+        </p>
+
+        <button
+            type="button"
+            class="btn-principal"
+            onclick="cerrarModal('modalExito')">
+
+            Aceptar
+
+        </button>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL LOGOUT
+========================= -->
+
+<div class="modal" id="modalLogout">
+
+    <div class="modal-contenido">
+
+        <h2>
+            ¿Cerrar sesión?
+        </h2>
+
+        <p>
+            Se cerrará tu sesión actual.
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalLogout')">
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarLogout">
+
+                Cerrar Sesión
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- SCRIPTS -->
+
+    <script src="../js-sid/sidebar_up-08.js"></script>
+    <script src="../js-reg/registros_up-08.js"></script>
+
+</body>
+
+</html>

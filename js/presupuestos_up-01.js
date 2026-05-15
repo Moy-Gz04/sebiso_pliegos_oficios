@@ -243,6 +243,8 @@ btnGuardar.addEventListener(
 
             cargarHistorial();
 
+            cargarGastos();
+
         }
 
         catch(error){
@@ -432,6 +434,101 @@ async function cargarHistorial(){
 }
 
 /* =========================
+   CARGAR GASTOS
+========================= */
+
+async function cargarGastos(){
+
+    try{
+
+        const area =
+        document.getElementById(
+            "selectArea"
+        ).value.trim();
+
+        const respuesta =
+        await fetch(
+
+            `${API}/api/gastos/${area}`
+
+        );
+
+        const gastos =
+        await respuesta.json();
+
+        tbodyGastos.innerHTML = "";
+
+        if(gastos.length === 0){
+
+            tbodyGastos.innerHTML = `
+
+                <tr>
+
+                    <td colspan="4">
+
+                        No hay gastos registrados
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            return;
+
+        }
+
+        gastos.forEach((gasto) => {
+
+            tbodyGastos.innerHTML += `
+
+                <tr>
+
+                    <td>
+
+                        ${formatearFecha(
+                            gasto.fecha
+                        )}
+
+                    </td>
+
+                    <td>
+
+                        ${gasto.persona || '-'}
+
+                    </td>
+
+                    <td>
+
+                        $${parseFloat(
+                            gasto.cantidad || 0
+                        ).toFixed(2)}
+
+                    </td>
+
+                    <td>
+
+                        ${gasto.observacion || '-'}
+
+                    </td>
+
+                </tr>
+
+            `;
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+    }
+
+}
+
+/* =========================
    EDITAR
 ========================= */
 
@@ -515,54 +612,6 @@ async function editarRegistro(id){
         ).toFixed(2)}`;
 
         document.getElementById(
-            "editPDFAutorizacionActual"
-        ).innerHTML =
-
-            registro.oficio_autorizacion
-
-            ?
-
-            `
-            <a
-                href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
-                target="_blank"
-                class="btn-pdf"
-            >
-
-                Ver PDF
-
-            </a>
-            `
-
-            :
-
-            'Sin PDF';
-
-        document.getElementById(
-            "editPDFAdecuacionActual"
-        ).innerHTML =
-
-            registro.oficio_adecuacion
-
-            ?
-
-            `
-            <a
-                href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
-                target="_blank"
-                class="btn-pdf"
-            >
-
-                Ver PDF
-
-            </a>
-            `
-
-            :
-
-            'Sin PDF';
-
-        document.getElementById(
             "modalEditar"
         ).style.display = "flex";
 
@@ -641,16 +690,6 @@ document.getElementById(
                 "editAnio"
             ).value;
 
-            const pdfAutorizacion =
-            document.getElementById(
-                "editPDFAutorizacion"
-            ).files[0];
-
-            const pdfAdecuacion =
-            document.getElementById(
-                "editPDFAdecuacion"
-            ).files[0];
-
             const formData =
             new FormData();
 
@@ -673,24 +712,6 @@ document.getElementById(
                 "anio",
                 anio
             );
-
-            if(pdfAutorizacion){
-
-                formData.append(
-                    "oficio_autorizacion",
-                    pdfAutorizacion
-                );
-
-            }
-
-            if(pdfAdecuacion){
-
-                formData.append(
-                    "oficio_adecuacion",
-                    pdfAdecuacion
-                );
-
-            }
 
             const respuesta =
             await fetch(
@@ -719,6 +740,8 @@ document.getElementById(
                 cerrarModalEditar();
 
                 cargarHistorial();
+
+                cargarGastos();
 
             }
 
@@ -789,6 +812,8 @@ async function eliminarRegistro(id){
             );
 
             cargarHistorial();
+
+            cargarGastos();
 
         }
 
@@ -884,7 +909,13 @@ document.getElementById(
 
     "change",
 
-    cargarHistorial
+    () => {
+
+        cargarHistorial();
+
+        cargarGastos();
+
+    }
 
 );
 
@@ -893,3 +924,5 @@ document.getElementById(
 ========================= */
 
 cargarHistorial();
+
+cargarGastos();

@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+
+        Control Presupuestal UP-01
+
+    </title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/ssidebar.css">
+    <link rel="stylesheet" href="../css/presupuestos.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenido">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="titulo-principal">
+
+                SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+
+            </div>
+
+            <div class="subtitulo">
+
+                CONTROL PRESUPUESTAL UP-15
+
+            </div>
+
+        </div>
+
+        <br><br>
+
+        <!-- CONTENEDOR -->
+
+        <div class="contenedor-presupuesto">
+
+            <!-- TOP -->
+
+            <div class="top-presupuesto">
+
+                <!-- ÁREA -->
+
+                <div class="fila">
+
+                    <label>
+
+                        ÁREA PRESUPUESTAL
+
+                    </label>
+
+                    <select
+                        id="selectArea"
+                        disabled
+                    >
+
+                        <option
+                            value="UP-01"
+                            selected
+                        >
+
+                            UP-15
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- SALDO -->
+
+                <div class="saldo-card">
+
+                    <span>
+
+                        SALDO DISPONIBLE
+
+                    </span>
+
+                    <h2 id="saldoDisponible">
+
+                        $0.00
+
+                    </h2>
+
+                </div>
+
+            </div>
+
+            <!-- HISTORIAL -->
+
+            <div class="historial-container">
+
+                <!-- TABS -->
+
+                <div class="tabs-tablas">
+
+                    <button
+                        class="tab-btn activo"
+                        id="btnIngresos"
+                        onclick="mostrarIngresos()"
+                    >
+
+                        INGRESOS
+
+                    </button>
+
+                    <button
+                        class="tab-btn"
+                        id="btnGastos"
+                        onclick="mostrarGastos()"
+                    >
+
+                        GASTOS
+
+                    </button>
+
+                </div>
+
+                <!-- INGRESOS -->
+
+                <div id="contenedorIngresos">
+
+                    <h2>
+
+                        HISTORIAL DE INGRESOS
+
+                    </h2>
+
+                    <div class="tabla-responsive">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>MES</th>
+                                    <th>AUTORIZADO</th>
+                                    <th>MODIFICADO</th>
+                                    <th>DISPONIBLE</th>
+                                    <th>AUTORIZACIÓN</th>
+                                    <th>ADECUACIÓN</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="tbodyIngresos">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+                <!-- GASTOS -->
+
+                <div
+                    id="contenedorGastos"
+                    style="display:none;"
+                >
+
+                    <h2>
+
+                        HISTORIAL DE GASTOS
+
+                    </h2>
+
+                    <div class="tabla-responsive">
+
+                        <table>
+
+                            <thead>
+
+                                <tr>
+
+                                    <th>FECHA</th>
+                                    <th>PERSONA</th>
+                                    <th>CANTIDAD</th>
+                                    <th>OBSERVACIÓN</th>
+
+                                </tr>
+
+                            </thead>
+
+                            <tbody id="tbodyGastos">
+
+                            </tbody>
+
+                        </table>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- OVERLAY -->
+
+    <div id="overlay"></div>
+
+    <!-- SCRIPTS -->
+
+    <script src="../js-sid/sidebar_up-15.js"></script>
+    <script src="../js-vistas/vp15.js"></script>
+
+</body>
+
+</html>

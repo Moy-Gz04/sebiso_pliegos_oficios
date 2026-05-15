@@ -5,7 +5,8 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
 
     <title>
 
@@ -21,15 +22,21 @@
 
 <body>
 
-    <!-- SIDEBAR -->
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
 
     <div id="sidebar-container"></div>
 
-    <!-- CONTENIDO -->
+    <!-- =========================
+         CONTENIDO
+    ========================= -->
 
     <div class="contenido">
 
-        <!-- TOPBAR -->
+        <!-- =========================
+             TOPBAR
+        ========================= -->
 
         <div class="topbar">
 
@@ -49,15 +56,21 @@
 
         <br><br>
 
-        <!-- CONTENEDOR -->
+        <!-- =========================
+             CONTENEDOR
+        ========================= -->
 
         <div class="contenedor-pagos">
 
-            <!-- TOP -->
+            <!-- =========================
+                 TOP
+            ========================= -->
 
             <div class="top-pagos">
 
-                <!-- SELECT ÁREA -->
+                <!-- =========================
+                     SELECT ÁREA
+                ========================= -->
 
                 <div class="fila fila-top">
 
@@ -133,7 +146,9 @@
 
                 </div>
 
-                <!-- SALDO -->
+                <!-- =========================
+                     SALDO
+                ========================= -->
 
                 <div class="saldo-card">
 
@@ -153,7 +168,9 @@
 
             </div>
 
-            <!-- TABLA -->
+            <!-- =========================
+                 TABLA
+            ========================= -->
 
             <div class="tabla-container">
 
@@ -179,15 +196,141 @@
 
                             <th>PLIEGO PDF</th>
 
+                            <th>OBS. ÁREA</th>
+
+                            <th>OBS. ADMIN</th>
+
+                            <th>ESTATUS</th>
+
                             <th>CANTIDAD</th>
 
                             <th>PAGAR</th>
+
+                            <th>RECHAZAR</th>
 
                         </tr>
 
                     </thead>
 
                     <tbody id="tbodyRegistros">
+
+                        <!-- =========================
+                             EJEMPLO VISUAL
+                        ========================= -->
+
+                        <!--
+
+                        <tr>
+
+                            <td>
+
+                                UP-06_R-3522
+
+                            </td>
+
+                            <td>
+
+                                Lic. Danna Odemaris
+                                Fuentes Olguin
+
+                            </td>
+
+                            <td>
+
+                                8/5/2026,
+                                3:14:33 p.m.
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="#"
+                                    target="_blank">
+
+                                    Ver Oficio
+
+                                </a>
+
+                            </td>
+
+                            <td>
+
+                                <a
+                                    href="#"
+                                    target="_blank">
+
+                                    Ver Pliego
+
+                                </a>
+
+                            </td>
+
+                            <td>
+
+                                <textarea
+                                    class="textarea-observaciones"
+                                    readonly>
+
+                                    Observación del área
+
+                                </textarea>
+
+                            </td>
+
+                            <td>
+
+                                <textarea
+                                    class="textarea-observaciones-admin"
+                                    placeholder="Escribir motivo de rechazo..."></textarea>
+
+                            </td>
+
+                            <td>
+
+                                <span
+                                    class="badge-estatus badge-revision">
+
+                                    A Revisar
+
+                                </span>
+
+                            </td>
+
+                            <td>
+
+                                <input
+                                    type="number"
+                                    class="input-cantidad"
+                                    placeholder="$0.00">
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="btn-pagar">
+
+                                    PAGAR
+
+                                </button>
+
+                            </td>
+
+                            <td>
+
+                                <button
+                                    class="btn-rechazar">
+
+                                    RECHAZAR
+
+                                </button>
+
+                            </td>
+
+                        </tr>
+
+                        -->
 
                     </tbody>
 
@@ -199,9 +342,78 @@
 
     </div>
 
-    <!-- SCRIPTS -->
+    <!-- =========================
+         MODAL ÉXITO
+    ========================= -->
+
+    <div class="modal" id="modalExito">
+
+        <div class="modal-contenido">
+
+            <h2>
+
+                Operación realizada
+
+            </h2>
+
+            <p id="mensajeModalExito">
+
+                El registro fue actualizado correctamente.
+
+            </p>
+
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="cerrarModal('modalExito')">
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         MODAL ERROR
+    ========================= -->
+
+    <div class="modal" id="modalError">
+
+        <div class="modal-contenido">
+
+            <h2>
+
+                Error
+
+            </h2>
+
+            <p id="mensajeModalError">
+
+                Ocurrió un problema.
+
+            </p>
+
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="cerrarModal('modalError')">
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         SCRIPTS
+    ========================= -->
 
     <script src="js/sidebar_CP.js"></script>
+
     <script src="js/gastos.js"></script>
 
 </body>

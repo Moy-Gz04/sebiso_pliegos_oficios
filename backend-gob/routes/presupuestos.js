@@ -146,10 +146,6 @@ router.post(
 
             } = req.body;
 
-            /* =========================
-               VALIDACIONES
-            ========================= */
-
             if(
 
                 !area_id ||
@@ -169,10 +165,6 @@ router.post(
                 });
 
             }
-
-            /* =========================
-               VALIDAR DUPLICADO
-            ========================= */
 
             const existe =
             await pool.query(
@@ -211,10 +203,6 @@ router.post(
 
             }
 
-            /* =========================
-               CALCULAR DISPONIBLE
-            ========================= */
-
             const disponible =
 
                 parseFloat(
@@ -226,10 +214,6 @@ router.post(
                 parseFloat(
                     saldo_modificado || 0
                 );
-
-            /* =========================
-               PDFs
-            ========================= */
 
             let oficio_autorizacion = null;
 
@@ -264,10 +248,6 @@ router.post(
                 .filename;
 
             }
-
-            /* =========================
-               INSERT
-            ========================= */
 
             const nuevo =
             await pool.query(
@@ -365,7 +345,7 @@ router.post(
 );
 
 /* =========================
-   HISTORIAL
+   HISTORIAL + GASTOS
 ========================= */
 
 router.get(
@@ -379,7 +359,11 @@ router.get(
             const { area } =
             req.params;
 
-            const data =
+            /* =========================
+               PRESUPUESTOS
+            ========================= */
+
+            const presupuestos =
             await pool.query(
 
                 `
@@ -407,7 +391,52 @@ router.get(
 
             );
 
-            res.json(data.rows);
+            /* =========================
+               CLAVE CORTA GASTOS
+            ========================= */
+
+            const claveCorta =
+            area
+            .split('-')
+            .slice(0,2)
+            .join('-')
+            .trim();
+
+            /* =========================
+               GASTOS
+            ========================= */
+
+            const gastos =
+            await pool.query(
+
+                `
+                SELECT *
+
+                FROM gastos
+
+                WHERE TRIM(area) LIKE $1
+
+                ORDER BY fecha DESC
+                `,
+                [
+
+                    `${claveCorta}%`
+
+                ]
+
+            );
+
+            res.json({
+
+                ok:true,
+
+                presupuestos:
+                presupuestos.rows,
+
+                gastos:
+                gastos.rows
+
+            });
 
         }
 
@@ -493,10 +522,6 @@ router.put(
 
             }
 
-            /* =========================
-               BUSCAR
-            ========================= */
-
             const existe =
             await pool.query(
 
@@ -526,10 +551,6 @@ router.put(
 
             const registro =
             existe.rows[0];
-
-            /* =========================
-               VALIDAR DUPLICADO
-            ========================= */
 
             const duplicado =
             await pool.query(
@@ -577,10 +598,6 @@ router.put(
 
             }
 
-            /* =========================
-               CALCULAR
-            ========================= */
-
             const disponible =
 
                 parseFloat(
@@ -603,19 +620,11 @@ router.put(
                     registro.gastado_mes || 0
                 );
 
-            /* =========================
-               PDFs
-            ========================= */
-
             let nuevoPDFAutorizacion =
             registro.oficio_autorizacion;
 
             let nuevoPDFAdecuacion =
             registro.oficio_adecuacion;
-
-            /* =========================
-               PDF AUTORIZACION
-            ========================= */
 
             if(
 
@@ -652,10 +661,6 @@ router.put(
 
             }
 
-            /* =========================
-               PDF ADECUACION
-            ========================= */
-
             if(
 
                 req.files &&
@@ -690,10 +695,6 @@ router.put(
                 .filename;
 
             }
-
-            /* =========================
-               UPDATE
-            ========================= */
 
             const actualizado =
             await pool.query(
@@ -819,10 +820,6 @@ router.delete(
             const registro =
             existe.rows[0];
 
-            /* =========================
-               BORRAR PDFs
-            ========================= */
-
             if(registro.oficio_autorizacion){
 
                 const rutaPDF =
@@ -862,10 +859,6 @@ router.delete(
                 }
 
             }
-
-            /* =========================
-               DELETE
-            ========================= */
 
             await pool.query(
 

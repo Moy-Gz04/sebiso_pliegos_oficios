@@ -47,8 +47,6 @@ router.get('/:area', async (req, res) => {
 
             ORDER BY
 
-                pagado ASC,
-
                 r.fecha DESC
             `,
 
@@ -110,11 +108,12 @@ router.post('/', async (req, res) => {
                 area,
                 persona,
                 oficio_pdf,
-                pliego_pdf
+                pliego_pdf,
+                estatus
 
             )
 
-            VALUES($1,$2,$3,$4,$5)
+            VALUES($1,$2,$3,$4,$5,$6)
             `,
 
             [
@@ -122,7 +121,8 @@ router.post('/', async (req, res) => {
                 area,
                 persona,
                 oficio_pdf,
-                pliego_pdf
+                pliego_pdf,
+                'Creado'
             ]
 
         );
@@ -151,24 +151,470 @@ router.post('/', async (req, res) => {
 });
 
 /* =========================
-   ELIMINAR REGISTRO
+   ENVIAR REGISTRO
 ========================= */
 
-router.delete('/:id', async (req, res) => {
+router.put('/enviar/:codigo', async (req, res) => {
 
     try{
 
-        const id =
-        req.params.id;
+        const codigo =
+        req.params.codigo;
+
+        await pool.query(
+
+            `
+            UPDATE registros
+
+            SET
+                estatus = 'Enviado'
+
+            WHERE codigo = $1
+            `,
+
+            [codigo]
+
+        );
+
+        res.json({
+
+            ok:true
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            error:
+            'Error enviando registro'
+
+        });
+
+    }
+
+});
+
+/* =========================
+   REENVIAR REGISTRO
+========================= */
+
+router.put('/reenviar/:codigo', async (req, res) => {
+
+    try{
+
+        const codigo =
+        req.params.codigo;
+
+        await pool.query(
+
+            `
+            UPDATE registros
+
+            SET
+
+                estatus = 'Enviado',
+
+                observaciones_admin = ''
+
+            WHERE codigo = $1
+            `,
+
+            [codigo]
+
+        );
+
+        res.json({
+
+            ok:true
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            error:
+            'Error reenviando registro'
+
+        });
+
+    }
+
+});
+
+/* =========================
+   GUARDAR OBSERVACIONES
+========================= */
+
+router.put('/observaciones/:codigo', async (req, res) => {
+
+    try{
+
+        const codigo =
+        req.params.codigo;
+
+        const {
+
+            observaciones
+
+        } = req.body;
+
+        /* =========================
+           VALIDAR ESTATUS
+        ========================= */
+
+        const validar =
+        await pool.query(
+
+            `
+            SELECT estatus
+
+            FROM registros
+
+            WHERE codigo = $1
+            `,
+
+            [codigo]
+
+        );
+
+        if(
+
+            validar.rows.length === 0
+
+        ){
+
+            return res.status(404)
+            .json({
+
+                error:'Registro no encontrado'
+
+            });
+
+        }
+
+        const estatus =
+        validar.rows[0].estatus;
+
+        if(
+
+            estatus === 'Enviado'
+            ||
+            estatus === 'Aceptado'
+
+        ){
+
+            return res.status(400)
+            .json({
+
+                error:
+                'No se puede editar este registro'
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
+            UPDATE registros
+
+            SET
+
+                observaciones = $1
+
+            WHERE codigo = $2
+            `,
+
+            [
+
+                observaciones,
+                codigo
+
+            ]
+
+        );
+
+        res.json({
+
+            ok:true
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            error:
+            'Error guardando observaciones'
+
+        });
+
+    }
+
+});
+
+/* =========================
+   OBSERVACIONES ADMIN
+========================= */
+
+router.put('/observaciones-admin/:codigo', async (req, res) => {
+
+    try{
+
+        const codigo =
+        req.params.codigo;
+
+        const {
+
+            observaciones_admin
+
+        } = req.body;
+
+        await pool.query(
+
+            `
+            UPDATE registros
+
+            SET
+
+                observaciones_admin = $1
+
+            WHERE codigo = $2
+            `,
+
+            [
+
+                observaciones_admin,
+                codigo
+
+            ]
+
+        );
+
+        res.json({
+
+            ok:true
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            error:
+            'Error guardando observaciones admin'
+
+        });
+
+    }
+
+});
+
+/* =========================
+   CAMBIAR ESTATUS
+========================= */
+
+router.put('/estatus/:codigo', async (req, res) => {
+
+    try{
+
+        const codigo =
+        req.params.codigo;
+
+        const {
+
+            estatus
+
+        } = req.body;
+
+        /* =========================
+           VALIDAR
+        ========================= */
+
+        const validar =
+        await pool.query(
+
+            `
+            SELECT estatus
+
+            FROM registros
+
+            WHERE codigo = $1
+            `,
+
+            [codigo]
+
+        );
+
+        if(
+
+            validar.rows.length === 0
+
+        ){
+
+            return res.status(404)
+            .json({
+
+                error:'Registro no encontrado'
+
+            });
+
+        }
+
+        if(
+
+            validar.rows[0].estatus
+            === 'Aceptado'
+
+        ){
+
+            return res.status(400)
+            .json({
+
+                error:
+                'Registro finalizado'
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
+            UPDATE registros
+
+            SET
+
+                estatus = $1
+
+            WHERE codigo = $2
+            `,
+
+            [
+
+                estatus,
+                codigo
+
+            ]
+
+        );
+
+        res.json({
+
+            ok:true
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            error:
+            'Error actualizando estatus'
+
+        });
+
+    }
+
+});
+
+/* =========================
+   ELIMINAR REGISTRO
+========================= */
+
+router.delete('/:codigo', async (req, res) => {
+
+    try{
+
+        const codigo =
+        req.params.codigo;
+
+        /* =========================
+           VALIDAR ESTATUS
+        ========================= */
+
+        const validar =
+        await pool.query(
+
+            `
+            SELECT estatus
+
+            FROM registros
+
+            WHERE codigo = $1
+            `,
+
+            [codigo]
+
+        );
+
+        if(
+
+            validar.rows.length === 0
+
+        ){
+
+            return res.status(404)
+            .json({
+
+                error:'Registro no encontrado'
+
+            });
+
+        }
+
+        const estatus =
+        validar.rows[0].estatus;
+
+        if(
+
+            estatus === 'Enviado'
+            ||
+            estatus === 'Aceptado'
+
+        ){
+
+            return res.status(400)
+            .json({
+
+                error:
+                'No se puede eliminar este registro'
+
+            });
+
+        }
 
         await pool.query(
 
             `
             DELETE FROM registros
-            WHERE id = $1
+
+            WHERE codigo = $1
             `,
 
-            [id]
+            [codigo]
 
         );
 
