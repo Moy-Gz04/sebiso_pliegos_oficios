@@ -104,8 +104,11 @@ async function cargarRegistros(){
 
         );
 
-        const presupuestos =
+        const presupuestoData =
         await presupuestoRespuesta.json();
+
+        const presupuestos =
+        presupuestoData.presupuestos || [];
 
         let saldo = 0;
 

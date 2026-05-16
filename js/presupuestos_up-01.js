@@ -281,8 +281,11 @@ async function cargarHistorial(){
 
         );
 
-        const data =
+        const resultado =
         await respuesta.json();
+
+        const data =
+        resultado.presupuestos || [];
 
         data.sort((a, b) => {
 
@@ -449,12 +452,15 @@ async function cargarGastos(){
         const respuesta =
         await fetch(
 
-            `${API}/api/gastos/${area}`
+            `${API}/api/presupuestos/${area}`
 
         );
 
-        const gastos =
+        const resultado =
         await respuesta.json();
+
+        const gastos =
+        resultado.gastos || [];
 
         tbodyGastos.innerHTML = "";
 
@@ -548,8 +554,11 @@ async function editarRegistro(id){
 
         );
 
-        const data =
+        const resultado =
         await respuesta.json();
+
+        const data =
+        resultado.presupuestos || [];
 
         const registro =
         data.find(
