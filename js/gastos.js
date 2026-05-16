@@ -76,11 +76,18 @@ async function cargarRegistros(){
         const area =
         selectArea.value;
 
+        if(!area){
+
+            tbody.innerHTML = "";
+
+            return;
+        }
+
         const areaPresupuesto =
         mapaAreas[area];
 
         /* =========================
-           REGISTROS
+           OBTENER REGISTROS
         ========================= */
 
         const respuesta =
@@ -130,7 +137,7 @@ async function cargarRegistros(){
             });
 
         /* =========================
-           PRESUPUESTOS
+           OBTENER PRESUPUESTO
         ========================= */
 
         const presupuestoRespuesta =
@@ -207,7 +214,7 @@ async function cargarRegistros(){
 
                 <tr>
 
-                    <td colspan="11">
+                    <td colspan="12">
 
                         No hay registros pendientes de revisión
 
@@ -232,6 +239,100 @@ async function cargarRegistros(){
                 normalizarEstatus(
                     registro.estatus
                 );
+
+            /* =========================
+               PAGADO
+            ========================= */
+
+            const yaPagado =
+
+                registro.pagado === true ||
+
+                estatusNormalizado === 'PAGADO' ||
+
+                estatusNormalizado === 'ACEPTADO';
+
+            /* =========================
+               BOTÓN PAGAR
+            ========================= */
+
+            const botonPagar = yaPagado
+
+            ? `
+
+                <button
+                    class="btn-pagado"
+                    disabled
+                >
+
+                    PAGADO
+
+                </button>
+
+            `
+
+            : `
+
+                <button
+                    class="btn-pagar"
+                    onclick="pagarRegistro(
+                        ${registro.id},
+                        '${registro.codigo}'
+                    )"
+                >
+
+                    PAGAR
+
+                </button>
+
+            `;
+
+            /* =========================
+               BOTÓN RECHAZAR
+            ========================= */
+
+            const botonRechazar = yaPagado
+
+            ? `
+
+                <button
+                    class="btn-deshabilitado"
+                    disabled
+                >
+
+                    BLOQUEADO
+
+                </button>
+
+            `
+
+            : `
+
+                <button
+                    class="btn-rechazar"
+                    onclick="rechazarRegistro(
+                        '${registro.codigo}'
+                    )"
+                >
+
+                    RECHAZAR
+
+                </button>
+
+            `;
+
+            /* =========================
+               ESTATUS VISUAL
+            ========================= */
+
+            let estatusVisual =
+            estatusNormalizado;
+
+            if(yaPagado){
+
+                estatusVisual =
+                'PAGADO';
+            }
 
             tbody.innerHTML += `
 
@@ -268,7 +369,7 @@ async function cargarRegistros(){
                     <td>
 
                         <a
-                            href="${registro.oficio_pdf}"
+                            href="${registro.oficio_pdf || '#'}"
                             target="_blank"
                             class="btn-link"
                         >
@@ -284,7 +385,7 @@ async function cargarRegistros(){
                     <td>
 
                         <a
-                            href="${registro.pliego_pdf}"
+                            href="${registro.pliego_pdf || '#'}"
                             target="_blank"
                             class="btn-link"
                         >
@@ -301,7 +402,8 @@ async function cargarRegistros(){
 
                         <textarea
                             class="textarea-obs"
-                            readonly>${registro.observaciones || ''}</textarea>
+                            readonly
+                        >${registro.observaciones || ''}</textarea>
 
                     </td>
 
@@ -312,7 +414,9 @@ async function cargarRegistros(){
                         <textarea
                             class="textarea-obs-admin"
                             id="obs-admin-${registro.codigo}"
-                            placeholder="Motivo del rechazo...">${registro.observaciones_admin || ''}</textarea>
+                            placeholder="Motivo del rechazo..."
+                            ${yaPagado ? 'disabled' : ''}
+                        >${registro.observaciones_admin || ''}</textarea>
 
                     </td>
 
@@ -321,8 +425,26 @@ async function cargarRegistros(){
                     <td>
 
                         ${obtenerBadgeAdmin(
-                            estatusNormalizado
+                            estatusVisual
                         )}
+
+                    </td>
+
+                    <!-- PAGADO -->
+
+                    <td>
+
+                        ${
+                            yaPagado
+
+                            ?
+
+                            '<span class="texto-pagado">SI</span>'
+
+                            :
+
+                            '<span class="texto-pendiente">NO</span>'
+                        }
 
                     </td>
 
@@ -330,14 +452,46 @@ async function cargarRegistros(){
 
                     <td>
 
-                        <input
-                            type="number"
-                            class="input-cantidad"
-                            id="cantidad-${registro.id}"
-                            placeholder="$0.00"
-                            min="1"
-                            step="0.01"
-                        >
+                        ${
+                            yaPagado
+
+                            ?
+
+                            `<span class="cantidad-pagada">
+
+                                $${parseFloat(
+
+                                    registro.cantidad_pagada || 0
+
+                                ).toLocaleString(
+
+                                    'es-MX',
+
+                                    {
+
+                                        minimumFractionDigits:2
+
+                                    }
+
+                                )}
+
+                            </span>`
+
+                            :
+
+                            `
+
+                            <input
+                                type="number"
+                                class="input-cantidad"
+                                id="cantidad-${registro.id}"
+                                placeholder="$0.00"
+                                min="1"
+                                step="0.01"
+                            >
+
+                            `
+                        }
 
                     </td>
 
@@ -345,17 +499,7 @@ async function cargarRegistros(){
 
                     <td>
 
-                        <button
-                            class="btn-pagar"
-                            onclick="pagarRegistro(
-                                ${registro.id},
-                                '${registro.codigo}'
-                            )"
-                        >
-
-                            PAGAR
-
-                        </button>
+                        ${botonPagar}
 
                     </td>
 
@@ -363,16 +507,7 @@ async function cargarRegistros(){
 
                     <td>
 
-                        <button
-                            class="btn-rechazar"
-                            onclick="rechazarRegistro(
-                                '${registro.codigo}'
-                            )"
-                        >
-
-                            RECHAZAR
-
-                        </button>
+                        ${botonRechazar}
 
                     </td>
 
@@ -395,7 +530,7 @@ async function cargarRegistros(){
 
             <tr>
 
-                <td colspan="11">
+                <td colspan="12">
 
                     Error cargando registros
 
@@ -430,14 +565,22 @@ function obtenerBadgeAdmin(estatus){
 
     }
 
-    if(estatus === "ACEPTADO"){
+    if(
+
+        estatus === "PAGADO"
+
+        ||
+
+        estatus === "ACEPTADO"
+
+    ){
 
         return `
 
             <span
                 class="badge-estatus badge-aceptado">
 
-                Aceptado
+                Pagado
 
             </span>
 
@@ -492,6 +635,15 @@ async function pagarRegistro(
             `cantidad-${id}`
 
         );
+
+        if(!input){
+
+            alert(
+                "No se encontró el campo de cantidad"
+            );
+
+            return;
+        }
 
         const cantidad =
         parseFloat(
@@ -578,60 +730,9 @@ async function pagarRegistro(
 
         }
 
-        /* =========================
-           CAMBIAR ESTATUS
-        ========================= */
-
-        const actualizar =
-        await fetch(
-
-            `${API}/api/registros/estatus/${codigo}`,
-
-            {
-
-                method:'PUT',
-
-                headers:{
-
-                    'Content-Type':
-                    'application/json'
-
-                },
-
-                body:JSON.stringify({
-
-                    estatus:'Aceptado'
-
-                })
-
-            }
-
-        );
-
-        const actualizarData =
-        await actualizar.json();
-
-        if(!actualizar.ok){
-
-            alert(
-
-                actualizarData.error ||
-
-                "Error actualizando estatus"
-
-            );
-
-            return;
-
-        }
-
         alert(
             "Pago registrado correctamente"
         );
-
-        /* =========================
-           RECARGAR
-        ========================= */
 
         await cargarRegistros();
 
