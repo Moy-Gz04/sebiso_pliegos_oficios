@@ -715,3 +715,188 @@
         font-size:12px;
     }
 }
+
+/* =========================
+   TABLA RESPONSIVE
+========================= */
+
+.tabla-responsive{
+
+    width:100%;
+
+    overflow-x:auto;
+
+    overflow-y:hidden;
+
+    border-radius:18px;
+}
+
+/* =========================
+   TABLA
+========================= */
+
+.tabla-container table{
+
+    width:100%;
+
+    min-width:1350px;
+
+    border-collapse:collapse;
+
+    table-layout:fixed;
+}
+
+/* =========================
+   COLUMNAS
+========================= */
+
+.tabla-container th,
+.tabla-container td{
+
+    padding:14px 10px;
+
+    text-align:center;
+
+    vertical-align:middle;
+
+    border-bottom:1px solid #e5e7eb;
+
+    font-size:13px;
+
+    color:#374151;
+
+    word-break:break-word;
+}
+
+/* =========================
+   TEXTAREAS
+========================= */
+
+.textarea-obs,
+.textarea-obs-admin{
+
+    width:100%;
+
+    max-width:220px;
+
+    min-width:180px;
+
+    height:90px;
+
+    resize:none;
+
+    border:1px solid #d1d5db;
+
+    border-radius:14px;
+
+    padding:12px;
+
+    font-size:13px;
+
+    background:#f9fafb;
+
+    outline:none;
+
+    font-family:inherit;
+
+    color:#374151;
+}
+
+/* =========================
+   INPUT CANTIDAD
+========================= */
+
+.input-cantidad{
+
+    width:110px;
+
+    height:48px;
+
+    border:1px solid #d1d5db;
+
+    border-radius:14px;
+
+    background:#fff;
+
+    text-align:center;
+
+    font-size:20px;
+
+    font-weight:700;
+
+    color:#111827;
+
+    outline:none;
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.btn-pagar,
+.btn-rechazar{
+
+    width:140px;
+
+    height:48px;
+
+    border-radius:14px;
+
+    font-size:14px;
+
+    font-weight:700;
+}
+
+/* =========================
+   BADGE
+========================= */
+
+.badge-estatus{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:120px;
+
+    height:42px;
+
+    padding:0 18px;
+
+    border-radius:999px;
+
+    font-size:13px;
+
+    font-weight:700;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:1400px){
+
+    .tabla-container{
+
+        width:90%;
+    }
+
+}
+
+@media(max-width:900px){
+
+    .tabla-container{
+
+        width:95%;
+
+        padding:20px;
+    }
+
+    .tabla-container table{
+
+        min-width:1200px;
+    }
+
+}

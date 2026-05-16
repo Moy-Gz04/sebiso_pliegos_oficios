@@ -50,6 +50,22 @@ const mapaAreas = {
 };
 
 /* =========================
+   NORMALIZAR ESTATUS
+========================= */
+
+function normalizarEstatus(estatus){
+
+    return String(
+        estatus || ''
+    )
+
+    .trim()
+
+    .toUpperCase();
+
+}
+
+/* =========================
    CARGAR REGISTROS
 ========================= */
 
@@ -70,9 +86,23 @@ async function cargarRegistros(){
         const respuesta =
         await fetch(
 
-            `${API}/api/registros/${area}`
+            `${API}/api/registros/${area}`,
+
+            {
+
+                cache:"no-store"
+
+            }
 
         );
+
+        if(!respuesta.ok){
+
+            throw new Error(
+                "Error obteniendo registros"
+            );
+
+        }
 
         const data =
         await respuesta.json();
@@ -85,9 +115,15 @@ async function cargarRegistros(){
 
             data.filter((registro) => {
 
+                const estatus =
+
+                    normalizarEstatus(
+                        registro.estatus
+                    );
+
                 return (
 
-                    registro.estatus === "Enviado"
+                    estatus === "ENVIADO"
 
                 );
 
@@ -100,22 +136,35 @@ async function cargarRegistros(){
         const presupuestoRespuesta =
         await fetch(
 
-            `${API}/api/presupuestos/${areaPresupuesto}`
+            `${API}/api/presupuestos/${areaPresupuesto}`,
+
+            {
+
+                cache:"no-store"
+
+            }
 
         );
+
+        if(!presupuestoRespuesta.ok){
+
+            throw new Error(
+                "Error obteniendo presupuesto"
+            );
+
+        }
 
         const presupuestoData =
         await presupuestoRespuesta.json();
 
         const presupuestos =
-        presupuestoData.presupuestos || [];
+
+            presupuestoData.presupuestos || [];
 
         let saldo = 0;
 
         if(
-
             presupuestos.length > 0
-
         ){
 
             saldo =
@@ -130,7 +179,17 @@ async function cargarRegistros(){
 
         saldoDisponible.innerHTML =
 
-            `$${saldo.toFixed(2)}`;
+            `$${saldo.toLocaleString(
+
+                "es-MX",
+
+                {
+
+                    minimumFractionDigits:2
+
+                }
+
+            )}`;
 
         /* =========================
            LIMPIAR TABLA
@@ -168,21 +227,33 @@ async function cargarRegistros(){
 
         registrosPendientes.forEach((registro) => {
 
+            const estatusNormalizado =
+
+                normalizarEstatus(
+                    registro.estatus
+                );
+
             tbody.innerHTML += `
 
                 <tr>
 
-                    <td>
-
-                        ${registro.codigo}
-
-                    </td>
+                    <!-- CODIGO -->
 
                     <td>
 
-                        ${registro.persona}
+                        ${registro.codigo || '-'}
 
                     </td>
+
+                    <!-- PERSONA -->
+
+                    <td>
+
+                        ${registro.persona || '-'}
+
+                    </td>
+
+                    <!-- FECHA -->
 
                     <td>
 
@@ -191,6 +262,8 @@ async function cargarRegistros(){
                         )}
 
                     </td>
+
+                    <!-- OFICIO -->
 
                     <td>
 
@@ -206,6 +279,8 @@ async function cargarRegistros(){
 
                     </td>
 
+                    <!-- PLIEGO -->
+
                     <td>
 
                         <a
@@ -220,7 +295,7 @@ async function cargarRegistros(){
 
                     </td>
 
-                    <!-- OBSERVACIONES ÁREA -->
+                    <!-- OBS AREA -->
 
                     <td>
 
@@ -230,7 +305,7 @@ async function cargarRegistros(){
 
                     </td>
 
-                    <!-- OBSERVACIONES ADMIN -->
+                    <!-- OBS ADMIN -->
 
                     <td>
 
@@ -246,7 +321,7 @@ async function cargarRegistros(){
                     <td>
 
                         ${obtenerBadgeAdmin(
-                            registro.estatus
+                            estatusNormalizado
                         )}
 
                     </td>
@@ -260,6 +335,8 @@ async function cargarRegistros(){
                             class="input-cantidad"
                             id="cantidad-${registro.id}"
                             placeholder="$0.00"
+                            min="1"
+                            step="0.01"
                         >
 
                     </td>
@@ -309,11 +386,24 @@ async function cargarRegistros(){
 
     catch(error){
 
-        console.log(error);
-
-        alert(
-            "Error cargando registros"
+        console.log(
+            "ERROR CARGANDO:",
+            error
         );
+
+        tbody.innerHTML = `
+
+            <tr>
+
+                <td colspan="11">
+
+                    Error cargando registros
+
+                </td>
+
+            </tr>
+
+        `;
 
     }
 
@@ -325,7 +415,7 @@ async function cargarRegistros(){
 
 function obtenerBadgeAdmin(estatus){
 
-    if(estatus === "Enviado"){
+    if(estatus === "ENVIADO"){
 
         return `
 
@@ -340,7 +430,7 @@ function obtenerBadgeAdmin(estatus){
 
     }
 
-    if(estatus === "Aceptado"){
+    if(estatus === "ACEPTADO"){
 
         return `
 
@@ -355,7 +445,7 @@ function obtenerBadgeAdmin(estatus){
 
     }
 
-    if(estatus === "Rechazado"){
+    if(estatus === "RECHAZADO"){
 
         return `
 
@@ -369,6 +459,17 @@ function obtenerBadgeAdmin(estatus){
         `;
 
     }
+
+    return `
+
+        <span
+            class="badge-estatus">
+
+            Desconocido
+
+        </span>
+
+    `;
 
 }
 
@@ -385,18 +486,23 @@ async function pagarRegistro(
 
     try{
 
-        const cantidad =
+        const input =
         document.getElementById(
 
             `cantidad-${id}`
 
-        ).value;
+        );
+
+        const cantidad =
+        parseFloat(
+            input.value
+        );
 
         if(
 
             !cantidad ||
 
-            parseFloat(cantidad) <= 0
+            cantidad <= 0
 
         ){
 
@@ -411,7 +517,7 @@ async function pagarRegistro(
         const confirmar =
         confirm(
 
-            `¿Registrar pago de $${cantidad}?`
+            `¿Registrar pago de $${cantidad.toFixed(2)}?`
 
         );
 
@@ -456,11 +562,13 @@ async function pagarRegistro(
         const data =
         await respuesta.json();
 
-        if(!data.ok){
+        if(!respuesta.ok || !data.ok){
 
             alert(
 
                 data.msg ||
+
+                data.error ||
 
                 "Error registrando pago"
 
@@ -474,6 +582,7 @@ async function pagarRegistro(
            CAMBIAR ESTATUS
         ========================= */
 
+        const actualizar =
         await fetch(
 
             `${API}/api/registros/estatus/${codigo}`,
@@ -499,17 +608,41 @@ async function pagarRegistro(
 
         );
 
+        const actualizarData =
+        await actualizar.json();
+
+        if(!actualizar.ok){
+
+            alert(
+
+                actualizarData.error ||
+
+                "Error actualizando estatus"
+
+            );
+
+            return;
+
+        }
+
         alert(
-            "Pago registrado"
+            "Pago registrado correctamente"
         );
 
-        cargarRegistros();
+        /* =========================
+           RECARGAR
+        ========================= */
+
+        await cargarRegistros();
 
     }
 
     catch(error){
 
-        console.log(error);
+        console.log(
+            "ERROR PAGAR:",
+            error
+        );
 
         alert(
             "Error servidor"
@@ -527,18 +660,17 @@ async function rechazarRegistro(codigo){
 
     try{
 
-        const observacionesAdmin =
+        const textarea =
         document.getElementById(
 
             `obs-admin-${codigo}`
 
-        ).value;
+        );
 
-        if(
+        const observacionesAdmin =
+        textarea.value.trim();
 
-            !observacionesAdmin.trim()
-
-        ){
+        if(!observacionesAdmin){
 
             alert(
 
@@ -551,9 +683,10 @@ async function rechazarRegistro(codigo){
         }
 
         /* =========================
-           GUARDAR OBSERVACIÓN
+           GUARDAR OBS
         ========================= */
 
+        const observacionResponse =
         await fetch(
 
             `${API}/api/registros/observaciones-admin/${codigo}`,
@@ -580,10 +713,28 @@ async function rechazarRegistro(codigo){
 
         );
 
+        const observacionData =
+        await observacionResponse.json();
+
+        if(!observacionResponse.ok){
+
+            alert(
+
+                observacionData.error ||
+
+                "Error guardando observación"
+
+            );
+
+            return;
+
+        }
+
         /* =========================
            CAMBIAR ESTATUS
         ========================= */
 
+        const rechazoResponse =
         await fetch(
 
             `${API}/api/registros/estatus/${codigo}`,
@@ -609,19 +760,39 @@ async function rechazarRegistro(codigo){
 
         );
 
+        const rechazoData =
+        await rechazoResponse.json();
+
+        if(!rechazoResponse.ok){
+
+            alert(
+
+                rechazoData.error ||
+
+                "Error rechazando"
+
+            );
+
+            return;
+
+        }
+
         alert(
 
             'Registro rechazado'
 
         );
 
-        cargarRegistros();
+        await cargarRegistros();
 
     }
 
     catch(error){
 
-        console.log(error);
+        console.log(
+            "ERROR RECHAZAR:",
+            error
+        );
 
         alert(
 
@@ -639,7 +810,13 @@ async function rechazarRegistro(codigo){
 
 function formatearFecha(fecha){
 
+    if(!fecha){
+
+        return "-";
+    }
+
     return new Date(fecha)
+
     .toLocaleString(
         "es-MX"
     );
@@ -654,7 +831,23 @@ selectArea.addEventListener(
 
     "change",
 
-    cargarRegistros
+    async () => {
+
+        await cargarRegistros();
+
+    }
+
+);
+
+/* =========================
+   AUTO REFRESH
+========================= */
+
+setInterval(
+
+    cargarRegistros,
+
+    30000
 
 );
 
