@@ -5,8 +5,10 @@
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>
 
@@ -14,10 +16,37 @@
 
     </title>
 
+    <!-- =========================
+         CSS
+    ========================= -->
+
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ssidebar.css">
     <link rel="stylesheet" href="css/gastos.css">
     <link rel="stylesheet" href="css/revisiones.css">
+
+    <!-- =========================
+         AJUSTES RESPONSIVE
+    ========================= -->
+
+    <style>
+
+        .tabla-responsive{
+
+            width:100%;
+            overflow-x:auto;
+
+        }
+
+        .tabla-responsive table{
+
+            width:100%;
+            min-width:1500px;
+            border-collapse:collapse;
+
+        }
+
+    </style>
 
 </head>
 
@@ -55,7 +84,11 @@
 
         </div>
 
-        <br><br>
+        <!-- =========================
+             ESPACIO
+        ========================= -->
+
+        <div style="height:25px;"></div>
 
         <!-- =========================
              CONTENEDOR
@@ -75,13 +108,23 @@
 
                 <div class="fila fila-top">
 
-                    <label>
+                    <label for="selectArea">
 
                         ÁREA PRESUPUESTAL
 
                     </label>
 
                     <select id="selectArea">
+
+                        <option
+                            value=""
+                            disabled
+                            selected
+                        >
+
+                            Selecciona un área
+
+                        </option>
 
                         <option value="UP-01">
 
@@ -175,167 +218,67 @@
 
             <div class="tabla-container">
 
-                <h2>
+                <div class="tabla-header">
 
-                    REGISTROS DEL ÁREA
+                    <h2>
 
-                </h2>
+                        REGISTROS DEL ÁREA
 
-                <table>
+                    </h2>
 
-                    <thead>
+                </div>
 
-                        <tr>
+                <!-- =========================
+                     RESPONSIVE WRAPPER
+                ========================= -->
 
-                            <th>ID</th>
+                <div class="tabla-responsive">
 
-                            <th>PERSONA</th>
+                    <table>
 
-                            <th>FECHA Y HORA</th>
+                        <thead>
 
-                            <th>OFICIO PDF</th>
+                            <tr>
 
-                            <th>PLIEGO PDF</th>
+                                <th>ID</th>
 
-                            <th>OBS. ÁREA</th>
+                                <th>PERSONA</th>
 
-                            <th>OBS. ADMIN</th>
+                                <th>FECHA Y HORA</th>
 
-                            <th>ESTATUS</th>
+                                <th>OFICIO PDF</th>
 
-                            <th>CANTIDAD</th>
+                                <th>PLIEGO PDF</th>
 
-                            <th>PAGAR</th>
+                                <th>OBS. ÁREA</th>
 
-                            <th>RECHAZAR</th>
+                                <th>OBS. ADMIN</th>
 
-                        </tr>
+                                <th>ESTATUS</th>
 
-                    </thead>
+                                <th>PAGADO</th>
 
-                    <tbody id="tbodyRegistros">
+                                <th>CANTIDAD</th>
 
-                        <!-- =========================
-                             EJEMPLO VISUAL
-                        ========================= -->
+                                <th>PAGAR</th>
 
-                        <!--
+                                <th>RECHAZAR</th>
 
-                        <tr>
+                            </tr>
 
-                            <td>
+                        </thead>
 
-                                UP-06_R-3522
+                        <tbody id="tbodyRegistros">
 
-                            </td>
+                            <!-- =========================
+                                 REGISTROS DINÁMICOS
+                            ========================= -->
 
-                            <td>
+                        </tbody>
 
-                                Lic. Danna Odemaris
-                                Fuentes Olguin
+                    </table>
 
-                            </td>
-
-                            <td>
-
-                                8/5/2026,
-                                3:14:33 p.m.
-
-                            </td>
-
-                            <td>
-
-                                <a
-                                    href="#"
-                                    target="_blank">
-
-                                    Ver Oficio
-
-                                </a>
-
-                            </td>
-
-                            <td>
-
-                                <a
-                                    href="#"
-                                    target="_blank">
-
-                                    Ver Pliego
-
-                                </a>
-
-                            </td>
-
-                            <td>
-
-                                <textarea
-                                    class="textarea-observaciones"
-                                    readonly>
-
-                                    Observación del área
-
-                                </textarea>
-
-                            </td>
-
-                            <td>
-
-                                <textarea
-                                    class="textarea-observaciones-admin"
-                                    placeholder="Escribir motivo de rechazo..."></textarea>
-
-                            </td>
-
-                            <td>
-
-                                <span
-                                    class="badge-estatus badge-revision">
-
-                                    A Revisar
-
-                                </span>
-
-                            </td>
-
-                            <td>
-
-                                <input
-                                    type="number"
-                                    class="input-cantidad"
-                                    placeholder="$0.00">
-
-                            </td>
-
-                            <td>
-
-                                <button
-                                    class="btn-pagar">
-
-                                    PAGAR
-
-                                </button>
-
-                            </td>
-
-                            <td>
-
-                                <button
-                                    class="btn-rechazar">
-
-                                    RECHAZAR
-
-                                </button>
-
-                            </td>
-
-                        </tr>
-
-                        -->
-
-                    </tbody>
-
-                </table>
+                </div>
 
             </div>
 
@@ -347,7 +290,10 @@
          MODAL ÉXITO
     ========================= -->
 
-    <div class="modal" id="modalExito">
+    <div
+        class="modal"
+        id="modalExito"
+    >
 
         <div class="modal-contenido">
 
@@ -366,7 +312,8 @@
             <button
                 type="button"
                 class="btn-principal"
-                onclick="cerrarModal('modalExito')">
+                onclick="cerrarModal('modalExito')"
+            >
 
                 Aceptar
 
@@ -380,7 +327,10 @@
          MODAL ERROR
     ========================= -->
 
-    <div class="modal" id="modalError">
+    <div
+        class="modal"
+        id="modalError"
+    >
 
         <div class="modal-contenido">
 
@@ -399,7 +349,8 @@
             <button
                 type="button"
                 class="btn-principal"
-                onclick="cerrarModal('modalError')">
+                onclick="cerrarModal('modalError')"
+            >
 
                 Aceptar
 
