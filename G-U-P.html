@@ -461,6 +461,190 @@
     </div>
 
     <!-- =========================
+     MODAL ÉXITO
+========================= -->
+
+<div
+    class="modal"
+    id="modalExito"
+>
+
+    <div class="modal-contenido modal-exito">
+
+        <h2>
+
+            Operación realizada
+
+        </h2>
+
+        <p id="mensajeModalExito">
+
+            El registro fue actualizado correctamente.
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="cerrarModal('modalExito')"
+            >
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ERROR
+========================= -->
+
+<div
+    class="modal"
+    id="modalError"
+>
+
+    <div class="modal-contenido modal-error">
+
+        <h2>
+
+            Error
+
+        </h2>
+
+        <p id="mensajeModalError">
+
+            Ocurrió un problema.
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="cerrarModal('modalError')"
+            >
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL CONFIRMAR RECHAZO
+========================= -->
+
+<div
+    class="modal"
+    id="modalConfirmarRechazo"
+>
+
+    <div class="modal-contenido">
+
+        <h2>
+
+            Confirmar rechazo
+
+        </h2>
+
+        <p id="mensajeModalRechazo">
+
+            ¿Desea rechazar este registro?
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarRechazo')"
+            >
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="btnConfirmarRechazo"
+            >
+
+                Rechazar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL CONFIRMAR PAGO
+========================= -->
+
+<div
+    class="modal"
+    id="modalConfirmarPago"
+>
+
+    <div class="modal-contenido">
+
+        <h2>
+
+            Confirmar pago
+
+        </h2>
+
+        <p id="mensajeModalPago">
+
+            ¿Desea registrar este pago?
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarPago')"
+            >
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="btnConfirmarPago"
+            >
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- =========================
          SCRIPTS
     ========================= -->
 

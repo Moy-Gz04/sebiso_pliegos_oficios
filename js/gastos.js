@@ -22,6 +22,54 @@ document.getElementById(
 );
 
 /* =========================
+   MODALES
+========================= */
+
+function abrirModal(id){
+
+    document.getElementById(
+        id
+    ).style.display = "flex";
+
+}
+
+function cerrarModal(id){
+
+    document.getElementById(
+        id
+    ).style.display = "none";
+
+}
+
+/* =========================
+   MODAL ERROR
+========================= */
+
+function mostrarError(mensaje){
+
+    document.getElementById(
+        "mensajeModalError"
+    ).innerText = mensaje;
+
+    abrirModal("modalError");
+
+}
+
+/* =========================
+   MODAL ÉXITO
+========================= */
+
+function mostrarExito(mensaje){
+
+    document.getElementById(
+        "mensajeModalExito"
+    ).innerText = mensaje;
+
+    abrirModal("modalExito");
+
+}
+
+/* =========================
    MAPA ÁREAS
 ========================= */
 
@@ -86,10 +134,6 @@ async function cargarRegistros(){
         const areaPresupuesto =
         mapaAreas[area];
 
-        /* =========================
-           OBTENER REGISTROS
-        ========================= */
-
         const respuesta =
         await fetch(
 
@@ -114,10 +158,6 @@ async function cargarRegistros(){
         const data =
         await respuesta.json();
 
-        /* =========================
-           SOLO ENVIADOS
-        ========================= */
-
         const registrosPendientes =
 
             data.filter((registro) => {
@@ -135,10 +175,6 @@ async function cargarRegistros(){
                 );
 
             });
-
-        /* =========================
-           OBTENER PRESUPUESTO
-        ========================= */
 
         const presupuestoRespuesta =
         await fetch(
@@ -198,15 +234,7 @@ async function cargarRegistros(){
 
             )}`;
 
-        /* =========================
-           LIMPIAR CONTENEDOR
-        ========================= */
-
         tbody.innerHTML = "";
-
-        /* =========================
-           SIN REGISTROS
-        ========================= */
 
         if(registrosPendientes.length === 0){
 
@@ -228,10 +256,6 @@ async function cargarRegistros(){
 
         }
 
-        /* =========================
-           INSERTAR REGISTROS
-        ========================= */
-
         registrosPendientes.forEach((registro) => {
 
             const estatusNormalizado =
@@ -240,10 +264,6 @@ async function cargarRegistros(){
                     registro.estatus
                 );
 
-            /* =========================
-               PAGADO
-            ========================= */
-
             const yaPagado =
 
                 registro.pagado === true ||
@@ -251,10 +271,6 @@ async function cargarRegistros(){
                 estatusNormalizado === 'PAGADO' ||
 
                 estatusNormalizado === 'ACEPTADO';
-
-            /* =========================
-               BOTÓN PAGAR
-            ========================= */
 
             const botonPagar = yaPagado
 
@@ -287,10 +303,6 @@ async function cargarRegistros(){
 
             `;
 
-            /* =========================
-               BOTÓN RECHAZAR
-            ========================= */
-
             const botonRechazar = yaPagado
 
             ? `
@@ -310,7 +322,7 @@ async function cargarRegistros(){
 
                 <button
                     class="btn-rechazar"
-                    onclick="rechazarRegistro(
+                    onclick="confirmarRechazo(
                         '${registro.codigo}'
                     )"
                 >
@@ -320,10 +332,6 @@ async function cargarRegistros(){
                 </button>
 
             `;
-
-            /* =========================
-               ESTATUS VISUAL
-            ========================= */
 
             let estatusVisual =
             estatusNormalizado;
@@ -338,13 +346,7 @@ async function cargarRegistros(){
 
                 <div class="registro-card">
 
-                    <!-- =========================
-                         FILA SUPERIOR
-                    ========================= -->
-
                     <div class="registro-top">
-
-                        <!-- ID -->
 
                         <div class="campo-mini">
 
@@ -361,8 +363,6 @@ async function cargarRegistros(){
                             </strong>
 
                         </div>
-
-                        <!-- FECHA -->
 
                         <div class="campo-mini">
 
@@ -382,8 +382,6 @@ async function cargarRegistros(){
 
                         </div>
 
-                        <!-- PERSONA -->
-
                         <div class="campo-mini campo-persona">
 
                             <span>
@@ -399,8 +397,6 @@ async function cargarRegistros(){
                             </strong>
 
                         </div>
-
-                        <!-- OFICIO -->
 
                         <div class="campo-mini">
 
@@ -422,8 +418,6 @@ async function cargarRegistros(){
 
                         </div>
 
-                        <!-- PLIEGO -->
-
                         <div class="campo-mini">
 
                             <span>
@@ -444,8 +438,6 @@ async function cargarRegistros(){
 
                         </div>
 
-                        <!-- ESTATUS -->
-
                         <div class="campo-mini">
 
                             <span>
@@ -462,13 +454,7 @@ async function cargarRegistros(){
 
                     </div>
 
-                    <!-- =========================
-                         FILA INFERIOR
-                    ========================= -->
-
                     <div class="registro-bottom">
-
-                        <!-- OBS ÁREA -->
 
                         <div class="campo-observacion">
 
@@ -484,8 +470,6 @@ async function cargarRegistros(){
                             >${registro.observaciones || ''}</textarea>
 
                         </div>
-
-                        <!-- OBS ADMIN -->
 
                         <div class="campo-observacion">
 
@@ -503,8 +487,6 @@ async function cargarRegistros(){
                             >${registro.observaciones_admin || ''}</textarea>
 
                         </div>
-
-                        <!-- CANTIDAD -->
 
                         <div class="campo-mini">
 
@@ -562,8 +544,6 @@ async function cargarRegistros(){
 
                         </div>
 
-                        <!-- PAGAR -->
-
                         <div class="campo-mini">
 
                             <span>
@@ -575,8 +555,6 @@ async function cargarRegistros(){
                             ${botonPagar}
 
                         </div>
-
-                        <!-- RECHAZAR -->
 
                         <div class="campo-mini">
 
@@ -719,7 +697,7 @@ async function pagarRegistro(
 
         if(!input){
 
-            alert(
+            mostrarError(
                 "No se encontró el campo de cantidad"
             );
 
@@ -739,7 +717,7 @@ async function pagarRegistro(
 
         ){
 
-            alert(
+            mostrarError(
                 "Ingrese una cantidad válida"
             );
 
@@ -747,71 +725,97 @@ async function pagarRegistro(
 
         }
 
-        const confirmar =
-        confirm(
+        document.getElementById(
+            "mensajeModalPago"
+        ).innerText =
 
-            `¿Registrar pago de $${cantidad.toFixed(2)}?`
+        `¿Registrar pago de $${cantidad.toFixed(2)}?`;
 
+        abrirModal(
+            "modalConfirmarPago"
         );
 
-        if(!confirmar){
+        document.getElementById(
 
-            return;
+            "btnConfirmarPago"
 
-        }
+        ).onclick = async () => {
 
-        const respuesta =
-        await fetch(
+            cerrarModal(
+                "modalConfirmarPago"
+            );
 
-            `${API}/api/gastos/registrar`,
+            try{
 
-            {
+                const respuesta =
+                await fetch(
 
-                method:"POST",
+                    `${API}/api/gastos/registrar`,
 
-                headers:{
+                    {
 
-                    "Content-Type":
-                    "application/json"
+                        method:"POST",
 
-                },
+                        headers:{
 
-                body:JSON.stringify({
+                            "Content-Type":
+                            "application/json"
 
-                    registro_id:id,
+                        },
 
-                    cantidad
+                        body:JSON.stringify({
 
-                })
+                            registro_id:id,
+
+                            cantidad
+
+                        })
+
+                    }
+
+                );
+
+                const data =
+                await respuesta.json();
+
+                if(!respuesta.ok || !data.ok){
+
+                    mostrarError(
+
+                        data.msg ||
+
+                        data.error ||
+
+                        "Error registrando pago"
+
+                    );
+
+                    return;
+
+                }
+
+                mostrarExito(
+                    "Pago registrado correctamente"
+                );
+
+                await cargarRegistros();
 
             }
 
-        );
+            catch(error){
 
-        const data =
-        await respuesta.json();
+                console.log(
+                    "ERROR PAGAR:",
+                    error
+                );
 
-        if(!respuesta.ok || !data.ok){
+                mostrarError(
+                    "Error servidor"
+                );
 
-            alert(
+            }
 
-                data.msg ||
-
-                data.error ||
-
-                "Error registrando pago"
-
-            );
-
-            return;
-
-        }
-
-        alert(
-            "Pago registrado correctamente"
-        );
-
-        await cargarRegistros();
+        };
 
     }
 
@@ -822,11 +826,45 @@ async function pagarRegistro(
             error
         );
 
-        alert(
+        mostrarError(
             "Error servidor"
         );
 
     }
+
+}
+
+/* =========================
+   CONFIRMAR RECHAZO
+========================= */
+
+function confirmarRechazo(codigo){
+
+    document.getElementById(
+
+        "mensajeModalRechazo"
+
+    ).innerText =
+
+    "¿Desea rechazar este registro?";
+
+    abrirModal(
+        "modalConfirmarRechazo"
+    );
+
+    document.getElementById(
+
+        "btnConfirmarRechazo"
+
+    ).onclick = async () => {
+
+        cerrarModal(
+            "modalConfirmarRechazo"
+        );
+
+        await rechazarRegistro(codigo);
+
+    };
 
 }
 
@@ -850,7 +888,7 @@ async function rechazarRegistro(codigo){
 
         if(!observacionesAdmin){
 
-            alert(
+            mostrarError(
 
                 "Debes escribir una observación"
 
@@ -892,7 +930,7 @@ async function rechazarRegistro(codigo){
 
         if(!observacionResponse.ok){
 
-            alert(
+            mostrarError(
 
                 observacionData.error ||
 
@@ -935,7 +973,7 @@ async function rechazarRegistro(codigo){
 
         if(!rechazoResponse.ok){
 
-            alert(
+            mostrarError(
 
                 rechazoData.error ||
 
@@ -947,10 +985,8 @@ async function rechazarRegistro(codigo){
 
         }
 
-        alert(
-
-            'Registro rechazado'
-
+        mostrarExito(
+            "Registro rechazado"
         );
 
         await cargarRegistros();
@@ -964,10 +1000,8 @@ async function rechazarRegistro(codigo){
             error
         );
 
-        alert(
-
-            'Error rechazando registro'
-
+        mostrarError(
+            "Error rechazando registro"
         );
 
     }
