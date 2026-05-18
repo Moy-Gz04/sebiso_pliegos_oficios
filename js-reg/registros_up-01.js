@@ -18,6 +18,22 @@ const API =
 let codigoEliminar = null;
 
 /* =========================
+   NORMALIZAR ESTATUS
+========================= */
+
+function normalizarEstatus(estatus){
+
+    return String(
+        estatus || ''
+    )
+
+    .trim()
+
+    .toUpperCase();
+
+}
+
+/* =========================
    MODALES
 ========================= */
 
@@ -53,9 +69,14 @@ function cerrarModal(id){
 
 function obtenerBadgeEstatus(estatus){
 
-    switch(estatus){
+    const estado =
+    normalizarEstatus(
+        estatus
+    );
 
-        case "Enviado":
+    switch(estado){
+
+        case "ENVIADO":
 
             return `
 
@@ -68,20 +89,33 @@ function obtenerBadgeEstatus(estatus){
 
             `;
 
-        case "Aceptado":
+        case "PAGADO":
 
             return `
 
                 <span
                     class="badge-estatus badge-aceptado">
 
-                    Aceptado
+                    Pagado
 
                 </span>
 
             `;
 
-        case "Rechazado":
+        case "ACEPTADO":
+
+            return `
+
+                <span
+                    class="badge-estatus badge-aceptado">
+
+                    Pagado
+
+                </span>
+
+            `;
+
+        case "RECHAZADO":
 
             return `
 
@@ -117,15 +151,20 @@ function obtenerBadgeEstatus(estatus){
 
 function obtenerBotonEnviar(registro){
 
+    const estatus =
+    normalizarEstatus(
+        registro.estatus
+    );
+
     /* =========================
        CREADO
     ========================= */
 
     if(
 
-        registro.estatus === "Creado"
+        estatus === "CREADO"
         ||
-        !registro.estatus
+        !estatus
 
     ){
 
@@ -147,7 +186,7 @@ function obtenerBotonEnviar(registro){
        ENVIADO
     ========================= */
 
-    if(registro.estatus === "Enviado"){
+    if(estatus === "ENVIADO"){
 
         return `
 
@@ -164,10 +203,16 @@ function obtenerBotonEnviar(registro){
     }
 
     /* =========================
-       ACEPTADO
+       PAGADO
     ========================= */
 
-    if(registro.estatus === "Aceptado"){
+    if(
+
+        estatus === "PAGADO"
+        ||
+        estatus === "ACEPTADO"
+
+    ){
 
         return `
 
@@ -175,7 +220,7 @@ function obtenerBotonEnviar(registro){
                 class="btn-aceptado"
                 disabled>
 
-                Aceptado
+                Pagado
 
             </button>
 
@@ -187,7 +232,7 @@ function obtenerBotonEnviar(registro){
        RECHAZADO
     ========================= */
 
-    if(registro.estatus === "Rechazado"){
+    if(estatus === "RECHAZADO"){
 
         return `
 
@@ -202,6 +247,18 @@ function obtenerBotonEnviar(registro){
         `;
 
     }
+
+    return `
+
+        <button
+            class="btn-bloqueado"
+            disabled>
+
+            Bloqueado
+
+        </button>
+
+    `;
 
 }
 
@@ -464,40 +521,52 @@ async function cargarRegistros(){
 
             const orden = {
 
-                "Creado":1,
-                "Rechazado":2,
-                "Enviado":3,
-                "Aceptado":4
+                "CREADO":1,
+                "RECHAZADO":2,
+                "ENVIADO":3,
+                "PAGADO":4,
+                "ACEPTADO":4
 
             };
 
             return (
 
-                orden[a.estatus || 'Creado']
+                (orden[
+                    normalizarEstatus(a.estatus)
+                ] || 99)
 
                 -
 
-                orden[b.estatus || 'Creado']
+                (orden[
+                    normalizarEstatus(b.estatus)
+                ] || 99)
 
             );
 
         });
 
         /* =========================
-           RECORRER REGISTROS
+           RECORRER
         ========================= */
 
         for(const registro of registros){
 
+            const estatus =
+            normalizarEstatus(
+                registro.estatus
+            );
+
             /* =========================
-               BLOQUEAR EDICIÓN
+               BLOQUEAR
             ========================= */
 
             const bloqueado =
 
-                registro.estatus === "Aceptado"
+                estatus === "PAGADO"
                 ||
-                registro.estatus === "Enviado";
+                estatus === "ACEPTADO"
+                ||
+                estatus === "ENVIADO";
 
             /* =========================
                ELIMINAR
@@ -505,11 +574,11 @@ async function cargarRegistros(){
 
             const permitirEliminar =
 
-                registro.estatus === "Creado"
+                estatus === "CREADO"
                 ||
-                registro.estatus === "Rechazado"
+                estatus === "RECHAZADO"
                 ||
-                !registro.estatus;
+                !estatus;
 
             tbody.innerHTML += `
 
@@ -519,7 +588,7 @@ async function cargarRegistros(){
 
                     <td>
 
-                        ${registro.codigo}
+                        ${registro.codigo || '-'}
 
                     </td>
 
@@ -527,7 +596,7 @@ async function cargarRegistros(){
 
                     <td>
 
-                        ${registro.persona}
+                        ${registro.persona || '-'}
 
                     </td>
 
@@ -535,11 +604,21 @@ async function cargarRegistros(){
 
                     <td>
 
-                        ${new Date(
-                            registro.fecha
-                        ).toLocaleString(
-                            'es-MX'
-                        )}
+                        ${registro.fecha
+
+                            ?
+
+                            new Date(
+                                registro.fecha
+                            ).toLocaleString(
+                                'es-MX'
+                            )
+
+                            :
+
+                            '-'
+
+                        }
 
                     </td>
 
@@ -548,7 +627,7 @@ async function cargarRegistros(){
                     <td>
 
                         <a
-                            href="${registro.oficio_pdf}"
+                            href="${registro.oficio_pdf || '#'}"
                             target="_blank"
                             class="link-pdf">
 
@@ -563,7 +642,7 @@ async function cargarRegistros(){
                     <td>
 
                         <a
-                            href="${registro.pliego_pdf}"
+                            href="${registro.pliego_pdf || '#'}"
                             target="_blank"
                             class="link-pdf">
 
@@ -600,7 +679,8 @@ async function cargarRegistros(){
                                 '${registro.codigo}',
                                 this.value
                             )"
-                            ${bloqueado ? 'readonly' : ''}>${registro.observaciones || ''}</textarea>
+                            ${bloqueado ? 'readonly' : ''}
+                        >${registro.observaciones || ''}</textarea>
 
                     </td>
 
@@ -611,7 +691,8 @@ async function cargarRegistros(){
                         <textarea
                             class="textarea-observaciones-admin"
                             readonly
-                            placeholder="Observaciones administración...">${registro.observaciones_admin || ''}</textarea>
+                            placeholder="Observaciones administración..."
+                        >${registro.observaciones_admin || ''}</textarea>
 
                     </td>
 
@@ -776,4 +857,4 @@ setInterval(
    INICIAR
 ========================= */
 
-cargarRegistros();s
+cargarRegistros();
