@@ -8,7 +8,6 @@ const API =
 
 const AREA =
 
-
 "UP-16";
 
 /* =========================
@@ -36,8 +35,6 @@ document.getElementById(
 /* =========================
    VARIABLES
 ========================= */
-
-let totalGastos = 0;
 
 let ingresosGlobal = [];
 
@@ -87,9 +84,13 @@ async function cargarIngresos(){
             );
         }
 
-        const data =
+        const response =
 
         await respuesta.json();
+
+        const data =
+
+        response.presupuestos;
 
         console.log(
             "INGRESOS:",
@@ -211,16 +212,12 @@ function renderizarIngresos(){
     const saldoBase =
 
     parseFloat(
-        ultimoRegistro.saldo_disponible || 0
+        ultimoRegistro.saldo_restante || 0
     );
-
-    const saldoReal =
-
-    saldoBase - totalGastos;
 
     saldoDisponible.innerHTML =
 
-        `$${saldoReal.toLocaleString(
+        `$${saldoBase.toLocaleString(
 
             "es-MX",
 
@@ -237,10 +234,8 @@ function renderizarIngresos(){
         const disponibleReal =
 
         parseFloat(
-            registro.saldo_disponible || 0
-        )
-        -
-        totalGastos;
+            registro.saldo_restante || 0
+        );
 
         tbodyIngresos.innerHTML += `
 
@@ -376,7 +371,7 @@ async function cargarGastos(){
 
         await fetch(
 
-            `${API}/api/gastos/${AREA}`
+            `${API}/api/presupuestos/${AREA}`
 
         );
 
@@ -389,9 +384,13 @@ async function cargarGastos(){
             );
         }
 
-        const gastos =
+        const response =
 
         await respuesta.json();
+
+        const gastos =
+
+        response.gastos;
 
         console.log(
             "GASTOS:",
@@ -419,23 +418,6 @@ async function cargarGastos(){
             return;
         }
 
-        totalGastos = gastos.reduce(
-
-            (acc, gasto) => {
-
-                return (
-                    acc +
-                    parseFloat(
-                        gasto.cantidad || 0
-                    )
-                );
-
-            },
-
-            0
-
-        );
-
         if(gastos.length === 0){
 
             tbodyGastos.innerHTML = `
@@ -451,8 +433,6 @@ async function cargarGastos(){
                 </tr>
 
             `;
-
-            renderizarIngresos();
 
             return;
         }
@@ -505,8 +485,6 @@ async function cargarGastos(){
 
             `;
         });
-
-        renderizarIngresos();
 
     }
 
