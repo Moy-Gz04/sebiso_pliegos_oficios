@@ -1,35 +1,20 @@
 <script>
 
-    /* =========================
-       VALIDAR LOGIN
-    ========================= */
+const token = localStorage.getItem('token');
 
-    const token =
-        localStorage.getItem('token');
+const area = localStorage.getItem('area');
 
-    /* =========================
-       ÁREA PERMITIDA
-       CAMBIAR SOLO ESTA PARTE
-    ========================= */
+if(!token){
 
-    const AREA = 'UP-07';
+    window.location.href = 'index.html';
 
-    const area =
-        localStorage.getItem('area');
+}
 
-    if (!token) {
+if(area !== 'UP-07'){
 
-        window.location.href =
-            'index.html';
+    window.location.href = 'index.html';
 
-    }
-
-    if (area !== AREA) {
-
-        window.location.href =
-            'index.html';
-
-    }
+}
 
 </script>
 
@@ -43,40 +28,55 @@
     <meta name="viewport"
         content="width=device-width, initial-scale=1.0">
 
-    <title>Registros</title>
+    <title>Revisión de Registros</title>
 
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/ssidebar.css">
+    <link rel="stylesheet" href="../css/revisiones.css">
 
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
+    <!-- =========================
+         SIDEBAR
+    ========================= -->
 
     <div id="sidebar-container"></div>
 
-    <!-- CONTENIDO -->
+    <!-- =========================
+         CONTENIDO
+    ========================= -->
 
     <div class="contenido">
 
-        <!-- ENCABEZADO -->
+        <!-- =========================
+             TOPBAR
+        ========================= -->
 
         <div class="topbar">
 
             <div class="titulo-principal">
+
                 SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+
             </div>
 
             <div class="subtitulo">
-                REVISIÓN DE REGISTROS      <br>UP_07 - MIGRANTES
+
+                REVISIÓN DE REGISTROS
+                <br>
+                UP_07 - MIGRANTES
+
             </div>
 
         </div>
 
         <br><br>
 
-        <!-- TABLA -->
+        <!-- =========================
+             TABLA
+        ========================= -->
 
         <table id="tablaResultados">
 
@@ -94,6 +94,14 @@
 
                     <th>Pliego PDF</th>
 
+                    <th>Enviar</th>
+
+                    <th>Estatus</th>
+
+                    <th>Observaciones</th>
+
+                    <th>Observaciones - Admon.</th>
+
                     <th>Eliminar</th>
 
                 </tr>
@@ -102,7 +110,96 @@
 
             <tbody id="tbodyResultados">
 
-                <!-- REGISTROS -->
+                <!-- =========================
+                     EJEMPLO VISUAL
+                ========================= -->
+
+                <!--
+
+                <tr>
+
+                    <td>
+                        UP-07_R-001
+                    </td>
+
+                    <td>
+                        Diana Laura Fernández Monroy
+                    </td>
+
+                    <td>
+                        8/5/2026, 1:43:27 p.m.
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="#"
+                            target="_blank"
+                            class="link-pdf">
+
+                            Ver Oficio
+
+                        </a>
+
+                    </td>
+
+                    <td>
+
+                        <a
+                            href="#"
+                            target="_blank"
+                            class="link-pdf">
+
+                            Ver Pliego
+
+                        </a>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-enviar">
+
+                            Enviar
+
+                        </button>
+
+                    </td>
+
+                    <td>
+
+                        <span
+                            class="badge-estatus badge-creado">
+
+                            Creado
+
+                        </span>
+
+                    </td>
+
+                    <td>
+
+                        <textarea
+                            class="textarea-observaciones"
+                            placeholder="Escribe observaciones..."></textarea>
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn-eliminar">
+
+                            Eliminar
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+                -->
 
             </tbody>
 
@@ -111,38 +208,77 @@
     </div>
 
     <!-- =========================
-     MODAL ELIMINAR
-========================= -->
+         MODAL ELIMINAR
+    ========================= -->
 
-<div class="modal" id="modalEliminar">
+    <div class="modal" id="modalEliminar">
 
-    <div class="modal-contenido">
+        <div class="modal-contenido">
 
-        <h2>
-            ¿Eliminar registro?
-        </h2>
+            <h2>
 
-        <p>
-            Esta acción no se puede deshacer.
-        </p>
+                ¿Eliminar registro?
 
-        <div class="modal-botones">
+            </h2>
 
-            <button
-                type="button"
-                class="btn-secundario"
-                onclick="cerrarModal('modalEliminar')">
+            <p>
 
-                Cancelar
+                Esta acción no se puede deshacer.
 
-            </button>
+            </p>
+
+            <div class="modal-botones">
+
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="cerrarModal('modalEliminar')">
+
+                    Cancelar
+
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-principal"
+                    id="confirmarEliminar">
+
+                    Eliminar
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+         MODAL ÉXITO
+    ========================= -->
+
+    <div class="modal" id="modalExito">
+
+        <div class="modal-contenido">
+
+            <h2>
+
+                Registro eliminado
+
+            </h2>
+
+            <p>
+
+                El registro fue eliminado correctamente.
+
+            </p>
 
             <button
                 type="button"
                 class="btn-principal"
-                id="confirmarEliminar">
+                onclick="cerrarModal('modalExito')">
 
-                Eliminar
+                Aceptar
 
             </button>
 
@@ -150,82 +286,58 @@
 
     </div>
 
-</div>
+    <!-- =========================
+         MODAL LOGOUT
+    ========================= -->
 
-<!-- =========================
-     MODAL ÉXITO
-========================= -->
+    <div class="modal" id="modalLogout">
 
-<div class="modal" id="modalExito">
+        <div class="modal-contenido">
 
-    <div class="modal-contenido">
+            <h2>
 
-        <h2>
-            Registro eliminado
-        </h2>
+                ¿Cerrar sesión?
 
-        <p>
-            El registro fue eliminado correctamente.
-        </p>
+            </h2>
 
-        <button
-            type="button"
-            class="btn-principal"
-            onclick="cerrarModal('modalExito')">
+            <p>
 
-            Aceptar
+                Se cerrará tu sesión actual.
 
-        </button>
+            </p>
 
-    </div>
+            <div class="modal-botones">
 
-</div>
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="cerrarModal('modalLogout')">
 
-<!-- =========================
-     MODAL LOGOUT
-========================= -->
+                    Cancelar
 
-<div class="modal" id="modalLogout">
+                </button>
 
-    <div class="modal-contenido">
+                <button
+                    type="button"
+                    class="btn-principal"
+                    id="confirmarLogout">
 
-        <h2>
-            ¿Cerrar sesión?
-        </h2>
+                    Cerrar Sesión
 
-        <p>
-            Se cerrará tu sesión actual.
-        </p>
+                </button>
 
-        <div class="modal-botones">
-
-            <button
-                type="button"
-                class="btn-secundario"
-                onclick="cerrarModal('modalLogout')">
-
-                Cancelar
-
-            </button>
-
-            <button
-                type="button"
-                class="btn-principal"
-                id="confirmarLogout">
-
-                Cerrar Sesión
-
-            </button>
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
-    <!-- SCRIPTS -->
+    <!-- =========================
+         SCRIPTS
+    ========================= -->
 
     <script src="../js-sid/sidebar_up-07.js"></script>
+
     <script src="../js-reg/registros_up-07.js"></script>
 
 </body>

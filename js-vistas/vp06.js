@@ -8,7 +8,7 @@ const API =
 
 const AREA =
 
-"UP-06-DESPACHO";
+"UP-06-DGOLP";
 
 /* =========================
    ELEMENTOS
@@ -35,8 +35,6 @@ document.getElementById(
 /* =========================
    VARIABLES
 ========================= */
-
-let totalGastos = 0;
 
 let ingresosGlobal = [];
 
@@ -86,17 +84,13 @@ async function cargarIngresos(){
             );
         }
 
-        const resultado =
+        const response =
 
         await respuesta.json();
 
-        /* =========================
-           NUEVO FORMATO BACKEND
-        ========================= */
-
         const data =
 
-        resultado.presupuestos || [];
+        response.presupuestos;
 
         console.log(
             "INGRESOS:",
@@ -215,10 +209,6 @@ function renderizarIngresos(){
 
     ingresosGlobal[0];
 
-    /* =========================
-       USAR SALDO RESTANTE REAL
-    ========================= */
-
     const saldoBase =
 
     parseFloat(
@@ -240,6 +230,12 @@ function renderizarIngresos(){
         )}`;
 
     ingresosGlobal.forEach((registro) => {
+
+        const disponibleReal =
+
+        parseFloat(
+            registro.saldo_restante || 0
+        );
 
         tbodyIngresos.innerHTML += `
 
@@ -294,11 +290,7 @@ function renderizarIngresos(){
 
                 <td>
 
-                    $${parseFloat(
-
-                        registro.saldo_restante || 0
-
-                    ).toLocaleString(
+                    $${disponibleReal.toLocaleString(
 
                         "es-MX",
 
@@ -392,17 +384,13 @@ async function cargarGastos(){
             );
         }
 
-        const resultado =
+        const response =
 
         await respuesta.json();
 
-        /* =========================
-           NUEVO FORMATO BACKEND
-        ========================= */
-
         const gastos =
 
-        resultado.gastos || [];
+        response.gastos;
 
         console.log(
             "GASTOS:",
@@ -417,7 +405,7 @@ async function cargarGastos(){
 
                 <tr>
 
-                    <td colspan="5">
+                    <td colspan="4">
 
                         Error de formato
 
@@ -430,30 +418,13 @@ async function cargarGastos(){
             return;
         }
 
-        totalGastos = gastos.reduce(
-
-            (acc, gasto) => {
-
-                return (
-                    acc +
-                    parseFloat(
-                        gasto.cantidad || 0
-                    )
-                );
-
-            },
-
-            0
-
-        );
-
         if(gastos.length === 0){
 
             tbodyGastos.innerHTML = `
 
                 <tr>
 
-                    <td colspan="5">
+                    <td colspan="4">
 
                         No hay gastos registrados
 
@@ -462,8 +433,6 @@ async function cargarGastos(){
                 </tr>
 
             `;
-
-            renderizarIngresos();
 
             return;
         }
@@ -512,18 +481,10 @@ async function cargarGastos(){
 
                     </td>
 
-                    <td>
-
-                        ${gasto.estatus || "-"}
-
-                    </td>
-
                 </tr>
 
             `;
         });
-
-        renderizarIngresos();
 
     }
 
@@ -540,7 +501,7 @@ async function cargarGastos(){
 
             <tr>
 
-                <td colspan="5">
+                <td colspan="4">
 
                     Error al cargar gastos
 
@@ -627,21 +588,8 @@ function mostrarGastos(){
 }
 
 /* =========================
-   AUTO REFRESH
-========================= */
-
-setInterval(() => {
-
-    cargarIngresos();
-
-    cargarGastos();
-
-}, 30000);
-
-/* =========================
    INICIO
 ========================= */
 
 cargarIngresos();
-
 cargarGastos();
