@@ -9,9 +9,13 @@
 
     height:100vh;
 
-    background:#4E0B1D;
+    background:linear-gradient(
+        180deg,
+        #691C32 0%,
+        #4E0B1D 100%
+    );
 
-    padding:25px 18px;
+    padding:24px 18px;
 
     display:flex;
 
@@ -19,7 +23,10 @@
 
     z-index:1000;
 
-    border-right:2px solid #c7b37a;
+    border-right:3px solid #BC955C;
+
+    box-shadow:
+    4px 0 18px rgba(0,0,0,.12);
 }
 
 /* =========================
@@ -47,16 +54,19 @@
 
     align-items:center;
 
-    margin-bottom:100px;
+    margin-bottom:85px;
 }
 
 .logo-sidebar{
 
-    width:250px;
+    width:230px;
 
     height:auto;
 
     object-fit:contain;
+
+    filter:
+    drop-shadow(0 4px 10px rgba(0,0,0,.18));
 }
 
 /* =========================
@@ -69,7 +79,7 @@
 
     flex-direction:column;
 
-    gap:16px;
+    gap:14px;
 }
 
 /* =========================
@@ -78,19 +88,19 @@
 
 .menu-btn{
 
-    background:#7A1631;
+    background:rgba(255,255,255,.08);
 
     color:white;
 
-    border:none;
+    border:1px solid rgba(255,255,255,.10);
 
-    border-radius:14px;
+    border-radius:999px;
 
-    padding:16px 18px;
+    padding:14px 18px;
 
-    font-size:15px;
+    font-size:13px;
 
-    font-weight:600;
+    font-weight:700;
 
     text-align:left;
 
@@ -98,14 +108,20 @@
 
     transition:.2s;
 
-    box-shadow:0 2px 8px rgba(0,0,0,.12);
+    backdrop-filter:blur(4px);
+
+    box-shadow:
+    0 4px 10px rgba(0,0,0,.10);
 }
 
 .menu-btn:hover{
 
-    background:#962041;
+    background:#7A1631;
 
     transform:translateX(4px);
+
+    box-shadow:
+    0 6px 14px rgba(0,0,0,.16);
 }
 
 /* =========================
@@ -114,11 +130,16 @@
 
 .menu-btn.activo{
 
-    background:#c7b37a;
+    background:#BC955C;
 
-    color:#4b0b1d;
+    color:#3E0918;
 
-    font-weight:700;
+    border:1px solid #D6B98A;
+
+    font-weight:800;
+
+    box-shadow:
+    0 6px 16px rgba(188,149,92,.22);
 }
 
 /* =========================
@@ -142,19 +163,19 @@
 
     width:100%;
 
-    background:#d9d9d9;
+    background:white;
 
-    color:#222;
+    color:#691C32;
 
     border:none;
 
-    border-radius:18px;
+    border-radius:999px;
 
-    padding:14px 18px;
+    padding:13px 18px;
 
-    font-size:15px;
+    font-size:13px;
 
-    font-weight:700;
+    font-weight:800;
 
     cursor:pointer;
 
@@ -168,12 +189,13 @@
 
     transition:.2s;
 
-    box-shadow:0 2px 8px rgba(0,0,0,.18);
+    box-shadow:
+    0 4px 12px rgba(0,0,0,.18);
 }
 
 .logout-btn:hover{
 
-    background:#ececec;
+    background:#f4f4f4;
 
     transform:translateY(-2px);
 }
@@ -184,7 +206,7 @@
 
 .logout-icon{
 
-    font-size:20px;
+    font-size:18px;
 
     font-weight:bold;
 }
@@ -198,6 +220,8 @@
     margin-left:240px;
 
     width:calc(100% - 240px);
+
+    min-height:100vh;
 }
 
 /* =========================
@@ -212,6 +236,22 @@
 }
 
 /* =========================
+   SCROLLBAR
+========================= */
+
+.sidebar::-webkit-scrollbar{
+
+    width:6px;
+}
+
+.sidebar::-webkit-scrollbar-thumb{
+
+    background:rgba(255,255,255,.18);
+
+    border-radius:20px;
+}
+
+/* =========================
    RESPONSIVE
 ========================= */
 
@@ -219,14 +259,19 @@
 
     .sidebar{
 
-        width:80px;
+        width:82px;
 
-        padding:20px 8px;
+        padding:18px 8px;
     }
 
     .logo-sidebar{
 
-        width:50px;
+        width:52px;
+    }
+
+    .sidebar-logo{
+
+        margin-bottom:45px;
     }
 
     .sidebar-menu{
@@ -236,25 +281,34 @@
 
     .menu-btn{
 
-        font-size:10px;
+        font-size:9px;
 
-        padding:10px 6px;
+        padding:12px 6px;
 
         text-align:center;
+
+        border-radius:18px;
     }
 
     .logout-btn{
 
-        font-size:10px;
+        font-size:9px;
 
-        padding:10px 6px;
+        padding:11px 6px;
+
+        border-radius:18px;
+    }
+
+    .logout-icon{
+
+        font-size:14px;
     }
 
     .contenido{
 
-        margin-left:80px;
+        margin-left:82px;
 
-        width:calc(100% - 80px);
+        width:calc(100% - 82px);
     }
 
 }

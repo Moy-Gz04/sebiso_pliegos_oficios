@@ -18,15 +18,16 @@ body{
 ========================= */
 
 .topbar{
-    background:#6A1028;
+    background:#691C32;
     color:white;
     padding:13px 20px;
-    border-bottom:2px solid #c7b37a;
+    border-bottom:3px solid #BC955C;
     display:flex;
     flex-direction:column;
     justify-content:center;
     align-items:center;
     text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.08);
 }
 
 .titulo-principal{
@@ -52,7 +53,7 @@ body{
     margin:9px auto;
     display:grid;
     grid-template-columns:30% 70%;
-    gap:9px;
+    gap:12px;
     align-items:flex-start;
 }
 
@@ -74,28 +75,29 @@ body{
     border-collapse:separate;
     border-spacing:0;
     background:white;
-    border-radius:9px;
+    border-radius:16px;
     overflow:hidden;
     border:1px solid #d8d8d8;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
 }
 
 .tabla-personas th{
-    background:#6A1028;
+    background:#691C32;
     color:white;
-    padding:8px;
+    padding:10px;
     font-size:11px;
     font-weight:700;
     text-align:center;
 }
 
 .tabla-personas td{
-    padding:7px 9px;
+    padding:8px 9px;
     font-size:11px;
     border-bottom:1px solid #ececec;
 }
 
 .tabla-personas tr:nth-child(odd){
-    background:#d8c58d;
+    background:#efe7d4;
 }
 
 .tabla-personas tr:nth-child(even){
@@ -103,13 +105,13 @@ body{
 }
 
 .tabla-personas tr:hover{
-    background:#ead9a7;
+    background:#e6dcc4;
 }
 
 .tabla-personas input[type="checkbox"]{
     width:13px;
     height:13px;
-    accent-color:#6A1028;
+    accent-color:#691C32;
     cursor:pointer;
 }
 
@@ -119,9 +121,10 @@ body{
 
 .panel-derecho{
     background:white;
-    padding:9px;
-    border-radius:9px;
+    padding:12px;
+    border-radius:18px;
     border:1px solid #d8d8d8;
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
 }
 
 /* =========================
@@ -131,9 +134,9 @@ body{
 .fila{
     display:grid;
     grid-template-columns:132px 1fr;
-    margin-bottom:5px;
+    margin-bottom:7px;
     overflow:hidden;
-    border-radius:9px;
+    border-radius:14px;
 }
 
 /* =========================
@@ -141,13 +144,14 @@ body{
 ========================= */
 
 .fila label{
-    background:#6A1028;
+    background:#691C32;
     color:white;
     padding:9px 11px;
     font-size:11px;
-    font-weight:600;
+    font-weight:700;
     display:flex;
     align-items:center;
+    letter-spacing:.4px;
 }
 
 /* =========================
@@ -157,11 +161,12 @@ body{
 .fila input,
 .fila textarea{
     border:none;
-    background:#d8c58d;
-    padding:9px;
+    background:#f5efe3;
+    padding:10px;
     font-size:11px;
     outline:none;
     width:100%;
+    color:#222;
 }
 
 /* =========================
@@ -177,18 +182,18 @@ body{
 
     background-color:white;
 
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236A1028' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23691C32' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
     background-repeat:no-repeat;
     background-position:right 10px center;
     background-size:10px;
 
     border:none;
-    border-radius:20px;
+    border-radius:999px;
 
     padding:8px 30px 8px 11px;
 
-    min-height:33px;
+    min-height:36px;
 
     font-size:11px;
 
@@ -197,12 +202,14 @@ body{
     cursor:pointer;
 
     outline:none;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
 
 /* SELECTS SUELTOS */
 
 .fila > select{
-    margin:7px;
+    margin:6px;
     min-width:185px;
 }
 
@@ -211,7 +218,7 @@ body{
 ========================= */
 
 ::placeholder{
-    color:#666;
+    color:#777;
     font-size:11px;
 }
 
@@ -232,7 +239,7 @@ textarea{
     display:flex;
     align-items:flex-end;
     gap:9px;
-    background:#d8c58d;
+    background:#f5efe3;
     padding:8px 9px;
     flex-wrap:wrap;
 }
@@ -256,32 +263,164 @@ textarea{
 }
 
 .campo-mini span{
-    font-size:11px;
-    font-weight:500;
-    color:#3f2d07;
+    font-size:10px;
+    font-weight:700;
+    color:#5f4a1d;
+    text-transform:uppercase;
+    letter-spacing:.4px;
 }
 
 /* =========================
-   BOTÓN
+   BOTONES GENERALES
 ========================= */
 
 button{
     width:100%;
-    background:#6A1028;
-    color:white;
     border:none;
     padding:11px;
     margin-top:8px;
-    border-radius:9px;
-    font-size:12px;
+    border-radius:999px;
+    font-size:11px;
     font-weight:700;
     cursor:pointer;
     transition:.2s;
-    letter-spacing:.2px;
+    letter-spacing:.3px;
 }
 
+/* =========================
+   BOTÓN PRINCIPAL
+========================= */
+
+.btn-principal,
+button{
+
+    background:#691C32;
+    color:white;
+}
+
+.btn-principal:hover,
 button:hover{
-    background:#530b1f;
+
+    background:#5a172a;
+    transform:translateY(-1px);
+}
+
+/* =========================
+   BOTÓN PAGAR
+========================= */
+
+.btn-pagar{
+
+    background:#2E7D32 !important;
+    color:white !important;
+    border:none !important;
+    box-shadow:0 4px 10px rgba(46,125,50,.18);
+}
+
+.btn-pagar:hover{
+
+    background:#256428 !important;
+}
+
+/* =========================
+   BOTÓN RECHAZAR
+========================= */
+
+.btn-rechazar{
+
+    background:#691C32 !important;
+    color:white !important;
+    border:none !important;
+    box-shadow:0 4px 10px rgba(105,28,50,.18);
+}
+
+.btn-rechazar:hover{
+
+    background:#531423 !important;
+}
+
+/* =========================
+   BOTÓN PDF
+========================= */
+
+.btn-pdf,
+#tablaResultados a{
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:95px;
+
+    height:34px;
+
+    background:#691C32;
+    color:white !important;
+
+    border-radius:999px;
+
+    text-decoration:none;
+
+    font-size:10px;
+    font-weight:700;
+
+    padding:0 14px;
+
+    transition:.2s;
+}
+
+.btn-pdf:hover,
+#tablaResultados a:hover{
+
+    background:#531423;
+    text-decoration:none;
+    transform:translateY(-1px);
+}
+
+/* =========================
+   ESTATUS
+========================= */
+
+.badge-estatus{
+
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+
+    min-width:120px;
+
+    height:34px;
+
+    border-radius:999px;
+
+    font-size:10px;
+    font-weight:700;
+
+    background:white;
+}
+
+/* ENVIADO */
+
+.badge-revision{
+
+    border:2px solid #1976D2;
+    color:#1976D2;
+}
+
+/* PAGADO */
+
+.badge-aceptado{
+
+    border:2px solid #2E7D32;
+    color:#2E7D32;
+}
+
+/* RECHAZADO */
+
+.badge-rechazado{
+
+    border:2px solid #B71C1C;
+    color:#B71C1C;
 }
 
 /* =========================
@@ -291,7 +430,7 @@ button:hover{
 #loader{
     text-align:center;
     margin-top:6px;
-    color:#6A1028;
+    color:#691C32;
     font-weight:600;
     display:none;
     font-size:11px;
@@ -302,27 +441,220 @@ button:hover{
 ========================= */
 
 #tablaResultados{
-    width:80%;
-    margin:11px auto;
+
+    width:90%;
+
+    margin:0 auto 30px;
+
     border-collapse:separate;
+
     border-spacing:0;
+
     background:white;
-    border-radius:9px;
+
+    border-radius:16px;
+
     overflow:hidden;
+
     border:1px solid #d8d8d8;
+
+    box-shadow:0 4px 14px rgba(0,0,0,.04);
 }
 
 #tablaResultados th{
-    background:#6A1028;
+
+    background:#691C32;
+
     color:white;
-    padding:8px;
+
+    padding:10px;
+
     font-size:11px;
+
+    text-align:center;
 }
 
 #tablaResultados td{
-    padding:7px;
+
+    padding:10px;
+
     font-size:11px;
+
+    text-align:center;
+
     border-bottom:1px solid #ececec;
+}
+
+#tablaResultados tr:nth-child(odd){
+
+    background:#efe7d4;
+}
+
+#tablaResultados tr:nth-child(even){
+
+    background:white;
+}
+
+/* =========================
+   MODALES
+========================= */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.45);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:9999;
+}
+
+.modal-contenido{
+
+    background:white;
+
+    width:380px;
+
+    padding:28px;
+
+    border-radius:18px;
+
+    text-align:center;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.2);
+}
+
+.modal-contenido h2{
+
+    color:#691C32;
+
+    margin-bottom:12px;
+
+    font-size:20px;
+}
+
+.modal-contenido p{
+
+    color:#555;
+
+    margin-bottom:20px;
+
+    font-size:13px;
+}
+
+.modal-botones{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+}
+
+.btn-secundario{
+
+    background:#d8d8d8;
+
+    color:#222;
+
+    border:none;
+
+    padding:10px 18px;
+
+    border-radius:999px;
+
+    cursor:pointer;
+
+    font-weight:600;
+}
+
+.btn-secundario:hover{
+
+    background:#cfcfcf;
+}
+
+/* =========================
+   CARGA
+========================= */
+
+.barra-carga{
+
+    width:100%;
+
+    height:14px;
+
+    background:#ececec;
+
+    border-radius:20px;
+
+    overflow:hidden;
+
+    margin-top:15px;
+}
+
+.barra-progreso{
+
+    width:40%;
+
+    height:100%;
+
+    background:#691C32;
+
+    border-radius:20px;
+
+    animation:cargando 1.2s infinite linear;
+}
+
+@keyframes cargando{
+
+    0%{
+        transform:translateX(-100%);
+    }
+
+    100%{
+        transform:translateX(300%);
+    }
+}
+
+/* =========================
+   BOTÓN ELIMINAR
+========================= */
+
+.btn-eliminar{
+
+    width:auto !important;
+
+    background:#B71C1C;
+
+    color:white;
+
+    border:none;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    cursor:pointer;
+
+    font-size:10px;
+
+    font-weight:700;
+
+    min-width:90px;
+
+    text-align:center;
+}
+
+.btn-eliminar:hover{
+
+    background:#941616;
 }
 
 /* =========================
@@ -385,7 +717,7 @@ button:hover{
     }
 
     button{
-        font-size:11px;
+        font-size:10px;
     }
 
     #tablaResultados{
@@ -394,254 +726,4 @@ button:hover{
         display:block;
     }
 
-}
-
-/* =========================
-   TABLA REGISTROS
-========================= */
-
-#tablaResultados{
-
-    width:90%;
-
-    margin:0 auto 30px;
-
-    border-collapse:separate;
-
-    border-spacing:0;
-
-    background:white;
-
-    border-radius:10px;
-
-    overflow:hidden;
-
-    border:1px solid #d8d8d8;
-}
-
-#tablaResultados th{
-
-    background:#6A1028;
-
-    color:white;
-
-    padding:10px;
-
-    font-size:12px;
-
-    text-align:center;
-}
-
-#tablaResultados td{
-
-    padding:10px;
-
-    font-size:11px;
-
-    text-align:center;
-
-    border-bottom:1px solid #ececec;
-}
-
-#tablaResultados tr:nth-child(odd){
-
-    background:#d8c58d;
-}
-
-#tablaResultados tr:nth-child(even){
-
-    background:white;
-}
-
-#tablaResultados a{
-
-    color:#6A1028;
-
-    text-decoration:none;
-
-    font-weight:600;
-}
-
-#tablaResultados a:hover{
-
-    text-decoration:underline;
-}
-
-/* =========================
-   MODALES
-========================= */
-
-.modal{
-
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.45);
-
-    display:none;
-
-    justify-content:center;
-
-    align-items:center;
-
-    z-index:9999;
-}
-
-.modal-contenido{
-
-    background:white;
-
-    width:380px;
-
-    padding:28px;
-
-    border-radius:14px;
-
-    text-align:center;
-
-    box-shadow:0 10px 30px rgba(0,0,0,.2);
-}
-
-.modal-contenido h2{
-
-    color:#6A1028;
-
-    margin-bottom:12px;
-
-    font-size:20px;
-}
-
-.modal-contenido p{
-
-    color:#555;
-
-    margin-bottom:20px;
-
-    font-size:14px;
-}
-
-.modal-botones{
-
-    display:flex;
-
-    justify-content:center;
-
-    gap:10px;
-}
-
-.btn-principal{
-
-    background:#6A1028;
-
-    color:white;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    font-weight:600;
-}
-
-.btn-secundario{
-
-    background:#d8d8d8;
-
-    color:#222;
-
-    border:none;
-
-    padding:10px 18px;
-
-    border-radius:10px;
-
-    cursor:pointer;
-
-    font-weight:600;
-}
-
-.btn-principal:hover{
-
-    background:#530b1f;
-}
-
-/* =========================
-   CARGA
-========================= */
-
-.barra-carga{
-
-    width:100%;
-
-    height:14px;
-
-    background:#ececec;
-
-    border-radius:20px;
-
-    overflow:hidden;
-
-    margin-top:15px;
-}
-
-.barra-progreso{
-
-    width:40%;
-
-    height:100%;
-
-    background:#6A1028;
-
-    border-radius:20px;
-
-    animation:cargando 1.2s infinite linear;
-}
-
-@keyframes cargando{
-
-    0%{
-        transform:translateX(-100%);
-    }
-
-    100%{
-        transform:translateX(300%);
-    }
-}
-
-/* =========================
-   BOTÓN ELIMINAR
-========================= */
-
-.btn-eliminar{
-
-    width:auto !important;
-
-    background:#b71c1c;
-
-    color:white;
-
-    border:none;
-
-    padding:8px 14px;
-
-    border-radius:8px;
-
-    cursor:pointer;
-
-    font-size:11px;
-
-    font-weight:700;
-
-    min-width:90px;
-
-    text-align:center;
-}
-
-.btn-eliminar:hover{
-
-    background:#8f1717;
 }

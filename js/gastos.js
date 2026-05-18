@@ -199,7 +199,7 @@ async function cargarRegistros(){
             )}`;
 
         /* =========================
-           LIMPIAR TABLA
+           LIMPIAR CONTENEDOR
         ========================= */
 
         tbody.innerHTML = "";
@@ -212,15 +212,15 @@ async function cargarRegistros(){
 
             tbody.innerHTML = `
 
-                <tr>
+                <div class="registro-card">
 
-                    <td colspan="12">
+                    <div class="texto-vacio">
 
                         No hay registros pendientes de revisión
 
-                    </td>
+                    </div>
 
-                </tr>
+                </div>
 
             `;
 
@@ -336,182 +336,263 @@ async function cargarRegistros(){
 
             tbody.innerHTML += `
 
-                <tr>
+                <div class="registro-card">
 
-                    <!-- CODIGO -->
+                    <!-- =========================
+                         FILA SUPERIOR
+                    ========================= -->
 
-                    <td>
+                    <div class="registro-top">
 
-                        ${registro.codigo || '-'}
+                        <!-- ID -->
 
-                    </td>
+                        <div class="campo-mini">
 
-                    <!-- PERSONA -->
+                            <span>
 
-                    <td>
+                                ID
 
-                        ${registro.persona || '-'}
+                            </span>
 
-                    </td>
+                            <strong>
 
-                    <!-- FECHA -->
+                                ${registro.codigo || '-'}
 
-                    <td>
+                            </strong>
 
-                        ${formatearFecha(
-                            registro.fecha
-                        )}
+                        </div>
 
-                    </td>
+                        <!-- FECHA -->
 
-                    <!-- OFICIO -->
+                        <div class="campo-mini">
 
-                    <td>
+                            <span>
 
-                        <a
-                            href="${registro.oficio_pdf || '#'}"
-                            target="_blank"
-                            class="btn-link"
-                        >
+                                FECHA
 
-                            Ver Oficio
+                            </span>
 
-                        </a>
+                            <strong>
 
-                    </td>
-
-                    <!-- PLIEGO -->
-
-                    <td>
-
-                        <a
-                            href="${registro.pliego_pdf || '#'}"
-                            target="_blank"
-                            class="btn-link"
-                        >
-
-                            Ver Pliego
-
-                        </a>
-
-                    </td>
-
-                    <!-- OBS AREA -->
-
-                    <td>
-
-                        <textarea
-                            class="textarea-obs"
-                            readonly
-                        >${registro.observaciones || ''}</textarea>
-
-                    </td>
-
-                    <!-- OBS ADMIN -->
-
-                    <td>
-
-                        <textarea
-                            class="textarea-obs-admin"
-                            id="obs-admin-${registro.codigo}"
-                            placeholder="Motivo del rechazo..."
-                            ${yaPagado ? 'disabled' : ''}
-                        >${registro.observaciones_admin || ''}</textarea>
-
-                    </td>
-
-                    <!-- ESTATUS -->
-
-                    <td>
-
-                        ${obtenerBadgeAdmin(
-                            estatusVisual
-                        )}
-
-                    </td>
-
-                    <!-- PAGADO -->
-
-                    <td>
-
-                        ${
-                            yaPagado
-
-                            ?
-
-                            '<span class="texto-pagado">SI</span>'
-
-                            :
-
-                            '<span class="texto-pendiente">NO</span>'
-                        }
-
-                    </td>
-
-                    <!-- CANTIDAD -->
-
-                    <td>
-
-                        ${
-                            yaPagado
-
-                            ?
-
-                            `<span class="cantidad-pagada">
-
-                                $${parseFloat(
-
-                                    registro.cantidad_pagada || 0
-
-                                ).toLocaleString(
-
-                                    'es-MX',
-
-                                    {
-
-                                        minimumFractionDigits:2
-
-                                    }
-
+                                ${formatearFecha(
+                                    registro.fecha
                                 )}
 
-                            </span>`
+                            </strong>
 
-                            :
+                        </div>
 
-                            `
+                        <!-- PERSONA -->
 
-                            <input
-                                type="number"
-                                class="input-cantidad"
-                                id="cantidad-${registro.id}"
-                                placeholder="$0.00"
-                                min="1"
-                                step="0.01"
+                        <div class="campo-mini campo-persona">
+
+                            <span>
+
+                                PERSONA
+
+                            </span>
+
+                            <strong>
+
+                                ${registro.persona || '-'}
+
+                            </strong>
+
+                        </div>
+
+                        <!-- OFICIO -->
+
+                        <div class="campo-mini">
+
+                            <span>
+
+                                OFICIO
+
+                            </span>
+
+                            <a
+                                href="${registro.oficio_pdf || '#'}"
+                                target="_blank"
+                                class="btn-link"
                             >
 
-                            `
-                        }
+                                Oficio
 
-                    </td>
+                            </a>
 
-                    <!-- PAGAR -->
+                        </div>
 
-                    <td>
+                        <!-- PLIEGO -->
 
-                        ${botonPagar}
+                        <div class="campo-mini">
 
-                    </td>
+                            <span>
 
-                    <!-- RECHAZAR -->
+                                PLIEGO
 
-                    <td>
+                            </span>
 
-                        ${botonRechazar}
+                            <a
+                                href="${registro.pliego_pdf || '#'}"
+                                target="_blank"
+                                class="btn-link"
+                            >
 
-                    </td>
+                                Pliego
 
-                </tr>
+                            </a>
+
+                        </div>
+
+                        <!-- ESTATUS -->
+
+                        <div class="campo-mini">
+
+                            <span>
+
+                                ESTATUS
+
+                            </span>
+
+                            ${obtenerBadgeAdmin(
+                                estatusVisual
+                            )}
+
+                        </div>
+
+                    </div>
+
+                    <!-- =========================
+                         FILA INFERIOR
+                    ========================= -->
+
+                    <div class="registro-bottom">
+
+                        <!-- OBS ÁREA -->
+
+                        <div class="campo-observacion">
+
+                            <span>
+
+                                OBSERVACIONES ÁREA
+
+                            </span>
+
+                            <textarea
+                                class="textarea-obs"
+                                readonly
+                            >${registro.observaciones || ''}</textarea>
+
+                        </div>
+
+                        <!-- OBS ADMIN -->
+
+                        <div class="campo-observacion">
+
+                            <span>
+
+                                OBSERVACIONES ADMIN
+
+                            </span>
+
+                            <textarea
+                                class="textarea-obs-admin"
+                                id="obs-admin-${registro.codigo}"
+                                placeholder="Motivo del rechazo..."
+                                ${yaPagado ? 'disabled' : ''}
+                            >${registro.observaciones_admin || ''}</textarea>
+
+                        </div>
+
+                        <!-- CANTIDAD -->
+
+                        <div class="campo-mini">
+
+                            <span>
+
+                                CANTIDAD
+
+                            </span>
+
+                            ${
+
+                                yaPagado
+
+                                ?
+
+                                `
+
+                                <div class="texto-simple">
+
+                                    $${parseFloat(
+
+                                        registro.cantidad_pagada || 0
+
+                                    ).toLocaleString(
+
+                                        'es-MX',
+
+                                        {
+
+                                            minimumFractionDigits:2
+
+                                        }
+
+                                    )}
+
+                                </div>
+
+                                `
+
+                                :
+
+                                `
+
+                                <input
+                                    type="number"
+                                    class="input-cantidad"
+                                    id="cantidad-${registro.id}"
+                                    placeholder="$0.00"
+                                    min="1"
+                                    step="0.01"
+                                >
+
+                                `
+                            }
+
+                        </div>
+
+                        <!-- PAGAR -->
+
+                        <div class="campo-mini">
+
+                            <span>
+
+                                PAGAR
+
+                            </span>
+
+                            ${botonPagar}
+
+                        </div>
+
+                        <!-- RECHAZAR -->
+
+                        <div class="campo-mini">
+
+                            <span>
+
+                                RECHAZAR
+
+                            </span>
+
+                            ${botonRechazar}
+
+                        </div>
+
+                    </div>
+
+                </div>
 
             `;
 
@@ -528,15 +609,15 @@ async function cargarRegistros(){
 
         tbody.innerHTML = `
 
-            <tr>
+            <div class="registro-card">
 
-                <td colspan="12">
+                <div class="texto-vacio">
 
                     Error cargando registros
 
-                </td>
+                </div>
 
-            </tr>
+            </div>
 
         `;
 
@@ -679,10 +760,6 @@ async function pagarRegistro(
 
         }
 
-        /* =========================
-           REGISTRAR GASTO
-        ========================= */
-
         const respuesta =
         await fetch(
 
@@ -783,10 +860,6 @@ async function rechazarRegistro(codigo){
 
         }
 
-        /* =========================
-           GUARDAR OBS
-        ========================= */
-
         const observacionResponse =
         await fetch(
 
@@ -830,10 +903,6 @@ async function rechazarRegistro(codigo){
             return;
 
         }
-
-        /* =========================
-           CAMBIAR ESTATUS
-        ========================= */
 
         const rechazoResponse =
         await fetch(
