@@ -8,7 +8,7 @@ const API =
 
 const AREA =
 
-"UP-06-DGOLP";
+"UP-06-DESPACHO";
 
 /* =========================
    ELEMENTOS
@@ -86,9 +86,17 @@ async function cargarIngresos(){
             );
         }
 
-        const data =
+        const resultado =
 
         await respuesta.json();
+
+        /* =========================
+           NUEVO FORMATO BACKEND
+        ========================= */
+
+        const data =
+
+        resultado.presupuestos || [];
 
         console.log(
             "INGRESOS:",
@@ -207,19 +215,19 @@ function renderizarIngresos(){
 
     ingresosGlobal[0];
 
+    /* =========================
+       USAR SALDO RESTANTE REAL
+    ========================= */
+
     const saldoBase =
 
     parseFloat(
-        ultimoRegistro.saldo_disponible || 0
+        ultimoRegistro.saldo_restante || 0
     );
-
-    const saldoReal =
-
-    saldoBase - totalGastos;
 
     saldoDisponible.innerHTML =
 
-        `$${saldoReal.toLocaleString(
+        `$${saldoBase.toLocaleString(
 
             "es-MX",
 
@@ -232,14 +240,6 @@ function renderizarIngresos(){
         )}`;
 
     ingresosGlobal.forEach((registro) => {
-
-        const disponibleReal =
-
-        parseFloat(
-            registro.saldo_disponible || 0
-        )
-        -
-        totalGastos;
 
         tbodyIngresos.innerHTML += `
 
@@ -294,7 +294,11 @@ function renderizarIngresos(){
 
                 <td>
 
-                    $${disponibleReal.toLocaleString(
+                    $${parseFloat(
+
+                        registro.saldo_restante || 0
+
+                    ).toLocaleString(
 
                         "es-MX",
 
@@ -375,7 +379,7 @@ async function cargarGastos(){
 
         await fetch(
 
-            `${API}/api/gastos/${AREA}`
+            `${API}/api/presupuestos/${AREA}`
 
         );
 
@@ -388,9 +392,17 @@ async function cargarGastos(){
             );
         }
 
-        const gastos =
+        const resultado =
 
         await respuesta.json();
+
+        /* =========================
+           NUEVO FORMATO BACKEND
+        ========================= */
+
+        const gastos =
+
+        resultado.gastos || [];
 
         console.log(
             "GASTOS:",
@@ -405,7 +417,7 @@ async function cargarGastos(){
 
                 <tr>
 
-                    <td colspan="4">
+                    <td colspan="5">
 
                         Error de formato
 
@@ -441,7 +453,7 @@ async function cargarGastos(){
 
                 <tr>
 
-                    <td colspan="4">
+                    <td colspan="5">
 
                         No hay gastos registrados
 
@@ -500,6 +512,12 @@ async function cargarGastos(){
 
                     </td>
 
+                    <td>
+
+                        ${gasto.estatus || "-"}
+
+                    </td>
+
                 </tr>
 
             `;
@@ -522,7 +540,7 @@ async function cargarGastos(){
 
             <tr>
 
-                <td colspan="4">
+                <td colspan="5">
 
                     Error al cargar gastos
 
@@ -609,8 +627,21 @@ function mostrarGastos(){
 }
 
 /* =========================
+   AUTO REFRESH
+========================= */
+
+setInterval(() => {
+
+    cargarIngresos();
+
+    cargarGastos();
+
+}, 30000);
+
+/* =========================
    INICIO
 ========================= */
 
 cargarIngresos();
+
 cargarGastos();
