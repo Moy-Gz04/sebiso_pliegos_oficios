@@ -3,6 +3,134 @@ const API =
 "https://sebiso-pliegos-oficios-1.onrender.com";
 
 /* =========================
+   MODAL MENSAJES
+========================= */
+
+function abrirModalMensaje(
+
+    titulo,
+    mensaje,
+    tipo = "ok",
+    callback = null
+
+){
+
+    const modal =
+
+    document.getElementById(
+        "modalMensaje"
+    );
+
+    const overlay =
+
+    document.getElementById(
+        "overlay"
+    );
+
+    const tituloModal =
+
+    document.getElementById(
+        "tituloModalMensaje"
+    );
+
+    const textoModal =
+
+    document.getElementById(
+        "textoModalMensaje"
+    );
+
+    const botones =
+
+    document.getElementById(
+        "botonesModalMensaje"
+    );
+
+    tituloModal.innerText = titulo;
+
+    textoModal.innerText = mensaje;
+
+    if(tipo === "confirmar"){
+
+        botones.innerHTML = `
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModalMensaje()"
+            >
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="btnConfirmarModal"
+            >
+
+                Aceptar
+
+            </button>
+
+        `;
+
+    }
+
+    else{
+
+        botones.innerHTML = `
+
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="cerrarModalMensaje()"
+            >
+
+                Aceptar
+
+            </button>
+
+        `;
+    }
+
+    modal.style.display = "flex";
+
+    overlay.style.display = "block";
+
+    if(tipo === "confirmar"){
+
+        document.getElementById(
+            "btnConfirmarModal"
+        ).onclick = () => {
+
+            cerrarModalMensaje();
+
+            if(callback){
+
+                callback();
+
+            }
+
+        };
+
+    }
+
+}
+
+function cerrarModalMensaje(){
+
+    document.getElementById(
+        "modalMensaje"
+    ).style.display = "none";
+
+    document.getElementById(
+        "overlay"
+    ).style.display = "none";
+
+}
+
+/* =========================
    ELEMENTOS
 ========================= */
 
@@ -128,8 +256,12 @@ btnGuardar.addEventListener(
 
             if(!saldoAutorizado){
 
-                alert(
+                abrirModalMensaje(
+
+                    "Campos incompletos",
+
                     "Ingrese saldo autorizado"
+
                 );
 
                 return;
@@ -138,8 +270,12 @@ btnGuardar.addEventListener(
 
             if(!mapaAreas[area]){
 
-                alert(
-                    "Área inválida"
+                abrirModalMensaje(
+
+                    "Área inválida",
+
+                    "Seleccione un área válida"
+
                 );
 
                 return;
@@ -212,17 +348,24 @@ btnGuardar.addEventListener(
 
             if(!data.ok){
 
-                alert(
-                    data.msg ||
-                    "Error al guardar"
+                abrirModalMensaje(
+
+                    "Error",
+
+                    data.msg || "Error al guardar"
+
                 );
 
                 return;
 
             }
 
-            alert(
-                "Registro guardado"
+            abrirModalMensaje(
+
+                "Registro guardado",
+
+                "El registro fue guardado correctamente."
+
             );
 
             document.getElementById(
@@ -251,8 +394,12 @@ btnGuardar.addEventListener(
 
             console.log(error);
 
-            alert(
-                "Error servidor"
+            abrirModalMensaje(
+
+                "Error servidor",
+
+                "Ocurrió un error inesperado"
+
             );
 
         }
@@ -339,7 +486,7 @@ async function cargarHistorial(){
                     <td>
 
                         $${parseFloat(
-                            registro.saldo_disponible || 0
+                            registro.saldo_restante || 0
                         ).toFixed(2)}
 
                     </td>
@@ -569,8 +716,12 @@ async function editarRegistro(id){
 
         if(!registro){
 
-            alert(
+            abrirModalMensaje(
+
+                "Error",
+
                 "Registro no encontrado"
+
             );
 
             return;
@@ -634,8 +785,12 @@ async function editarRegistro(id){
 
         console.log(error);
 
-        alert(
+        abrirModalMensaje(
+
+            "Error",
+
             "Error cargando registro"
+
         );
 
     }
@@ -742,8 +897,12 @@ document.getElementById(
 
             if(data.ok){
 
-                alert(
-                    "Registro actualizado"
+                abrirModalMensaje(
+
+                    "Registro actualizado",
+
+                    "Los cambios fueron guardados correctamente."
+
                 );
 
                 cerrarModalEditar();
@@ -756,9 +915,12 @@ document.getElementById(
 
             else{
 
-                alert(
-                    data.msg ||
-                    "Error actualizando"
+                abrirModalMensaje(
+
+                    "Error",
+
+                    data.msg || "Error actualizando"
+
                 );
 
             }
@@ -769,8 +931,12 @@ document.getElementById(
 
             console.log(error);
 
-            alert(
-                "Error servidor"
+            abrirModalMensaje(
+
+                "Error servidor",
+
+                "Ocurrió un error inesperado"
+
             );
 
         }
@@ -785,67 +951,81 @@ document.getElementById(
 
 async function eliminarRegistro(id){
 
-    const confirmar =
-    confirm(
-        "¿Eliminar registro?"
-    );
+    abrirModalMensaje(
 
-    if(!confirmar){
+        "Eliminar registro",
 
-        return;
+        "¿Desea eliminar este registro?",
 
-    }
+        "confirmar",
 
-    try{
+        async () => {
 
-        const respuesta =
-        await fetch(
+            try{
 
-            `${API}/api/presupuestos/${id}`,
+                const respuesta =
+                await fetch(
 
-            {
+                    `${API}/api/presupuestos/${id}`,
 
-                method:"DELETE"
+                    {
+
+                        method:"DELETE"
+
+                    }
+
+                );
+
+                const data =
+                await respuesta.json();
+
+                if(data.ok){
+
+                    abrirModalMensaje(
+
+                        "Registro eliminado",
+
+                        "El registro fue eliminado correctamente."
+
+                    );
+
+                    cargarHistorial();
+
+                    cargarGastos();
+
+                }
+
+                else{
+
+                    abrirModalMensaje(
+
+                        "Error",
+
+                        data.msg || "Error eliminando"
+
+                    );
+
+                }
 
             }
 
-        );
+            catch(error){
 
-        const data =
-        await respuesta.json();
+                console.log(error);
 
-        if(data.ok){
+                abrirModalMensaje(
 
-            alert(
-                "Registro eliminado"
-            );
+                    "Error servidor",
 
-            cargarHistorial();
+                    "Ocurrió un error inesperado"
 
-            cargarGastos();
+                );
 
-        }
-
-        else{
-
-            alert(
-                data.msg ||
-                "Error eliminando"
-            );
+            }
 
         }
 
-    }
-
-    catch(error){
-
-        console.log(error);
-
-        alert(
-            "Error servidor"
-        );
-
-    }
+    );
 
 }
 
