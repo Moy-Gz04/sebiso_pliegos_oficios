@@ -1,20 +1,20 @@
 <script>
 
-const token = localStorage.getItem('token');
+    const token = localStorage.getItem('token');
 
-const area = localStorage.getItem('area');
+    const area = localStorage.getItem('area');
 
-if(!token){
+    if (!token) {
 
-    window.location.href = 'index.html';
+        window.location.href = 'index.html';
 
-}
+    }
 
-if(area !== 'UP-01'){
+    if (area !== 'UP-01') {
 
-    window.location.href = 'index.html';
+        window.location.href = 'index.html';
 
-}
+    }
 
 </script>
 
@@ -25,14 +25,21 @@ if(area !== 'UP-01'){
 
     <meta charset="UTF-8">
 
-    <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Revisión de Registros</title>
+    <title>
+
+        Revisión de Registros
+
+    </title>
 
     <link rel="stylesheet" href="../css/style.css">
+
     <link rel="stylesheet" href="../css/ssidebar.css">
+
     <link rel="stylesheet" href="../css/revisiones.css">
+
+    <link rel="stylesheet" href="../css/SPG.css">
 
 </head>
 
@@ -80,120 +87,220 @@ if(area !== 'UP-01'){
 
         <table id="tablaResultados">
 
-            <thead>
-
-                <tr>
-
-                    <th>ID</th>
-
-                    <th>Persona</th>
-
-                    <th>Fecha y Hora</th>
-
-                    <th>Oficio PDF</th>
-
-                    <th>Pliego PDF</th>
-
-                    <th>Enviar</th>
-
-                    <th>Estatus</th>
-
-                    <th>Observaciones</th>
-
-                    <th>Observaciones - Admon.</th>
-
-                    <th>Eliminar</th>
-
-                </tr>
-
-            </thead>
-
             <tbody id="tbodyResultados">
 
-                <!-- =========================
-                     EJEMPLO VISUAL
-                ========================= -->
-
                 <!--
-
+                
+                EJEMPLO VISUAL
+                
                 <tr>
 
                     <td>
-                        UP-01_R-6816
-                    </td>
 
-                    <td>
-                        Diana Laura Fernández Monroy
-                    </td>
+                        <div class="card-registro">
 
-                    <td>
-                        8/5/2026, 1:43:27 p.m.
-                    </td>
+                            <div class="fila-superior">
 
-                    <td>
+                                <div class="info-item">
 
-                        <a
-                            href="#"
-                            target="_blank"
-                            class="link-pdf">
+                                    <span class="info-label">
 
-                            Ver Oficio
+                                        ID
 
-                        </a>
+                                    </span>
 
-                    </td>
+                                    <span class="info-valor">
 
-                    <td>
+                                        UP-01_R-6816
 
-                        <a
-                            href="#"
-                            target="_blank"
-                            class="link-pdf">
+                                    </span>
 
-                            Ver Pliego
+                                </div>
 
-                        </a>
+                                <div class="info-item">
 
-                    </td>
+                                    <span class="info-label">
 
-                    <td>
+                                        Persona
 
-                        <button
-                            class="btn-enviar">
+                                    </span>
 
-                            Enviar
+                                    <span class="info-valor">
 
-                        </button>
+                                        Diana Laura Fernández Monroy
 
-                    </td>
+                                    </span>
 
-                    <td>
+                                </div>
 
-                        <span
-                            class="badge-estatus badge-creado">
+                                <div class="info-item">
 
-                            Creado
+                                    <span class="info-label">
 
-                        </span>
+                                        Fecha y Hora
 
-                    </td>
+                                    </span>
 
-                    <td>
+                                    <span class="info-valor">
 
-                        <textarea
-                            class="textarea-observaciones"
-                            placeholder="Escribe observaciones..."></textarea>
+                                        8/5/2026, 1:43:27 p.m.
 
-                    </td>
+                                    </span>
 
-                    <td>
+                                </div>
 
-                        <button
-                            class="btn-eliminar">
+                                <div class="info-item">
 
-                            Eliminar
+                                    <span
+                                        class="badge-estatus badge-creado">
 
-                        </button>
+                                        Creado
+
+                                    </span>
+
+                                </div>
+
+                                <div class="info-item">
+
+                                    <button
+                                        class="btn-eliminar">
+
+                                        Eliminar
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <div class="fila-acciones">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        Oficio PDF
+
+                                    </span>
+
+                                    <a
+                                        href="#"
+                                        target="_blank"
+                                        class="link-pdf">
+
+                                        Ver Oficio
+
+                                    </a>
+
+                                </div>
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        Pliego PDF
+
+                                    </span>
+
+                                    <a
+                                        href="#"
+                                        target="_blank"
+                                        class="link-pdf">
+
+                                        Ver Pliego
+
+                                    </a>
+
+                                </div>
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        SPG PDF
+
+                                    </span>
+
+                                    <button
+                                        class="btn-bloqueado"
+                                        disabled>
+
+                                        Sin SPG
+
+                                    </button>
+
+                                </div>
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        Terminar Trámite
+
+                                    </span>
+
+                                    <button
+                                        class="btn-enviar">
+
+                                        Terminar
+
+                                    </button>
+
+                                </div>
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        Enviar
+
+                                    </span>
+
+                                    <button
+                                        class="btn-enviar">
+
+                                        Enviar
+
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                            <div class="fila-observaciones">
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        Observaciones Área
+
+                                    </span>
+
+                                    <textarea
+                                        class="textarea-observaciones"
+                                        placeholder="Observaciones del área..."></textarea>
+
+                                </div>
+
+                                <div class="info-item">
+
+                                    <span class="info-label">
+
+                                        Observaciones Administración
+
+                                    </span>
+
+                                    <textarea
+                                        class="textarea-observaciones-admin"
+                                        placeholder="Observaciones administración..."
+                                        readonly></textarea>
+
+                                </div>
+
+                            </div>
+
+                        </div>
 
                     </td>
 
@@ -229,19 +336,13 @@ if(area !== 'UP-01'){
 
             <div class="modal-botones">
 
-                <button
-                    type="button"
-                    class="btn-secundario"
-                    onclick="cerrarModal('modalEliminar')">
+                <button type="button" class="btn-secundario" onclick="cerrarModal('modalEliminar')">
 
                     Cancelar
 
                 </button>
 
-                <button
-                    type="button"
-                    class="btn-principal"
-                    id="confirmarEliminar">
+                <button type="button" class="btn-principal" id="confirmarEliminar">
 
                     Eliminar
 
@@ -273,10 +374,7 @@ if(area !== 'UP-01'){
 
             </p>
 
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModal('modalExito')">
+            <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
 
                 Aceptar
 
@@ -308,21 +406,249 @@ if(area !== 'UP-01'){
 
             <div class="modal-botones">
 
-                <button
-                    type="button"
-                    class="btn-secundario"
-                    onclick="cerrarModal('modalLogout')">
+                <button type="button" class="btn-secundario" onclick="cerrarModal('modalLogout')">
 
                     Cancelar
 
                 </button>
 
-                <button
-                    type="button"
-                    class="btn-principal"
-                    id="confirmarLogout">
+                <button type="button" class="btn-principal" id="confirmarLogout">
 
                     Cerrar Sesión
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- =========================
+     MODAL SPG
+========================= -->
+
+    <div class="modal modal-spg" id="modalSPG">
+
+        <div class="modal-spg-contenido">
+
+            <!-- HEADER -->
+
+            <div class="spg-header">
+
+                <h2>
+
+                    Captura de Datos SPG
+
+                </h2>
+
+                <p>
+
+                    Completa los datos necesarios para generar el SPG.
+
+                </p>
+
+            </div>
+
+            <!-- FORM -->
+
+            <div class="contenedor-spg">
+
+                <!-- AÑO -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgAnio">
+
+                        Año
+
+                    </label>
+
+                    <select id="spgAnio">
+
+                        <option value="">
+
+                            Selecciona año
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- UR -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgUR">
+
+                        UR
+
+                    </label>
+
+                    <input type="text" id="spgUR" placeholder="Unidad Responsable">
+
+                </div>
+
+                <!-- UP -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgUP">
+
+                        UP
+
+                    </label>
+
+                    <select id="spgUP">
+
+                        <option value="">
+
+                            Selecciona UP
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- RUBRO -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgR">
+
+                        Rubro de ingreso
+
+                    </label>
+
+                    <select id="spgR">
+
+                        <option value="">
+
+                            Selecciona rubro
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- OBJETO GASTO -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgOG">
+
+                        Objeto del gasto
+
+                    </label>
+
+                    <select id="spgOG">
+
+                        <option value="">
+
+                            Selecciona objeto
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- PROYECTO -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgPR">
+
+                        Proyecto
+
+                    </label>
+
+                    <select id="spgPR">
+
+                        <option value="">
+
+                            Selecciona proyecto
+
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <!-- CUENTA -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgCuenta">
+
+                        Cuenta por pagar
+
+                    </label>
+
+                    <input type="text" id="spgCuenta" placeholder="Cuenta por pagar">
+
+                </div>
+
+                <!-- MONTO -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgMonto">
+
+                        Monto
+
+                    </label>
+
+                    <input type="text" id="spgMonto" placeholder="$0.00">
+
+                </div>
+
+                <!-- RETENCIONES -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgRet">
+
+                        Retenciones
+
+                    </label>
+
+                    <input type="text" id="spgRet" placeholder="$0.00">
+
+                </div>
+
+                <!-- TOTAL -->
+
+                <div class="grupo-input-spg">
+
+                    <label for="spgTot">
+
+                        Total
+
+                    </label>
+
+                    <input type="text" id="spgTot" placeholder="$0.00" readonly>
+
+                </div>
+
+            </div>
+
+            <!-- BOTONES -->
+
+            <div class="modal-spg-botones">
+
+                <button type="button" class="btn-spg-cancelar" onclick="cerrarModal('modalSPG')">
+
+                    Cancelar
+
+                </button>
+
+                <button type="button" class="btn-spg-generar" id="btnGenerarSPG">
+
+                    Generar SPG
 
                 </button>
 
@@ -336,7 +662,14 @@ if(area !== 'UP-01'){
          SCRIPTS
     ========================= -->
 
+    <!-- =========================
+     SCRIPTS
+========================= -->
+
     <script src="../js-sid/sidebar_up-01.js"></script>
+
+    <script src="../js-cat2/cat-up01.js"></script>
+
     <script src="../js-reg/registros_up-01.js"></script>
 
 </body>

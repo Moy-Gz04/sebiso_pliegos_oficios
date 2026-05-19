@@ -34,6 +34,13 @@ const gastosRoutes =
 require('./routes/gastos.routes');
 
 /* =========================
+   NUEVA RUTA SPG
+========================= */
+
+const spgRoutes =
+require('./routes/spg');
+
+/* =========================
    MIDDLEWARES
 ========================= */
 
@@ -118,6 +125,18 @@ app.use(
     '/api/gastos',
 
     gastosRoutes
+
+);
+
+/* =========================
+   SPG
+========================= */
+
+app.use(
+
+    '/api/spg',
+
+    spgRoutes
 
 );
 
