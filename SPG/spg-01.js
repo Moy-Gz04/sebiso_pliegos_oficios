@@ -85,6 +85,11 @@ async function generarSPG(){
 
         };
 
+        console.log(
+            "DATOS SPG:",
+            datos
+        );
+
         /* =========================
            VALIDAR
         ========================= */
@@ -116,13 +121,74 @@ async function generarSPG(){
         }
 
         /* =========================
-           ENVIAR A APPS SCRIPT
+           PAYLOAD
+        ========================= */
+
+        const payload = {
+
+            codigo:
+            datos.codigo,
+
+            folderId:
+
+            "174C_QuqWR0FqUSROY7yAhVRB2xKERiYt",
+
+            fileName:
+
+            `SPG_${datos.codigo}`,
+
+            variables:{
+
+                "<<PERSONA>>":
+                datos.persona,
+
+                "<<ANIO>>":
+                datos.anio,
+
+                "<<UR>>":
+                datos.ur,
+
+                "<<UP>>":
+                datos.up,
+
+                "<<R>>":
+                datos.rubro,
+
+                "<<OG>>":
+                datos.og,
+
+                "<<PR>>":
+                datos.proyecto,
+
+                "<<CUENTA>>":
+                datos.cuenta,
+
+                "<<MONT>>":
+                datos.monto,
+
+                "<<RET>>":
+                datos.retenciones,
+
+                "<<TOT>>":
+                datos.total
+
+            }
+
+        };
+
+        console.log(
+            "PAYLOAD:",
+            payload
+        );
+
+        /* =========================
+           FETCH
         ========================= */
 
         const response =
         await fetch(
 
-            "https://script.google.com/macros/s/AKfycbyRuZ4TI3wD5IRYMy2beCfjJe_XKuxgWcd7kidoPtBOEVo8B7jPdsH7r9qBtkfEvsIj2Q/exec",
+            "https://script.google.com/macros/s/AKfycbwiS2bqwgWwbmInO50XHmFVIbmfTIdsygBN_xRqiIhzdlW3-c0OXfLKwQ9RJA45qMtsWA/exec",
 
             {
 
@@ -135,74 +201,57 @@ async function generarSPG(){
 
                 },
 
-                body:JSON.stringify({
-
-                    templateId:
-
-                    "12i3fS4Yl1iuNHvE4METg0N2-ThMjvhG-4FKiaGLYT1E",
-
-                    folderId:
-
-                    "174C_QuqWR0FqUSROY7yAhVRB2xKERiYt",
-
-                    fileName:
-
-                    `SPG_${datos.codigo}`,
-
-                    variables:{
-
-                        "<<PERSONA>>":
-                        datos.persona,
-
-                        "<<ANIO>>":
-                        datos.anio,
-
-                        "<<UR>>":
-                        datos.ur,
-
-                        "<<UP>>":
-                        datos.up,
-
-                        "<<R>>":
-                        datos.rubro,
-
-                        "<<OG>>":
-                        datos.og,
-
-                        "<<PR>>":
-                        datos.proyecto,
-
-                        "<<CUENTA>>":
-                        datos.cuenta,
-
-                        "<<MONT>>":
-                        datos.monto,
-
-                        "<<RET>>":
-                        datos.retenciones,
-
-                        "<<TOT>>":
-                        datos.total
-
-                    }
-
-                })
+                body:JSON.stringify(
+                    payload
+                )
 
             }
 
         );
 
-        const data =
-        await response.json();
+        /* =========================
+           RESPUESTA TEXTO
+        ========================= */
+
+        const text =
+        await response.text();
 
         console.log(
-            "RESPUESTA APPS SCRIPT:",
+            "RESPUESTA RAW:",
+            text
+        );
+
+        let data;
+
+        try{
+
+            data =
+            JSON.parse(text);
+
+        }
+
+        catch{
+
+            throw new Error(
+
+                "Apps Script no devolvió JSON válido"
+
+            );
+
+        }
+
+        console.log(
+            "RESPUESTA JSON:",
             data
         );
 
+        /* =========================
+           VALIDAR RESPUESTA
+        ========================= */
+
         if(
 
-            !response.ok
+            !data.ok
             ||
             !data.url
 
@@ -212,14 +261,14 @@ async function generarSPG(){
 
                 data.error ||
 
-                "Error generando SPG"
+                "No se pudo generar el PDF"
 
             );
 
         }
 
         /* =========================
-           GUARDAR URL PDF
+           GUARDAR URL
         ========================= */
 
         const guardar =
@@ -240,7 +289,8 @@ async function generarSPG(){
 
                 body:JSON.stringify({
 
-                    spg_pdf:data.url
+                    spg_pdf:
+                    data.url
 
                 })
 
@@ -259,7 +309,7 @@ async function generarSPG(){
         }
 
         /* =========================
-           CERRAR
+           FINAL
         ========================= */
 
         cerrarModal(
