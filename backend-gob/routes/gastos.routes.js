@@ -11,14 +11,27 @@ const pool = require('../database/db');
 const mapaPresupuestos = {
 
     'UP-01':'UP-01-DESPACHO',
+
+    'UP-CA':'UP-CA',
+
+    'UP-01-S-DRM':'UP-01-S-DRM',
+
     'UP-04':'UP-04-DGFA',
+
     'UP-05':'UP-05-Subse_I_D',
+
     'UP-06':'UP-06-DGOLP',
+
     'UP-07':'UP-07-MIGRANTES',
+
     'UP-08':'UP-08-ASISTENCIA',
+
     'UP-13':'UP-13-SSPSyFA',
+
     'UP-14':'UP-14-DISCAPACIDAD',
+
     'UP-15':'UP-15-SSDSyH',
+
     'UP-16':'UP-16'
 
 };
