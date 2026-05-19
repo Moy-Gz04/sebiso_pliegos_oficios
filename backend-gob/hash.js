@@ -1,4 +1,4 @@
 const bcrypt = require('bcryptjs');
 
-bcrypt.hash('upCAgobmx', 10)
+bcrypt.hash('upSgobmx', 10)
 .then(console.log);
