@@ -4,14 +4,78 @@ window.location.pathname
 .pop();
 
 /* =========================
-   ARCHIVOS UP-01
+   PAGINAS
 ========================= */
 
-const PAGINA_INICIO =
-'UP-CA.html';
+const PAGINAS = [
 
-const PAGINA_REGISTROS =
-'R_CA.html';
+    {
+        nombre:"Inicio",
+        ruta:"../p-up/UP-CA.html"
+    },
+
+    {
+        nombre:"Registros",
+        ruta:"../h-up/R_CA.html"
+    },
+
+    {
+        nombre:"Presupuesto",
+        ruta:"../vistas-p/vista_upCA.html"
+    },
+
+    {
+        nombre:"Reportes",
+        ruta:"../r-up/REP_UP-01.html"
+    }
+
+];
+
+/* =========================
+   GENERAR BOTONES
+========================= */
+
+const botonesMenu =
+
+PAGINAS.map((pagina) => {
+
+    const nombreArchivo =
+
+    pagina.ruta
+    .split("/")
+    .pop();
+
+    return `
+
+        <button
+            type="button"
+
+            class="menu-btn ${
+
+                paginaActual === nombreArchivo
+
+                ?
+
+                "activo"
+
+                :
+
+                ""
+
+            }"
+
+            onclick="
+                window.location.href='${pagina.ruta}'
+            "
+        >
+
+            ${pagina.nombre}
+
+        </button>
+
+    `;
+
+}).join("");
 
 /* =========================
    SIDEBAR
@@ -30,47 +94,18 @@ document.getElementById(
         <div class="sidebar-logo">
 
             <img
-                src="img/logo.png"
+                src="../img/logo.png"
                 alt="Logo"
-                class="logo-sidebar">
+                class="logo-sidebar"
+            >
 
         </div>
 
-        <!-- MENÚ -->
+        <!-- MENU -->
 
         <nav class="sidebar-menu">
 
-            <button
-                type="button"
-                class="menu-btn ${
-                    paginaActual === PAGINA_INICIO
-                    ? "activo"
-                    : ""
-                }"
-
-                onclick="
-                    window.location.href='${PAGINA_INICIO}'
-                ">
-
-                Inicio
-
-            </button>
-
-            <button
-                type="button"
-                class="menu-btn ${
-                    paginaActual === PAGINA_REGISTROS
-                    ? "activo"
-                    : ""
-                }"
-
-                onclick="
-                    window.location.href='${PAGINA_REGISTROS}'
-                ">
-
-                Registros
-
-            </button>
+            ${botonesMenu}
 
         </nav>
 
@@ -83,7 +118,8 @@ document.getElementById(
         <button
             type="button"
             class="logout-btn"
-            onclick="logout()">
+            onclick="logout()"
+        >
 
             <span class="logout-icon">
 
@@ -112,6 +148,7 @@ document.getElementById(
 function abrirModal(id){
 
     const modal =
+
     document.getElementById(id);
 
     if(modal){
@@ -125,6 +162,7 @@ function abrirModal(id){
 function cerrarModal(id){
 
     const modal =
+
     document.getElementById(id);
 
     if(modal){
@@ -152,6 +190,7 @@ function logout(){
 ========================= */
 
 const btnConfirmarLogout =
+
 document.getElementById(
     'confirmarLogout'
 );
@@ -173,7 +212,7 @@ if(btnConfirmarLogout){
             );
 
             window.location.href =
-            'index.html';
+            '../index.html';
 
         }
 

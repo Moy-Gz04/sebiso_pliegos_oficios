@@ -165,7 +165,7 @@ btnConfirmar.addEventListener(
                 .slice(-4);
 
                 const idGenerado =
-                `UP-CA_R-${consecutivo}`;
+                `UP-01-CA_R-${consecutivo}`;
 
                 const nuevoRegistro = {
 

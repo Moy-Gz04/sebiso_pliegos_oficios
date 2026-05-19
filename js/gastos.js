@@ -77,6 +77,10 @@ const mapaAreas = {
 
     "UP-01":"UP-01-DESPACHO",
 
+    "UP-CA":"UP-CA",
+
+    "UP-01-S-DRM":"UP-01-S-DRM",
+
     "UP-04":"UP-04-DGFA",
 
     "UP-05":"UP-05-Subse_I_D",
@@ -128,11 +132,18 @@ async function cargarRegistros(){
 
             tbody.innerHTML = "";
 
+            saldoDisponible.innerHTML =
+            "$0.00";
+
             return;
         }
 
         const areaPresupuesto =
         mapaAreas[area];
+
+        /* =========================
+           REGISTROS
+        ========================= */
 
         const respuesta =
         await fetch(
@@ -175,6 +186,10 @@ async function cargarRegistros(){
                 );
 
             });
+
+        /* =========================
+           PRESUPUESTO
+        ========================= */
 
         const presupuestoRespuesta =
         await fetch(
@@ -234,7 +249,15 @@ async function cargarRegistros(){
 
             )}`;
 
+        /* =========================
+           LIMPIAR
+        ========================= */
+
         tbody.innerHTML = "";
+
+        /* =========================
+           VACÍO
+        ========================= */
 
         if(registrosPendientes.length === 0){
 
@@ -256,6 +279,10 @@ async function cargarRegistros(){
 
         }
 
+        /* =========================
+           RECORRER
+        ========================= */
+
         registrosPendientes.forEach((registro) => {
 
             const estatusNormalizado =
@@ -271,6 +298,10 @@ async function cargarRegistros(){
                 estatusNormalizado === 'PAGADO' ||
 
                 estatusNormalizado === 'ACEPTADO';
+
+            /* =========================
+               BOTÓN PAGAR
+            ========================= */
 
             const botonPagar = yaPagado
 
@@ -303,6 +334,10 @@ async function cargarRegistros(){
 
             `;
 
+            /* =========================
+               BOTÓN RECHAZAR
+            ========================= */
+
             const botonRechazar = yaPagado
 
             ? `
@@ -333,6 +368,10 @@ async function cargarRegistros(){
 
             `;
 
+            /* =========================
+               ESTATUS VISUAL
+            ========================= */
+
             let estatusVisual =
             estatusNormalizado;
 
@@ -340,11 +379,14 @@ async function cargarRegistros(){
 
                 estatusVisual =
                 'PAGADO';
+
             }
 
             tbody.innerHTML += `
 
                 <div class="registro-card">
+
+                    <!-- TOP -->
 
                     <div class="registro-top">
 
@@ -453,6 +495,8 @@ async function cargarRegistros(){
                         </div>
 
                     </div>
+
+                    <!-- BOTTOM -->
 
                     <div class="registro-bottom">
 

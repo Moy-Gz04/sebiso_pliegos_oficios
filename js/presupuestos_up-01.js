@@ -92,6 +92,7 @@ function abrirModalMensaje(
             </button>
 
         `;
+
     }
 
     modal.style.display = "flex";
@@ -162,7 +163,7 @@ const mapaAreas = {
 
     "UP-01-DESPACHO":1,
 
-    "UP-01-C_A":2,
+    "UP-CA":2,
 
     "UP-01-S-DRM":3,
 
@@ -206,6 +207,32 @@ const ordenMeses = {
     "DICIEMBRE":12
 
 };
+
+/* =========================
+   VALIDAR ÁREA
+========================= */
+
+function validarArea(area){
+
+    console.log(
+        "AREA:",
+        area
+    );
+
+    console.log(
+        "MAPA:",
+        mapaAreas
+    );
+
+    return Object.prototype.hasOwnProperty.call(
+
+        mapaAreas,
+
+        area
+
+    );
+
+}
 
 /* =========================
    GUARDAR PRESUPUESTO
@@ -268,13 +295,13 @@ btnGuardar.addEventListener(
 
             }
 
-            if(!mapaAreas[area]){
+            if(!validarArea(area)){
 
                 abrirModalMensaje(
 
                     "Área inválida",
 
-                    "Seleccione un área válida"
+                    `Área recibida: ${area}`
 
                 );
 
@@ -449,11 +476,30 @@ async function cargarHistorial(){
 
         tbodyIngresos.innerHTML = "";
 
-        let ultimoSaldo = data.length
+        if(data.length === 0){
 
-            ? data[0].saldo_restante
+            tbodyIngresos.innerHTML = `
 
-            : 0;
+                <tr>
+
+                    <td colspan="7">
+
+                        No hay registros
+
+                    </td>
+
+                </tr>
+
+            `;
+
+            saldoDisponible.innerHTML =
+            "$0.00";
+
+            return;
+
+        }
+
+        let ultimoSaldo = data[0].saldo_restante || 0;
 
         data.forEach((registro) => {
 
@@ -471,7 +517,12 @@ async function cargarHistorial(){
 
                         $${parseFloat(
                             registro.saldo_autorizado || 0
-                        ).toFixed(2)}
+                        ).toLocaleString(
+                            "es-MX",
+                            {
+                                minimumFractionDigits:2
+                            }
+                        )}
 
                     </td>
 
@@ -479,7 +530,12 @@ async function cargarHistorial(){
 
                         $${parseFloat(
                             registro.saldo_modificado || 0
-                        ).toFixed(2)}
+                        ).toLocaleString(
+                            "es-MX",
+                            {
+                                minimumFractionDigits:2
+                            }
+                        )}
 
                     </td>
 
@@ -487,7 +543,12 @@ async function cargarHistorial(){
 
                         $${parseFloat(
                             registro.saldo_restante || 0
-                        ).toFixed(2)}
+                        ).toLocaleString(
+                            "es-MX",
+                            {
+                                minimumFractionDigits:2
+                            }
+                        )}
 
                     </td>
 
@@ -571,7 +632,12 @@ async function cargarHistorial(){
 
             `$${parseFloat(
                 ultimoSaldo || 0
-            ).toFixed(2)}`;
+            ).toLocaleString(
+                "es-MX",
+                {
+                    minimumFractionDigits:2
+                }
+            )}`;
 
     }
 
@@ -655,7 +721,12 @@ async function cargarGastos(){
 
                         $${parseFloat(
                             gasto.cantidad || 0
-                        ).toFixed(2)}
+                        ).toLocaleString(
+                            "es-MX",
+                            {
+                                minimumFractionDigits:2
+                            }
+                        )}
 
                     </td>
 
@@ -755,21 +826,36 @@ async function editarRegistro(id){
         ).innerHTML =
         `$${parseFloat(
             registro.saldo_disponible || 0
-        ).toFixed(2)}`;
+        ).toLocaleString(
+            "es-MX",
+            {
+                minimumFractionDigits:2
+            }
+        )}`;
 
         document.getElementById(
             "editGastado"
         ).innerHTML =
         `$${parseFloat(
             registro.gastado_mes || 0
-        ).toFixed(2)}`;
+        ).toLocaleString(
+            "es-MX",
+            {
+                minimumFractionDigits:2
+            }
+        )}`;
 
         document.getElementById(
             "editRestante"
         ).innerHTML =
         `$${parseFloat(
             registro.saldo_restante || 0
-        ).toFixed(2)}`;
+        ).toLocaleString(
+            "es-MX",
+            {
+                minimumFractionDigits:2
+            }
+        )}`;
 
         document.getElementById(
             "modalEditar"

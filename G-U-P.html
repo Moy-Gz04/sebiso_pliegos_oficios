@@ -5,10 +5,7 @@
 
     <meta charset="UTF-8">
 
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>
 
@@ -86,11 +83,7 @@
 
                     <select id="selectArea">
 
-                        <option
-                            value=""
-                            disabled
-                            selected
-                        >
+                        <option value="" disabled selected>
 
                             Selecciona un área
 
@@ -99,6 +92,18 @@
                         <option value="UP-01">
 
                             UP-01
+
+                        </option>
+
+                        <option value="UP-CA">
+
+                            UP-CA
+
+                        </option>
+
+                        <option value="UP-01-S-DRM">
+
+                            UP-01-S-DRM
 
                         </option>
 
@@ -200,10 +205,7 @@
                      CONTENEDOR DINÁMICO
                 ========================= -->
 
-                <div
-                    class="contenedor-registros"
-                    id="tbodyRegistros"
-                >
+                <div class="contenedor-registros" id="tbodyRegistros">
 
                     <!--
 
@@ -390,10 +392,7 @@
          MODAL ÉXITO
     ========================= -->
 
-    <div
-        class="modal"
-        id="modalExito"
-    >
+    <div class="modal" id="modalExito">
 
         <div class="modal-contenido">
 
@@ -409,11 +408,7 @@
 
             </p>
 
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModal('modalExito')"
-            >
+            <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
 
                 Aceptar
 
@@ -427,10 +422,7 @@
          MODAL ERROR
     ========================= -->
 
-    <div
-        class="modal"
-        id="modalError"
-    >
+    <div class="modal" id="modalError">
 
         <div class="modal-contenido">
 
@@ -446,11 +438,7 @@
 
             </p>
 
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModal('modalError')"
-            >
+            <button type="button" class="btn-principal" onclick="cerrarModal('modalError')">
 
                 Aceptar
 
@@ -464,192 +452,155 @@
      MODAL ÉXITO
 ========================= -->
 
-<div
-    class="modal"
-    id="modalExito"
->
+    <div class="modal" id="modalExito">
 
-    <div class="modal-contenido modal-exito">
+        <div class="modal-contenido modal-exito">
 
-        <h2>
+            <h2>
 
-            Operación realizada
+                Operación realizada
 
-        </h2>
+            </h2>
 
-        <p id="mensajeModalExito">
+            <p id="mensajeModalExito">
 
-            El registro fue actualizado correctamente.
+                El registro fue actualizado correctamente.
 
-        </p>
+            </p>
 
-        <div class="modal-botones">
+            <div class="modal-botones">
 
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModal('modalExito')"
-            >
+                <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
 
-                Aceptar
+                    Aceptar
 
-            </button>
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
-<!-- =========================
+    <!-- =========================
      MODAL ERROR
 ========================= -->
 
-<div
-    class="modal"
-    id="modalError"
->
+    <div class="modal" id="modalError">
 
-    <div class="modal-contenido modal-error">
+        <div class="modal-contenido modal-error">
 
-        <h2>
+            <h2>
 
-            Error
+                Error
 
-        </h2>
+            </h2>
 
-        <p id="mensajeModalError">
+            <p id="mensajeModalError">
 
-            Ocurrió un problema.
+                Ocurrió un problema.
 
-        </p>
+            </p>
 
-        <div class="modal-botones">
+            <div class="modal-botones">
 
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModal('modalError')"
-            >
+                <button type="button" class="btn-principal" onclick="cerrarModal('modalError')">
 
-                Aceptar
+                    Aceptar
 
-            </button>
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
-<!-- =========================
+    <!-- =========================
      MODAL CONFIRMAR RECHAZO
 ========================= -->
 
-<div
-    class="modal"
-    id="modalConfirmarRechazo"
->
+    <div class="modal" id="modalConfirmarRechazo">
 
-    <div class="modal-contenido">
+        <div class="modal-contenido">
 
-        <h2>
+            <h2>
 
-            Confirmar rechazo
+                Confirmar rechazo
 
-        </h2>
+            </h2>
 
-        <p id="mensajeModalRechazo">
+            <p id="mensajeModalRechazo">
 
-            ¿Desea rechazar este registro?
+                ¿Desea rechazar este registro?
 
-        </p>
+            </p>
 
-        <div class="modal-botones">
+            <div class="modal-botones">
 
-            <button
-                type="button"
-                class="btn-secundario"
-                onclick="cerrarModal('modalConfirmarRechazo')"
-            >
+                <button type="button" class="btn-secundario" onclick="cerrarModal('modalConfirmarRechazo')">
 
-                Cancelar
+                    Cancelar
 
-            </button>
+                </button>
 
-            <button
-                type="button"
-                class="btn-principal"
-                id="btnConfirmarRechazo"
-            >
+                <button type="button" class="btn-principal" id="btnConfirmarRechazo">
 
-                Rechazar
+                    Rechazar
 
-            </button>
+                </button>
+
+            </div>
 
         </div>
 
     </div>
 
-</div>
-
-<!-- =========================
+    <!-- =========================
      MODAL CONFIRMAR PAGO
 ========================= -->
 
-<div
-    class="modal"
-    id="modalConfirmarPago"
->
+    <div class="modal" id="modalConfirmarPago">
 
-    <div class="modal-contenido">
+        <div class="modal-contenido">
 
-        <h2>
+            <h2>
 
-            Confirmar pago
+                Confirmar pago
 
-        </h2>
+            </h2>
 
-        <p id="mensajeModalPago">
+            <p id="mensajeModalPago">
 
-            ¿Desea registrar este pago?
+                ¿Desea registrar este pago?
 
-        </p>
+            </p>
 
-        <div class="modal-botones">
+            <div class="modal-botones">
 
-            <button
-                type="button"
-                class="btn-secundario"
-                onclick="cerrarModal('modalConfirmarPago')"
-            >
+                <button type="button" class="btn-secundario" onclick="cerrarModal('modalConfirmarPago')">
 
-                Cancelar
+                    Cancelar
 
-            </button>
+                </button>
 
-            <button
-                type="button"
-                class="btn-principal"
-                id="btnConfirmarPago"
-            >
+                <button type="button" class="btn-principal" id="btnConfirmarPago">
 
-                Aceptar
+                    Aceptar
 
-            </button>
+                </button>
+
+            </div>
 
         </div>
 
     </div>
-
-</div>
 
     <!-- =========================
          SCRIPTS
     ========================= -->
 
     <script src="js/sidebar_CP.js"></script>
-
     <script src="js/gastos.js"></script>
 
 </body>
