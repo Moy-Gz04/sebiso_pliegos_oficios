@@ -1,155 +1,467 @@
 /* =========================
-   ESTATUS
+   BODY / CONTENIDO
 ========================= */
 
+body{
+
+    background:#f4f1e6 !important;
+
+}
+
+.contenido{
+
+    background:transparent !important;
+
+    padding-bottom:40px;
+
+}
+
+/* =========================
+   TABLA
+========================= */
+
+#tablaResultados{
+
+    width:100% !important;
+
+    margin:0 auto !important;
+
+    border-collapse:separate !important;
+
+    border-spacing:0 34px !important;
+
+    background:transparent !important;
+
+    border:none !important;
+
+    box-shadow:none !important;
+
+    overflow:visible !important;
+
+}
+
+#tablaResultados tbody,
+#tablaResultados tr,
+#tablaResultados td{
+
+    background:transparent !important;
+
+    border:none !important;
+
+}
+
+#tablaResultados td{
+
+    padding:0 !important;
+
+    text-align:unset !important;
+
+    font-size:unset !important;
+
+}
+
+/* CANCELAR RAYAS HEREDADAS */
+
+#tablaResultados tr:nth-child(odd),
+#tablaResultados tr:nth-child(even){
+
+    background:transparent !important;
+
+}
+
+/* =========================
+   CARD
+========================= */
+
+.card-registro{
+
+    width:90%;
+
+    margin:auto;
+
+    background:#ffffff !important;
+
+    border-radius:24px;
+
+    padding:24px;
+
+    box-sizing:border-box;
+
+    box-shadow:
+        0 3px 10px rgba(0,0,0,.05);
+
+}
+
+/* =========================
+   FILA SUPERIOR
+========================= */
+
+.fila-superior{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(5,minmax(0,1fr));
+
+    gap:18px;
+
+    align-items:start;
+
+    margin-bottom:24px;
+
+}
+
+/* =========================
+   FILA PDFS
+========================= */
+
+.fila-pdfs{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:18px;
+
+    margin-bottom:24px;
+
+    align-items:start;
+
+}
+
+/* =========================
+   FILA INFERIOR
+========================= */
+
+.fila-inferior{
+
+    display:grid;
+
+    grid-template-columns:
+        1fr
+        1fr
+        170px;
+
+    gap:18px;
+
+    align-items:start;
+
+}
+
+/* =========================
+   ACCIONES
+========================= */
+
+.acciones-laterales{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    gap:18px;
+
+    width:100%;
+
+}
+
+/* =========================
+   INFO ITEM
+========================= */
+
+.info-item{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:flex-start;
+
+    text-align:center;
+
+    gap:8px;
+
+    width:100%;
+
+    min-width:0;
+
+}
+
+/* =========================
+   LABELS
+========================= */
+
+.info-label{
+
+    font-size:10px;
+
+    font-weight:700;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+    color:#64748b;
+
+    line-height:1.2;
+
+}
+
+/* =========================
+   VALORES
+========================= */
+
+.info-valor{
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#111827;
+
+    line-height:1.4;
+
+    word-break:break-word;
+
+}
+
+/* =========================
+   BOTONES / BADGES
+========================= */
+
+.link-pdf,
+.btn-enviar,
+.btn-enviado,
+.btn-aceptado,
+.btn-rechazado,
+.btn-eliminar,
+.btn-bloqueado,
 .badge-estatus{
 
-    display:inline-flex;
+    width:140px !important;
+
+    min-width:140px !important;
+
+    max-width:140px !important;
+
+    height:40px !important;
+
+    min-height:40px !important;
+
+    max-height:40px !important;
+
+    padding:0 !important;
+
+    margin:0 !important;
+
+    border-radius:999px;
+
+    display:flex !important;
 
     align-items:center;
 
     justify-content:center;
 
-    padding:7px 16px;
+    text-align:center;
 
-    border-radius:20px;
-
-    font-size:11px;
+    font-size:12px !important;
 
     font-weight:700;
 
-    background:transparent;
+    box-sizing:border-box;
 
-    border:2px solid;
+    transition:.2s;
 
-    min-width:100px;
 }
 
-/* CREADO */
+/* =========================
+   PDFS
+========================= */
+
+.link-pdf{
+
+    background:#70122b !important;
+
+    color:white !important;
+
+    text-decoration:none !important;
+
+    border:none !important;
+
+}
+
+.link-pdf:hover{
+
+    opacity:.92;
+
+}
+
+/* =========================
+   BOTONES
+========================= */
+
+.btn-enviar{
+
+    background:#70122b !important;
+
+    color:white !important;
+
+    border:none !important;
+
+    cursor:pointer;
+
+}
+
+.btn-enviado{
+
+    background:white !important;
+
+    color:#1976d2 !important;
+
+    border:1.5px solid #1976d2 !important;
+
+}
+
+.btn-aceptado{
+
+    background:#2e7d32 !important;
+
+    color:white !important;
+
+    border:none !important;
+
+}
+
+.btn-rechazado{
+
+    background:#70122b !important;
+
+    color:white !important;
+
+    border:none !important;
+
+}
+
+.btn-eliminar{
+
+    background:#f0002f !important;
+
+    color:white !important;
+
+    border:none !important;
+
+    cursor:pointer;
+
+}
+
+.btn-bloqueado{
+
+    background:#e5e7eb !important;
+
+    color:#666 !important;
+
+    border:none !important;
+
+    cursor:not-allowed;
+
+}
+
+/* =========================
+   BADGES
+========================= */
+
+.badge-estatus{
+
+    border:1.5px solid !important;
+
+    background:white !important;
+
+}
 
 .badge-creado{
 
-    color:#f39c12;
+    border-color:#f39c12 !important;
 
-    border-color:#f39c12;
+    color:#f39c12 !important;
+
 }
-
-/* ENVIADO */
 
 .badge-enviado{
 
-    color:#1976d2;
+    border-color:#1976d2 !important;
 
-    border-color:#1976d2;
+    color:#1976d2 !important;
+
 }
-
-/* ACEPTADO */
 
 .badge-aceptado{
 
-    color:#2e7d32;
+    border-color:#2e7d32 !important;
 
-    border-color:#2e7d32;
+    color:#2e7d32 !important;
+
 }
-
-/* RECHAZADO */
 
 .badge-rechazado{
 
-    color:#c62828;
+    border-color:#c62828 !important;
 
-    border-color:#c62828;
+    color:#c62828 !important;
+
 }
 
 /* =========================
    OBSERVACIONES
 ========================= */
 
-.textarea-observaciones{
-
-    width:220px;
-
-    min-height:70px;
-
-    resize:none;
-
-    border:1px solid #cdbb86;
-
-    background:#f8f5ed;
-
-    border-radius:12px;
-
-    padding:10px 12px;
-
-    font-size:11px;
-
-    color:#333;
-
-    outline:none;
-
-    transition:.2s;
-
-    line-height:1.4;
-}
-
-.textarea-observaciones:focus{
-
-    border-color:#6A1028;
-
-    background:white;
-}
-
-.textarea-observaciones::placeholder{
-
-    color:#8a8a8a;
-}
-
-/* =========================
-   OBSERVACIONES ADMIN
-========================= */
-
+.textarea-observaciones,
 .textarea-observaciones-admin{
 
-    width:220px;
+    width:100% !important;
 
-    min-height:70px;
+    min-height:130px;
+
+    padding:14px !important;
+
+    border-radius:18px;
 
     resize:none;
 
-    border:2px solid #6A1028;
-
-    background:#fffdf8;
-
-    border-radius:14px;
-
-    padding:12px 14px;
-
-    font-size:11px;
-
-    font-weight:500;
-
-    color:#3b2330;
-
     outline:none;
 
-    transition:.25s ease;
+    font-size:12px !important;
+
+    font-family:inherit;
 
     line-height:1.5;
 
-    box-shadow:
-        0 2px 8px rgba(106,16,40,.08);
+    box-sizing:border-box;
 
 }
 
-/* =========================
-   HOVER
-========================= */
+/* ÁREA */
 
-.textarea-observaciones-admin:hover{
+.textarea-observaciones{
 
-    border-color:#8c1838;
+    background:#fdfbf4 !important;
 
-    background:#ffffff;
+    border:1px solid #d6c58d !important;
+
+}
+
+/* ADMIN */
+
+.textarea-observaciones-admin{
+
+    background:#fafafa !important;
+
+    border:1px solid #d6d6d6 !important;
 
 }
 
@@ -157,64 +469,68 @@
    FOCUS
 ========================= */
 
+.textarea-observaciones:focus,
 .textarea-observaciones-admin:focus{
 
-    border-color:#c9a227;
+    border-color:#70122b !important;
 
-    background:white;
-
-    box-shadow:
-
-        0 0 0 4px rgba(201,162,39,.18),
-
-        0 4px 12px rgba(106,16,40,.12);
+    background:white !important;
 
 }
 
 /* =========================
-   PLACEHOLDER
+   RESPONSIVE
 ========================= */
 
-.textarea-observaciones-admin::placeholder{
+@media(max-width:1200px){
 
-    color:#9b8c92;
+    .fila-superior{
 
-    font-style:italic;
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+    .fila-pdfs{
+
+        grid-template-columns:
+            repeat(2,1fr);
+
+    }
+
+    .fila-inferior{
+
+        grid-template-columns:1fr;
+
+    }
+
+    .acciones-laterales{
+
+        flex-direction:row;
+
+        flex-wrap:wrap;
+
+        justify-content:center;
+
+    }
 
 }
 
-/* =========================
-   READONLY
-========================= */
+@media(max-width:700px){
 
-.textarea-observaciones-admin[readonly]{
+    .fila-superior,
+    .fila-pdfs{
 
-    background:#f3f1ed;
+        grid-template-columns:1fr;
 
-    color:#5f5f5f;
+    }
 
-    border-color:#c7c7c7;
+    .card-registro{
 
-    cursor:not-allowed;
+        width:96%;
 
-    opacity:.95;
+        padding:18px;
 
-}
-
-/* =========================
-   SCROLL
-========================= */
-
-.textarea-observaciones-admin::-webkit-scrollbar{
-
-    width:6px;
-
-}
-
-.textarea-observaciones-admin::-webkit-scrollbar-thumb{
-
-    background:#6A1028;
-
-    border-radius:20px;
+    }
 
 }

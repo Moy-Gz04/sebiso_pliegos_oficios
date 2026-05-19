@@ -1,7 +1,3 @@
-/* =========================
-   TBODY
-========================= */
-
 const tbody =
 document.getElementById(
     "tbodyResultados"
@@ -16,12 +12,10 @@ const API =
 "https://sebiso-pliegos-oficios-1.onrender.com";
 
 /* =========================
-   VARIABLES
+   VARIABLE ELIMINAR
 ========================= */
 
 let codigoEliminar = null;
-
-let codigoSPG = null;
 
 /* =========================
    NORMALIZAR ESTATUS
@@ -70,183 +64,7 @@ function cerrarModal(id){
 }
 
 /* =========================
-   MODAL SPG
-========================= */
-
-function abrirModalSPG(codigo){
-
-    codigoSPG = codigo;
-
-    abrirModal(
-        'modalSPG'
-    );
-
-}
-
-/* =========================
-   CALCULAR TOTAL SPG
-========================= */
-
-function calcularTotalSPG(){
-
-    const montoInput =
-    document.getElementById(
-        "spgMonto"
-    );
-
-    const retInput =
-    document.getElementById(
-        "spgRet"
-    );
-
-    const totalInput =
-    document.getElementById(
-        "spgTot"
-    );
-
-    if(
-
-        !montoInput
-        ||
-        !retInput
-        ||
-        !totalInput
-
-    ){
-
-        return;
-
-    }
-
-    const monto = parseFloat(
-
-        montoInput.value
-        .replace(/[^0-9.-]+/g,'')
-
-    ) || 0;
-
-    const retenciones = parseFloat(
-
-        retInput.value
-        .replace(/[^0-9.-]+/g,'')
-
-    ) || 0;
-
-    const total = monto + retenciones;
-
-    totalInput.value = total.toLocaleString(
-
-        'es-MX',
-
-        {
-
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-
-        }
-
-    );
-
-}
-
-/* =========================
-   GENERAR SPG
-========================= */
-
-async function generarSPG(){
-
-    try{
-
-        const datos = {
-
-            codigo:codigoSPG,
-
-            anio:
-            document.getElementById(
-                'spgAnio'
-            ).value,
-
-            ur:
-            document.getElementById(
-                'spgUR'
-            ).value,
-
-            up:
-            document.getElementById(
-                'spgUP'
-            ).value,
-
-            rubro:
-            document.getElementById(
-                'spgR'
-            ).value,
-
-            og:
-            document.getElementById(
-                'spgOG'
-            ).value,
-
-            proyecto:
-            document.getElementById(
-                'spgPR'
-            ).value,
-
-            cuenta:
-            document.getElementById(
-                'spgCuenta'
-            ).value,
-
-            monto:
-            document.getElementById(
-                'spgMonto'
-            ).value,
-
-            retenciones:
-            document.getElementById(
-                'spgRet'
-            ).value,
-
-            total:
-            document.getElementById(
-                'spgTot'
-            ).value
-
-        };
-
-        console.log(
-            'DATOS SPG:',
-            datos
-        );
-
-        cerrarModal(
-            'modalSPG'
-        );
-
-        alert(
-            'SPG generado correctamente'
-        );
-
-        cargarRegistros();
-
-    }
-
-    catch(error){
-
-        console.error(
-            'ERROR SPG:',
-            error
-        );
-
-        alert(
-            error.message
-        );
-
-    }
-
-}
-
-/* =========================
-   BADGES ESTATUS
+   BADGE ESTATUS
 ========================= */
 
 function obtenerBadgeEstatus(estatus){
@@ -272,6 +90,17 @@ function obtenerBadgeEstatus(estatus){
             `;
 
         case "PAGADO":
+
+            return `
+
+                <span
+                    class="badge-estatus badge-aceptado">
+
+                    Pagado
+
+                </span>
+
+            `;
 
         case "ACEPTADO":
 
@@ -327,6 +156,10 @@ function obtenerBotonEnviar(registro){
         registro.estatus
     );
 
+    /* =========================
+       CREADO
+    ========================= */
+
     if(
 
         estatus === "CREADO"
@@ -349,6 +182,10 @@ function obtenerBotonEnviar(registro){
 
     }
 
+    /* =========================
+       ENVIADO
+    ========================= */
+
     if(estatus === "ENVIADO"){
 
         return `
@@ -364,6 +201,10 @@ function obtenerBotonEnviar(registro){
         `;
 
     }
+
+    /* =========================
+       PAGADO
+    ========================= */
 
     if(
 
@@ -386,6 +227,10 @@ function obtenerBotonEnviar(registro){
         `;
 
     }
+
+    /* =========================
+       RECHAZADO
+    ========================= */
 
     if(estatus === "RECHAZADO"){
 
@@ -549,7 +394,7 @@ async function enviarRegistro(codigo){
 }
 
 /* =========================
-   OBSERVACIONES
+   GUARDAR OBSERVACIONES
 ========================= */
 
 async function guardarObservaciones(
@@ -627,7 +472,7 @@ async function cargarRegistros(){
         const response =
         await fetch(
 
-            `${API}/api/registros/UP-01`
+            `${API}/api/registros/UP-01-S-DRM`
 
         );
 
@@ -644,13 +489,17 @@ async function cargarRegistros(){
 
         tbody.innerHTML = "";
 
+        /* =========================
+           SIN REGISTROS
+        ========================= */
+
         if(registros.length === 0){
 
             tbody.innerHTML = `
 
                 <tr>
 
-                    <td colspan="12">
+                    <td colspan="10">
 
                         No hay registros
 
@@ -663,6 +512,10 @@ async function cargarRegistros(){
             return;
 
         }
+
+        /* =========================
+           ORDENAR
+        ========================= */
 
         registros.sort((a,b)=>{
 
@@ -692,12 +545,20 @@ async function cargarRegistros(){
 
         });
 
+        /* =========================
+           RECORRER
+        ========================= */
+
         for(const registro of registros){
 
             const estatus =
             normalizarEstatus(
                 registro.estatus
             );
+
+            /* =========================
+               BLOQUEAR
+            ========================= */
 
             const bloqueado =
 
@@ -706,6 +567,10 @@ async function cargarRegistros(){
                 estatus === "ACEPTADO"
                 ||
                 estatus === "ENVIADO";
+
+            /* =========================
+               ELIMINAR
+            ========================= */
 
             const permitirEliminar =
 
@@ -717,95 +582,123 @@ async function cargarRegistros(){
 
             tbody.innerHTML += `
 
-            <tr>
-
-            <td colspan="12">
-
-            <div class="card-registro">
-
-                <!-- =========================
-                     SUPERIOR
-                ========================= -->
-
-                <div class="fila-superior">
+                <tr>
 
                     <!-- ID -->
 
-                    <div class="info-item">
+                    <td>
 
-                        <span class="info-label">
-                            ID
-                        </span>
+                        ${registro.codigo || '-'}
 
-                        <span class="info-valor">
-                            ${registro.codigo || '-'}
-                        </span>
-
-                    </div>
+                    </td>
 
                     <!-- PERSONA -->
 
-                    <div class="info-item">
+                    <td>
 
-                        <span class="info-label">
-                            Persona
-                        </span>
+                        ${registro.persona || '-'}
 
-                        <span class="info-valor">
-                            ${registro.persona || '-'}
-                        </span>
-
-                    </div>
+                    </td>
 
                     <!-- FECHA -->
 
-                    <div class="info-item">
+                    <td>
 
-                        <span class="info-label">
-                            Fecha y Hora
-                        </span>
+                        ${registro.fecha
 
-                        <span class="info-valor">
+                            ?
 
-                            ${registro.fecha
+                            new Date(
+                                registro.fecha
+                            ).toLocaleString(
+                                'es-MX'
+                            )
 
-                                ?
+                            :
 
-                                new Date(
-                                    registro.fecha
-                                ).toLocaleString(
-                                    'es-MX'
-                                )
+                            '-'
 
-                                :
+                        }
 
-                                '-'
+                    </td>
 
-                            }
+                    <!-- OFICIO -->
 
-                        </span>
+                    <td>
 
-                    </div>
+                        <a
+                            href="${registro.oficio_pdf || '#'}"
+                            target="_blank"
+                            class="link-pdf">
+
+                            Ver Oficio
+
+                        </a>
+
+                    </td>
+
+                    <!-- PLIEGO -->
+
+                    <td>
+
+                        <a
+                            href="${registro.pliego_pdf || '#'}"
+                            target="_blank"
+                            class="link-pdf">
+
+                            Ver Pliego
+
+                        </a>
+
+                    </td>
+
+                    <!-- ENVIAR -->
+
+                    <td>
+
+                        ${obtenerBotonEnviar(registro)}
+
+                    </td>
 
                     <!-- ESTATUS -->
 
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Estatus
-                        </span>
+                    <td>
 
                         ${obtenerBadgeEstatus(registro.estatus)}
 
-                    </div>
+                    </td>
+
+                    <!-- OBSERVACIONES ÁREA -->
+
+                    <td>
+
+                        <textarea
+                            class="textarea-observaciones"
+                            placeholder="Observaciones del área..."
+                            onchange="guardarObservaciones(
+                                '${registro.codigo}',
+                                this.value
+                            )"
+                            ${bloqueado ? 'readonly' : ''}
+                        >${registro.observaciones || ''}</textarea>
+
+                    </td>
+
+                    <!-- OBSERVACIONES ADMIN -->
+
+                    <td>
+
+                        <textarea
+                            class="textarea-observaciones-admin"
+                            readonly
+                            placeholder="Observaciones administración..."
+                        >${registro.observaciones_admin || ''}</textarea>
+
+                    </td>
 
                     <!-- ELIMINAR -->
 
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Eliminar
-                        </span>
+                    <td>
 
                         ${permitirEliminar
 
@@ -839,184 +732,9 @@ async function cargarRegistros(){
 
                         }
 
-                    </div>
+                    </td>
 
-                </div>
-
-                <!-- =========================
-                     PDFS
-                ========================= -->
-
-                <div class="fila-pdfs">
-
-                    <!-- OFICIO -->
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Oficio PDF
-                        </span>
-
-                        <a
-                            href="${registro.oficio_pdf || '#'}"
-                            target="_blank"
-                            class="link-pdf">
-
-                            Ver Oficio
-
-                        </a>
-
-                    </div>
-
-                    <!-- PLIEGO -->
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Pliego PDF
-                        </span>
-
-                        <a
-                            href="${registro.pliego_pdf || '#'}"
-                            target="_blank"
-                            class="link-pdf">
-
-                            Ver Pliego
-
-                        </a>
-
-                    </div>
-
-                    <!-- SPG -->
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            SPG PDF
-                        </span>
-
-                        ${registro.spg_pdf
-
-                            ?
-
-                            `
-
-                            <a
-                                href="${registro.spg_pdf}"
-                                target="_blank"
-                                class="link-pdf">
-
-                                Ver SPG
-
-                            </a>
-
-                            `
-
-                            :
-
-                            `
-
-                            <button
-                                class="btn-bloqueado"
-                                disabled>
-
-                                Sin SPG
-
-                            </button>
-
-                            `
-
-                        }
-
-                    </div>
-
-                </div>
-
-                <!-- =========================
-                     INFERIOR
-                ========================= -->
-
-                <div class="fila-inferior">
-
-                    <!-- OBSERVACIONES -->
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Observaciones Área
-                        </span>
-
-                        <textarea
-                            class="textarea-observaciones"
-                            placeholder="Observaciones del área..."
-                            onchange="guardarObservaciones(
-                                '${registro.codigo}',
-                                this.value
-                            )"
-                            ${bloqueado ? 'readonly' : ''}
-                        >${registro.observaciones || ''}</textarea>
-
-                    </div>
-
-                    <!-- OBSERVACIONES ADMIN -->
-
-                    <div class="info-item">
-
-                        <span class="info-label">
-                            Observaciones Administración
-                        </span>
-
-                        <textarea
-                            class="textarea-observaciones-admin"
-                            readonly
-                            placeholder="Observaciones administración..."
-                        >${registro.observaciones_admin || ''}</textarea>
-
-                    </div>
-
-                    <!-- ACCIONES -->
-
-                    <div class="acciones-laterales">
-
-                        <!-- TERMINAR -->
-
-                        <div class="info-item">
-
-                            <span class="info-label">
-                                Terminar Trámite
-                            </span>
-
-                            <button
-                                class="btn-enviar"
-                                onclick="abrirModalSPG('${registro.codigo}')">
-
-                                Terminar
-
-                            </button>
-
-                        </div>
-
-                        <!-- ENVIAR -->
-
-                        <div class="info-item">
-
-                            <span class="info-label">
-                                Enviar
-                            </span>
-
-                            ${obtenerBotonEnviar(registro)}
-
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-            </td>
-
-            </tr>
+                </tr>
 
             `;
 
@@ -1036,7 +754,7 @@ async function cargarRegistros(){
 }
 
 /* =========================
-   ELIMINAR
+   ABRIR MODAL ELIMINAR
 ========================= */
 
 function eliminarRegistro(codigo){
@@ -1124,126 +842,19 @@ btnConfirmarEliminar.addEventListener(
 );
 
 /* =========================
-   INICIALIZAR TODO
+   AUTO REFRESH
 ========================= */
 
-document.addEventListener(
+setInterval(
 
-    "DOMContentLoaded",
+    cargarRegistros,
 
-    ()=>{
+    30000
 
-        /* =========================
-           CARGAR CATÁLOGOS SPG
-        ========================= */
+);
 
-        if(typeof llenarAnios === "function"){
-
-            llenarAnios("spgAnio");
-
-        }
-
-        if(typeof llenarUP === "function"){
-
-            llenarUP();
-
-        }
-
-        if(typeof llenarRubros === "function"){
-
-            llenarRubros();
-
-        }
-
-        if(typeof llenarProyectos === "function"){
-
-            llenarProyectos();
-
-        }
-
-        if(typeof llenarObjetoGasto === "function"){
-
-            llenarObjetoGasto();
-
-        }
-
-        /* =========================
-   EVENTOS TOTAL SPG
+/* =========================
+   INICIAR
 ========================= */
 
-const spgMonto =
-document.getElementById(
-    "spgMonto"
-);
-
-const spgRet =
-document.getElementById(
-    "spgRet"
-);
-
-if(spgMonto){
-
-    spgMonto.addEventListener(
-
-        "input",
-
-        calcularTotalSPG
-
-    );
-
-}
-
-if(spgRet){
-
-    spgRet.addEventListener(
-
-        "input",
-
-        calcularTotalSPG
-
-    );
-
-}
-
-        /* =========================
-           BOTÓN SPG
-        ========================= */
-
-        const btnGenerarSPG =
-        document.getElementById(
-            "btnGenerarSPG"
-        );
-
-        if(btnGenerarSPG){
-
-            btnGenerarSPG.addEventListener(
-
-                "click",
-
-                generarSPG
-
-            );
-
-        }
-
-        /* =========================
-           CARGAR REGISTROS
-        ========================= */
-
-        cargarRegistros();
-
-        /* =========================
-           AUTO REFRESH
-        ========================= */
-
-        setInterval(
-
-            cargarRegistros,
-
-            30000
-
-        );
-
-    }
-
-);
+cargarRegistros();
