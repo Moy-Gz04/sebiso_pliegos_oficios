@@ -2,15 +2,13 @@ const express = require("express");
 
 const router = express.Router();
 
-const fetch = require("node-fetch");
-
 /* =========================
    APPS SCRIPT URL
 ========================= */
 
 const APPS_SCRIPT_URL =
 
-"https://script.google.com/macros/s/XXXXXXXX/exec";
+"https://script.google.com/macros/s/AKfycbyIGrkWxfZBlwCeZIUuFBkmFPUYse8rxz14OVpRyH4KT2ljevxDG9gKSn7lMDO8iqLRfQ/exec";
 
 /* =========================
    GENERAR SPG
@@ -23,6 +21,10 @@ router.post(
     async(req,res)=>{
 
         try{
+
+            /* =========================
+               ENVIAR A APPS SCRIPT
+            ========================= */
 
             const response =
             await fetch(
@@ -50,10 +52,29 @@ router.post(
 
             );
 
+            /* =========================
+               RESPUESTA
+            ========================= */
+
             const data =
             await response.json();
 
-            if(!response.ok){
+            console.log(
+                "RESPUESTA APPS SCRIPT:",
+                data
+            );
+
+            /* =========================
+               ERROR
+            ========================= */
+
+            if(
+
+                !response.ok
+                ||
+                data.ok === false
+
+            ){
 
                 throw new Error(
 
@@ -65,7 +86,19 @@ router.post(
 
             }
 
-            res.json(data);
+            /* =========================
+               RESPONDER FRONTEND
+            ========================= */
+
+            res.json({
+
+                ok:true,
+
+                url:data.url,
+
+                fileId:data.fileId || null
+
+            });
 
         }
 
@@ -77,6 +110,8 @@ router.post(
             );
 
             res.status(500).json({
+
+                ok:false,
 
                 error:error.message
 
