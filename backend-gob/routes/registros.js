@@ -1006,6 +1006,10 @@ router.put(
 
             } = req.body;
 
+            /* =========================
+               VALIDAR URL
+            ========================= */
+
             if(!spg_pdf){
 
                 return res.status(400).json({
@@ -1017,6 +1021,10 @@ router.put(
                 });
 
             }
+
+            /* =========================
+               VALIDAR REGISTRO
+            ========================= */
 
             const validar =
             await pool.query(
@@ -1045,6 +1053,10 @@ router.put(
 
             }
 
+            /* =========================
+               ACTUALIZAR SPG
+            ========================= */
+
             await pool.query(
 
                 `
@@ -1061,9 +1073,9 @@ router.put(
                     proyecto = $6,
                     cuenta = $7,
 
-                    monto = $8,
-                    retenciones = $9,
-                    total = $10,
+                    spg_monto = $8,
+                    spg_retenciones = $9,
+                    spg_total = $10,
 
                     anio = $11
 
@@ -1081,17 +1093,21 @@ router.put(
                     proyecto || "",
                     cuenta || "",
 
-                    monto || "",
-                    retenciones || "",
-                    total || "",
+                    Number(monto) || 0,
+                    Number(retenciones) || 0,
+                    Number(total) || 0,
 
-                    anio || "",
+                    Number(anio) || 0,
 
                     codigo
 
                 ]
 
             );
+
+            /* =========================
+               RESPUESTA
+            ========================= */
 
             res.json({
 
@@ -1105,17 +1121,22 @@ router.put(
 
         catch(error){
 
-            console.log(error);
+    console.log("ERROR REAL SPG:");
+    console.log(error);
 
-            res.status(500).json({
+    res.status(500).json({
 
-                ok:false,
+        ok:false,
 
-                error:"Error guardando SPG"
+        error:error.message,
 
-            });
+        detail:error.detail || null,
 
-        }
+        stack:error.stack
+
+    });
+
+}
 
     }
 
