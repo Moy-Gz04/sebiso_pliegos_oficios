@@ -18,8 +18,6 @@ let codigoEliminar = null;
 
 let codigoSPG = null;
 
-let codigoRecibo = null;
-
 /* =========================
    NORMALIZAR ESTATUS
 ========================= */
