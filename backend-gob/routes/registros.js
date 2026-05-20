@@ -685,69 +685,48 @@ router.put(
 
             } = req.body;
 
-            /* =========================
-               VALIDAR
-            ========================= */
-
             if(!spg_pdf){
 
                 return res.status(400).json({
 
                     ok:false,
 
-                    error:
-                    "URL SPG requerida"
+                    error:"URL SPG requerida"
 
                 });
 
             }
 
-            /* =========================
-               EXISTE
-            ========================= */
-
             const validar =
             await pool.query(
 
                 `
-
                 SELECT id
 
                 FROM registros
 
                 WHERE codigo = $1
-
                 `,
 
                 [codigo]
 
             );
 
-            if(
-
-                validar.rows.length === 0
-
-            ){
+            if(validar.rows.length === 0){
 
                 return res.status(404).json({
 
                     ok:false,
 
-                    error:
-                    "Registro no encontrado"
+                    error:"Registro no encontrado"
 
                 });
 
             }
 
-            /* =========================
-               GUARDAR URL
-            ========================= */
-
             await pool.query(
 
                 `
-
                 UPDATE registros
 
                 SET
@@ -755,7 +734,6 @@ router.put(
                     spg_pdf = $1
 
                 WHERE codigo = $2
-
                 `,
 
                 [
@@ -772,8 +750,7 @@ router.put(
 
                 ok:true,
 
-                msg:
-                "SPG guardado"
+                msg:"SPG guardado"
 
             });
 
@@ -787,8 +764,7 @@ router.put(
 
                 ok:false,
 
-                error:
-                "Error guardando SPG"
+                error:"Error guardando SPG"
 
             });
 
