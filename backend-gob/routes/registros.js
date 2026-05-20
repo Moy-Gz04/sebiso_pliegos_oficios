@@ -8,18 +8,30 @@ const router = express.Router();
    ESTATUS VÁLIDOS
 ========================= */
 
-const ESTATUS = ["Creado", "Enviado", "Rechazado", "Pagado"];
+const ESTATUS = [
+
+    "Creado",
+    "Enviado",
+    "Rechazado",
+    "Pagado"
+
+];
 
 /* =========================
    OBTENER REGISTROS
 ========================= */
 
 router.get("/:area", async (req, res) => {
-  try {
-    const area = req.params.area.trim();
 
-    const result = await pool.query(
-      `
+    try{
+
+        const area =
+        req.params.area.trim();
+
+        const result =
+        await pool.query(
+
+            `
             SELECT
 
                 r.*,
@@ -76,19 +88,31 @@ router.get("/:area", async (req, res) => {
                 r.fecha DESC NULLS LAST
             `,
 
-      [area],
-    );
+            [area]
 
-    res.json(result.rows);
-  } catch (error) {
-    console.log(error);
+        );
 
-    res.status(500).json({
-      ok: false,
+        res.json(
+            result.rows
+        );
 
-      error: "Error obteniendo registros",
-    });
-  }
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error obteniendo registros"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -96,27 +120,61 @@ router.get("/:area", async (req, res) => {
 ========================= */
 
 router.post("/", async (req, res) => {
-  try {
-    const { codigo, area, persona, oficio_pdf, pliego_pdf } = req.body;
 
-    /* =========================
+    try{
+
+        const {
+
+            codigo,
+            area,
+            persona,
+            oficio_pdf,
+            pliego_pdf,
+
+            municipio,
+            dia_inicio,
+            dia_fin,
+            mes,
+
+            motivo_comision,
+
+            localidades_visitadas
+
+        } = req.body;
+
+        /* =========================
            VALIDAR CAMPOS
         ========================= */
 
-    if (!codigo || !area || !persona) {
-      return res.status(400).json({
-        ok: false,
+        if(
 
-        error: "Campos obligatorios incompletos",
-      });
-    }
+            !codigo
+            ||
+            !area
+            ||
+            !persona
 
-    /* =========================
+        ){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "Campos obligatorios incompletos"
+
+            });
+
+        }
+
+        /* =========================
            VALIDAR DUPLICADO
         ========================= */
 
-    const existe = await pool.query(
-      `
+        const existe =
+        await pool.query(
+
+            `
             SELECT id
 
             FROM registros
@@ -124,66 +182,131 @@ router.post("/", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo.trim()],
-    );
+            [codigo.trim()]
 
-    if (existe.rows.length > 0) {
-      return res.status(400).json({
-        ok: false,
+        );
 
-        error: "El código ya existe",
-      });
-    }
+        if(existe.rows.length > 0){
 
-    /* =========================
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "El código ya existe"
+
+            });
+
+        }
+
+        /* =========================
            INSERTAR
         ========================= */
 
-    await pool.query(
-      `
+        await pool.query(
+
+            `
             INSERT INTO registros(
 
                 codigo,
                 area,
                 persona,
+
                 oficio_pdf,
                 pliego_pdf,
+
+                municipio,
+                dia_inicio,
+                dia_fin,
+                mes,
+
+                motivo_comision,
+
+                localidades_visitadas,
+
                 estatus
 
             )
 
-            VALUES($1,$2,$3,$4,$5,$6)
+            VALUES(
+
+                $1,
+                $2,
+                $3,
+
+                $4,
+                $5,
+
+                $6,
+                $7,
+                $8,
+                $9,
+
+                $10,
+
+                $11,
+
+                $12
+
+            )
             `,
 
-      [
-        codigo.trim(),
+            [
 
-        area.trim(),
+                codigo.trim(),
 
-        persona.trim(),
+                area.trim(),
 
-        oficio_pdf || "",
+                persona.trim(),
 
-        pliego_pdf || "",
+                oficio_pdf || "",
 
-        "Creado",
-      ],
-    );
+                pliego_pdf || "",
 
-    res.json({
-      ok: true,
+                municipio || "",
 
-      msg: "Registro guardado",
-    });
-  } catch (error) {
-    console.log(error);
+                dia_inicio || "",
 
-    res.status(500).json({
-      ok: false,
+                dia_fin || "",
 
-      error: "Error guardando registro",
-    });
-  }
+                mes || "",
+
+                motivo_comision || "",
+
+                localidades_visitadas || "",
+
+                "Creado"
+
+            ]
+
+        );
+
+        res.json({
+
+            ok:true,
+
+            msg:
+            "Registro guardado"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error guardando registro"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -191,11 +314,16 @@ router.post("/", async (req, res) => {
 ========================= */
 
 router.put("/enviar/:codigo", async (req, res) => {
-  try {
-    const codigo = req.params.codigo.trim();
 
-    const validar = await pool.query(
-      `
+    try{
+
+        const codigo =
+        req.params.codigo.trim();
+
+        const validar =
+        await pool.query(
+
+            `
             SELECT *
 
             FROM registros
@@ -203,49 +331,55 @@ router.put("/enviar/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
+        );
 
-        error: "Registro no encontrado",
-      });
-    }
+        if(validar.rows.length === 0){
 
-    const registro = validar.rows[0];
+            return res.status(404).json({
 
-    /* =========================
-           VALIDAR PAGADO
-        ========================= */
+                ok:false,
 
-    if (registro.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
+                error:
+                "Registro no encontrado"
 
-        error: "El registro ya fue pagado",
-      });
-    }
+            });
 
-    /* =========================
-           VALIDAR YA ENVIADO
-        ========================= */
+        }
 
-    if (registro.estatus === "Enviado") {
-      return res.status(400).json({
-        ok: false,
+        const registro =
+        validar.rows[0];
 
-        error: "El registro ya fue enviado",
-      });
-    }
+        if(registro.estatus === "Pagado"){
 
-    /* =========================
-           ACTUALIZAR
-        ========================= */
+            return res.status(400).json({
 
-    await pool.query(
-      `
+                ok:false,
+
+                error:
+                "El registro ya fue pagado"
+
+            });
+
+        }
+
+        if(registro.estatus === "Enviado"){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "El registro ya fue enviado"
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
             UPDATE registros
 
             SET
@@ -255,23 +389,36 @@ router.put("/enviar/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    res.json({
-      ok: true,
+        );
 
-      msg: "Registro enviado",
-    });
-  } catch (error) {
-    console.log(error);
+        res.json({
 
-    res.status(500).json({
-      ok: false,
+            ok:true,
 
-      error: "Error enviando registro",
-    });
-  }
+            msg:
+            "Registro enviado"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error enviando registro"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -279,11 +426,16 @@ router.put("/enviar/:codigo", async (req, res) => {
 ========================= */
 
 router.put("/reenviar/:codigo", async (req, res) => {
-  try {
-    const codigo = req.params.codigo.trim();
 
-    const validar = await pool.query(
-      `
+    try{
+
+        const codigo =
+        req.params.codigo.trim();
+
+        const validar =
+        await pool.query(
+
+            `
             SELECT *
 
             FROM registros
@@ -291,37 +443,42 @@ router.put("/reenviar/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
+        );
 
-        error: "Registro no encontrado",
-      });
-    }
+        if(validar.rows.length === 0){
 
-    const registro = validar.rows[0];
+            return res.status(404).json({
 
-    /* =========================
-           VALIDAR PAGADO
-        ========================= */
+                ok:false,
 
-    if (registro.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
+                error:
+                "Registro no encontrado"
 
-        error: "No se puede reenviar un registro pagado",
-      });
-    }
+            });
 
-    /* =========================
-           ACTUALIZAR
-        ========================= */
+        }
 
-    await pool.query(
-      `
+        const registro =
+        validar.rows[0];
+
+        if(registro.estatus === "Pagado"){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "No se puede reenviar un registro pagado"
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
             UPDATE registros
 
             SET
@@ -333,23 +490,36 @@ router.put("/reenviar/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    res.json({
-      ok: true,
+        );
 
-      msg: "Registro reenviado",
-    });
-  } catch (error) {
-    console.log(error);
+        res.json({
 
-    res.status(500).json({
-      ok: false,
+            ok:true,
 
-      error: "Error reenviando registro",
-    });
-  }
+            msg:
+            "Registro reenviado"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error reenviando registro"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -357,13 +527,22 @@ router.put("/reenviar/:codigo", async (req, res) => {
 ========================= */
 
 router.put("/observaciones/:codigo", async (req, res) => {
-  try {
-    const codigo = req.params.codigo.trim();
 
-    const { observaciones } = req.body;
+    try{
 
-    const validar = await pool.query(
-      `
+        const codigo =
+        req.params.codigo.trim();
+
+        const {
+
+            observaciones
+
+        } = req.body;
+
+        const validar =
+        await pool.query(
+
+            `
             SELECT estatus
 
             FROM registros
@@ -371,37 +550,48 @@ router.put("/observaciones/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
+        );
 
-        error: "Registro no encontrado",
-      });
-    }
+        if(validar.rows.length === 0){
 
-    const estatus = validar.rows[0].estatus;
+            return res.status(404).json({
 
-    /* =========================
-           VALIDAR BLOQUEO
-        ========================= */
+                ok:false,
 
-    if (estatus === "Enviado" || estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
+                error:
+                "Registro no encontrado"
 
-        error: "No se puede editar este registro",
-      });
-    }
+            });
 
-    /* =========================
-           ACTUALIZAR
-        ========================= */
+        }
 
-    await pool.query(
-      `
+        const estatus =
+        validar.rows[0].estatus;
+
+        if(
+
+            estatus === "Enviado"
+            ||
+            estatus === "Pagado"
+
+        ){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "No se puede editar este registro"
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
             UPDATE registros
 
             SET
@@ -411,23 +601,42 @@ router.put("/observaciones/:codigo", async (req, res) => {
             WHERE codigo = $2
             `,
 
-      [observaciones || "", codigo],
-    );
+            [
 
-    res.json({
-      ok: true,
+                observaciones || "",
 
-      msg: "Observaciones guardadas",
-    });
-  } catch (error) {
-    console.log(error);
+                codigo
 
-    res.status(500).json({
-      ok: false,
+            ]
 
-      error: "Error guardando observaciones",
-    });
-  }
+        );
+
+        res.json({
+
+            ok:true,
+
+            msg:
+            "Observaciones guardadas"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error guardando observaciones"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -435,13 +644,22 @@ router.put("/observaciones/:codigo", async (req, res) => {
 ========================= */
 
 router.put("/observaciones-admin/:codigo", async (req, res) => {
-  try {
-    const codigo = req.params.codigo.trim();
 
-    const { observaciones_admin } = req.body;
+    try{
 
-    const validar = await pool.query(
-      `
+        const codigo =
+        req.params.codigo.trim();
+
+        const {
+
+            observaciones_admin
+
+        } = req.body;
+
+        const validar =
+        await pool.query(
+
+            `
             SELECT id
 
             FROM registros
@@ -449,19 +667,26 @@ router.put("/observaciones-admin/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
+        );
 
-        error: "Registro no encontrado",
-      });
-    }
+        if(validar.rows.length === 0){
 
-    await pool.query(
-      `
+            return res.status(404).json({
+
+                ok:false,
+
+                error:
+                "Registro no encontrado"
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
             UPDATE registros
 
             SET
@@ -471,23 +696,42 @@ router.put("/observaciones-admin/:codigo", async (req, res) => {
             WHERE codigo = $2
             `,
 
-      [observaciones_admin || "", codigo],
-    );
+            [
 
-    res.json({
-      ok: true,
+                observaciones_admin || "",
 
-      msg: "Observaciones admin guardadas",
-    });
-  } catch (error) {
-    console.log(error);
+                codigo
 
-    res.status(500).json({
-      ok: false,
+            ]
 
-      error: "Error guardando observaciones admin",
-    });
-  }
+        );
+
+        res.json({
+
+            ok:true,
+
+            msg:
+            "Observaciones admin guardadas"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error guardando observaciones admin"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -495,25 +739,35 @@ router.put("/observaciones-admin/:codigo", async (req, res) => {
 ========================= */
 
 router.put("/estatus/:codigo", async (req, res) => {
-  try {
-    const codigo = req.params.codigo.trim();
 
-    const { estatus } = req.body;
+    try{
 
-    /* =========================
-           VALIDAR ESTATUS
-        ========================= */
+        const codigo =
+        req.params.codigo.trim();
 
-    if (!ESTATUS.includes(estatus)) {
-      return res.status(400).json({
-        ok: false,
+        const {
 
-        error: "Estatus inválido",
-      });
-    }
+            estatus
 
-    const validar = await pool.query(
-      `
+        } = req.body;
+
+        if(!ESTATUS.includes(estatus)){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "Estatus inválido"
+
+            });
+
+        }
+
+        const validar =
+        await pool.query(
+
+            `
             SELECT *
 
             FROM registros
@@ -521,49 +775,55 @@ router.put("/estatus/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
+        );
 
-        error: "Registro no encontrado",
-      });
-    }
+        if(validar.rows.length === 0){
 
-    const actual = validar.rows[0];
+            return res.status(404).json({
 
-    /* =========================
-           NO MODIFICAR PAGADOS
-        ========================= */
+                ok:false,
 
-    if (actual.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
+                error:
+                "Registro no encontrado"
 
-        error: "Registro finalizado",
-      });
-    }
+            });
 
-    /* =========================
-           PAGADO SOLO DESDE GASTOS
-        ========================= */
+        }
 
-    if (estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
+        const actual =
+        validar.rows[0];
 
-        error: "El estatus Pagado solo puede asignarse desde gastos",
-      });
-    }
+        if(actual.estatus === "Pagado"){
 
-    /* =========================
-           ACTUALIZAR
-        ========================= */
+            return res.status(400).json({
 
-    await pool.query(
-      `
+                ok:false,
+
+                error:
+                "Registro finalizado"
+
+            });
+
+        }
+
+        if(estatus === "Pagado"){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "El estatus Pagado solo puede asignarse desde gastos"
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
             UPDATE registros
 
             SET
@@ -573,23 +833,42 @@ router.put("/estatus/:codigo", async (req, res) => {
             WHERE codigo = $2
             `,
 
-      [estatus, codigo],
-    );
+            [
 
-    res.json({
-      ok: true,
+                estatus,
 
-      msg: "Estatus actualizado",
-    });
-  } catch (error) {
-    console.log(error);
+                codigo
 
-    res.status(500).json({
-      ok: false,
+            ]
 
-      error: "Error actualizando estatus",
-    });
-  }
+        );
+
+        res.json({
+
+            ok:true,
+
+            msg:
+            "Estatus actualizado"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error actualizando estatus"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -597,11 +876,16 @@ router.put("/estatus/:codigo", async (req, res) => {
 ========================= */
 
 router.delete("/:codigo", async (req, res) => {
-  try {
-    const codigo = req.params.codigo.trim();
 
-    const validar = await pool.query(
-      `
+    try{
+
+        const codigo =
+        req.params.codigo.trim();
+
+        const validar =
+        await pool.query(
+
+            `
             SELECT *
 
             FROM registros
@@ -609,59 +893,83 @@ router.delete("/:codigo", async (req, res) => {
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
+        );
 
-        error: "Registro no encontrado",
-      });
-    }
+        if(validar.rows.length === 0){
 
-    const registro = validar.rows[0];
+            return res.status(404).json({
 
-    /* =========================
-           VALIDAR BLOQUEO
-        ========================= */
+                ok:false,
 
-    if (registro.estatus === "Enviado" || registro.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
+                error:
+                "Registro no encontrado"
 
-        error: "No se puede eliminar este registro",
-      });
-    }
+            });
 
-    /* =========================
-           ELIMINAR
-        ========================= */
+        }
 
-    await pool.query(
-      `
+        const registro =
+        validar.rows[0];
+
+        if(
+
+            registro.estatus === "Enviado"
+            ||
+            registro.estatus === "Pagado"
+
+        ){
+
+            return res.status(400).json({
+
+                ok:false,
+
+                error:
+                "No se puede eliminar este registro"
+
+            });
+
+        }
+
+        await pool.query(
+
+            `
             DELETE FROM registros
 
             WHERE codigo = $1
             `,
 
-      [codigo],
-    );
+            [codigo]
 
-    res.json({
-      ok: true,
+        );
 
-      msg: "Registro eliminado",
-    });
-  } catch (error) {
-    console.log(error);
+        res.json({
 
-    res.status(500).json({
-      ok: false,
+            ok:true,
 
-      error: "Error eliminando registro",
-    });
-  }
+            msg:
+            "Registro eliminado"
+
+        });
+
+    }
+
+    catch(error){
+
+        console.log(error);
+
+        res.status(500).json({
+
+            ok:false,
+
+            error:
+            "Error eliminando registro"
+
+        });
+
+    }
+
 });
 
 /* =========================
@@ -765,6 +1073,116 @@ router.put(
                 ok:false,
 
                 error:"Error guardando SPG"
+
+            });
+
+        }
+
+    }
+
+);
+
+/* =========================
+   GUARDAR RECIBO PDF
+========================= */
+
+router.put(
+
+    "/recibo/:codigo",
+
+    async(req,res)=>{
+
+        try{
+
+            const codigo =
+            req.params.codigo.trim();
+
+            const {
+
+                recibo_pdf
+
+            } = req.body;
+
+            if(!recibo_pdf){
+
+                return res.status(400).json({
+
+                    ok:false,
+
+                    error:"URL recibo requerida"
+
+                });
+
+            }
+
+            const validar =
+            await pool.query(
+
+                `
+                SELECT id
+
+                FROM registros
+
+                WHERE codigo = $1
+                `,
+
+                [codigo]
+
+            );
+
+            if(validar.rows.length === 0){
+
+                return res.status(404).json({
+
+                    ok:false,
+
+                    error:"Registro no encontrado"
+
+                });
+
+            }
+
+            await pool.query(
+
+                `
+                UPDATE registros
+
+                SET
+
+                    recibo_pdf = $1
+
+                WHERE codigo = $2
+                `,
+
+                [
+
+                    recibo_pdf,
+
+                    codigo
+
+                ]
+
+            );
+
+            res.json({
+
+                ok:true,
+
+                msg:"Recibo guardado"
+
+            });
+
+        }
+
+        catch(error){
+
+            console.log(error);
+
+            res.status(500).json({
+
+                ok:false,
+
+                error:"Error guardando recibo"
 
             });
 

@@ -194,7 +194,7 @@ async function generarSPG(){
 const response =
 await fetch(
 
-    "https://script.google.com/macros/s/AKfycbzi7x7RD1SCUBFdElN-XhHQTIwPZZsGcfFWu85kf06OOP3DUpHS_pu-VQnZBLL3LNDanw/exec",
+    "https://script.google.com/macros/s/AKfycbwTBGmbpP-VnYhlOm7gdhhdwAFYHT0_mD9qoIoXHH2eN3TGgyOizFo4LszImkeUoB8/exec",
 
     {
 
