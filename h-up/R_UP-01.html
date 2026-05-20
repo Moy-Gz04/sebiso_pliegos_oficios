@@ -659,6 +659,248 @@
     </div>
 
     <!-- =========================
+     MODAL RECIBO
+========================= -->
+
+<div class="modal modal-spg" id="modalRecibo">
+
+    <div class="modal-spg-contenido">
+
+        <!-- HEADER -->
+
+        <div class="spg-header">
+
+            <h2>
+
+                Captura de Datos Recibo
+
+            </h2>
+
+            <p>
+
+                Verifica la información antes de generar el recibo.
+
+            </p>
+
+        </div>
+
+        <!-- FORM -->
+
+        <div class="contenedor-spg">
+
+            <!-- FOLIO -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboFolio">
+
+                    Folio
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboFolio"
+                    readonly
+                >
+
+            </div>
+
+            <!-- PERSONA -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboPersona">
+
+                    Persona
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboPersona"
+                    readonly
+                >
+
+            </div>
+
+            <!-- MUNICIPIO -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboMunicipio">
+
+                    Municipio
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboMunicipio"
+                    readonly
+                >
+
+            </div>
+
+            <!-- MOTIVO -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboMotivo">
+
+                    Motivo de la Comisión
+
+                </label>
+
+                <textarea
+                    id="reciboMotivo"
+                    rows="3"
+                    readonly
+                ></textarea>
+
+            </div>
+
+            <!-- LOCALIDADES -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboLocalidades">
+
+                    Localidades Visitadas
+
+                </label>
+
+                <textarea
+                    id="reciboLocalidades"
+                    rows="3"
+                    readonly
+                ></textarea>
+
+            </div>
+
+            <!-- DÍAS -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboDias">
+
+                    Días de Comisión
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboDias"
+                    readonly
+                >
+
+            </div>
+
+            <!-- MES -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboMes">
+
+                    Mes
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboMes"
+                    readonly
+                >
+
+            </div>
+
+            <!-- IMPORTE -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboImporte">
+
+                    Importe
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboImporte"
+                    readonly
+                >
+
+            </div>
+
+            <!-- RETENCIONES -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboRetenciones">
+
+                    Retenciones
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboRetenciones"
+                    readonly
+                >
+
+            </div>
+
+            <!-- TOTAL -->
+
+            <div class="grupo-input-spg">
+
+                <label for="reciboTotal">
+
+                    Total
+
+                </label>
+
+                <input
+                    type="text"
+                    id="reciboTotal"
+                    readonly
+                >
+
+            </div>
+
+        </div>
+
+        <!-- BOTONES -->
+
+        <div class="modal-spg-botones">
+
+            <button
+                type="button"
+                class="btn-spg-cancelar"
+                onclick="cerrarModal('modalRecibo')"
+            >
+
+                Cancelar
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-spg-generar"
+                id="btnGenerarRecibo"
+            >
+
+                Generar Recibo
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+    <!-- =========================
          SCRIPTS
     ========================= -->
 
@@ -673,6 +915,8 @@
     <script src="../js-reg/registros_up-01.js"></script>
 
     <script src="../SPG/spg-01.js"></script>
+
+    <script src="../RECIBO/recib01.js"></script>
 
 </body>
 

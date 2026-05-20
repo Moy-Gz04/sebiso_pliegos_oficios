@@ -22,6 +22,27 @@ router.post(
 
         try{
 
+            console.log(
+                "BODY RECIBIDO:",
+                req.body
+            );
+
+            /* =========================
+               VALIDAR BODY
+            ========================= */
+
+            if(!req.body){
+
+                return res.status(400).json({
+
+                    ok:false,
+
+                    error:"Body vacío"
+
+                });
+
+            }
+
             /* =========================
                ENVIAR A APPS SCRIPT
             ========================= */
@@ -38,7 +59,7 @@ router.post(
                     headers:{
 
                         "Content-Type":
-                        "application/json"
+                        "text/plain"
 
                     },
 
@@ -53,21 +74,51 @@ router.post(
             );
 
             /* =========================
-               RESPUESTA
+               RESPUESTA RAW
             ========================= */
 
-            const data =
-            await response.json();
+            const text =
+            await response.text();
 
             console.log(
-                "RESPUESTA APPS SCRIPT:",
+                "RESPUESTA RAW APPS SCRIPT:",
+                text
+            );
+
+            let data;
+
+            try{
+
+                data =
+                JSON.parse(text);
+
+            }
+
+            catch(error){
+
+                console.error(
+                    "ERROR PARSE JSON:",
+                    error
+                );
+
+                return res.status(500).json({
+
+                    ok:false,
+
+                    error:
+                    "Apps Script no devolvió JSON válido"
+
+                });
+
+            }
+
+            console.log(
+                "RESPUESTA JSON:",
                 data
             );
 
-            
-
             /* =========================
-               ERROR
+               VALIDAR ERROR
             ========================= */
 
             if(
@@ -98,7 +149,8 @@ router.post(
 
                 url:data.url,
 
-                fileId:data.fileId || null
+                fileId:
+                data.fileId || null
 
             });
 
