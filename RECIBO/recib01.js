@@ -78,27 +78,20 @@ async function abrirModalRecibo(codigo){
         const response =
         await fetch(
 
-            `${API}/api/registros/UP-01`
+            `${API}/api/registros/codigo/${codigo}`
 
         );
 
         if(!response.ok){
 
             throw new Error(
-                "Error obteniendo registros"
+                "Error obteniendo registro"
             );
 
         }
 
-        const registros =
-        await response.json();
-
         const registro =
-        registros.find(
-
-            r => r.codigo === codigo
-
-        );
+        await response.json();
 
         if(!registro){
 
@@ -120,7 +113,7 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboFolio"
         ).value =
-        registro.codigo || "";
+        "";
 
         document.getElementById(
             "reciboPersona"

@@ -882,4 +882,72 @@ router.put(
   },
 );
 
+/* =========================
+   OBTENER REGISTRO POR CÓDIGO
+========================= */
+
+router.get(
+
+    "/codigo/:codigo",
+
+    async(req,res)=>{
+
+        try{
+
+            const codigo =
+            req.params.codigo.trim();
+
+            const result =
+            await pool.query(
+
+                `
+                SELECT *
+
+                FROM registros
+
+                WHERE codigo = $1
+                `,
+                
+                [codigo]
+
+            );
+
+            if(result.rows.length === 0){
+
+                return res.status(404).json({
+
+                    ok:false,
+
+                    error:"Registro no encontrado"
+
+                });
+
+            }
+
+            res.json(
+
+                result.rows[0]
+
+            );
+
+        }
+
+        catch(error){
+
+            console.log(error);
+
+            res.status(500).json({
+
+                ok:false,
+
+                error:error.message
+
+            });
+
+        }
+
+    }
+
+);
+
 module.exports = router;
