@@ -182,35 +182,43 @@ async function generarSPG(){
         );
 
         /* =========================
-           FETCH
+           FETCH APPS SCRIPT
         ========================= */
 
-        const response =
-        await fetch(
-
-            "https://script.google.com/macros/s/AKfycbwiS2bqwgWwbmInO50XHmFVIbmfTIdsygBN_xRqiIhzdlW3-c0OXfLKwQ9RJA45qMtsWA/exec",
-
-            {
-
-                method:"POST",
-
-                headers:{
-
-                    "Content-Type":
-                    "application/json"
-
-                },
-
-                body:JSON.stringify(
-                    payload
-                )
-
-            }
-
+        console.log(
+            "ENVIANDO A APPS SCRIPT..."
         );
 
+        console.log("ANTES FETCH");
+
+const response =
+await fetch(
+
+    "https://script.google.com/macros/s/AKfycbzi7x7RD1SCUBFdElN-XhHQTIwPZZsGcfFWu85kf06OOP3DUpHS_pu-VQnZBLL3LNDanw/exec",
+
+    {
+
+        method:"POST",
+
+        headers:{
+
+            "Content-Type":
+            "text/plain"
+
+        },
+
+        body:JSON.stringify(
+            payload
+        )
+
+    }
+
+);
+
+console.log("DESPUES FETCH");
+
         /* =========================
-           RESPUESTA TEXTO
+           RESPUESTA RAW
         ========================= */
 
         const text =
@@ -230,7 +238,12 @@ async function generarSPG(){
 
         }
 
-        catch{
+        catch(error){
+
+            console.error(
+                "ERROR PARSE JSON:",
+                error
+            );
 
             throw new Error(
 
@@ -268,8 +281,12 @@ async function generarSPG(){
         }
 
         /* =========================
-           GUARDAR URL
+           GUARDAR URL PDF
         ========================= */
+
+        console.log(
+            "GUARDANDO URL..."
+        );
 
         const guardar =
         await fetch(
@@ -296,6 +313,14 @@ async function generarSPG(){
 
             }
 
+        );
+
+        const guardarData =
+        await guardar.text();
+
+        console.log(
+            "RESPUESTA GUARDAR:",
+            guardarData
         );
 
         if(!guardar.ok){
