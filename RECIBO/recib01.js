@@ -10,7 +10,7 @@ let codigoRecibo = null;
 
 const API_RECIBO =
 
-"https://script.google.com/macros/s/AKfycbwLGOlf7EqP6OQEuFKrwCggNvSSM9hzaK6jk8nB83BvAs9Lbvhqv5ypzbw7TT84yoO_/exec";
+"https://script.google.com/macros/s/AKfycbwSPur5nDeMdOHEyvDO08utsOTaQb-BdVQKxZK1fYvNVJ2lBSnqDQA-7lSpF4uAbmKi/exec";
 
 /* =========================
    DESGLOSAR DÍAS
@@ -118,22 +118,22 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboPersona"
         ).value =
-        registro.persona || "";
+        registro.persona;
 
         document.getElementById(
             "reciboMunicipio"
         ).value =
-        registro.municipio || "";
+        registro.municipio;
 
         document.getElementById(
             "reciboMotivo"
         ).value =
-        registro.motivo_comision || "";
+        registro.motivo_comision;
 
         document.getElementById(
             "reciboLocalidades"
         ).value =
-        registro.localidades_visitadas || "";
+        registro.localidades_visitadas;
 
         document.getElementById(
             "reciboDias"
@@ -149,17 +149,17 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboMes"
         ).value =
-        registro.mes || "";
+        registro.mes;
 
         document.getElementById(
             "reciboAnio"
         ).value =
-        registro.anio || "";
+        registro.anio;
 
         document.getElementById(
             "reciboUnidad"
         ).value =
-        registro.up || "";
+        registro.up;
 
         /* =========================
            SPG
@@ -168,17 +168,17 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboImporte"
         ).value =
-        registro.spg_monto || "";
+        registro.spg_monto;
 
         document.getElementById(
             "reciboRetenciones"
         ).value =
-        registro.spg_retenciones || "";
+        registro.spg_retenciones;
 
         document.getElementById(
             "reciboTotal"
         ).value =
-        registro.spg_total || "";
+        registro.spg_total;
 
         abrirModal(
             "modalRecibo"
@@ -208,6 +208,10 @@ async function abrirModalRecibo(codigo){
 async function generarRecibo(){
 
     try{
+
+        /* =========================
+           BOTÓN
+        ========================= */
 
         const btn =
         document.getElementById(
@@ -318,6 +322,10 @@ async function generarRecibo(){
            FETCH APPS SCRIPT
         ========================= */
 
+        console.log(
+            "ENVIANDO A APPS SCRIPT..."
+        );
+
         const response =
         await fetch(
 
@@ -330,7 +338,7 @@ async function generarRecibo(){
                 headers:{
 
                     "Content-Type":
-                    "application/json"
+                    "text/plain"
 
                 },
 
@@ -341,6 +349,10 @@ async function generarRecibo(){
             }
 
         );
+
+        /* =========================
+           RESPUESTA RAW
+        ========================= */
 
         const text =
         await response.text();
@@ -359,7 +371,12 @@ async function generarRecibo(){
 
         }
 
-        catch{
+        catch(error){
+
+            console.error(
+                "ERROR PARSE JSON:",
+                error
+            );
 
             throw new Error(
 
@@ -374,6 +391,10 @@ async function generarRecibo(){
             data
         );
 
+        /* =========================
+           VALIDAR RESPUESTA
+        ========================= */
+
         if(
 
             !data.ok
@@ -386,7 +407,7 @@ async function generarRecibo(){
 
                 data.error ||
 
-                "Error generando recibo"
+                "No se pudo generar el PDF"
 
             );
 
@@ -395,6 +416,10 @@ async function generarRecibo(){
         /* =========================
            GUARDAR URL
         ========================= */
+
+        console.log(
+            "GUARDANDO RECIBO..."
+        );
 
         const guardar =
         await fetch(
@@ -423,25 +448,25 @@ async function generarRecibo(){
 
         );
 
-        const respuestaGuardar =
-        await guardar.json();
+        const guardarText =
+        await guardar.text();
 
         console.log(
-            "RESPUESTA GUARDAR RECIBO:",
-            respuestaGuardar
+            "RESPUESTA GUARDAR:",
+            guardarText
         );
 
         if(!guardar.ok){
 
             throw new Error(
-
-                respuestaGuardar.error ||
-
                 "Error guardando recibo"
-
             );
 
         }
+
+        /* =========================
+           FINAL
+        ========================= */
 
         cerrarModal(
             "modalRecibo"
