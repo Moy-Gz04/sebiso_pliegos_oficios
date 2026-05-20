@@ -1,5 +1,5 @@
 /* =========================
-   MODAL SPG
+   MODAL SPG / RECIBO
 ========================= */
 
 .modal-spg{
@@ -20,6 +20,8 @@
 
     padding:20px;
 
+    overflow-y:auto;
+
 }
 
 /* =========================
@@ -30,7 +32,7 @@
 
     width:100%;
 
-    max-width:720px;
+    max-width:760px;
 
     background:#ffffff;
 
@@ -129,45 +131,102 @@
 }
 
 /* =========================
-   INPUT
+   INPUTS / SELECTS / TEXTAREA
 ========================= */
 
-.grupo-input-spg input{
+.modal-spg input,
+.modal-spg select,
+.modal-spg textarea{
 
-    width:100%;
+    width:100% !important;
 
-    height:46px;
+    border-radius:16px !important;
 
-    border-radius:14px;
+    border:1.5px solid #d7d7d7 !important;
 
-    border:1.5px solid #d8d8d8;
+    background:#fafafa !important;
 
-    background:#fafafa;
+    padding:14px !important;
 
-    padding:0 14px;
+    font-size:14px !important;
 
-    font-size:13px;
+    color:#222 !important;
 
-    color:#222;
+    outline:none !important;
 
-    outline:none;
+    box-shadow:none !important;
 
     transition:.2s;
+
+    resize:none;
+
+    font-family:inherit;
 
 }
 
 /* =========================
-   INPUT FOCUS
+   INPUTS
 ========================= */
 
-.grupo-input-spg input:focus{
+.modal-spg input,
+.modal-spg select{
 
-    border-color:#70122b;
+    height:48px !important;
 
-    background:white;
+}
+
+/* =========================
+   TEXTAREA
+========================= */
+
+.modal-spg textarea{
+
+    min-height:100px;
+
+    padding-top:12px !important;
+
+}
+
+/* =========================
+   SELECTS
+========================= */
+
+.modal-spg select{
+
+    cursor:pointer;
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    -moz-appearance:none;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+
+    background-position:right 14px center;
+
+    background-size:14px;
+
+    padding-right:42px !important;
+
+}
+
+/* =========================
+   FOCUS
+========================= */
+
+.modal-spg input:focus,
+.modal-spg select:focus,
+.modal-spg textarea:focus{
+
+    border-color:#70122b !important;
+
+    background:white !important;
 
     box-shadow:
-        0 0 0 4px rgba(112,18,43,.08);
+        0 0 0 4px rgba(112,18,43,.08) !important;
 
 }
 
@@ -175,11 +234,71 @@
    PLACEHOLDER
 ========================= */
 
-.grupo-input-spg input::placeholder{
+.modal-spg input::placeholder,
+.modal-spg textarea::placeholder{
 
     color:#9ca3af;
 
     font-size:12px;
+
+}
+
+/* =========================
+   INPUT READONLY
+========================= */
+
+.modal-spg input[readonly],
+.modal-spg textarea[readonly]{
+
+    background:#f1f5f9 !important;
+
+    color:#475569 !important;
+
+    cursor:not-allowed;
+
+}
+
+/* =========================
+   INPUT ERROR
+========================= */
+
+.input-error{
+
+    border:2px solid #dc2626 !important;
+
+    background:#fef2f2 !important;
+
+    color:#991b1b !important;
+
+    box-shadow:
+        0 0 0 4px rgba(220,38,38,.10) !important;
+
+}
+
+/* =========================
+   LABEL ERROR
+========================= */
+
+.input-error + label,
+.grupo-input-spg.error label{
+
+    color:#dc2626 !important;
+
+}
+
+/* =========================
+   TOTAL BLOQUEADO
+========================= */
+
+#spgTot{
+
+    background:#ececec !important;
+
+    cursor:not-allowed;
+
+    color:#666;
+
+    font-weight:600;
 
 }
 
@@ -205,9 +324,9 @@
 
 .btn-spg-cancelar{
 
-    width:180px;
+    width:190px !important;
 
-    height:48px;
+    height:50px !important;
 
     border:none;
 
@@ -239,9 +358,9 @@
 
 .btn-spg-generar{
 
-    width:180px;
+    width:190px !important;
 
-    height:48px;
+    height:50px !important;
 
     border:none;
 
@@ -266,6 +385,16 @@
     background:#5b0f23;
 
     transform:translateY(-1px);
+
+}
+
+.btn-spg-generar:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
+
+    transform:none;
 
 }
 
@@ -303,11 +432,21 @@
 
 @media(max-width:700px){
 
+    .modal-spg{
+
+        padding:12px;
+
+        align-items:flex-start;
+
+    }
+
     .modal-spg-contenido{
 
         padding:22px;
 
         border-radius:22px;
+
+        margin-top:20px;
 
     }
 
@@ -328,120 +467,9 @@
     .btn-spg-cancelar,
     .btn-spg-generar{
 
-        width:100%;
+        width:100% !important;
 
     }
-
-}
-
-/* =========================
-   FIX INPUTS / SELECTS SPG
-========================= */
-
-.modal-spg select,
-.modal-spg input{
-
-    width:100% !important;
-
-    height:48px !important;
-
-    border-radius:16px !important;
-
-    border:1.5px solid #d7d7d7 !important;
-
-    background:#fafafa !important;
-
-    padding:0 14px !important;
-
-    font-size:14px !important;
-
-    color:#222 !important;
-
-    outline:none !important;
-
-    box-shadow:none !important;
-
-    appearance:none;
-
-    -webkit-appearance:none;
-
-    -moz-appearance:none;
-
-}
-
-/* =========================
-   SELECTS
-========================= */
-
-.modal-spg select{
-
-    cursor:pointer;
-
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-
-    background-repeat:no-repeat;
-
-    background-position:right 14px center;
-
-    background-size:14px;
-
-    padding-right:42px !important;
-
-}
-
-/* =========================
-   FOCUS
-========================= */
-
-.modal-spg input:focus,
-.modal-spg select:focus{
-
-    border-color:#70122b !important;
-
-    background:white !important;
-
-    box-shadow:
-        0 0 0 4px rgba(112,18,43,.08) !important;
-
-}
-
-/* =========================
-   BOTONES FIX
-========================= */
-
-.modal-spg button{
-
-    width:190px !important;
-
-    height:50px !important;
-
-    margin:0 !important;
-
-    padding:0 !important;
-
-    flex:none !important;
-
-}
-
-/* =========================
-   PLACEHOLDER
-========================= */
-
-.modal-spg input::placeholder{
-
-    color:#9ca3af;
-
-}
-
-#spgTot{
-
-    background:#ececec;
-
-    cursor:not-allowed;
-
-    color:#666;
-
-    font-weight:600;
 
 }
 

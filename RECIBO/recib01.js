@@ -62,6 +62,72 @@ function desglosarDias(inicio, fin){
 }
 
 /* =========================
+   VALIDAR CAMPOS
+========================= */
+
+function validarCamposRecibo(){
+
+    let error = false;
+
+    document
+    .querySelectorAll(
+
+        "#modalRecibo input, #modalRecibo select"
+
+    )
+    .forEach(campo=>{
+
+        /* =========================
+           IGNORAR READONLY
+        ========================= */
+
+        if(
+
+            campo.hasAttribute("readonly")
+
+        ){
+
+            campo.classList.remove(
+                "input-error"
+            );
+
+            return;
+
+        }
+
+        /* =========================
+           VALIDAR VACÍOS
+        ========================= */
+
+        if(
+
+            !campo.value.trim()
+
+        ){
+
+            campo.classList.add(
+                "input-error"
+            );
+
+            error = true;
+
+        }
+
+        else{
+
+            campo.classList.remove(
+                "input-error"
+            );
+
+        }
+
+    });
+
+    return !error;
+
+}
+
+/* =========================
    ABRIR MODAL RECIBO
 ========================= */
 
@@ -107,6 +173,22 @@ async function abrirModalRecibo(codigo){
         );
 
         /* =========================
+           LIMPIAR ERRORES
+        ========================= */
+
+        document
+        .querySelectorAll(
+            "#modalRecibo input, #modalRecibo select"
+        )
+        .forEach(campo=>{
+
+            campo.classList.remove(
+                "input-error"
+            );
+
+        });
+
+        /* =========================
            LLENAR CAMPOS
         ========================= */
 
@@ -116,24 +198,29 @@ async function abrirModalRecibo(codigo){
         "";
 
         document.getElementById(
+            "reciboTipo"
+        ).value =
+        "RECIBO";
+
+        document.getElementById(
             "reciboPersona"
         ).value =
-        registro.persona;
+        registro.persona || "";
 
         document.getElementById(
             "reciboMunicipio"
         ).value =
-        registro.municipio;
+        registro.municipio || "";
 
         document.getElementById(
             "reciboMotivo"
         ).value =
-        registro.motivo_comision;
+        registro.motivo_comision || "";
 
         document.getElementById(
             "reciboLocalidades"
         ).value =
-        registro.localidades_visitadas;
+        registro.localidades_visitadas || "";
 
         document.getElementById(
             "reciboDias"
@@ -149,17 +236,17 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboMes"
         ).value =
-        registro.mes;
+        registro.mes || "";
 
         document.getElementById(
             "reciboAnio"
         ).value =
-        registro.anio;
+        registro.anio || "";
 
         document.getElementById(
             "reciboUnidad"
         ).value =
-        registro.up;
+        registro.up || "";
 
         /* =========================
            SPG
@@ -168,17 +255,17 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboImporte"
         ).value =
-        registro.spg_monto;
+        registro.spg_monto || "0";
 
         document.getElementById(
             "reciboRetenciones"
         ).value =
-        registro.spg_retenciones;
+        registro.spg_retenciones || "0";
 
         document.getElementById(
             "reciboTotal"
         ).value =
-        registro.spg_total;
+        registro.spg_total || "0";
 
         abrirModal(
             "modalRecibo"
@@ -224,6 +311,21 @@ async function generarRecibo(){
         "Generando...";
 
         /* =========================
+           VALIDAR
+        ========================= */
+
+        const valido =
+        validarCamposRecibo();
+
+        if(!valido){
+
+            throw new Error(
+                "Completa los campos requeridos"
+            );
+
+        }
+
+        /* =========================
            PAYLOAD
         ========================= */
 
@@ -239,8 +341,12 @@ async function generarRecibo(){
 
                 "<<UNIDADP>>":
 
+                "01",
+
+                "<<R/F>>":
+
                 document.getElementById(
-                    "reciboUnidad"
+                    "reciboTipo"
                 ).value,
 
                 "<<FOLIO>>":
@@ -510,7 +616,7 @@ async function generarRecibo(){
 }
 
 /* =========================
-   EVENTO BOTÓN
+   LIMPIAR ERROR INPUT
 ========================= */
 
 document.addEventListener(
@@ -535,6 +641,60 @@ document.addEventListener(
             );
 
         }
+
+        document
+        .querySelectorAll(
+
+            "#modalRecibo input, #modalRecibo select"
+
+        )
+        .forEach(campo=>{
+
+            campo.addEventListener(
+
+                "input",
+
+                ()=>{
+
+                    if(
+
+                        campo.value.trim()
+
+                    ){
+
+                        campo.classList.remove(
+                            "input-error"
+                        );
+
+                    }
+
+                }
+
+            );
+
+            campo.addEventListener(
+
+                "change",
+
+                ()=>{
+
+                    if(
+
+                        campo.value.trim()
+
+                    ){
+
+                        campo.classList.remove(
+                            "input-error"
+                        );
+
+                    }
+
+                }
+
+            );
+
+        });
 
     }
 
