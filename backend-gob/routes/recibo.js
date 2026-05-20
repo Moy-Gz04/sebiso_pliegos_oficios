@@ -8,7 +8,7 @@ const router = express.Router();
 
 const APPS_SCRIPT_URL =
 
-"https://script.google.com/macros/s/AKfycbwSPur5nDeMdOHEyvDO08utsOTaQb-BdVQKxZK1fYvNVJ2lBSnqDQA-7lSpF4uAbmKi/exec";
+"https://script.google.com/macros/s/AKfycbz_Ixe6Nb16Z4cJeu58-BXEGjXaCg8fab_Hj9VLw4J_W43qKM0NKTazbzaSknS-iYz9/exec";
 
 /* =========================
    GENERAR RECIBO

@@ -18,9 +18,11 @@
 
     z-index:99999;
 
-    padding:20px;
+    padding:12px;
 
     overflow-y:auto;
+
+    backdrop-filter:blur(2px);
 
 }
 
@@ -32,18 +34,40 @@
 
     width:100%;
 
-    max-width:760px;
+    max-width:1120px;
+
+    max-height:95vh;
+
+    overflow-y:auto;
 
     background:#ffffff;
 
-    border-radius:28px;
+    border-radius:24px;
 
-    padding:30px;
+    padding:22px 26px;
 
     box-shadow:
-        0 10px 35px rgba(0,0,0,.18);
+        0 12px 30px rgba(0,0,0,.18);
 
-    animation:aparecerSPG .25s ease;
+    animation:aparecerSPG .2s ease;
+
+}
+
+/* =========================
+   SCROLL
+========================= */
+
+.modal-spg-contenido::-webkit-scrollbar{
+
+    width:7px;
+
+}
+
+.modal-spg-contenido::-webkit-scrollbar-thumb{
+
+    background:#cfcfcf;
+
+    border-radius:999px;
 
 }
 
@@ -55,25 +79,27 @@
 
     text-align:center;
 
-    margin-bottom:26px;
+    margin-bottom:18px;
 
 }
 
 .spg-header h2{
 
-    font-size:34px;
+    font-size:28px;
 
     color:#70122b;
 
     font-weight:800;
 
-    margin-bottom:8px;
+    margin-bottom:4px;
+
+    line-height:1.1;
 
 }
 
 .spg-header p{
 
-    font-size:13px;
+    font-size:12px;
 
     color:#6b7280;
 
@@ -82,7 +108,7 @@
 }
 
 /* =========================
-   GRID INPUTS
+   GRID
 ========================= */
 
 .contenedor-spg{
@@ -90,16 +116,16 @@
     display:grid;
 
     grid-template-columns:
-        repeat(2,1fr);
+        repeat(2,minmax(0,1fr));
 
-    gap:18px;
+    gap:14px 18px;
 
-    margin-bottom:28px;
+    margin-bottom:18px;
 
 }
 
 /* =========================
-   GRUPO INPUT
+   INPUT GROUP
 ========================= */
 
 .grupo-input-spg{
@@ -108,7 +134,7 @@
 
     flex-direction:column;
 
-    gap:7px;
+    gap:5px;
 
 }
 
@@ -118,9 +144,9 @@
 
 .grupo-input-spg label{
 
-    font-size:11px;
+    font-size:10px;
 
-    font-weight:700;
+    font-weight:800;
 
     color:#64748b;
 
@@ -131,7 +157,7 @@
 }
 
 /* =========================
-   INPUTS / SELECTS / TEXTAREA
+   INPUTS / SELECT / TEXTAREA
 ========================= */
 
 .modal-spg input,
@@ -140,27 +166,27 @@
 
     width:100% !important;
 
-    border-radius:16px !important;
+    border-radius:14px !important;
 
-    border:1.5px solid #d7d7d7 !important;
+    border:1.4px solid #d7d7d7 !important;
 
     background:#fafafa !important;
 
-    padding:14px !important;
+    padding:10px 13px !important;
 
-    font-size:14px !important;
+    font-size:13px !important;
 
     color:#222 !important;
 
     outline:none !important;
 
-    box-shadow:none !important;
-
-    transition:.2s;
+    transition:.18s;
 
     resize:none;
 
     font-family:inherit;
+
+    box-sizing:border-box;
 
 }
 
@@ -171,7 +197,7 @@
 .modal-spg input,
 .modal-spg select{
 
-    height:48px !important;
+    height:44px !important;
 
 }
 
@@ -181,14 +207,18 @@
 
 .modal-spg textarea{
 
-    min-height:100px;
+    min-height:78px;
 
-    padding-top:12px !important;
+    max-height:100px;
+
+    line-height:1.25;
+
+    overflow-y:auto;
 
 }
 
 /* =========================
-   SELECTS
+   SELECT
 ========================= */
 
 .modal-spg select{
@@ -201,15 +231,15 @@
 
     -moz-appearance:none;
 
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
     background-repeat:no-repeat;
 
-    background-position:right 14px center;
+    background-position:right 12px center;
 
-    background-size:14px;
+    background-size:12px;
 
-    padding-right:42px !important;
+    padding-right:34px !important;
 
 }
 
@@ -223,38 +253,23 @@
 
     border-color:#70122b !important;
 
-    background:white !important;
+    background:#fff !important;
 
     box-shadow:
-        0 0 0 4px rgba(112,18,43,.08) !important;
+        0 0 0 3px rgba(112,18,43,.08) !important;
 
 }
 
 /* =========================
-   PLACEHOLDER
-========================= */
-
-.modal-spg input::placeholder,
-.modal-spg textarea::placeholder{
-
-    color:#9ca3af;
-
-    font-size:12px;
-
-}
-
-/* =========================
-   INPUT READONLY
+   READONLY
 ========================= */
 
 .modal-spg input[readonly],
 .modal-spg textarea[readonly]{
 
-    background:#f1f5f9 !important;
+    background:#eef2f7 !important;
 
     color:#475569 !important;
-
-    cursor:not-allowed;
 
 }
 
@@ -271,34 +286,23 @@
     color:#991b1b !important;
 
     box-shadow:
-        0 0 0 4px rgba(220,38,38,.10) !important;
+        0 0 0 3px rgba(220,38,38,.10) !important;
 
 }
 
 /* =========================
-   LABEL ERROR
-========================= */
-
-.input-error + label,
-.grupo-input-spg.error label{
-
-    color:#dc2626 !important;
-
-}
-
-/* =========================
-   TOTAL BLOQUEADO
+   TOTAL
 ========================= */
 
 #spgTot{
 
     background:#ececec !important;
 
-    cursor:not-allowed;
-
     color:#666;
 
-    font-weight:600;
+    font-weight:700;
+
+    cursor:not-allowed;
 
 }
 
@@ -312,37 +316,48 @@
 
     justify-content:center;
 
-    gap:16px;
+    gap:14px;
 
     flex-wrap:wrap;
+
+    margin-top:4px;
 
 }
 
 /* =========================
-   BOTÓN CANCELAR
+   BOTONES BASE
 ========================= */
 
-.btn-spg-cancelar{
+.btn-spg-cancelar,
+.btn-spg-generar{
 
-    width:190px !important;
+    width:180px !important;
 
-    height:50px !important;
+    height:46px !important;
 
     border:none;
 
     border-radius:999px;
 
-    background:#e5e7eb;
+    font-size:13px;
 
-    color:#374151;
-
-    font-size:14px;
-
-    font-weight:700;
+    font-weight:800;
 
     cursor:pointer;
 
-    transition:.2s;
+    transition:.18s;
+
+}
+
+/* =========================
+   CANCELAR
+========================= */
+
+.btn-spg-cancelar{
+
+    background:#e5e7eb;
+
+    color:#374151;
 
 }
 
@@ -353,38 +368,20 @@
 }
 
 /* =========================
-   BOTÓN GENERAR
+   GENERAR
 ========================= */
 
 .btn-spg-generar{
 
-    width:190px !important;
-
-    height:50px !important;
-
-    border:none;
-
-    border-radius:999px;
-
     background:#70122b;
 
     color:white;
-
-    font-size:14px;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    transition:.2s;
 
 }
 
 .btn-spg-generar:hover{
 
     background:#5b0f23;
-
-    transform:translateY(-1px);
 
 }
 
@@ -393,8 +390,6 @@
     opacity:.7;
 
     cursor:not-allowed;
-
-    transform:none;
 
 }
 
@@ -409,7 +404,7 @@
         opacity:0;
 
         transform:
-            translateY(10px)
+            translateY(8px)
             scale(.98);
 
     }
@@ -430,29 +425,23 @@
    RESPONSIVE
 ========================= */
 
-@media(max-width:700px){
+@media(max-width:900px){
 
     .modal-spg{
 
-        padding:12px;
-
         align-items:flex-start;
+
+        padding:10px;
 
     }
 
     .modal-spg-contenido{
 
-        padding:22px;
+        padding:18px;
 
-        border-radius:22px;
+        border-radius:20px;
 
-        margin-top:20px;
-
-    }
-
-    .spg-header h2{
-
-        font-size:26px;
+        margin-top:10px;
 
     }
 
@@ -460,7 +449,13 @@
 
         grid-template-columns:1fr;
 
-        gap:14px;
+        gap:12px;
+
+    }
+
+    .spg-header h2{
+
+        font-size:24px;
 
     }
 
@@ -472,27 +467,3 @@
     }
 
 }
-
-document
-.querySelectorAll(
-    "#modalSPG input, #modalSPG select, #modalRecibo input, #modalRecibo select"
-)
-.forEach(campo=>{
-
-    if(!campo.value.trim()){
-
-        campo.classList.add(
-            "input-error"
-        );
-
-    }
-
-    else{
-
-        campo.classList.remove(
-            "input-error"
-        );
-
-    }
-
-});
