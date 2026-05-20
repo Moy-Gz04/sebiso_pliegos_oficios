@@ -65,10 +65,196 @@ function abrirModalSPG(codigo) {
    MODAL RECIBO
 ========================= */
 
-function abrirModalRecibo(codigo) {
-  codigoRecibo = codigo;
+async function abrirModalRecibo(codigo){
 
-  abrirModal("modalRecibo");
+    try{
+
+        codigoRecibo = codigo;
+
+        /* =========================
+           OBTENER REGISTROS
+        ========================= */
+
+        const response =
+        await fetch(
+
+            `${API}/api/registros/UP-01`
+
+        );
+
+        if(!response.ok){
+
+            throw new Error(
+
+                "Error obteniendo registros"
+
+            );
+
+        }
+
+        const registros =
+        await response.json();
+
+        /* =========================
+           BUSCAR REGISTRO
+        ========================= */
+
+        const registro =
+        registros.find(
+
+            r => r.codigo === codigo
+
+        );
+
+        if(!registro){
+
+            throw new Error(
+
+                "Registro no encontrado"
+
+            );
+
+        }
+
+        console.log(
+            "REGISTRO RECIBO:",
+            registro
+        );
+
+        /* =========================
+           DESGLOSAR DÍAS
+        ========================= */
+
+        let diasTexto = "";
+
+        const inicio =
+        parseInt(registro.dia_inicio);
+
+        const fin =
+        parseInt(registro.dia_fin);
+
+        if(
+
+            !isNaN(inicio)
+            &&
+            !isNaN(fin)
+
+        ){
+
+            const dias = [];
+
+            for(
+
+                let i = inicio;
+                i <= fin;
+                i++
+
+            ){
+
+                dias.push(i);
+
+            }
+
+            if(dias.length === 1){
+
+                diasTexto =
+                `${dias[0]}`;
+
+            }
+
+            else if(dias.length === 2){
+
+                diasTexto =
+
+                    `${dias[0]} y ${dias[1]}`;
+
+            }
+
+            else{
+
+                diasTexto =
+
+                    dias.slice(0,-1).join(", ")
+
+                    +
+
+                    " y "
+
+                    +
+
+                    dias[dias.length - 1];
+
+            }
+
+        }
+
+        /* =========================
+           LLENAR MODAL
+        ========================= */
+
+        document.getElementById(
+            "reciboFolio"
+        ).value = registro.codigo || "";
+
+        document.getElementById(
+            "reciboPersona"
+        ).value = registro.persona || "";
+
+        document.getElementById(
+            "reciboMunicipio"
+        ).value = registro.municipio || "";
+
+        document.getElementById(
+            "reciboMotivo"
+        ).value = registro.motivo_comision || "";
+
+        document.getElementById(
+            "reciboLocalidades"
+        ).value = registro.localidades_visitadas || "";
+
+        document.getElementById(
+            "reciboDias"
+        ).value = diasTexto || "";
+
+        document.getElementById(
+            "reciboMes"
+        ).value = registro.mes || "";
+
+        document.getElementById(
+            "reciboImporte"
+        ).value = registro.monto || "";
+
+        document.getElementById(
+            "reciboRetenciones"
+        ).value = registro.retenciones || "";
+
+        document.getElementById(
+            "reciboTotal"
+        ).value = registro.total || "";
+
+        /* =========================
+           ABRIR MODAL
+        ========================= */
+
+        abrirModal(
+            "modalRecibo"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "ERROR MODAL RECIBO:",
+            error
+        );
+
+        alert(
+            error.message
+        );
+
+    }
+
 }
 
 /* =========================

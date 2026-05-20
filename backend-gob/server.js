@@ -34,11 +34,18 @@ const gastosRoutes =
 require('./routes/gastos.routes');
 
 /* =========================
-   NUEVA RUTA SPG
+   RUTA SPG
 ========================= */
 
 const spgRoutes =
 require('./routes/spg');
+
+/* =========================
+   RUTA RECIBO
+========================= */
+
+const reciboRoutes =
+require('./routes/recibo');
 
 /* =========================
    MIDDLEWARES
@@ -137,6 +144,18 @@ app.use(
     '/api/spg',
 
     spgRoutes
+
+);
+
+/* =========================
+   RECIBO
+========================= */
+
+app.use(
+
+    '/api/recibo',
+
+    reciboRoutes
 
 );
 

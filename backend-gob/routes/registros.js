@@ -989,7 +989,20 @@ router.put(
 
             const {
 
-                spg_pdf
+                spg_pdf,
+
+                ur,
+                up,
+                rubro,
+                og,
+                proyecto,
+                cuenta,
+
+                monto,
+                retenciones,
+                total,
+
+                anio
 
             } = req.body;
 
@@ -1039,14 +1052,40 @@ router.put(
 
                 SET
 
-                    spg_pdf = $1
+                    spg_pdf = $1,
 
-                WHERE codigo = $2
+                    ur = $2,
+                    up = $3,
+                    rubro = $4,
+                    og = $5,
+                    proyecto = $6,
+                    cuenta = $7,
+
+                    monto = $8,
+                    retenciones = $9,
+                    total = $10,
+
+                    anio = $11
+
+                WHERE codigo = $12
                 `,
 
                 [
 
                     spg_pdf,
+
+                    ur || "",
+                    up || "",
+                    rubro || "",
+                    og || "",
+                    proyecto || "",
+                    cuenta || "",
+
+                    monto || "",
+                    retenciones || "",
+                    total || "",
+
+                    anio || "",
 
                     codigo
 
