@@ -2,18 +2,13 @@
    TBODY
 ========================= */
 
-const tbody =
-document.getElementById(
-    "tbodyResultados"
-);
+const tbody = document.getElementById("tbodyResultados");
 
 /* =========================
    API
 ========================= */
 
-const API =
-
-"https://sebiso-pliegos-oficios-1.onrender.com";
+const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
 /* =========================
    VARIABLES
@@ -23,244 +18,164 @@ let codigoEliminar = null;
 
 let codigoSPG = null;
 
+let codigoRecibo = null;
+
 /* =========================
    NORMALIZAR ESTATUS
 ========================= */
 
-function normalizarEstatus(estatus){
-
-    return String(
-        estatus || ''
-    )
-
+function normalizarEstatus(estatus) {
+  return String(estatus || "")
     .trim()
 
     .toUpperCase();
-
 }
 
 /* =========================
    MODALES
 ========================= */
 
-function abrirModal(id){
+function abrirModal(id) {
+  const modal = document.getElementById(id);
 
-    const modal =
-    document.getElementById(id);
-
-    if(modal){
-
-        modal.style.display = "flex";
-
-    }
-
+  if (modal) {
+    modal.style.display = "flex";
+  }
 }
 
-function cerrarModal(id){
+function cerrarModal(id) {
+  const modal = document.getElementById(id);
 
-    const modal =
-    document.getElementById(id);
-
-    if(modal){
-
-        modal.style.display = "none";
-
-    }
-
+  if (modal) {
+    modal.style.display = "none";
+  }
 }
 
 /* =========================
    MODAL SPG
 ========================= */
 
-function abrirModalSPG(codigo){
+function abrirModalSPG(codigo) {
+  codigoSPG = codigo;
 
-    codigoSPG = codigo;
+  abrirModal("modalSPG");
+}
 
-    abrirModal(
-        'modalSPG'
-    );
+/* =========================
+   MODAL RECIBO
+========================= */
 
+function abrirModalRecibo(codigo) {
+  codigoRecibo = codigo;
+
+  abrirModal("modalRecibo");
 }
 
 /* =========================
    CALCULAR TOTAL SPG
 ========================= */
 
-function calcularTotalSPG(){
+function calcularTotalSPG() {
+  const montoInput = document.getElementById("spgMonto");
 
-    const montoInput =
-    document.getElementById(
-        "spgMonto"
-    );
+  const retInput = document.getElementById("spgRet");
 
-    const retInput =
-    document.getElementById(
-        "spgRet"
-    );
+  const totalInput = document.getElementById("spgTot");
 
-    const totalInput =
-    document.getElementById(
-        "spgTot"
-    );
+  if (!montoInput || !retInput || !totalInput) {
+    return;
+  }
 
-    if(
+  const monto = parseFloat(montoInput.value.replace(/[^0-9.-]+/g, "")) || 0;
 
-        !montoInput
-        ||
-        !retInput
-        ||
-        !totalInput
+  const retenciones = parseFloat(retInput.value.replace(/[^0-9.-]+/g, "")) || 0;
 
-    ){
+  const total = monto + retenciones;
 
-        return;
+  totalInput.value = total.toLocaleString(
+    "es-MX",
 
-    }
-
-    const monto = parseFloat(
-
-        montoInput.value
-        .replace(/[^0-9.-]+/g,'')
-
-    ) || 0;
-
-    const retenciones = parseFloat(
-
-        retInput.value
-        .replace(/[^0-9.-]+/g,'')
-
-    ) || 0;
-
-    const total = monto + retenciones;
-
-    totalInput.value = total.toLocaleString(
-
-        'es-MX',
-
-        {
-
-            minimumFractionDigits:2,
-            maximumFractionDigits:2
-
-        }
-
-    );
-
+    {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    },
+  );
 }
 
 /* =========================
    GENERAR SPG
 ========================= */
 
-async function generarSPG(){
+async function generarSPG() {
+  try {
+    const datos = {
+      codigo: codigoSPG,
 
-    try{
+      anio: document.getElementById("spgAnio").value,
 
-        const datos = {
+      ur: document.getElementById("spgUR").value,
 
-            codigo:codigoSPG,
+      up: document.getElementById("spgUP").value,
 
-            anio:
-            document.getElementById(
-                'spgAnio'
-            ).value,
+      rubro: document.getElementById("spgR").value,
 
-            ur:
-            document.getElementById(
-                'spgUR'
-            ).value,
+      og: document.getElementById("spgOG").value,
 
-            up:
-            document.getElementById(
-                'spgUP'
-            ).value,
+      proyecto: document.getElementById("spgPR").value,
 
-            rubro:
-            document.getElementById(
-                'spgR'
-            ).value,
+      cuenta: document.getElementById("spgCuenta").value,
 
-            og:
-            document.getElementById(
-                'spgOG'
-            ).value,
+      monto: document.getElementById("spgMonto").value,
 
-            proyecto:
-            document.getElementById(
-                'spgPR'
-            ).value,
+      retenciones: document.getElementById("spgRet").value,
 
-            cuenta:
-            document.getElementById(
-                'spgCuenta'
-            ).value,
+      total: document.getElementById("spgTot").value,
+    };
 
-            monto:
-            document.getElementById(
-                'spgMonto'
-            ).value,
+    console.log("DATOS SPG:", datos);
 
-            retenciones:
-            document.getElementById(
-                'spgRet'
-            ).value,
+    cerrarModal("modalSPG");
 
-            total:
-            document.getElementById(
-                'spgTot'
-            ).value
+    alert("SPG generado correctamente");
 
-        };
+    cargarRegistros();
+  } catch (error) {
+    console.error("ERROR SPG:", error);
 
-        console.log(
-            'DATOS SPG:',
-            datos
-        );
+    alert(error.message);
+  }
+}
 
-        cerrarModal(
-            'modalSPG'
-        );
+/* =========================
+   GENERAR RECIBO
+========================= */
 
-        alert(
-            'SPG generado correctamente'
-        );
+async function generarRecibo() {
+  try {
+    console.log("GENERANDO RECIBO:", codigoRecibo);
 
-        cargarRegistros();
+    cerrarModal("modalRecibo");
 
-    }
+    alert("Recibo generado correctamente");
 
-    catch(error){
+    cargarRegistros();
+  } catch (error) {
+    console.error("ERROR RECIBO:", error);
 
-        console.error(
-            'ERROR SPG:',
-            error
-        );
-
-        alert(
-            error.message
-        );
-
-    }
-
+    alert(error.message);
+  }
 }
 
 /* =========================
    BADGES ESTATUS
 ========================= */
 
-function obtenerBadgeEstatus(estatus){
+function obtenerBadgeEstatus(estatus) {
+  const estado = normalizarEstatus(estatus);
 
-    const estado =
-    normalizarEstatus(
-        estatus
-    );
-
-    switch(estado){
-
-        case "ENVIADO":
-
-            return `
+  switch (estado) {
+    case "ENVIADO":
+      return `
 
                 <span
                     class="badge-estatus badge-enviado">
@@ -271,11 +186,10 @@ function obtenerBadgeEstatus(estatus){
 
             `;
 
-        case "PAGADO":
+    case "PAGADO":
 
-        case "ACEPTADO":
-
-            return `
+    case "ACEPTADO":
+      return `
 
                 <span
                     class="badge-estatus badge-aceptado">
@@ -286,9 +200,8 @@ function obtenerBadgeEstatus(estatus){
 
             `;
 
-        case "RECHAZADO":
-
-            return `
+    case "RECHAZADO":
+      return `
 
                 <span
                     class="badge-estatus badge-rechazado">
@@ -299,9 +212,8 @@ function obtenerBadgeEstatus(estatus){
 
             `;
 
-        default:
-
-            return `
+    default:
+      return `
 
                 <span
                     class="badge-estatus badge-creado">
@@ -311,31 +223,18 @@ function obtenerBadgeEstatus(estatus){
                 </span>
 
             `;
-
-    }
-
+  }
 }
 
 /* =========================
    BOTÓN ENVIAR
 ========================= */
 
-function obtenerBotonEnviar(registro){
+function obtenerBotonEnviar(registro) {
+  const estatus = normalizarEstatus(registro.estatus);
 
-    const estatus =
-    normalizarEstatus(
-        registro.estatus
-    );
-
-    if(
-
-        estatus === "CREADO"
-        ||
-        !estatus
-
-    ){
-
-        return `
+  if (estatus === "CREADO" || !estatus) {
+    return `
 
             <button
                 class="btn-enviar"
@@ -346,12 +245,10 @@ function obtenerBotonEnviar(registro){
             </button>
 
         `;
+  }
 
-    }
-
-    if(estatus === "ENVIADO"){
-
-        return `
+  if (estatus === "ENVIADO") {
+    return `
 
             <button
                 class="btn-enviado"
@@ -362,18 +259,10 @@ function obtenerBotonEnviar(registro){
             </button>
 
         `;
+  }
 
-    }
-
-    if(
-
-        estatus === "PAGADO"
-        ||
-        estatus === "ACEPTADO"
-
-    ){
-
-        return `
+  if (estatus === "PAGADO" || estatus === "ACEPTADO") {
+    return `
 
             <button
                 class="btn-aceptado"
@@ -384,12 +273,10 @@ function obtenerBotonEnviar(registro){
             </button>
 
         `;
+  }
 
-    }
-
-    if(estatus === "RECHAZADO"){
-
-        return `
+  if (estatus === "RECHAZADO") {
+    return `
 
             <button
                 class="btn-rechazado"
@@ -400,10 +287,9 @@ function obtenerBotonEnviar(registro){
             </button>
 
         `;
+  }
 
-    }
-
-    return `
+  return `
 
         <button
             class="btn-bloqueado"
@@ -414,239 +300,130 @@ function obtenerBotonEnviar(registro){
         </button>
 
     `;
-
 }
 
 /* =========================
    REENVIAR
 ========================= */
 
-async function reenviarRegistro(codigo){
+async function reenviarRegistro(codigo) {
+  try {
+    const confirmar = confirm("¿Deseas reenviar este registro?");
 
-    try{
-
-        const confirmar =
-        confirm(
-
-            "¿Deseas reenviar este registro?"
-
-        );
-
-        if(!confirmar){
-
-            return;
-
-        }
-
-        const response =
-        await fetch(
-
-            `${API}/api/registros/reenviar/${codigo}`,
-
-            {
-
-                method:'PUT',
-
-                headers:{
-                    'Content-Type':'application/json'
-                }
-
-            }
-
-        );
-
-        const data =
-        await response.json();
-
-        if(!response.ok){
-
-            throw new Error(
-
-                data.error ||
-
-                "Error reenviando registro"
-
-            );
-
-        }
-
-        cargarRegistros();
-
+    if (!confirmar) {
+      return;
     }
 
-    catch(error){
+    const response = await fetch(
+      `${API}/api/registros/reenviar/${codigo}`,
 
-        console.error(
-            "ERROR REENVIANDO:",
-            error
-        );
+      {
+        method: "PUT",
 
-        alert(
-            error.message
-        );
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Error reenviando registro");
     }
 
+    cargarRegistros();
+  } catch (error) {
+    console.error("ERROR REENVIANDO:", error);
+
+    alert(error.message);
+  }
 }
 
 /* =========================
    ENVIAR REGISTRO
 ========================= */
 
-async function enviarRegistro(codigo){
+async function enviarRegistro(codigo) {
+  try {
+    const response = await fetch(
+      `${API}/api/registros/enviar/${codigo}`,
 
-    try{
+      {
+        method: "PUT",
 
-        const response =
-        await fetch(
+        headers: {
+          "Content-Type": "application/json",
+        },
+      },
+    );
 
-            `${API}/api/registros/enviar/${codigo}`,
+    const data = await response.json();
 
-            {
-
-                method:'PUT',
-
-                headers:{
-                    'Content-Type':'application/json'
-                }
-
-            }
-
-        );
-
-        const data =
-        await response.json();
-
-        if(!response.ok){
-
-            throw new Error(
-
-                data.error ||
-
-                "Error enviando registro"
-
-            );
-
-        }
-
-        cargarRegistros();
-
+    if (!response.ok) {
+      throw new Error(data.error || "Error enviando registro");
     }
 
-    catch(error){
+    cargarRegistros();
+  } catch (error) {
+    console.error("ERROR ENVIANDO:", error);
 
-        console.error(
-            "ERROR ENVIANDO:",
-            error
-        );
-
-        alert(
-            error.message
-        );
-
-    }
-
+    alert(error.message);
+  }
 }
 
 /* =========================
    OBSERVACIONES
 ========================= */
 
-async function guardarObservaciones(
+async function guardarObservaciones(codigo, observaciones) {
+  try {
+    const response = await fetch(
+      `${API}/api/registros/observaciones/${codigo}`,
 
-    codigo,
-    observaciones
+      {
+        method: "PUT",
 
-){
+        headers: {
+          "Content-Type": "application/json",
+        },
 
-    try{
+        body: JSON.stringify({
+          observaciones,
+        }),
+      },
+    );
 
-        const response =
-        await fetch(
+    const data = await response.json();
 
-            `${API}/api/registros/observaciones/${codigo}`,
-
-            {
-
-                method:'PUT',
-
-                headers:{
-                    'Content-Type':'application/json'
-                },
-
-                body:JSON.stringify({
-
-                    observaciones
-
-                })
-
-            }
-
-        );
-
-        const data =
-        await response.json();
-
-        if(!response.ok){
-
-            throw new Error(
-
-                data.error ||
-
-                "Error guardando observaciones"
-
-            );
-
-        }
-
+    if (!response.ok) {
+      throw new Error(data.error || "Error guardando observaciones");
     }
+  } catch (error) {
+    console.error("ERROR OBSERVACIONES:", error);
 
-    catch(error){
-
-        console.error(
-            "ERROR OBSERVACIONES:",
-            error
-        );
-
-        alert(
-            error.message
-        );
-
-    }
-
+    alert(error.message);
+  }
 }
 
 /* =========================
    CARGAR REGISTROS
 ========================= */
 
-async function cargarRegistros(){
+async function cargarRegistros() {
+  try {
+    const response = await fetch(`${API}/api/registros/UP-01`);
 
-    try{
+    if (!response.ok) {
+      throw new Error("Error obteniendo registros");
+    }
 
-        const response =
-        await fetch(
+    const registros = await response.json();
 
-            `${API}/api/registros/UP-01`
+    tbody.innerHTML = "";
 
-        );
-
-        if(!response.ok){
-
-            throw new Error(
-                "Error obteniendo registros"
-            );
-
-        }
-
-        const registros =
-        await response.json();
-
-        tbody.innerHTML = "";
-
-        if(registros.length === 0){
-
-            tbody.innerHTML = `
+    if (registros.length === 0) {
+      tbody.innerHTML = `
 
                 <tr>
 
@@ -660,62 +437,34 @@ async function cargarRegistros(){
 
             `;
 
-            return;
+      return;
+    }
 
-        }
+    registros.sort((a, b) => {
+      const orden = {
+        CREADO: 1,
+        RECHAZADO: 2,
+        ENVIADO: 3,
+        PAGADO: 4,
+        ACEPTADO: 4,
+      };
 
-        registros.sort((a,b)=>{
+      return (
+        (orden[normalizarEstatus(a.estatus)] || 99) -
+        (orden[normalizarEstatus(b.estatus)] || 99)
+      );
+    });
 
-            const orden = {
+    for (const registro of registros) {
+      const estatus = normalizarEstatus(registro.estatus);
 
-                "CREADO":1,
-                "RECHAZADO":2,
-                "ENVIADO":3,
-                "PAGADO":4,
-                "ACEPTADO":4
+      const bloqueado =
+        estatus === "PAGADO" || estatus === "ACEPTADO" || estatus === "ENVIADO";
 
-            };
+      const permitirEliminar =
+        estatus === "CREADO" || estatus === "RECHAZADO" || !estatus;
 
-            return (
-
-                (orden[
-                    normalizarEstatus(a.estatus)
-                ] || 99)
-
-                -
-
-                (orden[
-                    normalizarEstatus(b.estatus)
-                ] || 99)
-
-            );
-
-        });
-
-        for(const registro of registros){
-
-            const estatus =
-            normalizarEstatus(
-                registro.estatus
-            );
-
-            const bloqueado =
-
-                estatus === "PAGADO"
-                ||
-                estatus === "ACEPTADO"
-                ||
-                estatus === "ENVIADO";
-
-            const permitirEliminar =
-
-                estatus === "CREADO"
-                ||
-                estatus === "RECHAZADO"
-                ||
-                !estatus;
-
-            tbody.innerHTML += `
+      tbody.innerHTML += `
 
             <tr>
 
@@ -723,13 +472,9 @@ async function cargarRegistros(){
 
             <div class="card-registro">
 
-                <!-- =========================
-                     SUPERIOR
-                ========================= -->
+                <!-- SUPERIOR -->
 
                 <div class="fila-superior">
-
-                    <!-- ID -->
 
                     <div class="info-item">
 
@@ -738,12 +483,10 @@ async function cargarRegistros(){
                         </span>
 
                         <span class="info-valor">
-                            ${registro.codigo || '-'}
+                            ${registro.codigo || "-"}
                         </span>
 
                     </div>
-
-                    <!-- PERSONA -->
 
                     <div class="info-item">
 
@@ -752,12 +495,10 @@ async function cargarRegistros(){
                         </span>
 
                         <span class="info-valor">
-                            ${registro.persona || '-'}
+                            ${registro.persona || "-"}
                         </span>
 
                     </div>
-
-                    <!-- FECHA -->
 
                     <div class="info-item">
 
@@ -767,27 +508,17 @@ async function cargarRegistros(){
 
                         <span class="info-valor">
 
-                            ${registro.fecha
-
-                                ?
-
-                                new Date(
-                                    registro.fecha
-                                ).toLocaleString(
-                                    'es-MX'
-                                )
-
-                                :
-
-                                '-'
-
+                            ${
+                              registro.fecha
+                                ? new Date(registro.fecha).toLocaleString(
+                                    "es-MX",
+                                  )
+                                : "-"
                             }
 
                         </span>
 
                     </div>
-
-                    <!-- ESTATUS -->
 
                     <div class="info-item">
 
@@ -799,19 +530,15 @@ async function cargarRegistros(){
 
                     </div>
 
-                    <!-- ELIMINAR -->
-
                     <div class="info-item">
 
                         <span class="info-label">
                             Eliminar
                         </span>
 
-                        ${permitirEliminar
-
-                            ?
-
-                            `
+                        ${
+                          permitirEliminar
+                            ? `
 
                             <button
                                 class="btn-eliminar"
@@ -822,10 +549,7 @@ async function cargarRegistros(){
                             </button>
 
                             `
-
-                            :
-
-                            `
+                            : `
 
                             <button
                                 class="btn-bloqueado"
@@ -836,29 +560,41 @@ async function cargarRegistros(){
                             </button>
 
                             `
-
                         }
 
                     </div>
 
                 </div>
 
-                <!-- =========================
-                     PDFS
-                ========================= -->
+                <!-- PDFS -->
 
-                <div class="fila-pdfs">
+                <div
+                    class="fila-pdfs"
+                    style="
+                        display:flex;
+                        justify-content:space-between;
+                        align-items:flex-start;
+                        gap:30px;
+                        flex-wrap:wrap;
+                    "
+                >
 
                     <!-- OFICIO -->
 
-                    <div class="info-item">
+                    <div
+                        class="info-item"
+                        style="
+                            flex:1;
+                            text-align:center;
+                        "
+                    >
 
                         <span class="info-label">
                             Oficio PDF
                         </span>
 
                         <a
-                            href="${registro.oficio_pdf || '#'}"
+                            href="${registro.oficio_pdf || "#"}"
                             target="_blank"
                             class="link-pdf">
 
@@ -870,14 +606,20 @@ async function cargarRegistros(){
 
                     <!-- PLIEGO -->
 
-                    <div class="info-item">
+                    <div
+                        class="info-item"
+                        style="
+                            flex:1;
+                            text-align:center;
+                        "
+                    >
 
                         <span class="info-label">
                             Pliego PDF
                         </span>
 
                         <a
-                            href="${registro.pliego_pdf || '#'}"
+                            href="${registro.pliego_pdf || "#"}"
                             target="_blank"
                             class="link-pdf">
 
@@ -889,17 +631,21 @@ async function cargarRegistros(){
 
                     <!-- SPG -->
 
-                    <div class="info-item">
+                    <div
+                        class="info-item"
+                        style="
+                            flex:1;
+                            text-align:center;
+                        "
+                    >
 
                         <span class="info-label">
                             SPG PDF
                         </span>
 
-                        ${registro.spg_pdf
-
-                            ?
-
-                            `
+                        ${
+                          registro.spg_pdf
+                            ? `
 
                             <a
                                 href="${registro.spg_pdf}"
@@ -911,10 +657,7 @@ async function cargarRegistros(){
                             </a>
 
                             `
-
-                            :
-
-                            `
+                            : `
 
                             <button
                                 class="btn-bloqueado"
@@ -925,20 +668,58 @@ async function cargarRegistros(){
                             </button>
 
                             `
+                        }
 
+                    </div>
+
+                    <!-- RECIBO -->
+
+                    <div
+                        class="info-item"
+                        style="
+                            flex:1;
+                            text-align:center;
+                        "
+                    >
+
+                        <span class="info-label">
+                            Recibo PDF
+                        </span>
+
+                        ${
+                          registro.recibo_pdf
+                            ? `
+
+                            <a
+                                href="${registro.recibo_pdf}"
+                                target="_blank"
+                                class="link-pdf">
+
+                                Ver Recibo
+
+                            </a>
+
+                            `
+                            : `
+
+                            <button
+                                class="btn-bloqueado"
+                                disabled>
+
+                                Sin Recibo
+
+                            </button>
+
+                            `
                         }
 
                     </div>
 
                 </div>
 
-                <!-- =========================
-                     INFERIOR
-                ========================= -->
+                <!-- INFERIOR -->
 
                 <div class="fila-inferior">
-
-                    <!-- OBSERVACIONES -->
 
                     <div class="info-item">
 
@@ -953,12 +734,10 @@ async function cargarRegistros(){
                                 '${registro.codigo}',
                                 this.value
                             )"
-                            ${bloqueado ? 'readonly' : ''}
-                        >${registro.observaciones || ''}</textarea>
+                            ${bloqueado ? "readonly" : ""}
+                        >${registro.observaciones || ""}</textarea>
 
                     </div>
-
-                    <!-- OBSERVACIONES ADMIN -->
 
                     <div class="info-item">
 
@@ -970,7 +749,7 @@ async function cargarRegistros(){
                             class="textarea-observaciones-admin"
                             readonly
                             placeholder="Observaciones administración..."
-                        >${registro.observaciones_admin || ''}</textarea>
+                        >${registro.observaciones_admin || ""}</textarea>
 
                     </div>
 
@@ -980,21 +759,51 @@ async function cargarRegistros(){
 
                         <!-- TERMINAR -->
 
-                        <div class="info-item">
+<div class="info-item">
 
-                            <span class="info-label">
-                                Terminar Trámite
-                            </span>
+    <span class="info-label">
+        Terminar Trámite
+    </span>
 
-                            <button
-                                class="btn-enviar"
-                                onclick="abrirModalSPG('${registro.codigo}')">
+    ${
+      registro.spg_pdf
+        ? registro.recibo_pdf
+          ? `
 
-                                Terminar
+        <button
+            class="btn-aceptado"
+            disabled>
 
-                            </button>
+            Finalizado
 
-                        </div>
+        </button>
+
+        `
+          : `
+
+        <button
+            class="btn-enviar"
+            onclick="abrirModalRecibo('${registro.codigo}')">
+
+            Generar Recibo
+
+        </button>
+
+        `
+        : `
+
+        <button
+            class="btn-enviar"
+            onclick="abrirModalSPG('${registro.codigo}')">
+
+            Generar SPG
+
+        </button>
+
+        `
+    }
+
+</div>
 
                         <!-- ENVIAR -->
 
@@ -1019,108 +828,58 @@ async function cargarRegistros(){
             </tr>
 
             `;
-
-        }
-
     }
-
-    catch(error){
-
-        console.error(
-            "ERROR REGISTROS:",
-            error
-        );
-
-    }
-
+  } catch (error) {
+    console.error("ERROR REGISTROS:", error);
+  }
 }
 
 /* =========================
    ELIMINAR
 ========================= */
 
-function eliminarRegistro(codigo){
+function eliminarRegistro(codigo) {
+  codigoEliminar = codigo;
 
-    codigoEliminar = codigo;
-
-    abrirModal(
-        "modalEliminar"
-    );
-
+  abrirModal("modalEliminar");
 }
 
 /* =========================
    CONFIRMAR ELIMINAR
 ========================= */
 
-const btnConfirmarEliminar =
-document.getElementById(
-    "confirmarEliminar"
-);
+const btnConfirmarEliminar = document.getElementById("confirmarEliminar");
 
 btnConfirmarEliminar.addEventListener(
+  "click",
 
-    "click",
+  async function () {
+    try {
+      const response = await fetch(
+        `${API}/api/registros/${codigoEliminar}`,
 
-    async function(){
+        {
+          method: "DELETE",
+        },
+      );
 
-        try{
+      const data = await response.json();
 
-            const response =
-            await fetch(
+      if (!response.ok) {
+        throw new Error(data.error || "Error eliminando");
+      }
 
-                `${API}/api/registros/${codigoEliminar}`,
+      cerrarModal("modalEliminar");
 
-                {
+      abrirModal("modalExito");
 
-                    method:'DELETE'
+      cargarRegistros();
+    } catch (error) {
+      console.error("ERROR ELIMINANDO:", error);
 
-                }
-
-            );
-
-            const data =
-            await response.json();
-
-            if(!response.ok){
-
-                throw new Error(
-
-                    data.error ||
-
-                    'Error eliminando'
-
-                );
-
-            }
-
-            cerrarModal(
-                "modalEliminar"
-            );
-
-            abrirModal(
-                "modalExito"
-            );
-
-            cargarRegistros();
-
-        }
-
-        catch(error){
-
-            console.error(
-                "ERROR ELIMINANDO:",
-                error
-            );
-
-            alert(
-                error.message
-            );
-
-        }
-
+      alert(error.message);
     }
-
+  },
 );
 
 /* =========================
@@ -1128,122 +887,75 @@ btnConfirmarEliminar.addEventListener(
 ========================= */
 
 document.addEventListener(
+  "DOMContentLoaded",
 
-    "DOMContentLoaded",
-
-    ()=>{
-
-        /* =========================
-           CARGAR CATÁLOGOS SPG
-        ========================= */
-
-        if(typeof llenarAnios === "function"){
-
-            llenarAnios("spgAnio");
-
-        }
-
-        if(typeof llenarUP === "function"){
-
-            llenarUP();
-
-        }
-
-        if(typeof llenarRubros === "function"){
-
-            llenarRubros();
-
-        }
-
-        if(typeof llenarProyectos === "function"){
-
-            llenarProyectos();
-
-        }
-
-        if(typeof llenarObjetoGasto === "function"){
-
-            llenarObjetoGasto();
-
-        }
-
-        /* =========================
-   EVENTOS TOTAL SPG
-========================= */
-
-const spgMonto =
-document.getElementById(
-    "spgMonto"
-);
-
-const spgRet =
-document.getElementById(
-    "spgRet"
-);
-
-if(spgMonto){
-
-    spgMonto.addEventListener(
-
-        "input",
-
-        calcularTotalSPG
-
-    );
-
-}
-
-if(spgRet){
-
-    spgRet.addEventListener(
-
-        "input",
-
-        calcularTotalSPG
-
-    );
-
-}
-
-        /* =========================
-           BOTÓN SPG
-        ========================= */
-
-        const btnGenerarSPG =
-        document.getElementById(
-            "btnGenerarSPG"
-        );
-
-        if(btnGenerarSPG){
-
-            btnGenerarSPG.addEventListener(
-
-                "click",
-
-                generarSPG
-
-            );
-
-        }
-
-        /* =========================
-           CARGAR REGISTROS
-        ========================= */
-
-        cargarRegistros();
-
-        /* =========================
-           AUTO REFRESH
-        ========================= */
-
-        setInterval(
-
-            cargarRegistros,
-
-            30000
-
-        );
-
+  () => {
+    if (typeof llenarAnios === "function") {
+      llenarAnios("spgAnio");
     }
 
+    if (typeof llenarUP === "function") {
+      llenarUP();
+    }
+
+    if (typeof llenarRubros === "function") {
+      llenarRubros();
+    }
+
+    if (typeof llenarProyectos === "function") {
+      llenarProyectos();
+    }
+
+    if (typeof llenarObjetoGasto === "function") {
+      llenarObjetoGasto();
+    }
+
+    const spgMonto = document.getElementById("spgMonto");
+
+    const spgRet = document.getElementById("spgRet");
+
+    if (spgMonto) {
+      spgMonto.addEventListener(
+        "input",
+
+        calcularTotalSPG,
+      );
+    }
+
+    if (spgRet) {
+      spgRet.addEventListener(
+        "input",
+
+        calcularTotalSPG,
+      );
+    }
+
+    const btnGenerarSPG = document.getElementById("btnGenerarSPG");
+
+    if (btnGenerarSPG) {
+      btnGenerarSPG.addEventListener(
+        "click",
+
+        generarSPG,
+      );
+    }
+
+    const btnGenerarRecibo = document.getElementById("btnGenerarRecibo");
+
+    if (btnGenerarRecibo) {
+      btnGenerarRecibo.addEventListener(
+        "click",
+
+        generarRecibo,
+      );
+    }
+
+    cargarRegistros();
+
+    setInterval(
+      cargarRegistros,
+
+      30000,
+    );
+  },
 );
