@@ -11,6 +11,45 @@ const router = express.Router();
 const ESTATUS = ["Creado", "Enviado", "Rechazado", "Pagado"];
 
 /* =========================
+   OBTENER REGISTRO POR CÓDIGO
+========================= */
+
+router.get("/codigo/:codigo", async (req, res) => {
+  try {
+    const codigo = req.params.codigo.trim();
+
+    const result = await pool.query(
+      `
+      SELECT *
+
+      FROM registros
+
+      WHERE codigo = $1
+      `,
+      [codigo],
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+
+        error: "Registro no encontrado",
+      });
+    }
+
+    res.json(result.rows[0]);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      ok: false,
+
+      error: error.message,
+    });
+  }
+});
+
+/* =========================
    OBTENER REGISTROS
 ========================= */
 
@@ -20,62 +59,61 @@ router.get("/:area", async (req, res) => {
 
     const result = await pool.query(
       `
-            SELECT
+      SELECT
 
-                r.*,
+          r.*,
 
-                CASE
+          CASE
 
-                    WHEN gp.registro_id IS NOT NULL
-                    THEN true
+              WHEN gp.registro_id IS NOT NULL
+              THEN true
 
-                    ELSE false
+              ELSE false
 
-                END AS pagado,
+          END AS pagado,
 
-                COALESCE(
+          COALESCE(
 
-                    gp.total_pagado,
+              gp.total_pagado,
 
-                    0
+              0
 
-                ) AS cantidad_pagada
+          ) AS cantidad_pagada
 
-            FROM registros r
+      FROM registros r
 
-            LEFT JOIN (
+      LEFT JOIN (
 
-                SELECT
+          SELECT
 
-                    registro_id,
+              registro_id,
 
-                    SUM(cantidad) AS total_pagado
+              SUM(cantidad) AS total_pagado
 
-                FROM gastos
+          FROM gastos
 
-                GROUP BY registro_id
+          GROUP BY registro_id
 
-            ) gp
+      ) gp
 
-            ON gp.registro_id = r.id
+      ON gp.registro_id = r.id
 
-            WHERE TRIM(r.area) = $1
+      WHERE TRIM(r.area) = $1
 
-            ORDER BY
+      ORDER BY
 
-                CASE r.estatus
+          CASE r.estatus
 
-                    WHEN 'Creado' THEN 1
-                    WHEN 'Rechazado' THEN 2
-                    WHEN 'Enviado' THEN 3
-                    WHEN 'Pagado' THEN 4
-                    ELSE 5
+              WHEN 'Creado' THEN 1
+              WHEN 'Rechazado' THEN 2
+              WHEN 'Enviado' THEN 3
+              WHEN 'Pagado' THEN 4
+              ELSE 5
 
-                END,
+          END,
 
-                r.fecha DESC NULLS LAST
-            `,
-
+          r.fecha DESC NULLS LAST
+      `,
       [area],
     );
 
@@ -114,10 +152,6 @@ router.post("/", async (req, res) => {
       localidades_visitadas,
     } = req.body;
 
-    /* =========================
-           VALIDAR CAMPOS
-        ========================= */
-
     if (!codigo || !area || !persona) {
       return res.status(400).json({
         ok: false,
@@ -126,19 +160,14 @@ router.post("/", async (req, res) => {
       });
     }
 
-    /* =========================
-           VALIDAR DUPLICADO
-        ========================= */
-
     const existe = await pool.query(
       `
-            SELECT id
+      SELECT id
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo.trim()],
     );
 
@@ -150,80 +179,64 @@ router.post("/", async (req, res) => {
       });
     }
 
-    /* =========================
-           INSERTAR
-        ========================= */
-
     await pool.query(
       `
-            INSERT INTO registros(
+      INSERT INTO registros(
 
-                codigo,
-                area,
-                persona,
+          codigo,
+          area,
+          persona,
 
-                oficio_pdf,
-                pliego_pdf,
+          oficio_pdf,
+          pliego_pdf,
 
-                municipio,
-                dia_inicio,
-                dia_fin,
-                mes,
+          municipio,
+          dia_inicio,
+          dia_fin,
+          mes,
 
-                motivo_comision,
+          motivo_comision,
 
-                localidades_visitadas,
+          localidades_visitadas,
 
-                estatus
+          estatus
 
-            )
+      )
 
-            VALUES(
+      VALUES(
 
-                $1,
-                $2,
-                $3,
+          $1,
+          $2,
+          $3,
 
-                $4,
-                $5,
+          $4,
+          $5,
 
-                $6,
-                $7,
-                $8,
-                $9,
+          $6,
+          $7,
+          $8,
+          $9,
 
-                $10,
+          $10,
 
-                $11,
+          $11,
 
-                $12
+          $12
 
-            )
-            `,
-
+      )
+      `,
       [
         codigo.trim(),
-
         area.trim(),
-
         persona.trim(),
-
         oficio_pdf || "",
-
         pliego_pdf || "",
-
         municipio || "",
-
         dia_inicio || "",
-
         dia_fin || "",
-
         mes || "",
-
         motivo_comision || "",
-
         localidades_visitadas || "",
-
         "Creado",
       ],
     );
@@ -254,13 +267,12 @@ router.put("/enviar/:codigo", async (req, res) => {
 
     const validar = await pool.query(
       `
-            SELECT *
+      SELECT *
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -292,15 +304,14 @@ router.put("/enviar/:codigo", async (req, res) => {
 
     await pool.query(
       `
-            UPDATE registros
+      UPDATE registros
 
-            SET
+      SET
 
-                estatus = 'Enviado'
+          estatus = 'Enviado'
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -330,13 +341,12 @@ router.put("/reenviar/:codigo", async (req, res) => {
 
     const validar = await pool.query(
       `
-            SELECT *
+      SELECT *
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -360,17 +370,16 @@ router.put("/reenviar/:codigo", async (req, res) => {
 
     await pool.query(
       `
-            UPDATE registros
+      UPDATE registros
 
-            SET
+      SET
 
-                estatus = 'Enviado',
+          estatus = 'Enviado',
 
-                observaciones_admin = ''
+          observaciones_admin = ''
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -402,13 +411,12 @@ router.put("/observaciones/:codigo", async (req, res) => {
 
     const validar = await pool.query(
       `
-            SELECT estatus
+      SELECT estatus
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -432,15 +440,14 @@ router.put("/observaciones/:codigo", async (req, res) => {
 
     await pool.query(
       `
-            UPDATE registros
+      UPDATE registros
 
-            SET
+      SET
 
-                observaciones = $1
+          observaciones = $1
 
-            WHERE codigo = $2
-            `,
-
+      WHERE codigo = $2
+      `,
       [observaciones || "", codigo],
     );
 
@@ -472,13 +479,12 @@ router.put("/observaciones-admin/:codigo", async (req, res) => {
 
     const validar = await pool.query(
       `
-            SELECT id
+      SELECT id
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -492,15 +498,14 @@ router.put("/observaciones-admin/:codigo", async (req, res) => {
 
     await pool.query(
       `
-            UPDATE registros
+      UPDATE registros
 
-            SET
+      SET
 
-                observaciones_admin = $1
+          observaciones_admin = $1
 
-            WHERE codigo = $2
-            `,
-
+      WHERE codigo = $2
+      `,
       [observaciones_admin || "", codigo],
     );
 
@@ -540,13 +545,12 @@ router.put("/estatus/:codigo", async (req, res) => {
 
     const validar = await pool.query(
       `
-            SELECT *
+      SELECT *
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -578,15 +582,14 @@ router.put("/estatus/:codigo", async (req, res) => {
 
     await pool.query(
       `
-            UPDATE registros
+      UPDATE registros
 
-            SET
+      SET
 
-                estatus = $1
+          estatus = $1
 
-            WHERE codigo = $2
-            `,
-
+      WHERE codigo = $2
+      `,
       [estatus, codigo],
     );
 
@@ -616,13 +619,12 @@ router.delete("/:codigo", async (req, res) => {
 
     const validar = await pool.query(
       `
-            SELECT *
+      SELECT *
 
-            FROM registros
+      FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -646,11 +648,10 @@ router.delete("/:codigo", async (req, res) => {
 
     await pool.query(
       `
-            DELETE FROM registros
+      DELETE FROM registros
 
-            WHERE codigo = $1
-            `,
-
+      WHERE codigo = $1
+      `,
       [codigo],
     );
 
@@ -674,280 +675,175 @@ router.delete("/:codigo", async (req, res) => {
    GUARDAR SPG PDF
 ========================= */
 
-router.put(
-  "/spg/:codigo",
+router.put("/spg/:codigo", async (req, res) => {
+  try {
+    const codigo = req.params.codigo.trim();
 
-  async (req, res) => {
-    try {
-      const codigo = req.params.codigo.trim();
+    const {
+      spg_pdf,
+      ur,
+      up,
+      rubro,
+      og,
+      proyecto,
+      cuenta,
+      monto,
+      retenciones,
+      total,
+      anio,
+    } = req.body;
 
-      const {
+    if (!spg_pdf) {
+      return res.status(400).json({
+        ok: false,
+
+        error: "URL SPG requerida",
+      });
+    }
+
+    const validar = await pool.query(
+      `
+      SELECT id
+
+      FROM registros
+
+      WHERE codigo = $1
+      `,
+      [codigo],
+    );
+
+    if (validar.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
+
+        error: "Registro no encontrado",
+      });
+    }
+
+    await pool.query(
+      `
+      UPDATE registros
+
+      SET
+
+          spg_pdf = $1,
+
+          ur = $2,
+          up = $3,
+          rubro = $4,
+          og = $5,
+          proyecto = $6,
+          cuenta = $7,
+
+          spg_monto = $8,
+          spg_retenciones = $9,
+          spg_total = $10,
+
+          anio = $11
+
+      WHERE codigo = $12
+      `,
+      [
         spg_pdf,
-
         ur,
         up,
         rubro,
         og,
         proyecto,
         cuenta,
+        parseFloat(String(monto).replace(/[$,\s]/g, "")),
+        parseFloat(String(retenciones).replace(/[$,\s]/g, "")),
+        parseFloat(String(total).replace(/[$,\s]/g, "")),
+        Number(anio),
+        codigo,
+      ],
+    );
 
-        monto,
-        retenciones,
-        total,
+    res.json({
+      ok: true,
 
-        anio,
-      } = req.body;
+      msg: "SPG guardado",
+    });
+  } catch (error) {
+    console.log("ERROR REAL SPG:");
+    console.log(error);
 
-      /* =========================
-               VALIDAR URL
-            ========================= */
+    res.status(500).json({
+      ok: false,
 
-      if (!spg_pdf) {
-        return res.status(400).json({
-          ok: false,
+      error: error.message,
 
-          error: "URL SPG requerida",
-        });
-      }
+      detail: error.detail || null,
 
-      /* =========================
-               VALIDAR REGISTRO
-            ========================= */
-
-      const validar = await pool.query(
-        `
-                SELECT id
-
-                FROM registros
-
-                WHERE codigo = $1
-                `,
-
-        [codigo],
-      );
-
-      if (validar.rows.length === 0) {
-        return res.status(404).json({
-          ok: false,
-
-          error: "Registro no encontrado",
-        });
-      }
-
-      /* =========================
-               ACTUALIZAR SPG
-            ========================= */
-
-      await pool.query(
-        `
-                UPDATE registros
-
-                SET
-
-                    spg_pdf = $1,
-
-                    ur = $2,
-                    up = $3,
-                    rubro = $4,
-                    og = $5,
-                    proyecto = $6,
-                    cuenta = $7,
-
-                    spg_monto = $8,
-                    spg_retenciones = $9,
-                    spg_total = $10,
-
-                    anio = $11
-
-                WHERE codigo = $12
-                `,
-
-        [
-          spg_pdf,
-
-          ur || "",
-          up || "",
-          rubro || "",
-          og || "",
-          proyecto || "",
-          cuenta || "",
-
-          parseFloat(String(monto).replace(/[$,\s]/g, "")) || 0,
-
-          parseFloat(String(retenciones).replace(/[$,\s]/g, "")) || 0,
-
-          parseFloat(String(total).replace(/[$,\s]/g, "")) || 0,
-
-          Number(anio) || 0,
-
-          codigo,
-        ],
-      );
-
-      /* =========================
-               RESPUESTA
-            ========================= */
-
-      res.json({
-        ok: true,
-
-        msg: "SPG guardado",
-      });
-    } catch (error) {
-      console.log("ERROR REAL SPG:");
-      console.log(error);
-
-      res.status(500).json({
-        ok: false,
-
-        error: error.message,
-
-        detail: error.detail || null,
-
-        stack: error.stack,
-      });
-    }
-  },
-);
+      stack: error.stack,
+    });
+  }
+});
 
 /* =========================
    GUARDAR RECIBO PDF
 ========================= */
 
-router.put(
-  "/recibo/:codigo",
+router.put("/recibo/:codigo", async (req, res) => {
+  try {
+    const codigo = req.params.codigo.trim();
 
-  async (req, res) => {
-    try {
-      const codigo = req.params.codigo.trim();
+    const { recibo_pdf } = req.body;
 
-      const { recibo_pdf } = req.body;
-
-      if (!recibo_pdf) {
-        return res.status(400).json({
-          ok: false,
-
-          error: "URL recibo requerida",
-        });
-      }
-
-      const validar = await pool.query(
-        `
-                SELECT id
-
-                FROM registros
-
-                WHERE codigo = $1
-                `,
-
-        [codigo],
-      );
-
-      if (validar.rows.length === 0) {
-        return res.status(404).json({
-          ok: false,
-
-          error: "Registro no encontrado",
-        });
-      }
-
-      await pool.query(
-        `
-                UPDATE registros
-
-                SET
-
-                    recibo_pdf = $1
-
-                WHERE codigo = $2
-                `,
-
-        [recibo_pdf, codigo],
-      );
-
-      res.json({
-        ok: true,
-
-        msg: "Recibo guardado",
-      });
-    } catch (error) {
-      console.log(error);
-
-      res.status(500).json({
+    if (!recibo_pdf) {
+      return res.status(400).json({
         ok: false,
 
-        error: "Error guardando recibo",
+        error: "URL recibo requerida",
       });
     }
-  },
-);
 
-/* =========================
-   OBTENER REGISTRO POR CÓDIGO
-========================= */
+    const validar = await pool.query(
+      `
+      SELECT id
 
-router.get(
+      FROM registros
 
-    "/codigo/:codigo",
+      WHERE codigo = $1
+      `,
+      [codigo],
+    );
 
-    async(req,res)=>{
+    if (validar.rows.length === 0) {
+      return res.status(404).json({
+        ok: false,
 
-        try{
-
-            const codigo =
-            req.params.codigo.trim();
-
-            const result =
-            await pool.query(
-
-                `
-                SELECT *
-
-                FROM registros
-
-                WHERE codigo = $1
-                `,
-                
-                [codigo]
-
-            );
-
-            if(result.rows.length === 0){
-
-                return res.status(404).json({
-
-                    ok:false,
-
-                    error:"Registro no encontrado"
-
-                });
-
-            }
-
-            res.json(
-
-                result.rows[0]
-
-            );
-
-        }
-
-        catch(error){
-
-            console.log(error);
-
-            res.status(500).json({
-
-                ok:false,
-
-                error:error.message
-
-            });
-
-        }
-
+        error: "Registro no encontrado",
+      });
     }
 
-);
+    await pool.query(
+      `
+      UPDATE registros
+
+      SET
+
+          recibo_pdf = $1
+
+      WHERE codigo = $2
+      `,
+      [recibo_pdf, codigo],
+    );
+
+    res.json({
+      ok: true,
+
+      msg: "Recibo guardado",
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      ok: false,
+
+      error: "Error guardando recibo",
+    });
+  }
+});
 
 module.exports = router;
