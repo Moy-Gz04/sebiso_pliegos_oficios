@@ -18,6 +18,8 @@ let codigoEliminar = null;
 
 let codigoSPG = null;
 
+let codigoRecibo = null;
+
 /* =========================
    NORMALIZAR ESTATUS
 ========================= */
@@ -63,227 +65,180 @@ function abrirModalSPG(codigo) {
    MODAL RECIBO
 ========================= */
 
-async function abrirModalRecibo(codigo){
+async function abrirModalRecibo(codigo) {
+  try {
+    codigoRecibo = codigo;
 
-    try{
+    const response = await fetch(`${API}/api/registros/UP-01`);
 
-        codigoRecibo = codigo;
-
-        /* =========================
-           OBTENER REGISTROS
-        ========================= */
-
-        const response =
-        await fetch(
-
-            `${API}/api/registros/UP-01`
-
-        );
-
-        if(!response.ok){
-
-            throw new Error(
-
-                "Error obteniendo registros"
-
-            );
-
-        }
-
-        const registros =
-        await response.json();
-
-        /* =========================
-           BUSCAR REGISTRO
-        ========================= */
-
-        const registro =
-        registros.find(
-
-            r => r.codigo === codigo
-
-        );
-
-        if(!registro){
-
-            throw new Error(
-
-                "Registro no encontrado"
-
-            );
-
-        }
-
-        console.log(
-            "REGISTRO RECIBO:",
-            registro
-        );
-
-        /* =========================
-           DESGLOSAR DÍAS
-        ========================= */
-
-        let diasTexto = "";
-
-        const inicio =
-        parseInt(registro.dia_inicio);
-
-        const fin =
-        parseInt(registro.dia_fin);
-
-        if(
-
-            !isNaN(inicio)
-            &&
-            !isNaN(fin)
-
-        ){
-
-            const dias = [];
-
-            for(
-
-                let i = inicio;
-                i <= fin;
-                i++
-
-            ){
-
-                dias.push(i);
-
-            }
-
-            if(dias.length === 1){
-
-                diasTexto =
-                `${dias[0]}`;
-
-            }
-
-            else if(dias.length === 2){
-
-                diasTexto =
-
-                    `${dias[0]} y ${dias[1]}`;
-
-            }
-
-            else{
-
-                diasTexto =
-
-                    dias.slice(0,-1).join(", ")
-
-                    +
-
-                    " y "
-
-                    +
-
-                    dias[dias.length - 1];
-
-            }
-
-        }
-
-        /* =========================
-           LLENAR MODAL
-        ========================= */
-
-        document.getElementById(
-            "reciboFolio"
-        ).value = registro.codigo || "";
-
-        document.getElementById(
-            "reciboPersona"
-        ).value = registro.persona || "";
-
-        document.getElementById(
-            "reciboMunicipio"
-        ).value = registro.municipio || "";
-
-        document.getElementById(
-            "reciboMotivo"
-        ).value = registro.motivo_comision || "";
-
-        document.getElementById(
-            "reciboLocalidades"
-        ).value = registro.localidades_visitadas || "";
-
-        document.getElementById(
-            "reciboDias"
-        ).value = diasTexto || "";
-
-        document.getElementById(
-            "reciboMes"
-        ).value = registro.mes || "";
-
-        document.getElementById(
-            "reciboImporte"
-        ).value = registro.monto || "";
-
-        document.getElementById(
-            "reciboRetenciones"
-        ).value = registro.retenciones || "";
-
-        document.getElementById(
-            "reciboTotal"
-        ).value = registro.total || "";
-
-        /* =========================
-           ABRIR MODAL
-        ========================= */
-
-        abrirModal(
-            "modalRecibo"
-        );
-
+    if (!response.ok) {
+      throw new Error("Error obteniendo registros");
     }
 
-    catch(error){
+    const registros = await response.json();
 
-        console.error(
-            "ERROR MODAL RECIBO:",
-            error
-        );
+    const registro = registros.find((r) => r.codigo === codigo);
 
-        alert(
-            error.message
-        );
-
+    if (!registro) {
+      throw new Error("Registro no encontrado");
     }
 
+    let diasTexto = "";
+
+    const inicio = parseInt(registro.dia_inicio);
+
+    const fin = parseInt(registro.dia_fin);
+
+    if (!isNaN(inicio) && !isNaN(fin)) {
+      const dias = [];
+
+      for (let i = inicio; i <= fin; i++) {
+        dias.push(i);
+      }
+
+      if (dias.length === 1) {
+        diasTexto = `${dias[0]}`;
+      } else if (dias.length === 2) {
+        diasTexto = `${dias[0]} y ${dias[1]}`;
+      } else {
+        diasTexto =
+          dias.slice(0, -1).join(", ") + " y " + dias[dias.length - 1];
+      }
+    }
+
+    const formatearMoneda = (valor) => {
+      return (
+        "$ " +
+        Number(valor || 0).toLocaleString(
+          "en-US",
+
+          {
+            minimumFractionDigits: 2,
+
+            maximumFractionDigits: 2,
+          },
+        )
+      );
+    };
+
+    document.getElementById("reciboFolio").value = registro.codigo || "";
+
+    document.getElementById("reciboPersona").value = registro.persona || "";
+
+    document.getElementById("reciboMunicipio").value = registro.municipio || "";
+
+    document.getElementById("reciboMotivo").value =
+      registro.motivo_comision || "";
+
+    document.getElementById("reciboLocalidades").value =
+      registro.localidades_visitadas || "";
+
+    document.getElementById("reciboDias").value = diasTexto || "";
+
+    document.getElementById("reciboMes").value = registro.mes || "";
+
+    document.getElementById("reciboAnio").value = registro.anio || "";
+
+    document.getElementById("reciboUnidad").value = registro.up || "";
+
+    document.getElementById("reciboImporte").value = formatearMoneda(
+      registro.spg_monto || 0,
+    );
+
+    document.getElementById("reciboRetenciones").value = formatearMoneda(
+      registro.spg_retenciones || 0,
+    );
+
+    document.getElementById("reciboTotal").value = formatearMoneda(
+      registro.spg_total || 0,
+    );
+
+    abrirModal("modalRecibo");
+  } catch (error) {
+    console.error("ERROR MODAL RECIBO:", error);
+
+    alert(error.message);
+  }
 }
+
 
 /* =========================
    CALCULAR TOTAL SPG
 ========================= */
 
-function calcularTotalSPG() {
-  const montoInput = document.getElementById("spgMonto");
+function calcularTotalSPG(){
 
-  const retInput = document.getElementById("spgRet");
+    const montoInput =
+    document.getElementById(
+        "spgMonto"
+    );
 
-  const totalInput = document.getElementById("spgTot");
+    const retInput =
+    document.getElementById(
+        "spgRet"
+    );
 
-  if (!montoInput || !retInput || !totalInput) {
-    return;
-  }
+    const totalInput =
+    document.getElementById(
+        "spgTot"
+    );
 
-  const monto = parseFloat(montoInput.value.replace(/[^0-9.-]+/g, "")) || 0;
+    if(
 
-  const retenciones = parseFloat(retInput.value.replace(/[^0-9.-]+/g, "")) || 0;
+        !montoInput ||
+        !retInput ||
+        !totalInput
 
-  const total = monto + retenciones;
+    ){
 
-  totalInput.value = total.toLocaleString(
-    "es-MX",
+        return;
 
-    {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    },
-  );
+    }
+
+    const monto =
+
+        parseFloat(
+
+            montoInput.value
+            .replace(
+                /[^0-9.-]+/g,
+                ""
+            )
+
+        ) || 0;
+
+    const retenciones =
+
+        parseFloat(
+
+            retInput.value
+            .replace(
+                /[^0-9.-]+/g,
+                ""
+            )
+
+        ) || 0;
+
+    const total =
+    monto + retenciones;
+
+    totalInput.value =
+    "$ " +
+
+    total.toLocaleString(
+
+        "en-US",
+
+        {
+
+            minimumFractionDigits:2,
+
+            maximumFractionDigits:2
+
+        }
+
+    );
+
 }
 
 /* =========================
@@ -320,7 +275,7 @@ async function generarSPG() {
 
     cerrarModal("modalSPG");
 
-    alert("SPG generado correctamente");
+    abrirModal("modalExitoSPG");
 
     cargarRegistros();
   } catch (error) {
@@ -338,13 +293,17 @@ async function generarRecibo() {
   try {
     console.log("GENERANDO RECIBO:", codigoRecibo);
 
+    cerrarModal("modalCargandoRecibo");
+
+    cerrarModal("modalConfirmarRecibo");
+
     cerrarModal("modalRecibo");
 
-    alert("Recibo generado correctamente");
-
-    cargarRegistros();
+    abrirModal("modalExitoRecibo");
   } catch (error) {
     console.error("ERROR RECIBO:", error);
+
+    cerrarModal("modalCargandoRecibo");
 
     alert(error.message);
   }
@@ -1074,6 +1033,10 @@ document.addEventListener(
   "DOMContentLoaded",
 
   () => {
+    /* =========================
+           CATÁLOGOS
+        ========================= */
+
     if (typeof llenarAnios === "function") {
       llenarAnios("spgAnio");
     }
@@ -1093,6 +1056,10 @@ document.addEventListener(
     if (typeof llenarObjetoGasto === "function") {
       llenarObjetoGasto();
     }
+
+    /* =========================
+           TOTAL SPG
+        ========================= */
 
     const spgMonto = document.getElementById("spgMonto");
 
@@ -1114,15 +1081,45 @@ document.addEventListener(
       );
     }
 
+    /* =========================
+           BOTÓN GENERAR SPG
+        ========================= */
+
     const btnGenerarSPG = document.getElementById("btnGenerarSPG");
 
     if (btnGenerarSPG) {
       btnGenerarSPG.addEventListener(
         "click",
 
-        generarSPG,
+        () => {
+          abrirModal("modalConfirmarSPG");
+        },
       );
     }
+
+    /* =========================
+           CONFIRMAR SPG
+        ========================= */
+
+    const confirmarSPG = document.getElementById("confirmarGenerarSPG");
+
+    if (confirmarSPG) {
+      confirmarSPG.addEventListener(
+        "click",
+
+        async () => {
+          cerrarModal("modalConfirmarSPG");
+
+          abrirModal("modalCargando");
+
+          await generarSPG();
+        },
+      );
+    }
+
+    /* =========================
+   BOTÓN RECIBO
+========================= */
 
     const btnGenerarRecibo = document.getElementById("btnGenerarRecibo");
 
@@ -1130,9 +1127,35 @@ document.addEventListener(
       btnGenerarRecibo.addEventListener(
         "click",
 
-        generarRecibo,
+        () => {
+          abrirModal("modalConfirmarRecibo");
+        },
       );
     }
+
+    /* =========================
+   CONFIRMAR RECIBO
+========================= */
+
+    const confirmarRecibo = document.getElementById("confirmarGenerarRecibo");
+
+    if (confirmarRecibo) {
+      confirmarRecibo.addEventListener(
+        "click",
+
+        async () => {
+          cerrarModal("modalConfirmarRecibo");
+
+          abrirModal("modalCargandoRecibo");
+
+          await generarRecibo();
+        },
+      );
+    }
+
+    /* =========================
+           CARGAR
+        ========================= */
 
     cargarRegistros();
 

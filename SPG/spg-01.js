@@ -3,219 +3,490 @@
 ========================= */
 
 async function generarSPG() {
-  try {
-    /* =========================
+
+    try {
+
+        /* =========================
            BOTÓN
         ========================= */
 
-    const btn = document.getElementById("btnGenerarSPG");
+        const btn =
+        document.getElementById(
+            "btnGenerarSPG"
+        );
 
-    btn.disabled = true;
+        btn.disabled = true;
 
-    btn.textContent = "Generando...";
+        btn.textContent =
+        "Generando...";
 
-    /* =========================
+        /* =========================
            DATOS
         ========================= */
 
-    const datos = {
-      codigo: codigoSPG,
+        const datos = {
 
-      persona: document.getElementById("spgPersona")?.value || "",
+            codigo:
+            codigoSPG,
 
-      anio: document.getElementById("spgAnio").value,
+            persona:
+            document.getElementById(
+                "spgPersona"
+            )?.value || "",
 
-      ur: document.getElementById("spgUR").value,
+            anio:
+            document.getElementById(
+                "spgAnio"
+            ).value,
 
-      up: document.getElementById("spgUP").value,
+            ur:
+            document.getElementById(
+                "spgUR"
+            ).value,
 
-      rubro: document.getElementById("spgR").value,
+            up:
+            document.getElementById(
+                "spgUP"
+            ).value,
 
-      og: document.getElementById("spgOG").value,
+            rubro:
+            document.getElementById(
+                "spgR"
+            ).value,
 
-      proyecto: document.getElementById("spgPR").value,
+            og:
+            document.getElementById(
+                "spgOG"
+            ).value,
 
-      cuenta: document.getElementById("spgCuenta").value,
+            proyecto:
+            document.getElementById(
+                "spgPR"
+            ).value,
 
-      monto: document.getElementById("spgMonto").value,
+            cuenta:
+            document.getElementById(
+                "spgCuenta"
+            ).value,
 
-      retenciones: document.getElementById("spgRet").value,
+            monto:
+            document.getElementById(
+                "spgMonto"
+            ).value,
 
-      total: document.getElementById("spgTot").value,
-    };
+            retenciones:
+            document.getElementById(
+                "spgRet"
+            ).value,
 
-    console.log("DATOS SPG:", datos);
+            total:
+            document.getElementById(
+                "spgTot"
+            ).value
 
-    /* =========================
+        };
+
+        console.log(
+            "DATOS SPG:",
+            datos
+        );
+
+        /* =========================
            VALIDAR
         ========================= */
 
-    if (
-      !datos.anio ||
-      !datos.ur ||
-      !datos.up ||
-      !datos.rubro ||
-      !datos.og ||
-      !datos.proyecto ||
-      !datos.cuenta
-    ) {
-      throw new Error("Completa todos los campos");
-    }
+        if (
 
-    /* =========================
+            !datos.anio ||
+            !datos.ur ||
+            !datos.up ||
+            !datos.rubro ||
+            !datos.og ||
+            !datos.proyecto ||
+            !datos.cuenta
+
+        ) {
+
+            throw new Error(
+                "Completa todos los campos"
+            );
+
+        }
+
+        /* =========================
            PAYLOAD
         ========================= */
 
-    const payload = {
-      codigo: datos.codigo,
+        const payload = {
 
-      folderId: "174C_QuqWR0FqUSROY7yAhVRB2xKERiYt",
+            codigo:
+            datos.codigo,
 
-      fileName: `SPG_${datos.codigo}`,
+            folderId:
+            "174C_QuqWR0FqUSROY7yAhVRB2xKERiYt",
 
-      variables: {
-        "<<PERSONA>>": datos.persona,
+            fileName:
+            `SPG_${datos.codigo}`,
 
-        "<<ANIO>>": datos.anio,
+            variables: {
 
-        "<<UR>>": datos.ur,
+                "<<PERSONA>>":
+                datos.persona,
 
-        "<<UP>>": datos.up,
+                "<<ANIO>>":
+                datos.anio,
 
-        "<<R>>": datos.rubro,
+                "<<UR>>":
+                datos.ur,
 
-        "<<OG>>": datos.og,
+                "<<UP>>":
+                datos.up,
 
-        "<<PR>>": datos.proyecto,
+                "<<R>>":
+                datos.rubro,
 
-        "<<CUENTA>>": datos.cuenta,
+                "<<OG>>":
+                datos.og,
 
-        "<<MONT>>": datos.monto,
+                "<<PR>>":
+                datos.proyecto,
 
-        "<<RET>>": datos.retenciones,
+                "<<CUENTA>>":
+                datos.cuenta,
 
-        "<<TOT>>": datos.total,
-      },
-    };
+                "<<MONT>>":
+                datos.monto,
 
-    console.log("PAYLOAD:", payload);
+                "<<RET>>":
+                datos.retenciones,
 
-    /* =========================
+                "<<TOT>>":
+                datos.total
+
+            }
+
+        };
+
+        console.log(
+            "PAYLOAD:",
+            payload
+        );
+
+        /* =========================
            FETCH APPS SCRIPT
         ========================= */
 
-    console.log("ENVIANDO A APPS SCRIPT...");
+        console.log(
+            "ENVIANDO A APPS SCRIPT..."
+        );
 
-    const response = await fetch(
-      "https://script.google.com/macros/s/AKfycbwTBGmbpP-VnYhlOm7gdhhdwAFYHT0_mD9qoIoXHH2eN3TGgyOizFo4LszImkeUoB8/exec",
+        const response =
+        await fetch(
 
-      {
-        method: "POST",
+            "https://script.google.com/macros/s/AKfycbwTBGmbpP-VnYhlOm7gdhhdwAFYHT0_mD9qoIoXHH2eN3TGgyOizFo4LszImkeUoB8/exec",
 
-        headers: {
-          "Content-Type": "text/plain",
-        },
+            {
 
-        body: JSON.stringify(payload),
-      },
-    );
+                method: "POST",
 
-    /* =========================
+                headers: {
+
+                    "Content-Type":
+                    "text/plain"
+
+                },
+
+                body: JSON.stringify(
+                    payload
+                )
+
+            }
+
+        );
+
+        /* =========================
            RESPUESTA RAW
         ========================= */
 
-    const text = await response.text();
+        const text =
+        await response.text();
 
-    console.log("RESPUESTA RAW:", text);
+        console.log(
+            "RESPUESTA RAW:",
+            text
+        );
 
-    let data;
+        let data;
 
-    try {
-      data = JSON.parse(text);
-    } catch (error) {
-      console.error("ERROR PARSE JSON:", error);
+        try {
 
-      throw new Error("Apps Script no devolvió JSON válido");
-    }
+            data =
+            JSON.parse(text);
 
-    console.log("RESPUESTA JSON:", data);
+        }
 
-    /* =========================
+        catch (error) {
+
+            console.error(
+                "ERROR PARSE JSON:",
+                error
+            );
+
+            throw new Error(
+                "Apps Script no devolvió JSON válido"
+            );
+
+        }
+
+        console.log(
+            "RESPUESTA JSON:",
+            data
+        );
+
+        /* =========================
            VALIDAR RESPUESTA
         ========================= */
 
-    if (!data.ok || !data.url) {
-      throw new Error(data.error || "No se pudo generar el PDF");
-    }
+        if (
 
-    /* =========================
+            !data.ok ||
+            !data.url
+
+        ) {
+
+            throw new Error(
+
+                data.error ||
+                "No se pudo generar el PDF"
+
+            );
+
+        }
+
+        /* =========================
            GUARDAR URL + DATOS SPG
         ========================= */
 
-    console.log("GUARDANDO DATOS SPG...");
+        console.log(
+            "GUARDANDO DATOS SPG..."
+        );
 
-    const guardar = await fetch(
-      `${API}/api/registros/spg/${codigoSPG}`,
+        const guardar =
+        await fetch(
 
-      {
-        method: "PUT",
+            `${API}/api/registros/spg/${codigoSPG}`,
 
-        headers: {
-          "Content-Type": "application/json",
-        },
+            {
 
-        body: JSON.stringify({
-          spg_pdf: data.url,
+                method: "PUT",
 
-          ur: datos.ur,
+                headers: {
 
-          up: datos.up,
+                    "Content-Type":
+                    "application/json"
 
-          rubro: datos.rubro,
+                },
 
-          og: datos.og,
+                body: JSON.stringify({
 
-          proyecto: datos.proyecto,
+                    spg_pdf:
+                    data.url,
 
-          cuenta: datos.cuenta,
+                    ur:
+                    datos.ur,
 
-          monto: datos.monto,
+                    up:
+                    datos.up,
 
-          retenciones: datos.retenciones,
+                    rubro:
+                    datos.rubro,
 
-          total: datos.total,
+                    og:
+                    datos.og,
 
-          anio: datos.anio,
-        }),
-      },
-    );
+                    proyecto:
+                    datos.proyecto,
 
-    const guardarText = await guardar.text();
+                    cuenta:
+                    datos.cuenta,
 
-    console.log("RESPUESTA GUARDAR:", guardarText);
+                    monto:
+                    datos.monto,
 
-    if (!guardar.ok) {
-      throw new Error("Error guardando datos SPG");
-    }
+                    retenciones:
+                    datos.retenciones,
 
-    /* =========================
+                    total:
+                    datos.total,
+
+                    anio:
+                    datos.anio
+
+                })
+
+            }
+
+        );
+
+        const guardarText =
+        await guardar.text();
+
+        console.log(
+            "RESPUESTA GUARDAR:",
+            guardarText
+        );
+
+        if (!guardar.ok) {
+
+            throw new Error(
+                "Error guardando datos SPG"
+            );
+
+        }
+
+        /* =========================
+           CERRAR MODALES
+        ========================= */
+
+        cerrarModal(
+            "modalCargando"
+        );
+
+        cerrarModal(
+            "modalConfirmarSPG"
+        );
+
+        cerrarModal(
+            "modalSPG"
+        );
+
+        /* =========================
            FINAL
         ========================= */
 
-    cerrarModal("modalSPG");
+        abrirModal(
+    "modalExitoSPG"
+);
 
-    alert("SPG generado correctamente");
+        cargarRegistros();
 
-    cargarRegistros();
-  } catch (error) {
-    console.error("ERROR SPG:", error);
+    }
 
-    alert(error.message);
-  } finally {
-    const btn = document.getElementById("btnGenerarSPG");
+    catch (error) {
 
-    btn.disabled = false;
+        console.error(
+            "ERROR SPG:",
+            error
+        );
 
-    btn.textContent = "Generar SPG";
-  }
+        cerrarModal(
+            "modalCargando"
+        );
+
+        alert(
+            error.message
+        );
+
+    }
+
+    finally {
+
+        const btn =
+        document.getElementById(
+            "btnGenerarSPG"
+        );
+
+        btn.disabled = false;
+
+        btn.textContent =
+        "Generar SPG";
+
+    }
+
 }
+
+/* =========================
+   EVENTOS SPG
+========================= */
+
+document.addEventListener(
+
+    "DOMContentLoaded",
+
+    ()=>{
+
+        /* =========================
+           BOTÓN GENERAR SPG
+        ========================= */
+
+        const btnGenerar =
+        document.getElementById(
+            "btnGenerarSPG"
+        );
+
+        if(btnGenerar){
+
+            btnGenerar.addEventListener(
+
+                "click",
+
+                ()=>{
+
+                    abrirModal(
+                        "modalConfirmarSPG"
+                    );
+
+                }
+
+            );
+
+        }
+
+        /* =========================
+           CONFIRMAR GENERAR
+        ========================= */
+
+        const confirmar =
+        document.getElementById(
+            "confirmarGenerarSPG"
+        );
+
+        if(confirmar){
+
+            confirmar.addEventListener(
+
+                "click",
+
+                async ()=>{
+
+                    /* =========================
+                       CERRAR CONFIRMACIÓN
+                    ========================= */
+
+                    cerrarModal(
+                        "modalConfirmarSPG"
+                    );
+
+                    /* =========================
+                       MOSTRAR CARGANDO
+                    ========================= */
+
+                    abrirModal(
+                        "modalCargando"
+                    );
+
+                    /* =========================
+                       GENERAR SPG
+                    ========================= */
+
+                    await generarSPG();
+
+                }
+
+            );
+
+        }
+
+    }
+
+);
