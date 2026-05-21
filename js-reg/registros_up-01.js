@@ -20,6 +20,8 @@ let codigoSPG = null;
 
 let codigoRecibo = null;
 
+let codigoFactura = null;
+
 /* =========================
    NORMALIZAR ESTATUS
 ========================= */
@@ -161,84 +163,38 @@ async function abrirModalRecibo(codigo) {
   }
 }
 
-
 /* =========================
    CALCULAR TOTAL SPG
 ========================= */
 
-function calcularTotalSPG(){
+function calcularTotalSPG() {
+  const montoInput = document.getElementById("spgMonto");
 
-    const montoInput =
-    document.getElementById(
-        "spgMonto"
-    );
+  const retInput = document.getElementById("spgRet");
 
-    const retInput =
-    document.getElementById(
-        "spgRet"
-    );
+  const totalInput = document.getElementById("spgTot");
 
-    const totalInput =
-    document.getElementById(
-        "spgTot"
-    );
+  if (!montoInput || !retInput || !totalInput) {
+    return;
+  }
 
-    if(
+  const monto = parseFloat(montoInput.value.replace(/[^0-9.-]+/g, "")) || 0;
 
-        !montoInput ||
-        !retInput ||
-        !totalInput
+  const retenciones = parseFloat(retInput.value.replace(/[^0-9.-]+/g, "")) || 0;
 
-    ){
+  const total = monto + retenciones;
 
-        return;
-
-    }
-
-    const monto =
-
-        parseFloat(
-
-            montoInput.value
-            .replace(
-                /[^0-9.-]+/g,
-                ""
-            )
-
-        ) || 0;
-
-    const retenciones =
-
-        parseFloat(
-
-            retInput.value
-            .replace(
-                /[^0-9.-]+/g,
-                ""
-            )
-
-        ) || 0;
-
-    const total =
-    monto + retenciones;
-
-    totalInput.value =
+  totalInput.value =
     "$ " +
-
     total.toLocaleString(
+      "en-US",
 
-        "en-US",
+      {
+        minimumFractionDigits: 2,
 
-        {
-
-            minimumFractionDigits:2,
-
-            maximumFractionDigits:2
-
-        }
-
+        maximumFractionDigits: 2,
+      },
     );
-
 }
 
 /* =========================
@@ -307,6 +263,419 @@ async function generarRecibo() {
 
     alert(error.message);
   }
+}
+
+/* =========================
+   FORMATEAR MONEDA
+========================= */
+
+function formatearMoneda(valor){
+
+    return '$ ' + Number(valor)
+    .toLocaleString('en-US', {
+
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+
+    });
+
+}
+
+/* =========================
+   DESGLOSAR DÍAS
+========================= */
+
+function desglosarDias(inicio, fin){
+
+    inicio = parseInt(inicio);
+
+    fin = parseInt(fin);
+
+    if(isNaN(inicio) || isNaN(fin)){
+
+        return "";
+
+    }
+
+    if(inicio === fin){
+
+        return `${inicio}`;
+
+    }
+
+    const dias = [];
+
+    for(let i = inicio; i <= fin; i++){
+
+        dias.push(i);
+
+    }
+
+    if(dias.length === 2){
+
+        return `${dias[0]} y ${dias[1]}`;
+
+    }
+
+    return `
+
+        ${dias.slice(0,-1).join(', ')}
+        y
+        ${dias[dias.length - 1]}
+
+    `
+
+    .replace(/\s+/g,' ')
+    .trim();
+
+}
+
+/* =========================
+   MODAL FACTURA
+========================= */
+
+async function abrirModalFactura(codigo){
+
+    try{
+
+        codigoFactura = codigo;
+
+        const response =
+        await fetch(
+
+            `${API}/api/registros/UP-01`
+
+        );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Error obteniendo registros"
+            );
+
+        }
+
+        const registros =
+        await response.json();
+
+        const registro =
+        registros.find(
+
+            r => r.codigo === codigo
+
+        );
+
+        if(!registro){
+
+            throw new Error(
+                "Registro no encontrado"
+            );
+
+        }
+
+        document.getElementById(
+            "facturaPersona"
+        ).value =
+        registro.persona || "";
+
+        document.getElementById(
+            "facturaMunicipio"
+        ).value =
+        registro.municipio || "";
+
+        document.getElementById(
+            "facturaMotivo"
+        ).value =
+        registro.motivo_comision || "";
+
+        document.getElementById(
+            "facturaLocalidad"
+        ).value =
+        registro.localidades_visitadas || "";
+
+        document.getElementById(
+            "facturaDias"
+        ).value =
+        desglosarDias(
+
+            registro.dia_inicio,
+
+            registro.dia_fin
+
+        );
+
+        document.getElementById(
+            "facturaMes"
+        ).value =
+        registro.mes || "";
+
+        document.getElementById(
+            "facturaTotal"
+        ).value =
+        formatearMoneda(
+
+            registro.spg_total || 0
+
+        );
+
+        abrirModal(
+            "modalFactura"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "ERROR FACTURA:",
+            error
+        );
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+/* =========================
+   DESGLOSAR DÍAS
+========================= */
+
+function desglosarDias(inicio, fin){
+
+    inicio = parseInt(inicio);
+
+    fin = parseInt(fin);
+
+    if(isNaN(inicio) || isNaN(fin)){
+
+        return "";
+
+    }
+
+    if(inicio === fin){
+
+        return `${inicio}`;
+
+    }
+
+    const dias = [];
+
+    for(let i = inicio; i <= fin; i++){
+
+        dias.push(i);
+
+    }
+
+    if(dias.length === 2){
+
+        return `${dias[0]} y ${dias[1]}`;
+
+    }
+
+    return `
+
+        ${dias.slice(0,-1).join(', ')}
+        y
+        ${dias[dias.length - 1]}
+
+    `
+
+    .replace(/\s+/g,' ')
+    .trim();
+
+}
+
+/* =========================
+   MODAL FACTURA
+========================= */
+
+async function abrirModalFactura(codigo){
+
+    try{
+
+        codigoFactura = codigo;
+
+        const response =
+        await fetch(
+
+            `${API}/api/registros/UP-01`
+
+        );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Error obteniendo registros"
+            );
+
+        }
+
+        const registros =
+        await response.json();
+
+        const registro =
+        registros.find(
+
+            r => r.codigo === codigo
+
+        );
+
+        if(!registro){
+
+            throw new Error(
+                "Registro no encontrado"
+            );
+
+        }
+
+        document.getElementById(
+            "facturaPersona"
+        ).value =
+        registro.persona || "";
+
+        document.getElementById(
+            "facturaMunicipio"
+        ).value =
+        registro.municipio || "";
+
+        document.getElementById(
+            "facturaMotivo"
+        ).value =
+        registro.motivo_comision || "";
+
+        document.getElementById(
+            "facturaLocalidad"
+        ).value =
+        registro.localidades_visitadas || "";
+
+        document.getElementById(
+            "facturaDias"
+        ).value =
+        desglosarDias(
+
+            registro.dia_inicio,
+
+            registro.dia_fin
+
+        );
+
+        document.getElementById(
+            "facturaMes"
+        ).value =
+        registro.mes || "";
+
+        document.getElementById(
+            "facturaTotal"
+        ).value =
+        formatearMoneda(
+
+            registro.spg_total || 0
+
+        );
+
+        abrirModal(
+            "modalFactura"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "ERROR FACTURA:",
+            error
+        );
+
+        alert(
+            error.message
+        );
+
+    }
+
+}
+
+/* =========================
+   GENERAR FACTURA
+========================= */
+
+async function generarFactura() {
+
+  try {
+
+    console.log(
+      "GENERANDO FACTURA:",
+      codigoFactura
+    );
+
+    cerrarModal(
+      "modalCargandoFactura"
+    );
+
+    cerrarModal(
+      "modalConfirmarFactura"
+    );
+
+    cerrarModal(
+      "modalFactura"
+    );
+
+    abrirModal(
+      "modalExitoFactura"
+    );
+
+    cargarRegistros();
+
+  } catch (error) {
+
+    console.error(
+      "ERROR FACTURA:",
+      error
+    );
+
+    cerrarModal(
+      "modalCargandoFactura"
+    );
+
+    alert(error.message);
+
+  }
+
+}
+
+/* =========================
+   CONFIRMAR FACTURA
+========================= */
+
+const confirmarFactura =
+document.getElementById(
+  "confirmarGenerarFactura"
+);
+
+if (confirmarFactura) {
+
+  confirmarFactura.addEventListener(
+
+    "click",
+
+    async () => {
+
+      cerrarModal(
+        "modalConfirmarFactura"
+      );
+
+      abrirModal(
+        "modalCargandoFactura"
+      );
+
+      await generarFactura();
+
+    }
+
+  );
+
 }
 
 /* =========================
@@ -817,48 +1186,92 @@ async function cargarRegistros() {
 
                     <!-- RECIBO -->
 
-                    <div
-                        class="info-item"
-                        style="
-                            flex:1;
-                            text-align:center;
-                        "
-                    >
+<div
+    class="info-item"
+    style="
+        flex:1;
+        text-align:center;
+    "
+>
 
-                        <span class="info-label">
-                            Recibo PDF
-                        </span>
+    <span class="info-label">
+        Recibo PDF
+    </span>
 
-                        ${
-                          registro.recibo_pdf
-                            ? `
+    ${
+      registro.recibo_pdf
+        ? `
 
-                            <a
-                                href="${registro.recibo_pdf}"
-                                target="_blank"
-                                class="link-pdf">
+        <a
+            href="${registro.recibo_pdf}"
+            target="_blank"
+            class="link-pdf">
 
-                                Ver Recibo
+            Ver Recibo
 
-                            </a>
+        </a>
 
-                            `
-                            : `
+        `
+        : `
 
-                            <button
-                                class="btn-bloqueado"
-                                disabled>
+        <button
+            class="btn-bloqueado"
+            disabled>
 
-                                Sin Recibo
+            Sin Recibo
 
-                            </button>
+        </button>
 
-                            `
-                        }
+        `
+    }
 
-                    </div>
+</div>
 
-                </div>
+<!-- FACTURA -->
+
+<div
+    class="info-item"
+    style="
+        flex:1;
+        text-align:center;
+    "
+>
+
+    <span class="info-label">
+        Factura PDF
+    </span>
+
+    ${
+      registro.factura_pdf
+        ? `
+
+        <a
+            href="${registro.factura_pdf}"
+            target="_blank"
+            class="link-pdf">
+
+            Ver Factura
+
+        </a>
+
+        `
+        : `
+
+        <button
+            class="btn-bloqueado"
+            disabled>
+
+            Sin Factura
+
+        </button>
+
+        `
+    }
+
+</div>
+
+</div>
+
 
                 <!-- INFERIOR -->
 
@@ -909,43 +1322,60 @@ async function cargarRegistros() {
     </span>
 
     ${
-      registro.spg_pdf
-        ? registro.recibo_pdf
-          ? `
+    !registro.spg_pdf
 
-        <button
-            class="btn-aceptado"
-            disabled>
+    ? `
 
-            Finalizado
+    <button
+        class="btn-enviar"
+        onclick="abrirModalSPG('${registro.codigo}')">
 
-        </button>
+        Generar SPG
 
-        `
-          : `
+    </button>
 
-        <button
-            class="btn-enviar"
-            onclick="abrirModalRecibo('${registro.codigo}')">
+    `
 
-            Generar Recibo
+    : !registro.recibo_pdf
 
-        </button>
+    ? `
 
-        `
-        : `
+    <button
+        class="btn-enviar"
+        onclick="abrirModalRecibo('${registro.codigo}')">
 
-        <button
-            class="btn-enviar"
-            onclick="abrirModalSPG('${registro.codigo}')">
+        Generar Recibo
 
-            Generar SPG
+    </button>
 
-        </button>
+    `
 
-        `
-    }
+    : !registro.factura_pdf
 
+    ? `
+
+    <button
+        class="btn-enviar"
+        onclick="abrirModalFactura('${registro.codigo}')">
+
+        Generar Factura
+
+    </button>
+
+    `
+
+    : `
+
+    <button
+        class="btn-aceptado"
+        disabled>
+
+        Finalizado
+
+    </button>
+
+    `
+}
 </div>
 
                         <!-- ENVIAR -->
@@ -1033,9 +1463,10 @@ document.addEventListener(
   "DOMContentLoaded",
 
   () => {
+
     /* =========================
-           CATÁLOGOS
-        ========================= */
+       CATÁLOGOS
+    ========================= */
 
     if (typeof llenarAnios === "function") {
       llenarAnios("spgAnio");
@@ -1058,111 +1489,237 @@ document.addEventListener(
     }
 
     /* =========================
-           TOTAL SPG
-        ========================= */
+       TOTAL SPG
+    ========================= */
 
-    const spgMonto = document.getElementById("spgMonto");
+    const spgMonto =
+    document.getElementById(
+      "spgMonto"
+    );
 
-    const spgRet = document.getElementById("spgRet");
+    const spgRet =
+    document.getElementById(
+      "spgRet"
+    );
 
     if (spgMonto) {
+
       spgMonto.addEventListener(
+
         "input",
 
         calcularTotalSPG,
+
       );
+
     }
 
     if (spgRet) {
+
       spgRet.addEventListener(
+
         "input",
 
         calcularTotalSPG,
+
       );
+
     }
 
     /* =========================
-           BOTÓN GENERAR SPG
-        ========================= */
+       BOTÓN GENERAR SPG
+    ========================= */
 
-    const btnGenerarSPG = document.getElementById("btnGenerarSPG");
+    const btnGenerarSPG =
+    document.getElementById(
+      "btnGenerarSPG"
+    );
 
     if (btnGenerarSPG) {
+
       btnGenerarSPG.addEventListener(
+
         "click",
 
         () => {
-          abrirModal("modalConfirmarSPG");
+
+          abrirModal(
+            "modalConfirmarSPG"
+          );
+
         },
+
       );
+
     }
 
     /* =========================
-           CONFIRMAR SPG
-        ========================= */
+       CONFIRMAR SPG
+    ========================= */
 
-    const confirmarSPG = document.getElementById("confirmarGenerarSPG");
+    const confirmarSPG =
+    document.getElementById(
+      "confirmarGenerarSPG"
+    );
 
     if (confirmarSPG) {
+
       confirmarSPG.addEventListener(
+
         "click",
 
         async () => {
-          cerrarModal("modalConfirmarSPG");
 
-          abrirModal("modalCargando");
+          cerrarModal(
+            "modalConfirmarSPG"
+          );
+
+          abrirModal(
+            "modalCargando"
+          );
 
           await generarSPG();
+
         },
+
       );
+
     }
 
     /* =========================
-   BOTÓN RECIBO
-========================= */
+       BOTÓN RECIBO
+    ========================= */
 
-    const btnGenerarRecibo = document.getElementById("btnGenerarRecibo");
+    const btnGenerarRecibo =
+    document.getElementById(
+      "btnGenerarRecibo"
+    );
 
     if (btnGenerarRecibo) {
+
       btnGenerarRecibo.addEventListener(
+
         "click",
 
         () => {
-          abrirModal("modalConfirmarRecibo");
+
+          abrirModal(
+            "modalConfirmarRecibo"
+          );
+
         },
+
       );
+
     }
 
     /* =========================
-   CONFIRMAR RECIBO
-========================= */
+       CONFIRMAR RECIBO
+    ========================= */
 
-    const confirmarRecibo = document.getElementById("confirmarGenerarRecibo");
+    const confirmarRecibo =
+    document.getElementById(
+      "confirmarGenerarRecibo"
+    );
 
     if (confirmarRecibo) {
+
       confirmarRecibo.addEventListener(
+
         "click",
 
         async () => {
-          cerrarModal("modalConfirmarRecibo");
 
-          abrirModal("modalCargandoRecibo");
+          cerrarModal(
+            "modalConfirmarRecibo"
+          );
+
+          abrirModal(
+            "modalCargandoRecibo"
+          );
 
           await generarRecibo();
+
         },
+
       );
+
     }
 
     /* =========================
-           CARGAR
-        ========================= */
+       BOTÓN FACTURA
+    ========================= */
+
+    const btnGenerarFactura =
+    document.getElementById(
+      "btnGenerarFactura"
+    );
+
+    if (btnGenerarFactura) {
+
+      btnGenerarFactura.addEventListener(
+
+        "click",
+
+        () => {
+
+          abrirModal(
+            "modalConfirmarFactura"
+          );
+
+        }
+
+      );
+
+    }
+
+    /* =========================
+       CONFIRMAR FACTURA
+    ========================= */
+
+    const confirmarFactura =
+    document.getElementById(
+      "confirmarGenerarFactura"
+    );
+
+    if (confirmarFactura) {
+
+      confirmarFactura.addEventListener(
+
+        "click",
+
+        async () => {
+
+          cerrarModal(
+            "modalConfirmarFactura"
+          );
+
+          abrirModal(
+            "modalCargandoFactura"
+          );
+
+          await generarFactura();
+
+        }
+
+      );
+
+    }
+
+    /* =========================
+       CARGAR
+    ========================= */
 
     cargarRegistros();
 
     setInterval(
+
       cargarRegistros,
 
       30000,
+
     );
+
   },
+
 );

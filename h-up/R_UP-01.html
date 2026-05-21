@@ -1206,24 +1206,399 @@
 </div>
 
 </div>
-    <!-- =========================
-         SCRIPTS
-    ========================= -->
 
-    <!-- =========================
-     SCRIPTS
+
+<!-- =========================
+     MODAL FACTURA
 ========================= -->
 
+<div
+    id="modalFactura"
+    class="modal-spg"
+>
+
+    <div class="modal-contenido modal-spg-contenido">
+
+        <!-- HEADER -->
+
+        <div class="modal-header">
+
+            <h2>
+                Generar Factura
+            </h2>
+
+            <button
+                class="cerrar-modal"
+                onclick="cerrarModal('modalFactura')"
+            >
+
+                ×
+
+            </button>
+
+        </div>
+
+        <!-- GRID -->
+
+        <div class="spg-grid">
+
+            <!-- FOLIO -->
+
+            <div class="campo-spg">
+
+                <label>
+                    No. Recibo
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaFolio"
+                    placeholder="REC-001"
+                >
+
+            </div>
+
+            <!-- PERSONA -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Nombre
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaPersona"
+                    readonly
+                >
+
+            </div>
+
+            <!-- TOTAL -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Total
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaTotal"
+                    readonly
+                >
+
+            </div>
+
+            <!-- TOTAL LETRA -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Total Letra
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaTotalLetra"
+                    placeholder="MIL PESOS 00/100 M.N."
+                >
+
+            </div>
+
+            <!-- MOTIVO -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Motivo
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaMotivo"
+                    readonly
+                >
+
+            </div>
+
+            <!-- DIAS -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Días
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaDias"
+                    readonly
+                >
+
+            </div>
+
+            <!-- MES -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Mes
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaMes"
+                    readonly
+                >
+
+            </div>
+
+            <!-- LOCALIDAD -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Localidad
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaLocalidad"
+                    readonly
+                >
+
+            </div>
+
+            <!-- MUNICIPIO -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Municipio
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaMunicipio"
+                    readonly
+                >
+
+            </div>
+
+            <!-- PROYECTO -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Proyecto
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaProyecto"
+                >
+
+            </div>
+
+            <!-- NOMBRE PROYECTO -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Nombre Proyecto
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaNombreProyecto"
+                >
+
+            </div>
+
+            <!-- OFICIO AUT -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Oficio Autorización
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaOficio"
+                >
+
+            </div>
+
+            <!-- ADECUACION -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Adecuación
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaAdecuacion"
+                >
+
+            </div>
+
+            <!-- FECHA -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Fecha
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaFecha"
+                    placeholder="21 de mayo de 2026"
+                >
+
+            </div>
+
+        </div>
+
+        <!-- FOOTER -->
+
+        <div class="modal-footer">
+
+            <button
+                class="btn-cancelar"
+                onclick="cerrarModal('modalFactura')"
+            >
+
+                Cancelar
+
+            </button>
+
+            <button
+                id="btnGenerarFactura"
+                class="btn-enviar"
+            >
+
+                Generar Factura
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL CONFIRMAR FACTURA
+========================= -->
+
+<div
+    id="modalConfirmarFactura"
+    class="modal-spg"
+>
+
+    <div class="modal-confirmacion">
+
+        <h2>
+            ¿Generar Factura?
+        </h2>
+
+        <p>
+            Se generará el PDF de factura.
+        </p>
+
+        <div class="acciones-confirmacion">
+
+            <button
+                class="btn-cancelar"
+                onclick="cerrarModal('modalConfirmarFactura')"
+            >
+
+                Cancelar
+
+            </button>
+
+            <button
+                id="confirmarGenerarFactura"
+                class="btn-enviar"
+            >
+
+                Generar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL CARGANDO FACTURA
+========================= -->
+
+<div
+    id="modalCargandoFactura"
+    class="modal-spg"
+>
+
+    <div class="modal-confirmacion">
+
+        <div class="loader"></div>
+
+        <h2>
+            Generando Factura...
+        </h2>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ÉXITO FACTURA
+========================= -->
+
+<div
+    id="modalExitoFactura"
+    class="modal-spg"
+>
+
+    <div class="modal-confirmacion">
+
+        <h2>
+            Factura generada correctamente
+        </h2>
+
+        <button
+            class="btn-enviar"
+            onclick="cerrarModal('modalExitoFactura')"
+        >
+
+            Aceptar
+
+        </button>
+
+    </div>
+
+</div>
+
+    <!-- ========================= JS GENERAL ========================= -->
     <script src="../js-sid/sidebar_up-01.js"></script>
-
     <script src="../js-cat2/cat-up01.js"></script>
-
     <script src="../js-reg/registros_up-01.js"></script>
 
+    <!-- ========================= JS SPG ========================= -->
     <script src="../SPG/spg-01.js"></script>
 
+    <!-- ========================= JS RECIBO ========================= -->
     <script src="../RECIBO/recib01.js"></script>
 
+    <!-- ========================= JS GENERAL ========================= -->
+    <script src="../Factura/factura01.js"></script>
 </body>
 
 </html>

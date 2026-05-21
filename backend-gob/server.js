@@ -48,6 +48,13 @@ const reciboRoutes =
 require('./routes/recibo');
 
 /* =========================
+   RUTA FACTURA
+========================= */
+
+const facturaRoutes =
+require('./routes/factura');
+
+/* =========================
    MIDDLEWARES
 ========================= */
 
@@ -156,6 +163,18 @@ app.use(
     '/api/recibo',
 
     reciboRoutes
+
+);
+
+/* =========================
+   FACTURA
+========================= */
+
+app.use(
+
+    '/api/factura',
+
+    facturaRoutes
 
 );
 
