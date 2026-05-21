@@ -43,6 +43,8 @@
 
     <link rel="stylesheet" href="../css/RECIBO.css">
 
+    <link rel="stylesheet" href="../css/modales.css">
+
 </head>
 
 <body>
@@ -964,7 +966,246 @@
     </div>
 
 </div>
+<!-- =========================
+     MODAL CONFIRMAR SPG
+========================= -->
 
+<div class="modal" id="modalConfirmarSPG">
+
+    <div class="modal-contenido">
+
+        <h2>
+
+            ¿Deseas generar el SPG?
+
+        </h2>
+
+        <p>
+
+            Verifica que toda la información sea correcta antes de continuar.
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarSPG')"
+            >
+
+                No
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarGenerarSPG"
+            >
+
+                Sí, generar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL CARGANDO
+========================= -->
+
+<div class="modal" id="modalCargando">
+
+    <div class="modal-contenido modal-cargando">
+
+        <div class="loader-spg"></div>
+
+        <h2>
+
+            Generando documento...
+
+        </h2>
+
+        <p>
+
+            Espera un momento.
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ÉXITO SPG
+========================= -->
+
+<div class="modal" id="modalExitoSPG">
+
+    <div class="modal-contenido modal-exito">
+
+        <h2>
+
+            SPG generado
+
+        </h2>
+
+        <p>
+
+            El documento se generó correctamente.
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-principal"
+
+                onclick="
+
+                    cerrarModal('modalExitoSPG');
+
+                    cargarRegistros();
+
+                "
+            >
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MODAL CONFIRMAR RECIBO
+========================= -->
+
+<div class="modal" id="modalConfirmarRecibo">
+
+    <div class="modal-contenido">
+
+        <h2>
+
+            ¿Deseas generar el Recibo?
+
+        </h2>
+
+        <p>
+
+            Verifica que toda la información sea correcta antes de continuar.
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarRecibo')"
+            >
+
+                No
+
+            </button>
+
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarGenerarRecibo"
+            >
+
+                Sí, generar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL CARGANDO RECIBO
+========================= -->
+
+<div class="modal" id="modalCargandoRecibo">
+
+    <div class="modal-contenido modal-cargando">
+
+        <div class="loader-spg"></div>
+
+        <h2>
+
+            Generando recibo...
+
+        </h2>
+
+        <p>
+
+            Espera un momento.
+
+        </p>
+
+    </div>
+
+</div>
+
+<!-- =========================
+     MODAL ÉXITO RECIBO
+========================= -->
+
+<div class="modal" id="modalExitoRecibo">
+
+    <div class="modal-contenido modal-exito">
+
+        <h2>
+
+            Recibo generado
+
+        </h2>
+
+        <p>
+
+            El documento se generó correctamente.
+
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                type="button"
+                class="btn-principal"
+
+                onclick="
+
+                    cerrarModal('modalExitoRecibo');
+
+                    cargarRegistros();
+
+                "
+            >
+
+                Aceptar
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+</div>
     <!-- =========================
          SCRIPTS
     ========================= -->

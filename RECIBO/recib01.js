@@ -1,8 +1,3 @@
-/* =========================
-   VARIABLES
-========================= */
-
-let codigoRecibo = null;
 
 /* =========================
    URL APPS SCRIPT
@@ -593,18 +588,28 @@ async function generarRecibo(){
         }
 
         /* =========================
-           FINAL
-        ========================= */
+   FINAL
+========================= */
 
-        cerrarModal(
-            "modalRecibo"
-        );
+cerrarModal(
+    "modalCargandoRecibo"
+);
 
-        alert(
-            "Recibo generado correctamente"
-        );
+cerrarModal(
+    "modalConfirmarRecibo"
+);
 
-        cargarRegistros();
+cerrarModal(
+    "modalRecibo"
+);
+
+/* =========================
+   ÉXITO
+========================= */
+
+abrirModal(
+    "modalExitoRecibo"
+);
 
     }
 

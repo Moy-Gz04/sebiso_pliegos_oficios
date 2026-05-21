@@ -222,3 +222,86 @@
     }
 
 }
+
+/* =========================
+   MODALES
+========================= */
+
+.modal{
+
+    position: fixed;
+    top: 0;
+    left: 0;
+
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    justify-content: center;
+    align-items: center;
+
+    background: rgba(0,0,0,0.45);
+
+    z-index: 999999;
+
+}
+
+/* =========================
+   MODAL CARGANDO
+========================= */
+
+.modal-cargando{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.loader-spg{
+
+    width:65px;
+
+    height:65px;
+
+    border-radius:50%;
+
+    border:6px solid #d8d8d8;
+
+    border-top:6px solid #691C32;
+
+    animation:girar 1s linear infinite;
+
+    margin-bottom:18px;
+}
+
+/* =========================
+   ANIMACIÓN LOADER
+========================= */
+
+@keyframes girar{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
