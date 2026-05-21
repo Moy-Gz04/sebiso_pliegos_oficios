@@ -13,6 +13,22 @@ const API_RECIBO =
 "https://script.google.com/macros/s/AKfycbz_Ixe6Nb16Z4cJeu58-BXEGjXaCg8fab_Hj9VLw4J_W43qKM0NKTazbzaSknS-iYz9/exec";
 
 /* =========================
+   FORMATEAR MONEDA
+========================= */
+
+function formatearMoneda(valor){
+
+    return '$ ' + Number(valor)
+    .toLocaleString('en-US', {
+
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+
+    });
+
+}
+
+/* =========================
    DESGLOSAR DÍAS
 ========================= */
 
@@ -255,17 +271,23 @@ async function abrirModalRecibo(codigo){
         document.getElementById(
             "reciboImporte"
         ).value =
-        registro.spg_monto || "0";
+        formatearMoneda(
+            registro.spg_monto || 0
+        );
 
         document.getElementById(
             "reciboRetenciones"
         ).value =
-        registro.spg_retenciones || "0";
+        formatearMoneda(
+            registro.spg_retenciones || 0
+        );
 
         document.getElementById(
             "reciboTotal"
         ).value =
-        registro.spg_total || "0";
+        formatearMoneda(
+            registro.spg_total || 0
+        );
 
         abrirModal(
             "modalRecibo"
