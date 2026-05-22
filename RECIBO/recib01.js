@@ -659,15 +659,9 @@ document.addEventListener(
 
         if(btn){
 
-            btn.addEventListener(
+    btn.onclick = generarFactura;
 
-                "click",
-
-                generarRecibo
-
-            );
-
-        }
+}
 
         document
         .querySelectorAll(

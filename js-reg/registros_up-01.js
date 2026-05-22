@@ -1,42 +1,24 @@
-/* =========================
-   TBODY
-========================= */
-
+//TBODY
 const tbody = document.getElementById("tbodyResultados");
 
-/* =========================
-   API
-========================= */
-
+//API PLIEGOS OFICIO
 const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
-/* =========================
-   VARIABLES
-========================= */
-
+/* ======= VARIABLES GLOBALES ============================ */
 let codigoEliminar = null;
-
 let codigoSPG = null;
-
 let codigoRecibo = null;
-
 let codigoFactura = null;
 
-/* =========================
-   NORMALIZAR ESTATUS
-========================= */
+/* ======= NORMALIZAR ESTATUS ============================ */
 
 function normalizarEstatus(estatus) {
   return String(estatus || "")
     .trim()
-
     .toUpperCase();
 }
 
-/* =========================
-   MODALES
-========================= */
-
+/* ======= MODALES ======================================= */
 function abrirModal(id) {
   const modal = document.getElementById(id);
 
@@ -52,25 +34,21 @@ function cerrarModal(id) {
     modal.style.display = "none";
   }
 }
+/* ======= END MODALES =================================== */
 
-/* =========================
-   MODAL SPG
-========================= */
+/* ======= FUNCIONES PARA ABRIR MODALES ================== */
 
+//SPG
 function abrirModalSPG(codigo) {
   codigoSPG = codigo;
 
   abrirModal("modalSPG");
 }
 
-/* =========================
-   MODAL RECIBO
-========================= */
-
+//RECIBO
 async function abrirModalRecibo(codigo) {
   try {
     codigoRecibo = codigo;
-
     const response = await fetch(`${API}/api/registros/UP-01`);
 
     if (!response.ok) {
@@ -78,7 +56,6 @@ async function abrirModalRecibo(codigo) {
     }
 
     const registros = await response.json();
-
     const registro = registros.find((r) => r.codigo === codigo);
 
     if (!registro) {
@@ -86,9 +63,7 @@ async function abrirModalRecibo(codigo) {
     }
 
     let diasTexto = "";
-
     const inicio = parseInt(registro.dia_inicio);
-
     const fin = parseInt(registro.dia_fin);
 
     if (!isNaN(inicio) && !isNaN(fin)) {
@@ -124,33 +99,22 @@ async function abrirModalRecibo(codigo) {
     };
 
     document.getElementById("reciboFolio").value = registro.codigo || "";
-
     document.getElementById("reciboPersona").value = registro.persona || "";
-
     document.getElementById("reciboMunicipio").value = registro.municipio || "";
-
     document.getElementById("reciboMotivo").value =
       registro.motivo_comision || "";
-
     document.getElementById("reciboLocalidades").value =
       registro.localidades_visitadas || "";
-
     document.getElementById("reciboDias").value = diasTexto || "";
-
     document.getElementById("reciboMes").value = registro.mes || "";
-
     document.getElementById("reciboAnio").value = registro.anio || "";
-
     document.getElementById("reciboUnidad").value = registro.up || "";
-
     document.getElementById("reciboImporte").value = formatearMoneda(
       registro.spg_monto || 0,
     );
-
     document.getElementById("reciboRetenciones").value = formatearMoneda(
       registro.spg_retenciones || 0,
     );
-
     document.getElementById("reciboTotal").value = formatearMoneda(
       registro.spg_total || 0,
     );
@@ -158,20 +122,14 @@ async function abrirModalRecibo(codigo) {
     abrirModal("modalRecibo");
   } catch (error) {
     console.error("ERROR MODAL RECIBO:", error);
-
     alert(error.message);
   }
 }
 
-/* =========================
-   CALCULAR TOTAL SPG
-========================= */
-
+/* ======CALCULAR TOTAL SPG ============================ */
 function calcularTotalSPG() {
   const montoInput = document.getElementById("spgMonto");
-
   const retInput = document.getElementById("spgRet");
-
   const totalInput = document.getElementById("spgTot");
 
   if (!montoInput || !retInput || !totalInput) {
@@ -179,179 +137,136 @@ function calcularTotalSPG() {
   }
 
   const monto = parseFloat(montoInput.value.replace(/[^0-9.-]+/g, "")) || 0;
-
   const retenciones = parseFloat(retInput.value.replace(/[^0-9.-]+/g, "")) || 0;
-
   const total = monto + retenciones;
 
   totalInput.value =
     "$ " +
     total.toLocaleString(
       "en-US",
-
       {
         minimumFractionDigits: 2,
-
         maximumFractionDigits: 2,
       },
     );
 }
+/* ====== END CALCULAR TOTAL SPG ========================= */
 
-/* =========================
-   GENERAR SPG
-========================= */
-
+/* ====== GENERAR SPG ==================================== */
 async function generarSPG() {
   try {
     const datos = {
       codigo: codigoSPG,
-
       anio: document.getElementById("spgAnio").value,
-
       ur: document.getElementById("spgUR").value,
-
       up: document.getElementById("spgUP").value,
-
       rubro: document.getElementById("spgR").value,
-
       og: document.getElementById("spgOG").value,
-
       proyecto: document.getElementById("spgPR").value,
-
       cuenta: document.getElementById("spgCuenta").value,
-
       monto: document.getElementById("spgMonto").value,
-
       retenciones: document.getElementById("spgRet").value,
-
       total: document.getElementById("spgTot").value,
     };
-
     console.log("DATOS SPG:", datos);
-
     cerrarModal("modalSPG");
-
     abrirModal("modalExitoSPG");
-
     cargarRegistros();
-  } catch (error) {
+  } 
+  
+  catch (error) {
     console.error("ERROR SPG:", error);
-
     alert(error.message);
   }
 }
+/* ====== END GENERAR SPG ==================================== */
 
-/* =========================
-   GENERAR RECIBO
-========================= */
-
-async function generarRecibo() {
-  try {
+/* ====== GENERAR RECIBO ===================================== */
+async function generarRecibo() 
+{
+  try
+  {
     console.log("GENERANDO RECIBO:", codigoRecibo);
-
     cerrarModal("modalCargandoRecibo");
-
     cerrarModal("modalConfirmarRecibo");
-
     cerrarModal("modalRecibo");
-
     abrirModal("modalExitoRecibo");
-  } catch (error) {
+  } 
+  catch (error) 
+  {
     console.error("ERROR RECIBO:", error);
-
     cerrarModal("modalCargandoRecibo");
-
     alert(error.message);
   }
 }
+/* ====== END GENERAR RECIBO ================================ */
 
-/* =========================
-   FORMATEAR MONEDA
-========================= */
-
-function formatearMoneda(valor){
-
+/* ====== FORMATEAR MONEDA ================================== */
+function formatearMoneda(valor)
+{
     return '$ ' + Number(valor)
-    .toLocaleString('en-US', {
-
+    .toLocaleString
+    ('en-US', 
+      {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-
-    });
-
+      }
+    );
 }
+/* ====== END FORMATEAR MONEDA ================================== */
 
-/* =========================
-   DESGLOSAR DÍAS
-========================= */
-
-function desglosarDias(inicio, fin){
-
+/* =======DESGLOSAR DÍAS ======================================== */
+function desglosarDias(inicio, fin)
+{
     inicio = parseInt(inicio);
-
     fin = parseInt(fin);
-
-    if(isNaN(inicio) || isNaN(fin)){
-
+    if(isNaN(inicio) || isNaN(fin))
+      {
         return "";
+      }
 
-    }
-
-    if(inicio === fin){
-
+    if(inicio === fin)
+    {
         return `${inicio}`;
-
     }
-
     const dias = [];
 
-    for(let i = inicio; i <= fin; i++){
-
+    for(let i = inicio; i <= fin; i++)
+      {
         dias.push(i);
+      }
 
-    }
-
-    if(dias.length === 2){
-
+    if(dias.length === 2)
+      {
         return `${dias[0]} y ${dias[1]}`;
-
-    }
-
+      }
     return `
-
         ${dias.slice(0,-1).join(', ')}
         y
         ${dias[dias.length - 1]}
-
     `
-
     .replace(/\s+/g,' ')
     .trim();
-
 }
-/* =========================
-   MODAL FACTURA
-========================= */
+/* ====== END DESGLOSAR DÍAS ==================================== */
 
-async function abrirModalFactura(codigo){
-
-    try{
-
+/* ====== MODAL FACTURA ========================================= */
+async function abrirModalFactura(codigo)
+{
+    try
+    {
         codigoFactura = codigo;
 
         const response =
         await fetch(
-
             `${API}/api/registros/UP-01`
-
         );
 
-        if(!response.ok){
-
+        if(!response.ok)
+        {
             throw new Error(
                 "Error obteniendo registros"
             );
-
         }
 
         const registros =
@@ -359,17 +274,14 @@ async function abrirModalFactura(codigo){
 
         const registro =
         registros.find(
-
             r => r.codigo === codigo
-
         );
 
-        if(!registro){
-
+        if(!registro)
+        {
             throw new Error(
                 "Registro no encontrado"
             );
-
         }
 
         console.log(
@@ -377,33 +289,25 @@ async function abrirModalFactura(codigo){
             registro
         );
 
-        /* =========================
-           LIMPIAR ERRORES
-        ========================= */
+        /* ===== LIMPIAR ERRORES ===================== */
 
         document
         .querySelectorAll(
             "#modalFactura input, #modalFactura select"
         )
-        .forEach(campo=>{
-
+        .forEach(campo =>
+        {
             campo.classList.remove(
                 "input-error"
             );
-
         });
 
-        /* =========================
-           DATOS CALCULADOS
-        ========================= */
+        /* ===== DATOS CALCULADOS ==================== */
 
         const dias =
         desglosarDias(
-
             registro.dia_inicio,
-
             registro.dia_fin
-
         ) || "";
 
         const localidad =
@@ -432,9 +336,7 @@ async function abrirModalFactura(codigo){
             mes
         );
 
-        /* =========================
-           LLENAR CAMPOS
-        ========================= */
+        /* ===== LLENAR CAMPOS ======================= */
 
         document.getElementById(
             "facturaFolio"
@@ -474,18 +376,14 @@ async function abrirModalFactura(codigo){
             "facturaImporte"
         ).value =
         formatearMoneda(
-
             registro.spg_monto || 0
-
         );
 
         document.getElementById(
             "facturaRetenciones"
         ).value =
         formatearMoneda(
-
             registro.spg_retenciones || 0
-
         );
 
         document.getElementById(
@@ -498,9 +396,7 @@ async function abrirModalFactura(codigo){
         ).value =
         numeroALetras(total);
 
-        /* =========================
-           DATOS FACTURA
-        ========================= */
+        /* ===== DATOS FACTURA ======================= */
 
         document.getElementById(
             "facturaProyecto"
@@ -530,27 +426,21 @@ async function abrirModalFactura(codigo){
             registro.fecha || Date.now()
         )
         .toLocaleDateString(
-
             "es-MX",
-
             {
-
                 day:"numeric",
                 month:"long",
                 year:"numeric"
-
             }
-
         );
 
         abrirModal(
             "modalFactura"
         );
-
     }
 
-    catch(error){
-
+    catch(error)
+    {
         console.error(
             "ERROR FACTURA:",
             error
@@ -559,245 +449,428 @@ async function abrirModalFactura(codigo){
         alert(
             error.message
         );
+    }
+}
 
+/* ==== MODAL OFICIO 2 ========================= */
+async function abrirModalOficio2(codigo)
+{
+    try
+    {
+        codigoOficio2 = codigo;
+
+        const response =
+        await fetch(
+            `${API}/api/registros/UP-01`
+        );
+
+        if(!response.ok)
+        {
+            throw new Error(
+                "Error obteniendo registros"
+            );
+        }
+
+        const registros =
+        await response.json();
+
+        const registro =
+        registros.find(
+            r => r.codigo === codigo
+        );
+
+        if(!registro)
+        {
+            throw new Error(
+                "Registro no encontrado"
+            );
+        }
+
+        console.log(
+            "REGISTRO OFICIO2:",
+            registro
+        );
+
+        /* ===== DATOS CALCULADOS ================= */
+
+        const dias =
+        desglosarDias(
+            registro.dia_inicio,
+            registro.dia_fin
+        ) || "";
+
+        const total =
+        Number(
+            registro.spg_total || 0
+        );
+
+        /* ===== LLENAR CAMPOS ==================== */
+
+        document.getElementById(
+            "oficio2Persona"
+        ).value =
+        registro.persona || "";
+
+        document.getElementById(
+            "oficio2Municipio"
+        ).value =
+        registro.municipio || "";
+
+        document.getElementById(
+            "oficio2Dias"
+        ).value =
+        dias;
+
+        document.getElementById(
+            "oficio2Mes"
+        ).value =
+        registro.mes || "";
+
+        document.getElementById(
+            "oficio2Anio"
+        ).value =
+        registro.anio || "";
+
+        document.getElementById(
+            "oficio2Proyecto"
+        ).value =
+        registro.proyecto || "";
+
+        document.getElementById(
+            "oficio2NombreProyecto"
+        ).value =
+        "Atención Integral 005";
+
+        document.getElementById(
+            "oficio2Ofaut"
+        ).value =
+        registro.codigo || "";
+
+        document.getElementById(
+            "oficio2Adec"
+        ).value =
+        registro.cuenta || "";
+
+        document.getElementById(
+            "oficio2Monto"
+        ).value =
+        formatearMoneda(
+            registro.spg_monto || 0
+        );
+
+        document.getElementById(
+            "oficio2Retenciones"
+        ).value =
+        formatearMoneda(
+            registro.spg_retenciones || 0
+        );
+
+        document.getElementById(
+            "oficio2Total"
+        ).value =
+        formatearMoneda(total);
+
+        document.getElementById(
+            "oficio2TotalLetra"
+        ).value =
+        numeroALetras(total);
+
+        abrirModal(
+            "modalOficio2"
+        );
     }
 
-}
-/* =========================
-   GENERAR FACTURA
-========================= */
+    catch(error)
+    {
+        console.error(
+            "ERROR OFICIO2:",
+            error
+        );
 
-async function generarFactura() {
-
-  try {
-
-    console.log(
-      "GENERANDO FACTURA:",
-      codigoFactura
-    );
-
-    cerrarModal(
-      "modalCargandoFactura"
-    );
-
-    cerrarModal(
-      "modalConfirmarFactura"
-    );
-
-    cerrarModal(
-      "modalFactura"
-    );
-
-    abrirModal(
-      "modalExitoFactura"
-    );
-
-    cargarRegistros();
-
-  } catch (error) {
-
-    console.error(
-      "ERROR FACTURA:",
-      error
-    );
-
-    cerrarModal(
-      "modalCargandoFactura"
-    );
-
-    alert(error.message);
-
-  }
-
+        alert(
+            error.message
+        );
+    }
 }
 
-/* =========================
-   CONFIRMAR FACTURA
-========================= */
+/* ==== GENERAR FACTURA ========================= */
+async function generarFactura() 
+{
+    try 
+    {
+        console.log
+        (
+            "GENERANDO FACTURA:",
+            codigoFactura
+        );
 
+        cerrarModal
+        (
+            "modalCargandoFactura"
+        );
+
+        cerrarModal
+        (
+            "modalConfirmarFactura"
+        );
+
+        cerrarModal
+        (
+            "modalFactura"
+        );
+
+        abrirModal
+        (
+            "modalExitoFactura"
+        );
+
+        cargarRegistros();
+
+    } 
+    
+    catch (error) 
+    {
+        console.error
+        (
+            "ERROR FACTURA:",
+            error
+        );
+
+        cerrarModal
+        (
+            "modalCargandoFactura"
+        );
+
+        alert(error.message);
+    }
+}
+
+/* ==== GENERAR OFICIO 2 ========================= */
+
+async function generarOficio2()
+{
+    try
+    {
+        console.log
+        (
+            "GENERANDO OFICIO2:",
+            codigoOficio2
+        );
+
+        cerrarModal
+        (
+            "modalCargandoOficio2"
+        );
+
+        cerrarModal
+        (
+            "modalConfirmarOficio2"
+        );
+
+        cerrarModal
+        (
+            "modalOficio2"
+        );
+
+        abrirModal
+        (
+            "modalExitoOficio2"
+        );
+
+        cargarRegistros();
+    }
+
+    catch(error)
+    {
+        console.error
+        (
+            "ERROR OFICIO2:",
+            error
+        );
+
+        cerrarModal
+        (
+            "modalCargandoOficio2"
+        );
+
+        alert
+        (
+            error.message
+        );
+    }
+}
+/* ==== END GENERAR FACTURA ========================= */
+
+/* ==== CONFIRMAR FACTURA =========================== */
 const confirmarFactura =
-document.getElementById(
+document.getElementById
+(
   "confirmarGenerarFactura"
 );
 
-if (confirmarFactura) {
-
-  confirmarFactura.addEventListener(
-
+if (confirmarFactura) 
+  {
+  confirmarFactura.addEventListener
+  (
     "click",
-
     async () => {
-
-      cerrarModal(
+      cerrarModal
+      (
         "modalConfirmarFactura"
       );
 
-      abrirModal(
+      abrirModal
+      (
         "modalCargandoFactura"
       );
-
       await generarFactura();
-
     }
-
   );
-
 }
+/* ==== CONFIRMAR FACTURA =========================== */
 
-/* =========================
-   BADGES ESTATUS
-========================= */
+/* ==== CONFIRMAR OFICIO ============================ */
+const confirmarOficio2 =
+document.getElementById
+(
+  "confirmarGenerarOficio2"
+);
 
-function obtenerBadgeEstatus(estatus) {
+if (confirmarOficio2) 
+{
+  confirmarOficio2.addEventListener
+  (
+    "click",
+
+    async () =>
+    {
+      cerrarModal
+      (
+        "modalConfirmarOficio2"
+      );
+
+      abrirModal
+      (
+        "modalCargandoOficio2"
+      );
+
+      await generarOficio2();
+    }
+  );
+}
+/* ==== END CONFIRMAR OFICIO ============================ */
+
+/* ==== ESTATUS ===================================== */
+function obtenerBadgeEstatus(estatus) 
+{
   const estado = normalizarEstatus(estatus);
-
   switch (estado) {
     case "ENVIADO":
       return `
-
                 <span
                     class="badge-estatus badge-enviado">
-
                     Enviado
-
                 </span>
-
             `;
-
     case "PAGADO":
-
     case "ACEPTADO":
       return `
-
                 <span
                     class="badge-estatus badge-aceptado">
-
                     Pagado
-
                 </span>
-
             `;
-
     case "RECHAZADO":
       return `
-
                 <span
                     class="badge-estatus badge-rechazado">
-
                     Rechazado
-
                 </span>
-
             `;
-
     default:
       return `
-
                 <span
                     class="badge-estatus badge-creado">
-
                     Creado
-
                 </span>
-
             `;
   }
 }
+/* ==== END ESTATUS ================================= */
 
-/* =========================
-   BOTÓN ENVIAR
-========================= */
 
+/* ==== BOTÓN ENVIAR A REVISION================================ */
 function obtenerBotonEnviar(registro) {
   const estatus = normalizarEstatus(registro.estatus);
-
-  if (estatus === "CREADO" || !estatus) {
+  if (estatus === "CREADO" || !estatus) 
+    {
     return `
-
             <button
                 class="btn-enviar"
                 onclick="enviarRegistro('${registro.codigo}')">
-
                 Enviar
-
             </button>
-
         `;
   }
 
-  if (estatus === "ENVIADO") {
+  if (estatus === "ENVIADO") 
+    {
     return `
-
             <button
                 class="btn-enviado"
                 disabled>
-
                 Enviado
-
             </button>
-
         `;
-  }
+    }
 
-  if (estatus === "PAGADO" || estatus === "ACEPTADO") {
+  if (estatus === "PAGADO" || estatus === "ACEPTADO") 
+    {
     return `
-
             <button
                 class="btn-aceptado"
                 disabled>
-
                 Pagado
-
             </button>
-
         `;
-  }
+    }
 
-  if (estatus === "RECHAZADO") {
+  if (estatus === "RECHAZADO") 
+    {
     return `
-
             <button
                 class="btn-rechazado"
                 onclick="reenviarRegistro('${registro.codigo}')">
-
                 Reenviar
-
             </button>
-
         `;
   }
 
   return `
-
         <button
             class="btn-bloqueado"
             disabled>
-
             Bloqueado
-
         </button>
-
     `;
 }
+/* ==== END BOTÓN ENVIAR A REVISION================================ */
 
-/* =========================
-   REENVIAR
-========================= */
-
-async function reenviarRegistro(codigo) {
-  try {
+/* ==== REENVIAR ================================================== */
+async function reenviarRegistro(codigo) 
+{
+  try 
+  {
     const confirmar = confirm("¿Deseas reenviar este registro?");
-
-    if (!confirmar) {
+    if (!confirmar) 
+      {
       return;
-    }
+      }
 
     const response = await fetch(
       `${API}/api/registros/reenviar/${codigo}`,
-
       {
         method: "PUT",
-
         headers: {
           "Content-Type": "application/json",
         },
@@ -805,63 +878,60 @@ async function reenviarRegistro(codigo) {
     );
 
     const data = await response.json();
-
-    if (!response.ok) {
+    if (!response.ok) 
+    {
       throw new Error(data.error || "Error reenviando registro");
     }
 
     cargarRegistros();
-  } catch (error) {
+  } catch (error) 
+  {
     console.error("ERROR REENVIANDO:", error);
-
     alert(error.message);
   }
 }
+/* ==== END REENVIAR ============================================== */
 
-/* =========================
-   ENVIAR REGISTRO
-========================= */
-
-async function enviarRegistro(codigo) {
-  try {
+/* ==== ENVIAR REGISTRO =========================================== */
+async function enviarRegistro(codigo) 
+{
+  try 
+  {
     const response = await fetch(
       `${API}/api/registros/enviar/${codigo}`,
 
       {
         method: "PUT",
-
-        headers: {
+        headers: 
+        {
           "Content-Type": "application/json",
         },
       },
     );
 
     const data = await response.json();
-
-    if (!response.ok) {
+    if (!response.ok) 
+    {
       throw new Error(data.error || "Error enviando registro");
     }
 
     cargarRegistros();
-  } catch (error) {
-    console.error("ERROR ENVIANDO:", error);
-
-    alert(error.message);
-  }
+  } catch (error) 
+    {
+      console.error("ERROR ENVIANDO:", error);
+      alert(error.message);
+    }
 }
 
-/* =========================
-   OBSERVACIONES
-========================= */
-
-async function guardarObservaciones(codigo, observaciones) {
+/* =========OBSERVACIONES========================= */
+async function guardarObservaciones(codigo, observaciones) 
+{
   try {
     const response = await fetch(
       `${API}/api/registros/observaciones/${codigo}`,
 
       {
         method: "PUT",
-
         headers: {
           "Content-Type": "application/json",
         },
@@ -873,48 +943,38 @@ async function guardarObservaciones(codigo, observaciones) {
     );
 
     const data = await response.json();
-
-    if (!response.ok) {
+    if (!response.ok) 
+    {
       throw new Error(data.error || "Error guardando observaciones");
     }
-  } catch (error) {
-    console.error("ERROR OBSERVACIONES:", error);
-
-    alert(error.message);
-  }
+  } catch (error) 
+    {
+      console.error("ERROR OBSERVACIONES:", error);
+      alert(error.message);
+    }
 }
 
-/* =========================
-   CARGAR REGISTROS
-========================= */
-
-async function cargarRegistros() {
+/* ==== CARGAR REGISTROS ========================= */
+async function cargarRegistros() 
+{
   try {
-    const response = await fetch(`${API}/api/registros/UP-01`);
+    const response = await fetch(`${API}/api/registros/UP-01`); //CAMBIO DE ACUERDO A LA UP REGISTRO
 
-    if (!response.ok) {
+    if (!response.ok) 
+    {
       throw new Error("Error obteniendo registros");
     }
-
     const registros = await response.json();
 
     tbody.innerHTML = "";
-
     if (registros.length === 0) {
       tbody.innerHTML = `
-
                 <tr>
-
                     <td colspan="12">
-
                         No hay registros
-
                     </td>
-
                 </tr>
-
             `;
-
       return;
     }
 
@@ -935,57 +995,41 @@ async function cargarRegistros() {
 
     for (const registro of registros) {
       const estatus = normalizarEstatus(registro.estatus);
-
       const bloqueado =
         estatus === "PAGADO" || estatus === "ACEPTADO" || estatus === "ENVIADO";
-
       const permitirEliminar =
         estatus === "CREADO" || estatus === "RECHAZADO" || !estatus;
-
       tbody.innerHTML += `
 
             <tr>
-
             <td colspan="12">
-
             <div class="card-registro">
 
                 <!-- SUPERIOR -->
-
                 <div class="fila-superior">
-
                     <div class="info-item">
-
                         <span class="info-label">
                             ID
                         </span>
-
                         <span class="info-valor">
                             ${registro.codigo || "-"}
                         </span>
-
                     </div>
 
                     <div class="info-item">
-
                         <span class="info-label">
                             Persona
                         </span>
-
                         <span class="info-valor">
                             ${registro.persona || "-"}
                         </span>
 
                     </div>
-
                     <div class="info-item">
-
                         <span class="info-label">
                             Fecha y Hora
                         </span>
-
                         <span class="info-valor">
-
                             ${
                               registro.fecha
                                 ? new Date(registro.fecha).toLocaleString(
@@ -993,59 +1037,41 @@ async function cargarRegistros() {
                                   )
                                 : "-"
                             }
-
                         </span>
-
                     </div>
-
                     <div class="info-item">
-
                         <span class="info-label">
                             Estatus
                         </span>
-
                         ${obtenerBadgeEstatus(registro.estatus)}
-
                     </div>
 
                     <div class="info-item">
-
                         <span class="info-label">
                             Eliminar
                         </span>
-
                         ${
                           permitirEliminar
                             ? `
-
                             <button
                                 class="btn-eliminar"
                                 onclick="eliminarRegistro('${registro.codigo}')">
-
                                 Eliminar
-
                             </button>
-
                             `
                             : `
-
                             <button
                                 class="btn-bloqueado"
                                 disabled>
-
                                 Bloqueado
-
                             </button>
-
                             `
                         }
 
                     </div>
-
                 </div>
 
                 <!-- PDFS -->
-
                 <div
                     class="fila-pdfs"
                     style="
@@ -1057,8 +1083,7 @@ async function cargarRegistros() {
                     "
                 >
 
-                    <!-- OFICIO -->
-
+                <!-- OFICIO -->
                     <div
                         class="info-item"
                         style="
@@ -1066,24 +1091,18 @@ async function cargarRegistros() {
                             text-align:center;
                         "
                     >
-
                         <span class="info-label">
                             Oficio PDF
                         </span>
-
                         <a
                             href="${registro.oficio_pdf || "#"}"
                             target="_blank"
                             class="link-pdf">
-
                             Ver Oficio
-
                         </a>
-
                     </div>
 
                     <!-- PLIEGO -->
-
                     <div
                         class="info-item"
                         style="
@@ -1091,24 +1110,17 @@ async function cargarRegistros() {
                             text-align:center;
                         "
                     >
-
                         <span class="info-label">
                             Pliego PDF
                         </span>
-
                         <a
                             href="${registro.pliego_pdf || "#"}"
                             target="_blank"
                             class="link-pdf">
-
                             Ver Pliego
-
                         </a>
-
                     </div>
-
                     <!-- SPG -->
-
                     <div
                         class="info-item"
                         style="
@@ -1116,139 +1128,137 @@ async function cargarRegistros() {
                             text-align:center;
                         "
                     >
-
                         <span class="info-label">
                             SPG PDF
                         </span>
-
                         ${
                           registro.spg_pdf
                             ? `
-
                             <a
                                 href="${registro.spg_pdf}"
                                 target="_blank"
                                 class="link-pdf">
-
                                 Ver SPG
-
                             </a>
-
                             `
                             : `
-
                             <button
                                 class="btn-bloqueado"
                                 disabled>
-
                                 Sin SPG
-
                             </button>
-
                             `
                         }
-
                     </div>
-
                     <!-- RECIBO -->
 
-<div
-    class="info-item"
-    style="
-        flex:1;
-        text-align:center;
-    "
->
+                    <div
+                        class="info-item"
+                        style="
+                            flex:1;
+                            text-align:center;
+                        "
+                      >
+                        <span class="info-label">
+                            Recibo PDF
+                        </span>
+                        ${
+                          registro.recibo_pdf
+                            ? `
+                            <a
+                                href="${registro.recibo_pdf}"
+                                target="_blank"
+                                class="link-pdf">
+                                Ver Recibo
+                            </a>
+                            `
+                            : `
+                            <button
+                                class="btn-bloqueado"
+                                disabled>
+                                Sin Recibo
+                            </button>
+                            `
+                        }
+                    </div>
 
-    <span class="info-label">
-        Recibo PDF
-    </span>
+                    <!-- FACTURA -->
+                <div
+                    class="info-item"
+                    style="
+                        flex:1;
+                        text-align:center;
+                    "
+                >
+                    <span class="info-label">
+                        Factura PDF
+                    </span>
 
-    ${
-      registro.recibo_pdf
-        ? `
+                    ${
+                    registro.factura_pdf
+                    ? `
+                    <a
+                        href="${registro.factura_pdf}"
+                        target="_blank"
+                        class="link-pdf"
+                    >
+                        Ver Factura
+                    </a>
+                    `
+                    : `
+                    <button
+                        class="btn-bloqueado"
+                        disabled
+                    >
+                        Sin Factura
+                    </button>
+                    `
+                    }
+                </div>
 
-        <a
-            href="${registro.recibo_pdf}"
-            target="_blank"
-            class="link-pdf">
+                <!-- OFICIO 2 -->
+                <div
+                    class="info-item"
+                    style="
+                        flex:1;
+                        text-align:center;
+                    "
+                >
+                    <span class="info-label">
+                        Oficio 2 PDF
+                    </span>
 
-            Ver Recibo
+                    ${
+                    registro.oficio2_pdf
+                    ? `
+                    <a
+                        href="${registro.oficio2_pdf}"
+                        target="_blank"
+                        class="link-pdf"
+                    >
+                        Ver Oficio 2
+                    </a>
+                    `
+                    : `
+                    <button
+                        class="btn-bloqueado"
+                        disabled
+                    >
+                        Sin Oficio 2
+                    </button>
+                    `
+                    }
+                </div>
 
-        </a>
-
-        `
-        : `
-
-        <button
-            class="btn-bloqueado"
-            disabled>
-
-            Sin Recibo
-
-        </button>
-
-        `
-    }
-
-</div>
-
-<!-- FACTURA -->
-
-<div
-    class="info-item"
-    style="
-        flex:1;
-        text-align:center;
-    "
->
-
-    <span class="info-label">
-        Factura PDF
-    </span>
-
-    ${
-      registro.factura_pdf
-        ? `
-
-        <a
-            href="${registro.factura_pdf}"
-            target="_blank"
-            class="link-pdf">
-
-            Ver Factura
-
-        </a>
-
-        `
-        : `
-
-        <button
-            class="btn-bloqueado"
-            disabled>
-
-            Sin Factura
-
-        </button>
-
-        `
-    }
-
-</div>
-
-</div>
+                </div>
 
 
                 <!-- INFERIOR -->
-
                 <div class="fila-inferior">
-
                     <div class="info-item">
-
                         <span class="info-label">
                             Observaciones Área
                         </span>
-
                         <textarea
                             class="textarea-observaciones"
                             placeholder="Observaciones del área..."
@@ -1258,116 +1268,82 @@ async function cargarRegistros() {
                             )"
                             ${bloqueado ? "readonly" : ""}
                         >${registro.observaciones || ""}</textarea>
-
                     </div>
-
                     <div class="info-item">
-
                         <span class="info-label">
                             Observaciones Administración
                         </span>
-
                         <textarea
                             class="textarea-observaciones-admin"
                             readonly
                             placeholder="Observaciones administración..."
                         >${registro.observaciones_admin || ""}</textarea>
-
                     </div>
 
                     <!-- ACCIONES -->
-
                     <div class="acciones-laterales">
-
                         <!-- TERMINAR -->
-
-<div class="info-item">
-
-    <span class="info-label">
-        Terminar Trámite
-    </span>
-
-    ${
-    !registro.spg_pdf
-
-    ? `
-
-    <button
-        class="btn-enviar"
-        onclick="abrirModalSPG('${registro.codigo}')">
-
-        Generar SPG
-
-    </button>
-
-    `
-
-    : !registro.recibo_pdf
-
-    ? `
-
-    <button
-        class="btn-enviar"
-        onclick="abrirModalRecibo('${registro.codigo}')">
-
-        Generar Recibo
-
-    </button>
-
-    `
-
-    : !registro.factura_pdf
-
-    ? `
-
-    <button
-        class="btn-enviar"
-        onclick="abrirModalFactura('${registro.codigo}')">
-
-        Generar Factura
-
-    </button>
-
-    `
-
-    : `
-
-    <button
-        class="btn-aceptado"
-        disabled>
-
-        Finalizado
-
-    </button>
-
-    `
-}
-</div>
-
-                        <!-- ENVIAR -->
-
                         <div class="info-item">
-
                             <span class="info-label">
-                                Enviar
+                                Terminar Trámite
                             </span>
-
-                            ${obtenerBotonEnviar(registro)}
-
+                            ${
+                              !registro.spg_pdf
+                                ? `
+                            <button
+                                class="btn-enviar"
+                                onclick="abrirModalSPG('${registro.codigo}')">
+                                Generar SPG
+                            </button>
+                            `
+                                : !registro.recibo_pdf
+                                  ? `
+                            <button
+                                class="btn-enviar"
+                                onclick="abrirModalRecibo('${registro.codigo}')">
+                                Generar Recibo
+                            </button>
+                            `
+                            : !registro.factura_pdf
+                                ? `
+                            <button
+                                class="btn-enviar"
+                                onclick="abrirModalFactura('${registro.codigo}')">
+                                Generar Factura
+                            </button>
+                            `
+                            : !registro.oficio2_pdf
+                                ? `
+                            <button
+                                class="btn-enviar"
+                                onclick="abrirModalOficio2('${registro.codigo}')">
+                                Generar Oficio 2
+                            </button>
+                            `
+                            : `
+                            <button
+                                class="btn-aceptado"
+                                disabled>
+                                Finalizado
+                            </button>
+                            `
+                            }
+                            </div>
+                            <!-- ENVIAR -->
+                            <div class="info-item">
+                                <span class="info-label">
+                                    Enviar
+                                </span>
+                                ${obtenerBotonEnviar(registro)}
+                            </div>
                         </div>
-
                     </div>
-
                 </div>
+              </td>
+</tr>
 
-            </div>
-
-            </td>
-
-            </tr>
-
-            `;
-    }
+`;
+}
   } catch (error) {
     console.error("ERROR REGISTROS:", error);
   }

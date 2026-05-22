@@ -1,826 +1,351 @@
+<!-- ===========Token para Bloqueo de No sesión==============-->
 <script>
-
     const token = localStorage.getItem('token');
-
     const area = localStorage.getItem('area');
-
     if (!token) {
-
         window.location.href = 'index.html';
-
     }
 
     if (area !== 'UP-01') {
-
         window.location.href = 'index.html';
-
     }
-
 </script>
+<!-- =========== END Token para Bloqueo de No sesión=========-->
 
 <!DOCTYPE html>
 <html lang="es">
-
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>
-
         Revisión de Registros
-
     </title>
 
+<!-- =============== Archivos CSS ======================-->
     <link rel="stylesheet" href="../css/style.css">
-
     <link rel="stylesheet" href="../css/ssidebar.css">
-
     <link rel="stylesheet" href="../css/revisiones.css">
-
+<!-- =============== PARA FORMATOS =====================-->
     <link rel="stylesheet" href="../css/SPG.css">
-
     <link rel="stylesheet" href="../css/RECIBO.css">
-
     <link rel="stylesheet" href="../css/modales.css">
-
-      <link rel="stylesheet" href="../css/factura.css">
-
+    <link rel="stylesheet" href="../css/factura.css">
+<!-- =============== END Archivos CSS ==================-->
 </head>
 
 <body>
-
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
-
+<!-- =========== BARRA LATERAL DE CONTENIDOS ================-->
     <div id="sidebar-container"></div>
+<!-- ========= END BARRA LATERAL DE CONTENIDOS ==============-->
 
-    <!-- =========================
-         CONTENIDO
-    ========================= -->
+<!-- ======== CONTENIDO ================ -->
+<div class="contenido">
 
-    <div class="contenido">
-
-        <!-- =========================
-             TOPBAR
-        ========================= -->
-
+    <!-- ======== BARRA SUPERIOR (ENCABEZADO)=================== -->
         <div class="topbar">
-
             <div class="titulo-principal">
-
                 SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
-
             </div>
-
             <div class="subtitulo">
-
                 REVISIÓN DE REGISTROS
                 <br>
                 UP_01 - DESPACHO
-
             </div>
-
         </div>
-
+    <!-- ====== END BARRA SUPERIOR (ENCABEZADO)================= -->
         <br><br>
-
-        <!-- =========================
-             TABLA
-        ========================= -->
-
+    <!-- ======== TABLA RESULTADOS ============================= -->
         <table id="tablaResultados">
-
             <tbody id="tbodyResultados">
-
-                <!--
-                
-                EJEMPLO VISUAL
-                
-                <tr>
-
-                    <td>
-
-                        <div class="card-registro">
-
-                            <div class="fila-superior">
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        ID
-
-                                    </span>
-
-                                    <span class="info-valor">
-
-                                        UP-01_R-6816
-
-                                    </span>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Persona
-
-                                    </span>
-
-                                    <span class="info-valor">
-
-                                        Diana Laura Fernández Monroy
-
-                                    </span>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Fecha y Hora
-
-                                    </span>
-
-                                    <span class="info-valor">
-
-                                        8/5/2026, 1:43:27 p.m.
-
-                                    </span>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span
-                                        class="badge-estatus badge-creado">
-
-                                        Creado
-
-                                    </span>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <button
-                                        class="btn-eliminar">
-
-                                        Eliminar
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                            <div class="fila-acciones">
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Oficio PDF
-
-                                    </span>
-
-                                    <a
-                                        href="#"
-                                        target="_blank"
-                                        class="link-pdf">
-
-                                        Ver Oficio
-
-                                    </a>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Pliego PDF
-
-                                    </span>
-
-                                    <a
-                                        href="#"
-                                        target="_blank"
-                                        class="link-pdf">
-
-                                        Ver Pliego
-
-                                    </a>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        SPG PDF
-
-                                    </span>
-
-                                    <button
-                                        class="btn-bloqueado"
-                                        disabled>
-
-                                        Sin SPG
-
-                                    </button>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Terminar Trámite
-
-                                    </span>
-
-                                    <button
-                                        class="btn-enviar">
-
-                                        Terminar
-
-                                    </button>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Enviar
-
-                                    </span>
-
-                                    <button
-                                        class="btn-enviar">
-
-                                        Enviar
-
-                                    </button>
-
-                                </div>
-
-                            </div>
-
-                            <div class="fila-observaciones">
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Observaciones Área
-
-                                    </span>
-
-                                    <textarea
-                                        class="textarea-observaciones"
-                                        placeholder="Observaciones del área..."></textarea>
-
-                                </div>
-
-                                <div class="info-item">
-
-                                    <span class="info-label">
-
-                                        Observaciones Administración
-
-                                    </span>
-
-                                    <textarea
-                                        class="textarea-observaciones-admin"
-                                        placeholder="Observaciones administración..."
-                                        readonly></textarea>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-
-                    </td>
-
-                </tr>
-
-                -->
-
             </tbody>
-
         </table>
+    <!-- ======== END TABLA RESULTADOS ========================= -->
+</div>
 
-    </div>
-
-    <!-- =========================
-         MODAL ELIMINAR
-    ========================= -->
-
+<!-- ==== MODAL ELIMINAR (REGISTRO)========================= -->
     <div class="modal" id="modalEliminar">
-
         <div class="modal-contenido">
-
             <h2>
-
                 ¿Eliminar registro?
-
             </h2>
-
             <p>
-
                 Esta acción no se puede deshacer.
-
             </p>
-
             <div class="modal-botones">
-
                 <button type="button" class="btn-secundario" onclick="cerrarModal('modalEliminar')">
-
                     Cancelar
-
                 </button>
-
                 <button type="button" class="btn-principal" id="confirmarEliminar">
-
                     Eliminar
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
+<!-- ==== END MODAL ELIMINAR (REGISTRO)========================= -->
 
-    <!-- =========================
-         MODAL ÉXITO
-    ========================= -->
-
+<!-- ==== MODAL ELIMINADO CON ÉXITO ============================ -->
     <div class="modal" id="modalExito">
-
         <div class="modal-contenido">
-
             <h2>
-
                 Registro eliminado
-
             </h2>
-
             <p>
-
                 El registro fue eliminado correctamente.
-
             </p>
-
             <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
-
                 Aceptar
-
             </button>
-
         </div>
-
     </div>
+<!-- ==== END MODAL ELIMINADO CON ÉXITO ========================= -->
 
-    <!-- =========================
-         MODAL LOGOUT
-    ========================= -->
-
+<!-- ==== MODAL LOGOUT ========================== -->
     <div class="modal" id="modalLogout">
-
         <div class="modal-contenido">
-
             <h2>
-
                 ¿Cerrar sesión?
-
             </h2>
-
             <p>
-
                 Se cerrará tu sesión actual.
-
             </p>
-
             <div class="modal-botones">
-
                 <button type="button" class="btn-secundario" onclick="cerrarModal('modalLogout')">
-
                     Cancelar
-
                 </button>
-
                 <button type="button" class="btn-principal" id="confirmarLogout">
-
                     Cerrar Sesión
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
+<!-- ==== END MODAL LOGOUT ========================= -->
 
-    <!-- =========================
-     MODAL SPG
-========================= -->
-
+<!-- ==== MODAL CAPTURA DE DATOS PARA SPG ========================= -->
     <div class="modal modal-spg" id="modalSPG">
-
         <div class="modal-spg-contenido">
-
+            
             <!-- HEADER -->
-
             <div class="spg-header">
-
                 <h2>
-
                     Captura de Datos SPG
-
                 </h2>
-
                 <p>
-
                     Completa los datos necesarios para generar el SPG.
-
                 </p>
-
             </div>
-
+            <!-- END HEADER -->
+            
             <!-- FORM -->
-
             <div class="contenedor-spg">
 
                 <!-- AÑO -->
-
                 <div class="grupo-input-spg">
 
                     <label for="spgAnio">
-
                         Año
-
                     </label>
 
                     <select id="spgAnio">
-
                         <option value="">
-
                             Selecciona año
-
                         </option>
-
                     </select>
-
                 </div>
 
                 <!-- UR -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgUR">
-
                         UR
-
                     </label>
-
                     <input type="text" id="spgUR" placeholder="Unidad Responsable">
-
                 </div>
 
                 <!-- UP -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgUP">
-
                         UP
-
                     </label>
-
                     <select id="spgUP">
-
-                        <option value="">
-
-                            Selecciona UP
-
-                        </option>
-
+                        <option value=""> Selecciona UP </option>
                     </select>
-
                 </div>
 
                 <!-- RUBRO -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgR">
-
                         Rubro de ingreso
-
                     </label>
-
                     <select id="spgR">
-
                         <option value="">
-
                             Selecciona rubro
-
                         </option>
-
                     </select>
-
                 </div>
 
                 <!-- OBJETO GASTO -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgOG">
-
                         Objeto del gasto
-
                     </label>
-
                     <select id="spgOG">
-
                         <option value="">
-
                             Selecciona objeto
-
                         </option>
-
                     </select>
-
                 </div>
 
                 <!-- PROYECTO -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgPR">
-
                         Proyecto
-
                     </label>
-
                     <select id="spgPR">
-
                         <option value="">
-
                             Selecciona proyecto
-
                         </option>
-
                     </select>
-
                 </div>
 
                 <!-- CUENTA -->
 
                 <div class="grupo-input-spg">
-
                     <label for="spgCuenta">
-
                         Cuenta por pagar
-
                     </label>
-
                     <input type="text" id="spgCuenta" placeholder="Cuenta por pagar">
-
                 </div>
 
                 <!-- MONTO -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgMonto">
-
                         Monto
-
                     </label>
-
                     <input type="text" id="spgMonto" placeholder="$0.00">
-
                 </div>
 
                 <!-- RETENCIONES -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgRet">
-
                         Retenciones
-
                     </label>
-
                     <input type="text" id="spgRet" placeholder="$0.00">
-
                 </div>
 
                 <!-- TOTAL -->
-
                 <div class="grupo-input-spg">
-
                     <label for="spgTot">
-
                         Total
-
                     </label>
-
                     <input type="text" id="spgTot" placeholder="$0.00" readonly>
-
                 </div>
-
             </div>
 
             <!-- BOTONES -->
-
             <div class="modal-spg-botones">
-
                 <button type="button" class="btn-spg-cancelar" onclick="cerrarModal('modalSPG')">
-
                     Cancelar
-
                 </button>
 
                 <button type="button" class="btn-spg-generar" id="btnGenerarSPG">
-
                     Generar SPG
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
+<!-- ==== END MODAL CAPTURA DE DATOS PARA SPG ========================= -->
 
-<!-- =========================
-     MODAL RECIBO
-========================= -->
-
+<!-- ==== MODAL CAPTURA DE DATOS PARA RECIBO ======================= -->
 <div class="modal modal-spg" id="modalRecibo">
-
     <div class="modal-spg-contenido">
 
         <!-- HEADER -->
-
         <div class="spg-header">
-
             <h2>
-
                 Captura de Datos Recibo
-
             </h2>
-
             <p>
-
                 Verifica la información antes de generar el recibo.
-
             </p>
-
         </div>
 
         <!-- FORM -->
-
         <div class="contenedor-spg">
 
             <!-- TIPO DOCUMENTO -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboTipo">
-
                     Tipo Documento
-
                 </label>
-
                 <select id="reciboTipo">
-
-                    <option value="RECIBO">
-
-                        Recibo
-
-                    </option>
-
-                    <option value="FACTURA">
-
-                        Factura
-
-                    </option>
-
+                    <option value="RECIBO">Recibo</option>
+                    <option value="FACTURA">Factura</option>
                 </select>
-
             </div>
 
             <!-- FOLIO -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboFolio">
-
                     Folio
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboFolio"
                 >
-
             </div>
 
             <!-- PERSONA -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboPersona">
-
                     Persona
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboPersona"
                     readonly
                 >
-
             </div>
 
             <!-- MUNICIPIO -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboMunicipio">
-
                     Municipio
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboMunicipio"
                     readonly
                 >
-
             </div>
 
             <!-- MOTIVO -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboMotivo">
-
                     Motivo de la Comisión
-
                 </label>
-
                 <textarea
                     id="reciboMotivo"
                     rows="3"
                     readonly
                 ></textarea>
-
             </div>
 
             <!-- LOCALIDADES -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboLocalidades">
-
                     Localidades Visitadas
-
                 </label>
-
                 <textarea
                     id="reciboLocalidades"
                     rows="3"
                     readonly
                 ></textarea>
-
             </div>
 
             <!-- DÍAS -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboDias">
-
                     Días de Comisión
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboDias"
@@ -830,801 +355,756 @@
             </div>
 
             <!-- MES -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboMes">
-
                     Mes
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboMes"
                     readonly
                 >
-
             </div>
 
             <!-- AÑO -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboAnio">
-
                     Año
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboAnio"
                     readonly
                 >
-
             </div>
 
             <!-- UNIDAD -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboUnidad">
-
                     Unidad
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboUnidad"
                     readonly
                 >
-
             </div>
 
             <!-- IMPORTE -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboImporte">
-
                     Importe
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboImporte"
                     readonly
                 >
-
             </div>
 
             <!-- RETENCIONES -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboRetenciones">
-
                     Retenciones
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboRetenciones"
                     readonly
                 >
-
             </div>
 
             <!-- TOTAL -->
-
             <div class="grupo-input-spg">
-
                 <label for="reciboTotal">
-
                     Total
-
                 </label>
-
                 <input
                     type="text"
                     id="reciboTotal"
                     readonly
                 >
-
             </div>
-
         </div>
 
         <!-- BOTONES -->
-
         <div class="modal-spg-botones">
-
             <button
                 type="button"
                 class="btn-spg-cancelar"
                 onclick="cerrarModal('modalRecibo')"
             >
-
                 Cancelar
-
             </button>
-
             <button
                 type="button"
                 class="btn-spg-generar"
                 id="btnGenerarRecibo"
             >
-
                 Generar Recibo
-
             </button>
-
         </div>
-
     </div>
-
 </div>
-<!-- =========================
-     MODAL CONFIRMAR SPG
-========================= -->
 
+<!-- ==== END MODAL CAPTURA DE DATOS PARA RECIBO ======================= -->
+
+<!-- ===== MODAL CONFIRMAR SPG ========================================= -->
 <div class="modal" id="modalConfirmarSPG">
-
     <div class="modal-contenido">
-
         <h2>
-
             ¿Deseas generar el SPG?
-
         </h2>
-
         <p>
-
             Verifica que toda la información sea correcta antes de continuar.
-
         </p>
-
         <div class="modal-botones">
-
             <button
                 type="button"
                 class="btn-secundario"
                 onclick="cerrarModal('modalConfirmarSPG')"
             >
-
                 No
-
             </button>
-
             <button
                 type="button"
                 class="btn-principal"
                 id="confirmarGenerarSPG"
             >
-
                 Sí, generar
-
             </button>
-
         </div>
-
     </div>
-
 </div>
+<!-- ===== END MODAL CONFIRMAR SPG ========================================= -->
 
-<!-- =========================
-     MODAL CARGANDO
-========================= -->
-
+<!-- ===== MODAL CARGANDO ================================================== -->
 <div class="modal" id="modalCargando">
-
     <div class="modal-contenido modal-cargando">
-
         <div class="loader-spg"></div>
-
         <h2>
-
             Generando documento...
-
         </h2>
-
         <p>
-
             Espera un momento.
-
         </p>
-
     </div>
-
 </div>
+<!-- ===== END MODAL CARGANDO ============================================== -->
 
-<!-- =========================
-     MODAL ÉXITO SPG
-========================= -->
-
+<!-- ===== MODAL ÉXITO SPG ================================================= -->
 <div class="modal" id="modalExitoSPG">
-
     <div class="modal-contenido modal-exito">
-
         <h2>
-
             SPG generado
-
         </h2>
-
         <p>
-
             El documento se generó correctamente.
-
         </p>
-
         <div class="modal-botones">
-
             <button
                 type="button"
                 class="btn-principal"
-
                 onclick="
-
                     cerrarModal('modalExitoSPG');
-
                     cargarRegistros();
-
                 "
             >
-
                 Aceptar
-
             </button>
-
         </div>
-
     </div>
-
 </div>
+<!-- ===== END MODAL ÉXITO SPG ================================================= -->
 
-
-<!-- =========================
-     MODAL CONFIRMAR RECIBO
-========================= -->
-
+<!-- ===== MODAL CONFIRMAR RECIBO ============================================== -->
 <div class="modal" id="modalConfirmarRecibo">
-
     <div class="modal-contenido">
-
         <h2>
-
             ¿Deseas generar el Recibo?
-
         </h2>
-
         <p>
-
             Verifica que toda la información sea correcta antes de continuar.
-
         </p>
-
         <div class="modal-botones">
-
             <button
                 type="button"
                 class="btn-secundario"
                 onclick="cerrarModal('modalConfirmarRecibo')"
             >
-
                 No
-
             </button>
-
             <button
                 type="button"
                 class="btn-principal"
                 id="confirmarGenerarRecibo"
             >
-
                 Sí, generar
-
             </button>
-
         </div>
-
     </div>
-
 </div>
+<!-- ===== END MODAL CONFIRMAR RECIBO ======================================== -->
 
-<!-- =========================
-     MODAL CARGANDO RECIBO
-========================= -->
-
+<!-- ===== MODAL CARGANDO RECIBO ============================================= -->
 <div class="modal" id="modalCargandoRecibo">
-
     <div class="modal-contenido modal-cargando">
-
         <div class="loader-spg"></div>
-
         <h2>
-
             Generando recibo...
-
         </h2>
-
         <p>
-
             Espera un momento.
-
         </p>
-
     </div>
-
 </div>
+<!-- ===== END MODAL CARGANDO RECIBO ========================================= -->
 
-<!-- =========================
-     MODAL ÉXITO RECIBO
-========================= -->
-
+<!-- ===== MODAL ÉXITO RECIBO ================================================ -->
 <div class="modal" id="modalExitoRecibo">
-
     <div class="modal-contenido modal-exito">
-
         <h2>
-
             Recibo generado
-
         </h2>
-
         <p>
-
             El documento se generó correctamente.
-
         </p>
-
         <div class="modal-botones">
-
             <button
                 type="button"
                 class="btn-principal"
-
                 onclick="
-
                     cerrarModal('modalExitoRecibo');
-
                     cargarRegistros();
-
                 "
             >
-
                 Aceptar
-
             </button>
-
         </div>
-
     </div>
-
+</div>
 </div>
 
-</div>
+<!-- ====== MODAL DATOS PARA FACTURA ========================= -->
 
-
-<!-- =========================
-     MODAL FACTURA
-========================= -->
-
-<div
-    id="modalFactura"
-    class="modal-spg"
->
-
+<div id="modalFactura" class="modal-spg">
     <div class="modal-contenido modal-spg-contenido">
-
+        
         <!-- HEADER -->
-
         <div class="modal-header">
-
             <h2>
                 Generar Factura
             </h2>
-
         </div>
 
         <!-- GRID -->
-
         <div class="spg-grid">
-
             <!-- FOLIO -->
-
             <div class="campo-spg">
-
                 <label>
                     No. Recibo
                 </label>
-
                 <input
                     type="text"
-                    id="facturaFolio"
+                    id="facturaNoRecibo"
                     placeholder="REC-001"
                 >
-
             </div>
 
             <!-- PERSONA -->
-
             <div class="campo-spg">
-
                 <label>
                     Nombre
                 </label>
-
                 <input
                     type="text"
                     id="facturaPersona"
                     readonly
                 >
-
             </div>
 
             <!-- IMPORTE -->
-
             <div class="campo-spg">
-
                 <label>
                     Importe
                 </label>
-
                 <input
                     type="text"
                     id="facturaImporte"
                     readonly
                 >
-
             </div>
 
             <!-- RETENCIONES -->
-
             <div class="campo-spg">
-
                 <label>
                     Retenciones
                 </label>
-
                 <input
                     type="text"
                     id="facturaRetenciones"
                     readonly
                 >
-
             </div>
 
             <!-- TOTAL -->
-
             <div class="campo-spg">
-
                 <label>
                     Total
                 </label>
-
                 <input
                     type="text"
                     id="facturaTotal"
                     readonly
                 >
-
             </div>
 
             <!-- TOTAL LETRA -->
-
             <div class="campo-spg">
-
                 <label>
                     Total Letra
                 </label>
-
                 <input
                     type="text"
                     id="facturaTotalLetra"
                     placeholder="MIL PESOS 00/100 M.N."
                 >
-
             </div>
 
             <!-- MOTIVO -->
-
             <div class="campo-spg">
-
                 <label>
                     Motivo
                 </label>
-
                 <input
                     type="text"
                     id="facturaMotivo"
                     readonly
                 >
-
             </div>
 
             <!-- DIAS -->
-
             <div class="campo-spg">
-
                 <label>
                     Días
                 </label>
-
                 <input
                     type="text"
                     id="facturaDias"
                     readonly
                 >
-
             </div>
 
             <!-- MES -->
-
             <div class="campo-spg">
-
                 <label>
                     Mes
                 </label>
-
                 <input
                     type="text"
                     id="facturaMes"
                     readonly
                 >
-
             </div>
 
             <!-- LOCALIDAD -->
-
             <div class="campo-spg">
-
                 <label>
                     Localidad
                 </label>
-
                 <input
                     type="text"
                     id="facturaLocalidad"
                     readonly
                 >
-
             </div>
 
             <!-- MUNICIPIO -->
-
             <div class="campo-spg">
-
                 <label>
                     Municipio
                 </label>
-
                 <input
                     type="text"
                     id="facturaMunicipio"
                     readonly
                 >
-
             </div>
 
             <!-- PROYECTO -->
-
             <div class="campo-spg">
-
                 <label>
                     Proyecto
                 </label>
-
                 <select id="facturaProyecto"></select>
-
             </div>
 
             <!-- NOMBRE PROYECTO -->
-
             <div class="campo-spg">
-
                 <label>
                     Nombre Proyecto
                 </label>
-
                 <select id="facturaNombreProyecto"></select>
-
             </div>
 
             <!-- OFICIO AUTORIZACIÓN -->
-
             <div class="campo-spg">
-
                 <label>
                     Oficio Autorización
                 </label>
-
                 <select id="facturaOficio"></select>
-
             </div>
 
             <!-- ADECUACIÓN -->
-
             <div class="campo-spg">
-
                 <label>
                     Adecuación
                 </label>
-
                 <select id="facturaAdecuacion"></select>
-
             </div>
 
             <!-- FECHA -->
-
             <div class="campo-spg">
-
                 <label>
                     Fecha
                 </label>
-
                 <input
                     type="text"
                     id="facturaFecha"
                     placeholder="21 de mayo de 2026"
                 >
-
             </div>
-
         </div>
 
         <!-- FOOTER -->
-
         <div class="modal-footer">
-
             <button
                 class="btn-factura-cancelar"
                 onclick="cerrarModal('modalFactura')"
             >
-
                 Cancelar
-
             </button>
-
             <button
                 id="btnGenerarFactura"
                 class="btn-factura-generar"
             >
-
                 Generar Factura
-
             </button>
-
         </div>
-
     </div>
-
 </div>
-<!-- =========================
-     MODAL CONFIRMAR FACTURA
-========================= -->
+<!-- ====== END MODAL DATOS PARA FACTURA ========================= -->
 
-<div
-    id="modalConfirmarFactura"
-    class="modal-confirmar-factura"
->
-
+<!-- ====== MODAL CONFIRMAR FACTURA ============================== -->
+<div id="modalConfirmarFactura" class="modal-confirmar-factura">
     <div class="modal-confirmar-contenido">
-
         <h2>
             ¿Generar Factura?
         </h2>
-
         <p>
             Se generará el PDF de factura.
         </p>
-
         <div class="modal-confirmar-botones">
-
             <button
                 class="btn-confirmar-cancelar"
                 onclick="cerrarModal('modalConfirmarFactura')"
             >
-
                 Cancelar
-
             </button>
-
             <button
                 id="confirmarGenerarFactura"
                 class="btn-confirmar-generar"
             >
-
                 Generar
-
             </button>
-
         </div>
-
     </div>
-
 </div>
+<!-- ====== END MODAL CONFIRMAR FACTURA =========================== -->
 
-<!-- =========================
-     MODAL CARGANDO FACTURA
-========================= -->
-
-<div
-    id="modalCargandoFactura"
-    class="modal-confirmar-factura"
->
-
+<!-- ====== MODAL CARGANDO FACTURA ================================ -->
+<div id="modalCargandoFactura" class="modal-confirmar-factura">
     <div class="modal-cargando-contenido">
-
         <div class="loader-factura"></div>
-
         <h2>
             Generando Factura...
         </h2>
-
         <p>
             Espera un momento
         </p>
-
     </div>
-
 </div>
+<!-- ====== END MODAL CARGANDO FACTURA ============================ -->
 
-<!-- =========================
-     MODAL ÉXITO FACTURA
-========================= -->
-
-<div
-    id="modalExitoFactura"
-    class="modal"
->
-
-    <div
-        class="modal-contenido modal-exito"
-    >
-
+<!-- ====== MODAL ÉXITO FACTURA =================================== -->
+<div id="modalExitoFactura" class="modal" >
+    <div class="modal-contenido modal-exito">
         <h2>
             Factura generada correctamente
         </h2>
-
         <p>
             El PDF fue generado exitosamente.
         </p>
-
         <div class="modal-botones">
-
             <button
                 class="btn-principal"
                 onclick="cerrarModal('modalExitoFactura')"
             >
-
                 Aceptar
-
             </button>
+        </div>
+    </div>
+</div>
+<!-- ====== END MODAL ÉXITO FACTURA =============================== -->
 
+<!-- ====== MODAL OFICIO 2========================================= -->
+<div class="modal-overlay" id="modalOficio2">
+    <div class="modal-contenido modal-factura">
+    
+        <!-- HEADER -->
+        <div class="modal-header">
+            <h2>
+                Generar Oficio 2
+            </h2>
         </div>
 
+        <!-- BODY -->
+        <div class="modal-body-grid">
+            <!-- PERSONA -->
+            <div class="campo-spg">
+                <label>
+                    Persona
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Persona"
+                >
+            </div>
+
+            <!-- MUNICIPIO -->
+            <div class="campo-spg">
+                <label>
+                    Municipio
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Municipio"
+                >
+            </div>
+
+            <!-- DIAS -->
+            <div class="campo-spg">
+                <label>
+                    Días
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Dias"
+                >
+            </div>
+
+            <!-- MES -->
+            <div class="campo-spg">
+                <label>
+                    Mes
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Mes"
+                >
+            </div>
+
+            <!-- AÑO -->
+            <div class="campo-spg">
+                <label>
+                    Año
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Anio"
+                >
+            </div>
+
+            <!-- PROYECTO -->
+            <div class="campo-spg">
+                <label>
+                    Proyecto
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Proyecto"
+                >
+            </div>
+
+            <!-- NOMBRE PROYECTO -->
+            <div class="campo-spg">
+                <label>
+                    Nombre Proyecto
+                </label>
+                <input
+                    type="text"
+                    id="oficio2NombreProyecto"
+                >
+            </div>
+
+            <!-- OFICIO AUTORIZACION -->
+            <div class="campo-spg">
+                <label>
+                    Oficio Autorización
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Ofaut"
+                >
+            </div>
+
+            <!-- ADECUACION -->
+            <div class="campo-spg">
+                <label>
+                    Adecuación
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Adec"
+                >
+            </div>
+
+            <!-- MONTO -->
+            <div class="campo-spg">
+                <label>
+                    Monto Total
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Monto"
+                >
+            </div>
+
+            <!-- RETENCIONES -->
+            <div class="campo-spg">
+                <label>
+                    Retenciones
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Retenciones"
+                >
+            </div>
+
+            <!-- TOTAL -->
+            <div class="campo-spg">
+                <label>
+                    Líquido para pagar
+                </label>
+                <input
+                    type="text"
+                    id="oficio2Total"
+                >
+            </div>
+
+            <!-- TOTAL LETRA -->
+            <div class="campo-spg">
+                <label>
+                    Total Letra
+                </label>
+                <input
+                    type="text"
+                    id="oficio2TotalLetra"
+                >
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <div class="modal-footer">
+            <button
+                class="btn-cancelar"
+                onclick="cerrarModal('modalOficio2')"
+            >
+                Cancelar
+            </button>
+            <button
+                class="btn-guardar"
+                onclick="abrirModal('modalConfirmarOficio2')"
+            >
+                Generar
+            </button>
+        </div>
     </div>
-
 </div>
+<!-- ===== END MODAL OFICIO 2 =========================== -->
 
-    <!-- ========================= JS GENERAL ========================= -->
-    <script src="../js-sid/sidebar_up-01.js"></script>
-    <script src="../js-cat2/cat-up01.js"></script>
-    <script src="../js-reg/registros_up-01.js"></script>
+<!-- ====== MODAL CONFIRMAR OFICIO 2 ============================== -->
+<div id="modalConfirmarOficio2" class="modal-confirmar-factura">
+    <div class="modal-confirmar-contenido">
+        <h2>
+            ¿Generar Oficio 2?
+        </h2>
+        <p>
+            Se generará el PDF de Oficio 2.
+        </p>
+        <div class="modal-confirmar-botones">
+            <button
+                class="btn-confirmar-cancelar"
+                onclick="cerrarModal('modalConfirmarOficio2')"
+            >
+                Cancelar
+            </button>
+            <button
+                id="confirmarGenerarOficio2"
+                class="btn-confirmar-generar"
+            >
+                Generar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ====== END MODAL CONFIRMAR OFICIO 2 ========================== -->
 
-    <!-- ========================= JS SPG ========================= -->
-    <script src="../SPG/spg-01.js"></script>
+<!-- ====== MODAL CARGANDO OFICIO 2 =============================== -->
+<div id="modalCargandoOficio2" class="modal-confirmar-factura">
+    <div class="modal-cargando-contenido">
+        <div class="loader-factura"></div>
+        <h2>
+            Generando Oficio 2...
+        </h2>
+        <p>
+            Espera un momento
+        </p>
+    </div>
+</div>
+<!-- ====== END MODAL CARGANDO OFICIO 2 =========================== -->
 
-    <!-- ========================= JS RECIBO ========================= -->
-    <script src="../RECIBO/recib01.js"></script>
+<!-- ====== MODAL ÉXITO OFICIO 2 ================================= -->
+<div id="modalExitoOficio2" class="modal">
+    <div class="modal-contenido modal-exito">
+        <h2>
+            Oficio 2 generado correctamente
+        </h2>
+        <p>
+            El PDF fue generado exitosamente.
+        </p>
+        <div class="modal-botones">
+            <button
+                class="btn-principal"
+                onclick="cerrarModal('modalExitoOficio2')"
+            >
+                Aceptar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ====== END MODAL ÉXITO OFICIO 2 ============================== -->
 
-    <!-- ========================= JS GENERAL ========================= -->
-    <script src="../Factura/factura01.js"></script>
+<!-- ========================= JS GENERAL ========================= -->
+<script src="../js-sid/sidebar_up-01.js"></script>
+<script src="../js-cat2/cat-up01.js"></script>
+<script src="../js-reg/registros_up-01.js"></script>
+<!-- ========================= JS SPG ============================= -->
+<script src="../SPG/spg-01.js"></script>
+<!-- ========================= JS RECIBO ========================== -->
+<script src="../RECIBO/recib01.js"></script>
+<!-- ========================= JS GENERAL ========================= -->
+<script src="../Factura/factura01.js"></script>
+
 </body>
-
 </html>

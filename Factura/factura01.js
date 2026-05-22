@@ -168,7 +168,7 @@ async function abrirModalFactura(codigo){
         ========================= */
 
         document.getElementById(
-            "facturaFolio"
+            "facturaNoRecibo"
         ).value =
         "";
 
@@ -335,12 +335,6 @@ async function generarFactura(){
 
             variables:{
 
-                "<<FOLIO>>":
-
-                document.getElementById(
-                    "facturaFolio"
-                ).value,
-
                 "<<NOMBRE>>":
 
                 document.getElementById(
@@ -395,7 +389,13 @@ async function generarFactura(){
                     "facturaTotal"
                 ).value,
 
-                "<<TOTALLETRA>>":
+                "<<NOREC>>":
+
+                document.getElementById(
+                    "facturaNoRecibo"
+                ).value,
+
+                "<<TOTALETRA>>":
 
                 document.getElementById(
                     "facturaTotalLetra"
