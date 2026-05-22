@@ -45,6 +45,8 @@
 
     <link rel="stylesheet" href="../css/modales.css">
 
+      <link rel="stylesheet" href="../css/factura.css">
+
 </head>
 
 <body>
@@ -1227,15 +1229,6 @@
                 Generar Factura
             </h2>
 
-            <button
-                class="cerrar-modal"
-                onclick="cerrarModal('modalFactura')"
-            >
-
-                ×
-
-            </button>
-
         </div>
 
         <!-- GRID -->
@@ -1269,6 +1262,38 @@
                 <input
                     type="text"
                     id="facturaPersona"
+                    readonly
+                >
+
+            </div>
+
+            <!-- IMPORTE -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Importe
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaImporte"
+                    readonly
+                >
+
+            </div>
+
+            <!-- RETENCIONES -->
+
+            <div class="campo-spg">
+
+                <label>
+                    Retenciones
+                </label>
+
+                <input
+                    type="text"
+                    id="facturaRetenciones"
                     readonly
                 >
 
@@ -1394,10 +1419,7 @@
                     Proyecto
                 </label>
 
-                <input
-                    type="text"
-                    id="facturaProyecto"
-                >
+                <select id="facturaProyecto"></select>
 
             </div>
 
@@ -1409,14 +1431,11 @@
                     Nombre Proyecto
                 </label>
 
-                <input
-                    type="text"
-                    id="facturaNombreProyecto"
-                >
+                <select id="facturaNombreProyecto"></select>
 
             </div>
 
-            <!-- OFICIO AUT -->
+            <!-- OFICIO AUTORIZACIÓN -->
 
             <div class="campo-spg">
 
@@ -1424,14 +1443,11 @@
                     Oficio Autorización
                 </label>
 
-                <input
-                    type="text"
-                    id="facturaOficio"
-                >
+                <select id="facturaOficio"></select>
 
             </div>
 
-            <!-- ADECUACION -->
+            <!-- ADECUACIÓN -->
 
             <div class="campo-spg">
 
@@ -1439,10 +1455,7 @@
                     Adecuación
                 </label>
 
-                <input
-                    type="text"
-                    id="facturaAdecuacion"
-                >
+                <select id="facturaAdecuacion"></select>
 
             </div>
 
@@ -1469,7 +1482,7 @@
         <div class="modal-footer">
 
             <button
-                class="btn-cancelar"
+                class="btn-factura-cancelar"
                 onclick="cerrarModal('modalFactura')"
             >
 
@@ -1479,7 +1492,7 @@
 
             <button
                 id="btnGenerarFactura"
-                class="btn-enviar"
+                class="btn-factura-generar"
             >
 
                 Generar Factura
@@ -1491,17 +1504,16 @@
     </div>
 
 </div>
-
 <!-- =========================
      MODAL CONFIRMAR FACTURA
 ========================= -->
 
 <div
     id="modalConfirmarFactura"
-    class="modal-spg"
+    class="modal-confirmar-factura"
 >
 
-    <div class="modal-confirmacion">
+    <div class="modal-confirmar-contenido">
 
         <h2>
             ¿Generar Factura?
@@ -1511,10 +1523,10 @@
             Se generará el PDF de factura.
         </p>
 
-        <div class="acciones-confirmacion">
+        <div class="modal-confirmar-botones">
 
             <button
-                class="btn-cancelar"
+                class="btn-confirmar-cancelar"
                 onclick="cerrarModal('modalConfirmarFactura')"
             >
 
@@ -1524,7 +1536,7 @@
 
             <button
                 id="confirmarGenerarFactura"
-                class="btn-enviar"
+                class="btn-confirmar-generar"
             >
 
                 Generar
@@ -1543,16 +1555,20 @@
 
 <div
     id="modalCargandoFactura"
-    class="modal-spg"
+    class="modal-confirmar-factura"
 >
 
-    <div class="modal-confirmacion">
+    <div class="modal-cargando-contenido">
 
-        <div class="loader"></div>
+        <div class="loader-factura"></div>
 
         <h2>
             Generando Factura...
         </h2>
+
+        <p>
+            Espera un momento
+        </p>
 
     </div>
 
@@ -1564,23 +1580,33 @@
 
 <div
     id="modalExitoFactura"
-    class="modal-spg"
+    class="modal"
 >
 
-    <div class="modal-confirmacion">
+    <div
+        class="modal-contenido modal-exito"
+    >
 
         <h2>
             Factura generada correctamente
         </h2>
 
-        <button
-            class="btn-enviar"
-            onclick="cerrarModal('modalExitoFactura')"
-        >
+        <p>
+            El PDF fue generado exitosamente.
+        </p>
 
-            Aceptar
+        <div class="modal-botones">
 
-        </button>
+            <button
+                class="btn-principal"
+                onclick="cerrarModal('modalExitoFactura')"
+            >
+
+                Aceptar
+
+            </button>
+
+        </div>
 
     </div>
 

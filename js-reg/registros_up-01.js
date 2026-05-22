@@ -329,7 +329,6 @@ function desglosarDias(inicio, fin){
     .trim();
 
 }
-
 /* =========================
    MODAL FACTURA
 ========================= */
@@ -373,6 +372,74 @@ async function abrirModalFactura(codigo){
 
         }
 
+        console.log(
+            "REGISTRO FACTURA:",
+            registro
+        );
+
+        /* =========================
+           LIMPIAR ERRORES
+        ========================= */
+
+        document
+        .querySelectorAll(
+            "#modalFactura input, #modalFactura select"
+        )
+        .forEach(campo=>{
+
+            campo.classList.remove(
+                "input-error"
+            );
+
+        });
+
+        /* =========================
+           DATOS CALCULADOS
+        ========================= */
+
+        const dias =
+        desglosarDias(
+
+            registro.dia_inicio,
+
+            registro.dia_fin
+
+        ) || "";
+
+        const localidad =
+        registro.localidades_visitadas || "";
+
+        const mes =
+        registro.mes || "";
+
+        const total =
+        Number(
+            registro.spg_total || 0
+        );
+
+        console.log(
+            "DIAS:",
+            dias
+        );
+
+        console.log(
+            "LOCALIDAD:",
+            localidad
+        );
+
+        console.log(
+            "MES:",
+            mes
+        );
+
+        /* =========================
+           LLENAR CAMPOS
+        ========================= */
+
+        document.getElementById(
+            "facturaFolio"
+        ).value = "";
+
         document.getElementById(
             "facturaPersona"
         ).value =
@@ -391,30 +458,88 @@ async function abrirModalFactura(codigo){
         document.getElementById(
             "facturaLocalidad"
         ).value =
-        registro.localidades_visitadas || "";
+        String(localidad);
 
         document.getElementById(
             "facturaDias"
         ).value =
-        desglosarDias(
-
-            registro.dia_inicio,
-
-            registro.dia_fin
-
-        );
+        String(dias);
 
         document.getElementById(
             "facturaMes"
         ).value =
-        registro.mes || "";
+        String(mes);
+
+        document.getElementById(
+            "facturaImporte"
+        ).value =
+        formatearMoneda(
+
+            registro.spg_monto || 0
+
+        );
+
+        document.getElementById(
+            "facturaRetenciones"
+        ).value =
+        formatearMoneda(
+
+            registro.spg_retenciones || 0
+
+        );
 
         document.getElementById(
             "facturaTotal"
         ).value =
-        formatearMoneda(
+        formatearMoneda(total);
 
-            registro.spg_total || 0
+        document.getElementById(
+            "facturaTotalLetra"
+        ).value =
+        numeroALetras(total);
+
+        /* =========================
+           DATOS FACTURA
+        ========================= */
+
+        document.getElementById(
+            "facturaProyecto"
+        ).value =
+        registro.proyecto || "AI005";
+
+        document.getElementById(
+            "facturaNombreProyecto"
+        ).value =
+        "Atención Integral 005";
+
+        document.getElementById(
+            "facturaOficio"
+        ).value =
+        registro.codigo || "";
+
+        document.getElementById(
+            "facturaAdecuacion"
+        ).value =
+        registro.cuenta || "ADEC-001";
+
+        document.getElementById(
+            "facturaFecha"
+        ).value =
+
+        new Date(
+            registro.fecha || Date.now()
+        )
+        .toLocaleDateString(
+
+            "es-MX",
+
+            {
+
+                day:"numeric",
+                month:"long",
+                year:"numeric"
+
+            }
 
         );
 
@@ -438,165 +563,6 @@ async function abrirModalFactura(codigo){
     }
 
 }
-
-/* =========================
-   DESGLOSAR DÍAS
-========================= */
-
-function desglosarDias(inicio, fin){
-
-    inicio = parseInt(inicio);
-
-    fin = parseInt(fin);
-
-    if(isNaN(inicio) || isNaN(fin)){
-
-        return "";
-
-    }
-
-    if(inicio === fin){
-
-        return `${inicio}`;
-
-    }
-
-    const dias = [];
-
-    for(let i = inicio; i <= fin; i++){
-
-        dias.push(i);
-
-    }
-
-    if(dias.length === 2){
-
-        return `${dias[0]} y ${dias[1]}`;
-
-    }
-
-    return `
-
-        ${dias.slice(0,-1).join(', ')}
-        y
-        ${dias[dias.length - 1]}
-
-    `
-
-    .replace(/\s+/g,' ')
-    .trim();
-
-}
-
-/* =========================
-   MODAL FACTURA
-========================= */
-
-async function abrirModalFactura(codigo){
-
-    try{
-
-        codigoFactura = codigo;
-
-        const response =
-        await fetch(
-
-            `${API}/api/registros/UP-01`
-
-        );
-
-        if(!response.ok){
-
-            throw new Error(
-                "Error obteniendo registros"
-            );
-
-        }
-
-        const registros =
-        await response.json();
-
-        const registro =
-        registros.find(
-
-            r => r.codigo === codigo
-
-        );
-
-        if(!registro){
-
-            throw new Error(
-                "Registro no encontrado"
-            );
-
-        }
-
-        document.getElementById(
-            "facturaPersona"
-        ).value =
-        registro.persona || "";
-
-        document.getElementById(
-            "facturaMunicipio"
-        ).value =
-        registro.municipio || "";
-
-        document.getElementById(
-            "facturaMotivo"
-        ).value =
-        registro.motivo_comision || "";
-
-        document.getElementById(
-            "facturaLocalidad"
-        ).value =
-        registro.localidades_visitadas || "";
-
-        document.getElementById(
-            "facturaDias"
-        ).value =
-        desglosarDias(
-
-            registro.dia_inicio,
-
-            registro.dia_fin
-
-        );
-
-        document.getElementById(
-            "facturaMes"
-        ).value =
-        registro.mes || "";
-
-        document.getElementById(
-            "facturaTotal"
-        ).value =
-        formatearMoneda(
-
-            registro.spg_total || 0
-
-        );
-
-        abrirModal(
-            "modalFactura"
-        );
-
-    }
-
-    catch(error){
-
-        console.error(
-            "ERROR FACTURA:",
-            error
-        );
-
-        alert(
-            error.message
-        );
-
-    }
-
-}
-
 /* =========================
    GENERAR FACTURA
 ========================= */

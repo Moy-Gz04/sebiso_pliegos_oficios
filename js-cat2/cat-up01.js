@@ -87,6 +87,36 @@ const catalogoObjetoGasto = [
 ];
 
 /* =========================
+   CATÁLOGO NOMBRE PROYECTO
+========================= */
+
+const catalogoNombreProyecto = [
+
+    "Atención Integral 005"
+
+];
+
+/* =========================
+   CATÁLOGO ADECUACIÓN
+========================= */
+
+const catalogoAdecuacion = [
+
+    "ADEC-001"
+
+];
+
+/* =========================
+   CATÁLOGO OFICIOS
+========================= */
+
+const catalogoOficios = [
+
+    "OF-AUT-001"
+
+];
+
+/* =========================
    PERSONAS
 ========================= */
 
@@ -295,11 +325,7 @@ function llenarSelectAutomatico(
 
     }
 
-    /* limpiar opciones repetidas */
-
     select.innerHTML = "";
-
-    /* si solo hay 1 valor */
 
     if(catalogo.length === 1){
 
@@ -322,8 +348,6 @@ function llenarSelectAutomatico(
 
     }
 
-    /* placeholder */
-
     const placeholder =
     document.createElement(
         "option"
@@ -337,8 +361,6 @@ function llenarSelectAutomatico(
     select.appendChild(
         placeholder
     );
-
-    /* opciones */
 
     catalogo.forEach(item => {
 
@@ -400,6 +422,54 @@ function llenarObjetoGasto(){
 
         "spgOG",
         catalogoObjetoGasto
+
+    );
+
+}
+
+/* =========================
+   FACTURA
+========================= */
+
+function llenarProyectoFactura(){
+
+    llenarSelectAutomatico(
+
+        "facturaProyecto",
+        catalogoProyecto
+
+    );
+
+}
+
+function llenarNombreProyectoFactura(){
+
+    llenarSelectAutomatico(
+
+        "facturaNombreProyecto",
+        catalogoNombreProyecto
+
+    );
+
+}
+
+function llenarAdecuacionFactura(){
+
+    llenarSelectAutomatico(
+
+        "facturaAdecuacion",
+        catalogoAdecuacion
+
+    );
+
+}
+
+function llenarOficiosFactura(){
+
+    llenarSelectAutomatico(
+
+        "facturaOficio",
+        catalogoOficios
 
     );
 
@@ -476,6 +546,7 @@ document.addEventListener(
         if(document.getElementById("spgAnio")){
 
             llenarAnios("spgAnio");
+
         }
 
         /* SPG */
@@ -487,6 +558,16 @@ document.addEventListener(
         llenarProyectos();
 
         llenarObjetoGasto();
+
+        /* FACTURA */
+
+        llenarProyectoFactura();
+
+        llenarNombreProyectoFactura();
+
+        llenarAdecuacionFactura();
+
+        llenarOficiosFactura();
 
     }
 
