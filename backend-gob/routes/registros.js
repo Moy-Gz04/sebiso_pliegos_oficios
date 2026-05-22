@@ -846,4 +846,96 @@ router.put("/recibo/:codigo", async (req, res) => {
   }
 });
 
+/* =========================
+   GUARDAR FACTURA PDF
+========================= */
+
+router.put("/factura/:codigo", async (req, res) => {
+
+  try {
+
+    const codigo =
+    req.params.codigo.trim();
+
+    const {
+      factura_pdf
+    } = req.body;
+
+    if (!factura_pdf) {
+
+      return res.status(400).json({
+
+        ok: false,
+
+        error: "URL factura requerida",
+
+      });
+
+    }
+
+    const validar = await pool.query(
+      `
+      SELECT id
+
+      FROM registros
+
+      WHERE codigo = $1
+      `,
+      [codigo],
+    );
+
+    if (validar.rows.length === 0) {
+
+      return res.status(404).json({
+
+        ok: false,
+
+        error: "Registro no encontrado",
+
+      });
+
+    }
+
+    await pool.query(
+      `
+      UPDATE registros
+
+      SET
+
+          factura_pdf = $1
+
+      WHERE codigo = $2
+      `,
+      [
+        factura_pdf,
+        codigo
+      ],
+    );
+
+    res.json({
+
+      ok: true,
+
+      msg: "Factura guardada",
+
+    });
+
+  }
+
+  catch (error) {
+
+    console.log(error);
+
+    res.status(500).json({
+
+      ok: false,
+
+      error: "Error guardando factura",
+
+    });
+
+  }
+
+});
+
 module.exports = router;

@@ -7,6 +7,24 @@ const API_FACTURA =
 "https://script.google.com/macros/s/AKfycbzQgaTKRcjb5czQ2hecPl-YA6MF3hCEMqB9Nvv7VcjvjfXR2J9qEqBEJcArK63ZpMIJ/exec";
 
 /* =========================
+   NUMERO A LETRAS
+========================= */
+
+function numeroALetras(numero){
+
+    numero = Number(numero);
+
+    if(isNaN(numero)){
+
+        return "";
+
+    }
+
+    return `${numero.toFixed(2)} PESOS 00/100 M.N.`;
+
+}
+
+/* =========================
    VALIDAR CAMPOS FACTURA
 ========================= */
 
@@ -105,6 +123,10 @@ async function abrirModalFactura(codigo){
             registro
         );
 
+        /* =========================
+           LIMPIAR ERRORES
+        ========================= */
+
         document
         .querySelectorAll(
             "#modalFactura input, #modalFactura select"
@@ -116,6 +138,30 @@ async function abrirModalFactura(codigo){
             );
 
         });
+
+        /* =========================
+           DATOS CALCULADOS
+        ========================= */
+
+        const dias =
+        desglosarDias(
+
+            registro.dia_inicio,
+
+            registro.dia_fin
+
+        ) || "";
+
+        const localidad =
+        registro.localidades_visitadas || "";
+
+        const mes =
+        registro.mes || "";
+
+        const total =
+        Number(
+            registro.spg_total || 0
+        );
 
         /* =========================
            LLENAR CAMPOS
@@ -142,6 +188,21 @@ async function abrirModalFactura(codigo){
         registro.motivo_comision || "";
 
         document.getElementById(
+            "facturaLocalidad"
+        ).value =
+        localidad;
+
+        document.getElementById(
+            "facturaDias"
+        ).value =
+        dias;
+
+        document.getElementById(
+            "facturaMes"
+        ).value =
+        mes;
+
+        document.getElementById(
             "facturaImporte"
         ).value =
         formatearMoneda(
@@ -158,8 +219,56 @@ async function abrirModalFactura(codigo){
         document.getElementById(
             "facturaTotal"
         ).value =
-        formatearMoneda(
-            registro.spg_total || 0
+        formatearMoneda(total);
+
+        document.getElementById(
+            "facturaTotalLetra"
+        ).value =
+        numeroALetras(total);
+
+        /* =========================
+           DATOS FACTURA
+        ========================= */
+
+        document.getElementById(
+            "facturaProyecto"
+        ).value =
+        registro.proyecto || "AI005";
+
+        document.getElementById(
+            "facturaNombreProyecto"
+        ).value =
+        "Atención Integral 005";
+
+        document.getElementById(
+            "facturaOficio"
+        ).value =
+        registro.codigo || "";
+
+        document.getElementById(
+            "facturaAdecuacion"
+        ).value =
+        registro.cuenta || "ADEC-001";
+
+        document.getElementById(
+            "facturaFecha"
+        ).value =
+
+        new Date(
+            registro.fecha || Date.now()
+        )
+        .toLocaleDateString(
+
+            "es-MX",
+
+            {
+
+                day:"numeric",
+                month:"long",
+                year:"numeric"
+
+            }
+
         );
 
         abrirModal(
@@ -250,6 +359,24 @@ async function generarFactura(){
                     "facturaMotivo"
                 ).value,
 
+                "<<LOCALIDAD>>":
+
+                document.getElementById(
+                    "facturaLocalidad"
+                ).value,
+
+                "<<DIAS>>":
+
+                document.getElementById(
+                    "facturaDias"
+                ).value,
+
+                "<<MES>>":
+
+                document.getElementById(
+                    "facturaMes"
+                ).value,
+
                 "<<MONTO>>":
 
                 document.getElementById(
@@ -266,6 +393,42 @@ async function generarFactura(){
 
                 document.getElementById(
                     "facturaTotal"
+                ).value,
+
+                "<<TOTALLETRA>>":
+
+                document.getElementById(
+                    "facturaTotalLetra"
+                ).value,
+
+                "<<PROY>>":
+
+                document.getElementById(
+                    "facturaProyecto"
+                ).value,
+
+                "<<NOMPROY>>":
+
+                document.getElementById(
+                    "facturaNombreProyecto"
+                ).value,
+
+                "<<OFAUT>>":
+
+                document.getElementById(
+                    "facturaOficio"
+                ).value,
+
+                "<<ADEC>>":
+
+                document.getElementById(
+                    "facturaAdecuacion"
+                ).value,
+
+                "<<FECHA>>":
+
+                document.getElementById(
+                    "facturaFecha"
                 ).value
 
             }
