@@ -4,7 +4,13 @@
 
 #modalFactura,
 #modalConfirmarFactura,
-#modalCargandoFactura{
+#modalCargandoFactura,
+#modalExitoFactura,
+
+#modalOficio2,
+#modalConfirmarOficio2,
+#modalCargandoOficio2,
+#modalExitoOficio2{
 
     display:none;
 
@@ -32,7 +38,13 @@
 
 #modalFactura.activo,
 #modalConfirmarFactura.activo,
-#modalCargandoFactura.activo{
+#modalCargandoFactura.activo,
+#modalExitoFactura.activo,
+
+#modalOficio2.activo,
+#modalConfirmarOficio2.activo,
+#modalCargandoOficio2.activo,
+#modalExitoOficio2.activo{
 
     display:flex;
 
@@ -42,7 +54,8 @@
    CONTENIDO
 ========================= */
 
-#modalFactura .modal-spg-contenido{
+#modalFactura .modal-spg-contenido,
+#modalOficio2 .modal-spg-contenido{
 
     position:relative;
 
@@ -92,7 +105,8 @@
    HEADER
 ========================= */
 
-#modalFactura .modal-header{
+#modalFactura .modal-header,
+#modalOficio2 .modal-header{
 
     position:relative;
 
@@ -106,7 +120,8 @@
 
 }
 
-#modalFactura .modal-header h2{
+#modalFactura .modal-header h2,
+#modalOficio2 .modal-header h2{
 
     margin:0;
 
@@ -124,7 +139,8 @@
    BOTÓN X
 ========================= */
 
-#modalFactura .cerrar-modal{
+#modalFactura .cerrar-modal,
+#modalOficio2 .cerrar-modal{
 
     display:none;
 
@@ -134,7 +150,8 @@
    GRID
 ========================= */
 
-#modalFactura .spg-grid{
+#modalFactura .spg-grid,
+#modalOficio2 .modal-body-grid{
 
     display:grid;
 
@@ -149,7 +166,8 @@
    CAMPOS
 ========================= */
 
-#modalFactura .campo-spg{
+#modalFactura .campo-spg,
+#modalOficio2 .campo-spg{
 
     display:flex;
 
@@ -163,7 +181,8 @@
    LABELS
 ========================= */
 
-#modalFactura .campo-spg label{
+#modalFactura .campo-spg label,
+#modalOficio2 .campo-spg label{
 
     font-size:14px;
 
@@ -182,7 +201,10 @@
 ========================= */
 
 #modalFactura .campo-spg input,
-#modalFactura .campo-spg select{
+#modalFactura .campo-spg select,
+
+#modalOficio2 .campo-spg input,
+#modalOficio2 .campo-spg select{
 
     width:100%;
 
@@ -214,7 +236,8 @@
    READONLY
 ========================= */
 
-#modalFactura .campo-spg input[readonly]{
+#modalFactura .campo-spg input[readonly],
+#modalOficio2 .campo-spg input[readonly]{
 
     background:#eef2f7;
 
@@ -226,7 +249,8 @@
    PLACEHOLDER
 ========================= */
 
-#modalFactura .campo-spg input::placeholder{
+#modalFactura .campo-spg input::placeholder,
+#modalOficio2 .campo-spg input::placeholder{
 
     color:#b6bcc8;
 
@@ -237,7 +261,10 @@
 ========================= */
 
 #modalFactura .campo-spg input:focus,
-#modalFactura .campo-spg select:focus{
+#modalFactura .campo-spg select:focus,
+
+#modalOficio2 .campo-spg input:focus,
+#modalOficio2 .campo-spg select:focus{
 
     border-color:#8b0d3a;
 
@@ -247,10 +274,11 @@
 }
 
 /* =========================
-   FOOTER FACTURA
+   FOOTER FACTURA / OFICIO2
 ========================= */
 
-#modalFactura .modal-footer{
+#modalFactura .modal-footer,
+#modalOficio2 .modal-footer{
 
     display:flex;
 
@@ -271,7 +299,10 @@
 ========================= */
 
 .btn-factura-cancelar,
-.btn-factura-generar{
+.btn-factura-generar,
+
+.btn-cancelar,
+.btn-guardar{
 
     width:240px;
 
@@ -307,7 +338,8 @@
    CANCELAR
 ========================= */
 
-.btn-factura-cancelar{
+.btn-factura-cancelar,
+.btn-cancelar{
 
     background:#d9d9d9;
 
@@ -319,7 +351,8 @@
    GENERAR
 ========================= */
 
-.btn-factura-generar{
+.btn-factura-generar,
+.btn-guardar{
 
     background:#8b0d3a;
 
@@ -332,7 +365,13 @@
 ========================= */
 
 .btn-factura-cancelar:hover,
-.btn-factura-generar:hover{
+.btn-factura-generar:hover,
+
+.btn-cancelar:hover,
+.btn-guardar:hover,
+
+.btn-confirmar-cancelar:hover,
+.btn-confirmar-generar:hover{
 
     transform:translateY(-2px);
 
@@ -356,7 +395,8 @@
 ========================= */
 
 .modal-confirmar-contenido,
-.modal-cargando-contenido{
+.modal-cargando-contenido,
+.modal-exito{
 
     width:100%;
 
@@ -392,7 +432,8 @@
 ========================= */
 
 .modal-confirmar-contenido h2,
-.modal-cargando-contenido h2{
+.modal-cargando-contenido h2,
+.modal-exito h2{
 
     margin:0;
 
@@ -411,7 +452,8 @@
 ========================= */
 
 .modal-confirmar-contenido p,
-.modal-cargando-contenido p{
+.modal-cargando-contenido p,
+.modal-exito p{
 
     margin-top:10px;
 
@@ -446,7 +488,8 @@
 ========================= */
 
 .btn-confirmar-cancelar,
-.btn-confirmar-generar{
+.btn-confirmar-generar,
+.btn-principal{
 
     width:100%;
 
@@ -484,22 +527,12 @@
    GENERAR
 ========================= */
 
-.btn-confirmar-generar{
+.btn-confirmar-generar,
+.btn-principal{
 
     background:#7d1238;
 
     color:#fff;
-
-}
-
-/* =========================
-   HOVER
-========================= */
-
-.btn-confirmar-cancelar:hover,
-.btn-confirmar-generar:hover{
-
-    transform:translateY(-2px);
 
 }
 
@@ -541,7 +574,8 @@
 
 @media(max-width:950px){
 
-    #modalFactura .spg-grid{
+    #modalFactura .spg-grid,
+    #modalOficio2 .modal-body-grid{
 
         grid-template-columns:
         repeat(2,1fr);
@@ -552,13 +586,15 @@
 
 @media(max-width:768px){
 
-    #modalFactura{
+    #modalFactura,
+    #modalOficio2{
 
         padding:10px;
 
     }
 
-    #modalFactura .modal-spg-contenido{
+    #modalFactura .modal-spg-contenido,
+    #modalOficio2 .modal-spg-contenido{
 
         max-height:95vh;
 
@@ -570,33 +606,40 @@
 
     }
 
-    #modalFactura .modal-header h2{
+    #modalFactura .modal-header h2,
+    #modalOficio2 .modal-header h2{
 
         font-size:26px;
 
     }
 
-    #modalFactura .spg-grid{
+    #modalFactura .spg-grid,
+    #modalOficio2 .modal-body-grid{
 
         grid-template-columns:1fr;
 
     }
 
-    #modalFactura .modal-footer{
+    #modalFactura .modal-footer,
+    #modalOficio2 .modal-footer{
 
         flex-direction:column;
 
     }
 
     .btn-factura-cancelar,
-    .btn-factura-generar{
+    .btn-factura-generar,
+
+    .btn-cancelar,
+    .btn-guardar{
 
         width:100%;
 
     }
 
     .modal-confirmar-contenido,
-    .modal-cargando-contenido{
+    .modal-cargando-contenido,
+    .modal-exito{
 
         max-width:95%;
 

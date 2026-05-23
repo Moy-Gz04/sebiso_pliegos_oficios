@@ -114,85 +114,97 @@ async function generarOficio2(){
 
             variables:{
 
-                "<<NOMBRE>>":
+    "<<NUMC>>":
 
-                document.getElementById(
-                    "oficio2Persona"
-                ).value,
+    document.getElementById(
+        "oficio2Numc"
+    ).value,
 
-                "<<MUNICIPIO>>":
+    "<<NOMBRE>>":
 
-                document.getElementById(
-                    "oficio2Municipio"
-                ).value,
+    document.getElementById(
+        "oficio2Persona"
+    ).value,
 
-                "<<DIAS>>":
+    "<<MUNICIPIO>>":
 
-                document.getElementById(
-                    "oficio2Dias"
-                ).value,
+    document.getElementById(
+        "oficio2Municipio"
+    ).value,
 
-                "<<MES>>":
+    "<<DIAS>>":
 
-                document.getElementById(
-                    "oficio2Mes"
-                ).value,
+    document.getElementById(
+        "oficio2Dias"
+    ).value,
 
-                "<<ANIO>>":
+    "<<MES>>":
 
-                document.getElementById(
-                    "oficio2Anio"
-                ).value,
+    document.getElementById(
+        "oficio2Mes"
+    ).value,
 
-                "<<PROY>>":
+    "<<ANIO>>":
 
-                document.getElementById(
-                    "oficio2Proyecto"
-                ).value,
+    document.getElementById(
+        "oficio2Anio"
+    ).value,
 
-                "<<NOMPROY>>":
+    "<<PROY>>":
 
-                document.getElementById(
-                    "oficio2NombreProyecto"
-                ).value,
+    document.getElementById(
+        "oficio2Proyecto"
+    ).value,
 
-                "<<OFAUT>>":
+    "<<NOMPROY>>":
 
-                document.getElementById(
-                    "oficio2Ofaut"
-                ).value,
+    document.getElementById(
+        "oficio2NombreProyecto"
+    ).value,
 
-                "<<ADEC>>":
+    "<<OFAUT>>":
 
-                document.getElementById(
-                    "oficio2Adec"
-                ).value,
+    document.getElementById(
+        "oficio2Ofaut"
+    ).value,
 
-                "<<MONT>>":
+    "<<OFADEC>>":
 
-                document.getElementById(
-                    "oficio2Monto"
-                ).value,
+    document.getElementById(
+        "oficio2OficioAdec"
+    ).value,
 
-                "<<RET>>":
+    "<<ADEC>>":
 
-                document.getElementById(
-                    "oficio2Retenciones"
-                ).value,
+    document.getElementById(
+        "oficio2Adec"
+    ).value,
 
-                "<<TOT>>":
+    "<<MONT>>":
 
-                document.getElementById(
-                    "oficio2Total"
-                ).value,
+    document.getElementById(
+        "oficio2Monto"
+    ).value,
 
-                "<<TOTAL>>":
+    "<<RET>>":
 
-                document.getElementById(
-                    "oficio2TotalLetra"
-                ).value
+    document.getElementById(
+        "oficio2Retenciones"
+    ).value,
 
-            }
+    "<<TOT>>":
+
+    document.getElementById(
+        "oficio2Total"
+    ).value,
+
+    "<<TOTAL>>":
+
+    document.getElementById(
+        "oficio2TotalLetra"
+    ).value
+
+}
 
         };
 
