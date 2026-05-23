@@ -857,244 +857,352 @@
 </div>
 <!-- ====== END MODAL ÉXITO FACTURA =============================== -->
 
-<!-- ====== MODAL OFICIO 2========================================= -->
-<div class="modal-overlay" id="modalOficio2">
-    <div class="modal-contenido modal-factura">
-    
+<!-- ====== MODAL OFICIO 2 ========================================= -->
+
+<div id="modalOficio2">
+
+    <div class="modal-spg-contenido">
+
         <!-- HEADER -->
         <div class="modal-header">
+
             <h2>
                 Generar Oficio 2
             </h2>
+
         </div>
 
         <!-- BODY -->
         <div class="modal-body-grid">
+
+            <!-- NUMERO OFICIO -->
+            <div class="campo-spg">
+
+                <label>
+                    Número Oficio
+                </label>
+
+                <input
+                    type="text"
+                    id="oficio2Numc"
+                >
+
+            </div>
+            
             <!-- PERSONA -->
             <div class="campo-spg">
+
                 <label>
                     Persona
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Persona"
                 >
+
             </div>
 
             <!-- MUNICIPIO -->
             <div class="campo-spg">
+
                 <label>
                     Municipio
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Municipio"
                 >
+
             </div>
 
             <!-- DIAS -->
             <div class="campo-spg">
+
                 <label>
                     Días
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Dias"
                 >
+
             </div>
 
             <!-- MES -->
             <div class="campo-spg">
+
                 <label>
                     Mes
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Mes"
                 >
+
             </div>
 
             <!-- AÑO -->
             <div class="campo-spg">
+
                 <label>
                     Año
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Anio"
                 >
+
             </div>
 
             <!-- PROYECTO -->
             <div class="campo-spg">
+
                 <label>
                     Proyecto
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Proyecto"
                 >
+
             </div>
 
             <!-- NOMBRE PROYECTO -->
             <div class="campo-spg">
+
                 <label>
                     Nombre Proyecto
                 </label>
+
                 <input
                     type="text"
                     id="oficio2NombreProyecto"
                 >
+
             </div>
 
             <!-- OFICIO AUTORIZACION -->
             <div class="campo-spg">
+
                 <label>
                     Oficio Autorización
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Ofaut"
                 >
+
+            </div>
+
+            <!-- OFICIO ADECUACION -->
+            <div class="campo-spg">
+
+                <label>
+                    Oficio Adecuación
+                </label>
+
+                <input
+                    type="text"
+                    id="oficio2OficioAdec"
+                >
+
             </div>
 
             <!-- ADECUACION -->
             <div class="campo-spg">
+
                 <label>
                     Adecuación
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Adec"
                 >
+
             </div>
 
             <!-- MONTO -->
             <div class="campo-spg">
+
                 <label>
                     Monto Total
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Monto"
                 >
+
             </div>
 
             <!-- RETENCIONES -->
             <div class="campo-spg">
+
                 <label>
                     Retenciones
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Retenciones"
                 >
+
             </div>
 
             <!-- TOTAL -->
             <div class="campo-spg">
+
                 <label>
                     Líquido para pagar
                 </label>
+
                 <input
                     type="text"
                     id="oficio2Total"
                 >
+
             </div>
 
             <!-- TOTAL LETRA -->
             <div class="campo-spg">
+
                 <label>
                     Total Letra
                 </label>
+
                 <input
                     type="text"
                     id="oficio2TotalLetra"
                 >
+
             </div>
+
         </div>
 
         <!-- FOOTER -->
         <div class="modal-footer">
+
             <button
                 class="btn-cancelar"
                 onclick="cerrarModal('modalOficio2')"
             >
                 Cancelar
             </button>
+
             <button
                 class="btn-guardar"
                 onclick="abrirModal('modalConfirmarOficio2')"
             >
                 Generar
             </button>
+
         </div>
+
     </div>
+
 </div>
-<!-- ===== END MODAL OFICIO 2 =========================== -->
+
+<!-- ====== END MODAL OFICIO 2 ==================================== -->
+
 
 <!-- ====== MODAL CONFIRMAR OFICIO 2 ============================== -->
-<div id="modalConfirmarOficio2" class="modal-confirmar-factura">
+
+<div id="modalConfirmarOficio2">
+
     <div class="modal-confirmar-contenido">
+
         <h2>
             ¿Generar Oficio 2?
         </h2>
+
         <p>
             Se generará el PDF de Oficio 2.
         </p>
+
         <div class="modal-confirmar-botones">
+
             <button
                 class="btn-confirmar-cancelar"
                 onclick="cerrarModal('modalConfirmarOficio2')"
             >
                 Cancelar
             </button>
+
             <button
                 id="confirmarGenerarOficio2"
                 class="btn-confirmar-generar"
             >
                 Generar
             </button>
+
         </div>
+
     </div>
+
 </div>
+
 <!-- ====== END MODAL CONFIRMAR OFICIO 2 ========================== -->
 
 <!-- ====== MODAL CARGANDO OFICIO 2 =============================== -->
-<div id="modalCargandoOficio2" class="modal-confirmar-factura">
+
+<div id="modalCargandoOficio2">
+
     <div class="modal-cargando-contenido">
+
         <div class="loader-factura"></div>
+
         <h2>
             Generando Oficio 2...
         </h2>
+
         <p>
             Espera un momento
         </p>
+
     </div>
+
 </div>
+
 <!-- ====== END MODAL CARGANDO OFICIO 2 =========================== -->
 
 <!-- ====== MODAL ÉXITO OFICIO 2 ================================= -->
-<div id="modalExitoOficio2" class="modal">
-    <div class="modal-contenido modal-exito">
+
+<div id="modalExitoOficio2">
+
+    <div class="modal-exito">
+
         <h2>
             Oficio 2 generado correctamente
         </h2>
+
         <p>
             El PDF fue generado exitosamente.
         </p>
+
         <div class="modal-botones">
+
             <button
                 class="btn-principal"
                 onclick="cerrarModal('modalExitoOficio2')"
             >
                 Aceptar
             </button>
-        </div>
-    </div>
-</div>
-<!-- ====== END MODAL ÉXITO OFICIO 2 ============================== -->
 
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ====== END MODAL ÉXITO OFICIO 2 ============================== -->
 <!-- ========================= JS GENERAL ========================= -->
 <script src="../js-sid/sidebar_up-01.js"></script>
 <script src="../js-cat2/cat-up01.js"></script>

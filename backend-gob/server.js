@@ -55,6 +55,13 @@ const facturaRoutes =
 require('./routes/factura');
 
 /* =========================
+   RUTA OFICIO 2
+========================= */
+
+const oficio2Routes =
+require('./routes/oficio2');
+
+/* =========================
    MIDDLEWARES
 ========================= */
 
@@ -175,6 +182,18 @@ app.use(
     '/api/factura',
 
     facturaRoutes
+
+);
+
+/* =========================
+   OFICIO 2
+========================= */
+
+app.use(
+
+    '/api/oficio2',
+
+    oficio2Routes
 
 );
 

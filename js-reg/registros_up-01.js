@@ -19,20 +19,30 @@ function normalizarEstatus(estatus) {
 }
 
 /* ======= MODALES ======================================= */
-function abrirModal(id) {
-  const modal = document.getElementById(id);
+function abrirModal(id)
+{
+    const modal =
+    document.getElementById(id);
 
-  if (modal) {
-    modal.style.display = "flex";
-  }
+    if(modal)
+    {
+        modal.classList.add(
+            "activo"
+        );
+    }
 }
 
-function cerrarModal(id) {
-  const modal = document.getElementById(id);
+function cerrarModal(id)
+{
+    const modal =
+    document.getElementById(id);
 
-  if (modal) {
-    modal.style.display = "none";
-  }
+    if(modal)
+    {
+        modal.classList.remove(
+            "activo"
+        );
+    }
 }
 /* ======= END MODALES =================================== */
 
@@ -646,55 +656,252 @@ async function generarFactura()
 }
 
 /* ==== GENERAR OFICIO 2 ========================= */
-
 async function generarOficio2()
 {
     try
     {
-        console.log
-        (
+        console.log(
             "GENERANDO OFICIO2:",
             codigoOficio2
         );
 
-        cerrarModal
-        (
-            "modalCargandoOficio2"
-        );
-
-        cerrarModal
-        (
+        cerrarModal(
             "modalConfirmarOficio2"
         );
 
-        cerrarModal
-        (
+        abrirModal(
+            "modalCargandoOficio2"
+        );
+
+        /* =========================
+           PAYLOAD
+        ========================= */
+
+        const payload = {
+
+            codigo:
+            codigoOficio2,
+
+            fileName:
+            `OFICIO2_${codigoOficio2}`,
+
+            variables:{
+
+                "<<NUMC>>":
+
+                document.getElementById(
+                    "oficio2Numc"
+                ).value,
+
+                "<<NOMBRE>>":
+
+                document.getElementById(
+                    "oficio2Persona"
+                ).value,
+
+                "<<MUNICIPIO>>":
+
+                document.getElementById(
+                    "oficio2Municipio"
+                ).value,
+
+                "<<DIAS>>":
+
+                document.getElementById(
+                    "oficio2Dias"
+                ).value,
+
+                "<<MES>>":
+
+                document.getElementById(
+                    "oficio2Mes"
+                ).value,
+
+                "<<ANIO>>":
+
+                document.getElementById(
+                    "oficio2Anio"
+                ).value,
+
+                "<<PROY>>":
+
+                document.getElementById(
+                    "oficio2Proyecto"
+                ).value,
+
+                "<<NOMPROY>>":
+
+                document.getElementById(
+                    "oficio2NombreProyecto"
+                ).value,
+
+                "<<OFAUT>>":
+
+                document.getElementById(
+                    "oficio2Ofaut"
+                ).value,
+
+                "<<OFADEC>>":
+
+                document.getElementById(
+                    "oficio2OficioAdec"
+                ).value,
+
+                "<<ADEC>>":
+
+                document.getElementById(
+                    "oficio2Adec"
+                ).value,
+
+                "<<MONT>>":
+
+                document.getElementById(
+                    "oficio2Monto"
+                ).value,
+
+                "<<RET>>":
+
+                document.getElementById(
+                    "oficio2Retenciones"
+                ).value,
+
+                "<<TOT>>":
+
+                document.getElementById(
+                    "oficio2Total"
+                ).value,
+
+                "<<TOTAL>>":
+
+                document.getElementById(
+                    "oficio2TotalLetra"
+                ).value
+
+            }
+
+        };
+
+        console.log(
+            "PAYLOAD OFICIO2:",
+            payload
+        );
+
+        /* =========================
+           FETCH BACKEND
+        ========================= */
+
+        const response =
+        await fetch(
+
+            `${API}/api/oficio2/generar`,
+
+            {
+
+                method:"POST",
+
+                headers:{
+
+                    "Content-Type":
+                    "application/json"
+
+                },
+
+                body:JSON.stringify(
+                    payload
+                )
+
+            }
+
+        );
+
+        const data =
+        await response.json();
+
+        console.log(
+            "RESPUESTA OFICIO2:",
+            data
+        );
+
+        if(
+            !response.ok
+            ||
+            !data.ok
+        ){
+            throw new Error(
+
+                data.error ||
+
+                "Error generando Oficio 2"
+
+            );
+        }
+
+        /* =========================
+           GUARDAR URL PDF
+        ========================= */
+
+        const guardar =
+        await fetch(
+
+            `${API}/api/registros/oficio2/${codigoOficio2}`,
+
+            {
+
+                method:"PUT",
+
+                headers:{
+
+                    "Content-Type":
+                    "application/json"
+
+                },
+
+                body:JSON.stringify({
+
+                    oficio2_pdf:
+                    data.url
+
+                })
+
+            }
+
+        );
+
+        if(!guardar.ok)
+        {
+            throw new Error(
+                "Error guardando Oficio 2"
+            );
+        }
+
+        cerrarModal(
+            "modalCargandoOficio2"
+        );
+
+        cerrarModal(
             "modalOficio2"
         );
 
-        abrirModal
-        (
+        abrirModal(
             "modalExitoOficio2"
         );
 
         cargarRegistros();
+
     }
 
     catch(error)
     {
-        console.error
-        (
+        console.error(
             "ERROR OFICIO2:",
             error
         );
 
-        cerrarModal
-        (
+        cerrarModal(
             "modalCargandoOficio2"
         );
 
-        alert
-        (
+        alert(
             error.message
         );
     }
@@ -758,7 +965,7 @@ if (confirmarOficio2)
     }
   );
 }
-/* ==== END CONFIRMAR OFICIO ============================ */
+/* ==== ENDCONFIRMAR OFICIO ============================ */
 
 /* ==== ESTATUS ===================================== */
 function obtenerBadgeEstatus(estatus) 
