@@ -938,4 +938,87 @@ router.put("/factura/:codigo", async (req, res) => {
 
 });
 
+/* =========================
+   GUARDAR OFICIO2 PDF
+========================= */
+
+router.put(
+
+    '/oficio2/:codigo',
+
+    async(req,res)=>{
+
+        try{
+
+            const { codigo } =
+            req.params;
+
+            const {
+
+                oficio2_pdf
+
+            } = req.body;
+
+            const result =
+            await pool.query(
+
+                `
+                UPDATE registros
+                SET oficio2_pdf = $1
+                WHERE codigo = $2
+                RETURNING *
+                `,
+
+                [
+
+                    oficio2_pdf,
+
+                    codigo
+
+                ]
+
+            );
+
+            if(result.rows.length === 0)
+            {
+                return res.status(404).json({
+
+                    ok:false,
+
+                    error:'Registro no encontrado'
+
+                });
+            }
+
+            res.json({
+
+                ok:true,
+
+                registro:
+                result.rows[0]
+
+            });
+
+        }
+
+        catch(error){
+
+            console.error(
+                'ERROR OFICIO2 PDF:',
+                error
+            );
+
+            res.status(500).json({
+
+                ok:false,
+
+                error:error.message
+
+            });
+
+        }
+
+    }
+
+);
 module.exports = router;
