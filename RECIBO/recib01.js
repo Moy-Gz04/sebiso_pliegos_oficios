@@ -1,4 +1,3 @@
-
 /* =========================
    URL APPS SCRIPT
 ========================= */
@@ -83,7 +82,7 @@ function validarCamposRecibo(){
     document
     .querySelectorAll(
 
-        "#modalRecibo input, #modalRecibo select"
+        "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
 
     )
     .forEach(campo=>{
@@ -189,7 +188,7 @@ async function abrirModalRecibo(codigo){
 
         document
         .querySelectorAll(
-            "#modalRecibo input, #modalRecibo select"
+            "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
         )
         .forEach(campo=>{
 
@@ -313,10 +312,6 @@ async function generarRecibo(){
 
     try{
 
-        /* =========================
-           BOTÓN
-        ========================= */
-
         const btn =
         document.getElementById(
             "btnGenerarRecibo"
@@ -326,21 +321,6 @@ async function generarRecibo(){
 
         btn.textContent =
         "Generando...";
-
-        /* =========================
-           VALIDAR
-        ========================= */
-
-        const valido =
-        validarCamposRecibo();
-
-        if(!valido){
-
-            throw new Error(
-                "Completa los campos requeridos"
-            );
-
-        }
 
         /* =========================
            PAYLOAD
@@ -357,7 +337,6 @@ async function generarRecibo(){
             variables:{
 
                 "<<UNIDADP>>":
-
                 "01",
 
                 "<<R/F>>":
@@ -445,10 +424,6 @@ async function generarRecibo(){
            FETCH APPS SCRIPT
         ========================= */
 
-        console.log(
-            "ENVIANDO A APPS SCRIPT..."
-        );
-
         const response =
         await fetch(
 
@@ -472,10 +447,6 @@ async function generarRecibo(){
             }
 
         );
-
-        /* =========================
-           RESPUESTA RAW
-        ========================= */
 
         const text =
         await response.text();
@@ -514,10 +485,6 @@ async function generarRecibo(){
             data
         );
 
-        /* =========================
-           VALIDAR RESPUESTA
-        ========================= */
-
         if(
 
             !data.ok
@@ -539,10 +506,6 @@ async function generarRecibo(){
         /* =========================
            GUARDAR URL
         ========================= */
-
-        console.log(
-            "GUARDANDO RECIBO..."
-        );
 
         const guardar =
         await fetch(
@@ -571,14 +534,6 @@ async function generarRecibo(){
 
         );
 
-        const guardarText =
-        await guardar.text();
-
-        console.log(
-            "RESPUESTA GUARDAR:",
-            guardarText
-        );
-
         if(!guardar.ok){
 
             throw new Error(
@@ -588,28 +543,26 @@ async function generarRecibo(){
         }
 
         /* =========================
-   FINAL
-========================= */
+           FINAL
+        ========================= */
 
-cerrarModal(
-    "modalCargandoRecibo"
-);
+        cerrarModal(
+            "modalCargandoRecibo"
+        );
 
-cerrarModal(
-    "modalConfirmarRecibo"
-);
+        cerrarModal(
+            "modalConfirmarRecibo"
+        );
 
-cerrarModal(
-    "modalRecibo"
-);
+        cerrarModal(
+            "modalRecibo"
+        );
 
-/* =========================
-   ÉXITO
-========================= */
+        abrirModal(
+            "modalExitoRecibo"
+        );
 
-abrirModal(
-    "modalExitoRecibo"
-);
+        cargarRegistros();
 
     }
 
@@ -618,6 +571,10 @@ abrirModal(
         console.error(
             "ERROR RECIBO:",
             error
+        );
+
+        cerrarModal(
+            "modalCargandoRecibo"
         );
 
         alert(
@@ -633,10 +590,14 @@ abrirModal(
             "btnGenerarRecibo"
         );
 
-        btn.disabled = false;
+        if(btn){
 
-        btn.textContent =
-        "Generar Recibo";
+            btn.disabled = false;
+
+            btn.textContent =
+            "Generar Recibo";
+
+        }
 
     }
 
@@ -652,21 +613,10 @@ document.addEventListener(
 
     ()=>{
 
-        const btn =
-        document.getElementById(
-            "btnGenerarRecibo"
-        );
-
-        if(btn){
-
-    btn.onclick = generarFactura;
-
-}
-
         document
         .querySelectorAll(
 
-            "#modalRecibo input, #modalRecibo select"
+            "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
 
         )
         .forEach(campo=>{

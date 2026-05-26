@@ -35,10 +35,14 @@ function validarCamposFactura(){
     document
     .querySelectorAll(
 
-        "#modalFactura input, #modalFactura select"
+        "#modalFactura input, #modalFactura select, #modalFactura textarea"
 
     )
     .forEach(campo=>{
+
+        /* =========================
+           IGNORAR READONLY
+        ========================= */
 
         if(
 
@@ -53,6 +57,10 @@ function validarCamposFactura(){
             return;
 
         }
+
+        /* =========================
+           VALIDAR VACÍOS
+        ========================= */
 
         if(
 
@@ -129,7 +137,7 @@ async function abrirModalFactura(codigo){
 
         document
         .querySelectorAll(
-            "#modalFactura input, #modalFactura select"
+            "#modalFactura input, #modalFactura select, #modalFactura textarea"
         )
         .forEach(campo=>{
 
@@ -309,17 +317,6 @@ async function generarFactura(){
 
         btn.textContent =
         "Generando...";
-
-        const valido =
-        validarCamposFactura();
-
-        if(!valido){
-
-            throw new Error(
-                "Completa los campos requeridos"
-            );
-
-        }
 
         /* =========================
            PAYLOAD
@@ -562,6 +559,10 @@ async function generarFactura(){
 
         }
 
+        /* =========================
+           FINAL
+        ========================= */
+
         cerrarModal(
             "modalCargandoFactura"
         );
@@ -589,6 +590,10 @@ async function generarFactura(){
             error
         );
 
+        cerrarModal(
+            "modalCargandoFactura"
+        );
+
         alert(
             error.message
         );
@@ -602,10 +607,14 @@ async function generarFactura(){
             "btnGenerarFactura"
         );
 
-        btn.disabled = false;
+        if(btn){
 
-        btn.textContent =
-        "Generar Factura";
+            btn.disabled = false;
+
+            btn.textContent =
+            "Generar Factura";
+
+        }
 
     }
 
@@ -621,27 +630,10 @@ document.addEventListener(
 
     ()=>{
 
-        const btn =
-        document.getElementById(
-            "btnGenerarFactura"
-        );
-
-        if(btn){
-
-            btn.addEventListener(
-
-                "click",
-
-                generarFactura
-
-            );
-
-        }
-
         document
         .querySelectorAll(
 
-            "#modalFactura input, #modalFactura select"
+            "#modalFactura input, #modalFactura select, #modalFactura textarea"
 
         )
         .forEach(campo=>{

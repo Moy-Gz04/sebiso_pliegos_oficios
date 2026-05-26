@@ -25,7 +25,6 @@ if(!fs.existsSync(uploadPath)){
     });
 
 }
-
 /* =========================
    CONFIG PDF
 ========================= */
@@ -35,37 +34,34 @@ const storage = multer.diskStorage({
     destination: (req, file, cb) => {
 
         cb(
-
             null,
-
             uploadPath
-
         );
 
     },
 
     filename: (req, file, cb) => {
 
-        const nombre =
+        const nombreLimpio =
 
-            Date.now() +
+            file.originalname
 
-            '-' +
+            .normalize("NFD")
 
-            Math.round(Math.random() * 1E9) +
+            .replace(/[\u0300-\u036f]/g, '')
 
-            path.extname(
+            .replace(/\s+/g, '-')
 
-                file.originalname
+            .replace(/[^a-zA-Z0-9.-]/g, '');
 
-            );
-
-        cb(null, nombre);
+        cb(
+            null,
+            nombreLimpio
+        );
 
     }
 
 });
-
 /* =========================
    MULTER
 ========================= */
