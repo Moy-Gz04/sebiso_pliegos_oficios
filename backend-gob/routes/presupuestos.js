@@ -212,8 +212,9 @@ router.post(
                 );
 
             let oficio_autorizacion = null;
-
+            let oficio_autorizacion_nombre = null;
             let oficio_adecuacion = null;
+            let oficio_adecuacion_nombre = null;
 
             if(
 
@@ -227,6 +228,12 @@ router.post(
                 req.files
                 .oficio_autorizacion[0]
                 .filename;
+
+                oficio_autorizacion_nombre =
+
+                req.files
+                .oficio_autorizacion[0]
+                .originalname;
 
             }
 
@@ -242,6 +249,12 @@ router.post(
                 req.files
                 .oficio_adecuacion[0]
                 .filename;
+
+                oficio_adecuacion_nombre =
+
+                req.files
+                .oficio_adecuacion[0]
+                .originalname;
 
             }
 
@@ -265,7 +278,10 @@ router.post(
                     saldo_restante,
 
                     oficio_autorizacion,
-                    oficio_adecuacion
+                    oficio_autorizacion_nombre,
+
+                    oficio_adecuacion,
+                    oficio_adecuacion_nombre
 
                 )
 
@@ -284,7 +300,10 @@ router.post(
                     $6,
 
                     $7,
-                    $8
+                    $8,
+
+                    $9,
+                    $10
 
                 )
 
@@ -302,7 +321,74 @@ router.post(
                     disponible,
 
                     oficio_autorizacion,
-                    oficio_adecuacion
+                    oficio_autorizacion_nombre,
+
+                    oficio_adecuacion,
+                    oficio_adecuacion_nombre
+
+                ]
+
+            );
+
+            /* =========================
+            ACTUALIZAR ÚLTIMOS OFICIOS
+            ========================= */
+
+            await pool.query(
+
+                `
+                INSERT INTO ultimos_oficios_por_up(
+
+                    area_id,
+
+                    oficio_autorizacion,
+                    oficio_autorizacion_nombre,
+
+                    oficio_adecuacion,
+                    oficio_adecuacion_nombre,
+
+                    fecha_actualizacion
+
+                )
+
+                VALUES(
+
+                    $1,
+                    $2,
+                    $3,
+                    $4,
+                    $5,
+                    NOW()
+
+                )
+
+                ON CONFLICT(area_id)
+
+                DO UPDATE SET
+
+                    oficio_autorizacion =
+                    EXCLUDED.oficio_autorizacion,
+
+                    oficio_autorizacion_nombre =
+                    EXCLUDED.oficio_autorizacion_nombre,
+
+                    oficio_adecuacion =
+                    EXCLUDED.oficio_adecuacion,
+
+                    oficio_adecuacion_nombre =
+                    EXCLUDED.oficio_adecuacion_nombre,
+
+                    fecha_actualizacion = NOW()
+                `,
+                [
+
+                    area_id,
+
+                    oficio_autorizacion,
+                    oficio_autorizacion_nombre,
+
+                    oficio_adecuacion,
+                    oficio_adecuacion_nombre
 
                 ]
 
@@ -319,7 +405,6 @@ router.post(
                 nuevo.rows[0]
 
             });
-
         }
 
         catch(error){
