@@ -563,9 +563,10 @@ async function cargarHistorial(){
                                 href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
                                 target="_blank"
                                 class="btn-pdf"
+                                title="${registro.oficio_autorizacion}"
                             >
 
-                                Ver PDF
+                                ${registro.oficio_autorizacion}
 
                             </a>`
 
@@ -578,25 +579,26 @@ async function cargarHistorial(){
 
                     <td>
 
-                        ${
-                            registro.oficio_adecuacion
+                       ${
+                        registro.oficio_adecuacion
 
-                            ?
+                        ?
 
-                            `<a
-                                href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
-                                target="_blank"
-                                class="btn-pdf"
-                            >
+                        `<a
+                            href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
+                            target="_blank"
+                            class="btn-pdf"
+                            title="${registro.oficio_adecuacion}"
+                        >
 
-                                Ver PDF
+                            ${registro.oficio_adecuacion}
 
-                            </a>`
+                        </a>`
 
-                            :
+                        :
 
-                            'Sin PDF'
-                        }
+                        'Sin PDF'
+                    }
 
                     </td>
 

@@ -2,494 +2,164 @@
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
-
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>
-
         Pagos Presupuestales
-
     </title>
-
-    <!-- =========================
-         CSS
-    ========================= -->
-
+    <!-- =========================CSS========================= -->
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/ssidebar.css">
     <link rel="stylesheet" href="css/gastos.css">
-
 </head>
-
 <body>
-
-    <!-- =========================
-         SIDEBAR
-    ========================= -->
-
-    <div id="sidebar-container"></div>
-
-    <!-- =========================
-         CONTENIDO
-    ========================= -->
-
-    <div class="contenido">
-
-        <!-- =========================
-             TOPBAR
-        ========================= -->
-
+<!-- =============SIDEBAR========================= -->
+<div id="sidebar-container"></div>
+<!-- =========================CONTENIDO========================= -->
+<div class="contenido">
+<!-- =========================TOPBAR========================= -->
         <div class="topbar">
-
             <div class="titulo-principal">
-
                 SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
-
             </div>
-
             <div class="subtitulo">
-
                 REGISTRO DE PAGOS PRESUPUESTALES
-
             </div>
-
         </div>
-
         <div style="height:25px;"></div>
-
-        <!-- =========================
-             CONTENEDOR GENERAL
-        ========================= -->
-
+        <!-- =========================CONTENEDOR GENERAL========================= -->
         <div class="contenedor-pagos">
-
-            <!-- =========================
-                 TOP
-            ========================= -->
-
+        <!-- =========================TOP========================= -->
             <div class="top-pagos">
-
                 <!-- SELECT -->
-
                 <div class="fila fila-top">
-
                     <label for="selectArea">
-
                         ÁREA PRESUPUESTAL
-
                     </label>
-
                     <select id="selectArea">
-
                         <option value="" disabled selected>
-
                             Selecciona un área
-
                         </option>
-
                         <option value="UP-01">
-
                             UP-01
-
                         </option>
-
                         <option value="UP-CA">
-
                             UP-CA
-
                         </option>
-
                         <option value="UP-01-S-DRM">
-
                             UP-01-S-DRM
-
                         </option>
-
                         <option value="UP-04">
-
                             UP-04
-
                         </option>
-
                         <option value="UP-05">
-
                             UP-05
-
                         </option>
-
                         <option value="UP-06">
-
                             UP-06
-
                         </option>
-
                         <option value="UP-07">
-
                             UP-07
-
                         </option>
-
                         <option value="UP-08">
-
                             UP-08
-
                         </option>
-
                         <option value="UP-13">
-
                             UP-13
-
                         </option>
-
                         <option value="UP-14">
-
                             UP-14
-
                         </option>
-
                         <option value="UP-15">
-
                             UP-15
-
                         </option>
-
                         <option value="UP-16">
-
                             UP-16
-
                         </option>
-
                     </select>
-
                 </div>
-
                 <!-- SALDO -->
-
                 <div class="saldo-card">
-
                     <span>
-
                         SALDO DISPONIBLE
-
                     </span>
-
                     <h2 id="saldoDisponible">
-
                         $0.00
-
                     </h2>
-
                 </div>
-
             </div>
-
-            <!-- =========================
-                 REGISTROS
-            ========================= -->
+            <!-- ======================= REGISTROS========================= -->
 
             <div class="tabla-container">
-
                 <div class="tabla-header">
-
                     <h2>
-
                         REGISTROS DEL ÁREA
-
                     </h2>
-
                 </div>
-
-                <!-- =========================
-                     CONTENEDOR DINÁMICO
-                ========================= -->
-
+                <!-- =========================CONTENEDOR DINÁMICO========================= -->
                 <div class="contenedor-registros" id="tbodyRegistros">
-
-                    <!--
-
-                    ESTRUCTURA GENERADA
-                    AUTOMÁTICAMENTE
-                    DESDE gastos.js
-
-                    <div class="registro-card">
-
-                        <div class="registro-top">
-
-                            <div class="campo-mini">
-
-                                <span>ID</span>
-
-                                <strong>
-                                    UP-01_R-5379
-                                </strong>
-
-                            </div>
-
-                            <div class="campo-mini">
-
-                                <span>FECHA</span>
-
-                                <strong>
-                                    15/05/2026
-                                </strong>
-
-                            </div>
-
-                            <div class="campo-mini campo-persona">
-
-                                <span>PERSONA</span>
-
-                                <strong>
-                                    Marlen Elva Arista
-                                </strong>
-
-                            </div>
-
-                            <div class="campo-mini">
-
-                                <span>ESTATUS</span>
-
-                                <span class="badge-estatus badge-revision">
-
-                                    A Revisar
-
-                                </span>
-
-                            </div>
-
-                            <div class="campo-mini">
-
-                                <span>OFICIO</span>
-
-                                <a
-                                    href="#"
-                                    class="btn-link"
-                                >
-
-                                    Ver Oficio
-
-                                </a>
-
-                            </div>
-
-                            <div class="campo-mini">
-
-                                <span>PLIEGO</span>
-
-                                <a
-                                    href="#"
-                                    class="btn-link"
-                                >
-
-                                    Ver Pliego
-
-                                </a>
-
-                            </div>
-
-
-                        </div>
-
-                        <div class="registro-bottom">
-
-                            <div class="campo-observacion">
-
-                                <span>
-
-                                    OBSERVACIONES ÁREA
-
-                                </span>
-
-                                <textarea
-                                    class="textarea-obs"
-                                    readonly
-                                ></textarea>
-
-                            </div>
-
-                            <div class="campo-observacion">
-
-                                <span>
-
-                                    OBSERVACIONES ADMIN
-
-                                </span>
-
-                                <textarea
-                                    class="textarea-obs-admin"
-                                ></textarea>
-
-                            </div>
-
-                            <div class="campo">
-
-                                <span>
-
-                                    CANTIDAD
-
-                                </span>
-
-                                <input
-                                    type="number"
-                                    class="input-cantidad"
-                                >
-
-                            </div>
-
-                            <div class="campo">
-
-                                <span>
-
-                                    PAGAR
-
-                                </span>
-
-                                <button
-                                    class="btn-pagar"
-                                >
-
-                                    PAGAR
-
-                                </button>
-
-                            </div>
-
-                            <div class="campo">
-
-                                <span>
-
-                                    RECHAZAR
-
-                                </span>
-
-                                <button
-                                    class="btn-rechazar"
-                                >
-
-                                    RECHAZAR
-
-                                </button>
-
-                            </div>
-
-                        </div>
-
-                    </div>
-
-                    -->
-
                 </div>
-
             </div>
-
         </div>
-
     </div>
-
     <!-- =========================
          MODAL ÉXITO
     ========================= -->
-
     <div class="modal" id="modalExito">
-
         <div class="modal-contenido">
-
             <h2>
-
                 Operación realizada
-
             </h2>
-
             <p id="mensajeModalExito">
-
                 El registro fue actualizado correctamente.
-
             </p>
-
             <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
-
                 Aceptar
-
             </button>
-
         </div>
-
     </div>
 
     <!-- =========================
          MODAL ERROR
     ========================= -->
-
     <div class="modal" id="modalError">
-
         <div class="modal-contenido">
-
             <h2>
-
                 Error
-
             </h2>
-
             <p id="mensajeModalError">
-
                 Ocurrió un problema.
-
             </p>
-
             <button type="button" class="btn-principal" onclick="cerrarModal('modalError')">
-
                 Aceptar
-
             </button>
-
         </div>
-
     </div>
 
     <!-- =========================
      MODAL ÉXITO
 ========================= -->
-
     <div class="modal" id="modalExito">
-
         <div class="modal-contenido modal-exito">
-
             <h2>
-
                 Operación realizada
-
             </h2>
-
             <p id="mensajeModalExito">
-
                 El registro fue actualizado correctamente.
-
             </p>
-
             <div class="modal-botones">
-
                 <button type="button" class="btn-principal" onclick="cerrarModal('modalExito')">
-
                     Aceptar
-
                 </button>
-
             </div>
-
         </div>
-
     </div>
 
     <!-- =========================
      MODAL ERROR
 ========================= -->
-
     <div class="modal" id="modalError">
-
         <div class="modal-contenido modal-error">
-
             <h2>
 
                 Error

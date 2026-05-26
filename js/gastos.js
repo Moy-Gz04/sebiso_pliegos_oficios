@@ -382,242 +382,353 @@ async function cargarRegistros(){
 
             }
 
-            tbody.innerHTML += `
+        tbody.innerHTML += `
 
-                <div class="registro-card">
+    <div class="registro-card">
 
-                    <!-- TOP -->
+        <!-- TOP -->
 
-                    <div class="registro-top">
+        <div class="registro-top">
 
-                        <div class="campo-mini">
+            <!-- FILA 1 -->
 
-                            <span>
+            <div class="top-row1">
 
-                                ID
+                <!-- ID -->
 
-                            </span>
+                <div class="campo-mini">
 
-                            <strong>
+                    <span>
 
-                                ${registro.codigo || '-'}
+                        ID
 
-                            </strong>
+                    </span>
 
-                        </div>
+                    <strong>
 
-                        <div class="campo-mini">
+                        ${registro.codigo || '-'}
 
-                            <span>
-
-                                FECHA
-
-                            </span>
-
-                            <strong>
-
-                                ${formatearFecha(
-                                    registro.fecha
-                                )}
-
-                            </strong>
-
-                        </div>
-
-                        <div class="campo-mini campo-persona">
-
-                            <span>
-
-                                PERSONA
-
-                            </span>
-
-                            <strong>
-
-                                ${registro.persona || '-'}
-
-                            </strong>
-
-                        </div>
-
-                        <div class="campo-mini">
-
-                            <span>
-
-                                OFICIO
-
-                            </span>
-
-                            <a
-                                href="${registro.oficio_pdf || '#'}"
-                                target="_blank"
-                                class="btn-link"
-                            >
-
-                                Oficio
-
-                            </a>
-
-                        </div>
-
-                        <div class="campo-mini">
-
-                            <span>
-
-                                PLIEGO
-
-                            </span>
-
-                            <a
-                                href="${registro.pliego_pdf || '#'}"
-                                target="_blank"
-                                class="btn-link"
-                            >
-
-                                Pliego
-
-                            </a>
-
-                        </div>
-
-                        <div class="campo-mini">
-
-                            <span>
-
-                                ESTATUS
-
-                            </span>
-
-                            ${obtenerBadgeAdmin(
-                                estatusVisual
-                            )}
-
-                        </div>
-
-                    </div>
-
-                    <!-- BOTTOM -->
-
-                    <div class="registro-bottom">
-
-                        <div class="campo-observacion">
-
-                            <span>
-
-                                OBSERVACIONES ÁREA
-
-                            </span>
-
-                            <textarea
-                                class="textarea-obs"
-                                readonly
-                            >${registro.observaciones || ''}</textarea>
-
-                        </div>
-
-                        <div class="campo-observacion">
-
-                            <span>
-
-                                OBSERVACIONES ADMIN
-
-                            </span>
-
-                            <textarea
-                                class="textarea-obs-admin"
-                                id="obs-admin-${registro.codigo}"
-                                placeholder="Motivo del rechazo..."
-                                ${yaPagado ? 'disabled' : ''}
-                            >${registro.observaciones_admin || ''}</textarea>
-
-                        </div>
-
-                        <div class="campo-mini">
-
-                            <span>
-
-                                CANTIDAD
-
-                            </span>
-
-                            ${
-
-                                yaPagado
-
-                                ?
-
-                                `
-
-                                <div class="texto-simple">
-
-                                    $${parseFloat(
-
-                                        registro.cantidad_pagada || 0
-
-                                    ).toLocaleString(
-
-                                        'es-MX',
-
-                                        {
-
-                                            minimumFractionDigits:2
-
-                                        }
-
-                                    )}
-
-                                </div>
-
-                                `
-
-                                :
-
-                                `
-
-                                <input
-                                    type="number"
-                                    class="input-cantidad"
-                                    id="cantidad-${registro.id}"
-                                    placeholder="$0.00"
-                                    min="1"
-                                    step="0.01"
-                                >
-
-                                `
-                            }
-
-                        </div>
-
-                        <div class="campo-mini">
-
-                            <span>
-
-                                PAGAR
-
-                            </span>
-
-                            ${botonPagar}
-
-                        </div>
-
-                        <div class="campo-mini">
-
-                            <span>
-
-                                RECHAZAR
-
-                            </span>
-
-                            ${botonRechazar}
-
-                        </div>
-
-                    </div>
+                    </strong>
 
                 </div>
 
-            `;
+                <!-- FECHA -->
 
+                <div class="campo-mini">
+
+                    <span>
+
+                        FECHA
+
+                    </span>
+
+                    <strong>
+
+                        ${formatearFecha(
+                            registro.fecha
+                        )}
+
+                    </strong>
+
+                </div>
+
+                <!-- PERSONA -->
+
+                <div class="campo-mini campo-persona">
+
+                    <span>
+
+                        PERSONA
+
+                    </span>
+
+                    <strong>
+
+                        ${registro.persona || '-'}
+
+                    </strong>
+
+                </div>
+
+                <!-- ESTATUS -->
+
+                <div class="estatus-wrap">
+
+                    <span>
+
+                        ESTATUS
+
+                    </span>
+
+                    ${obtenerBadgeAdmin(
+                        estatusVisual
+                    )}
+
+                </div>
+
+            </div>
+
+            <!-- FILA PDFS -->
+
+            <div class="top-row2">
+
+                <!-- OFICIO PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        OFICIO PDF
+
+                    </span>
+
+                    <a
+                        href="${registro.oficio_pdf || '#'}"
+                        target="_blank"
+                        class="btn-link"
+                    >
+
+                        Ver Oficio
+
+                    </a>
+
+                </div>
+
+                <!-- PLIEGO PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        PLIEGO PDF
+
+                    </span>
+
+                    <a
+                        href="${registro.pliego_pdf || '#'}"
+                        target="_blank"
+                        class="btn-link"
+                    >
+
+                        Ver Pliego
+
+                    </a>
+
+                </div>
+
+                <!-- SPG PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        SPG PDF
+
+                    </span>
+
+                    <a
+                        href="${registro.spg_pdf || '#'}"
+                        target="_blank"
+                        class="btn-link"
+                    >
+
+                        Ver SPG
+
+                    </a>
+
+                </div>
+
+                <!-- RECIBO PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        RECIBO PDF
+
+                    </span>
+
+                    <a
+                        href="${registro.recibo_pdf || '#'}"
+                        target="_blank"
+                        class="btn-link"
+                    >
+
+                        Ver Recibo
+
+                    </a>
+
+                </div>
+
+                <!-- FACTURA PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        FACTURA PDF
+
+                    </span>
+
+                    <a
+                        href="${registro.factura_pdf || '#'}"
+                        target="_blank"
+                        class="btn-link"
+                    >
+
+                        Ver Factura
+
+                    </a>
+
+                </div>
+
+                <!-- OFICIO 2 PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        OFICIO 2 PDF
+
+                    </span>
+
+                    <a
+                        href="${registro.oficio2_pdf || '#'}"
+                        target="_blank"
+                        class="btn-link"
+                    >
+
+                        Ver Oficio 2
+
+                    </a>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- BOTTOM -->
+
+        <div class="registro-bottom">
+
+            <div class="campo-observacion">
+
+                <span>
+
+                    OBSERVACIONES ÁREA
+
+                </span>
+
+                <textarea
+                    class="textarea-obs"
+                    readonly
+                >${registro.observaciones || ''}</textarea>
+
+            </div>
+
+            <div class="campo-observacion">
+
+                <span>
+
+                    OBSERVACIONES ADMIN
+
+                </span>
+
+                <textarea
+                    class="textarea-obs-admin"
+                    id="obs-admin-${registro.codigo}"
+                    placeholder="Motivo del rechazo..."
+                    ${yaPagado ? 'disabled' : ''}
+                >${registro.observaciones_admin || ''}</textarea>
+
+            </div>
+
+            <div class="campo-mini">
+
+                <span>
+
+                    CANTIDAD
+
+                </span>
+
+                ${
+
+                    yaPagado
+
+                    ?
+
+                    `
+
+                    <div class="texto-simple">
+
+                        $${parseFloat(
+
+                            registro.cantidad_pagada || 0
+
+                        ).toLocaleString(
+
+                            'es-MX',
+
+                            {
+
+                                minimumFractionDigits:2
+
+                            }
+
+                        )}
+
+                    </div>
+
+                    `
+
+                    :
+
+                    `
+
+                    <input
+                        type="number"
+                        class="input-cantidad"
+                        id="cantidad-${registro.id}"
+                        placeholder="$0.00"
+                        min="1"
+                        step="0.01"
+                    >
+
+                    `
+                }
+
+            </div>
+
+            <div class="campo-mini">
+
+                <span>
+
+                    PAGAR
+
+                </span>
+
+                ${botonPagar}
+
+            </div>
+
+            <div class="campo-mini">
+
+                <span>
+
+                    RECHAZAR
+
+                </span>
+
+                ${botonRechazar}
+
+            </div>
+
+        </div>
+
+    </div>
+
+`;
         });
 
     }

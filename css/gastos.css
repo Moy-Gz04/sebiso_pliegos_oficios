@@ -224,35 +224,85 @@
 
     border:1px solid #e2e8f0;
 
-    border-radius:26px;
+    border-radius:28px;
 
-    padding:22px;
+    padding:24px;
 
     background:white;
 
 }
 
 /* =========================
-   FILA SUPERIOR
+   FILA SUPERIOR — ahora en dos sub-filas
 ========================= */
 
 .registro-top{
 
+    display:flex;
+
+    flex-direction:column;
+
+    gap:14px;
+
+    margin-bottom:22px;
+
+}
+
+/* Sub-fila 1: ID · Fecha · Persona · Estatus (derecha) */
+
+.top-row1{
+
     display:grid;
 
-    grid-template-columns:
-    140px
-    190px
-    1fr
-    150px
-    150px
-    150px;
+    grid-template-columns:160px 220px 1fr auto;
 
     gap:16px;
 
-    align-items:end;
+    align-items:start;
 
-    margin-bottom:18px;
+}
+
+/* =========================
+   SUB-FILA PDFS
+========================= */
+
+.top-row2{
+
+    display:flex;
+
+    flex-wrap:nowrap;
+
+    gap:10px;
+
+    width:100%;
+
+}
+
+/* =========================
+   BOTONES PDF MISMA FILA
+========================= */
+
+.top-row2 .campo-mini{
+
+    flex:1;
+
+    min-width:0;
+
+}
+
+/* =========================
+   ESTATUS ALINEADO A LA DERECHA
+========================= */
+
+.estatus-wrap{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:7px;
+
+    align-items:flex-end;
 
 }
 
@@ -265,13 +315,13 @@
     display:grid;
 
     grid-template-columns:
-    1fr
-    1fr
-    170px
-    170px
-    170px;
+    minmax(200px,1fr)
+    minmax(200px,1fr)
+    140px
+    120px
+    120px;
 
-    gap:16px;
+    gap:14px;
 
     align-items:end;
 
@@ -289,7 +339,9 @@
 
     flex-direction:column;
 
-    gap:6px;
+    gap:7px;
+
+    min-width:0;
 
 }
 
@@ -299,15 +351,16 @@
 
 .campo span,
 .campo-mini span,
-.campo-observacion span{
+.campo-observacion span,
+.estatus-wrap span{
 
-    font-size:9px;
+    font-size:10px;
 
-    font-weight:700;
+    font-weight:800;
 
     text-transform:uppercase;
 
-    letter-spacing:.5px;
+    letter-spacing:.6px;
 
     color:#6b7280;
 
@@ -320,7 +373,7 @@
 .campo strong,
 .campo-mini strong{
 
-    font-size:12px;
+    font-size:13px;
 
     color:#111827;
 
@@ -342,11 +395,7 @@
 
 .campo-persona strong{
 
-    overflow:hidden;
-
-    text-overflow:ellipsis;
-
-    white-space:nowrap;
+    line-height:1.4;
 
 }
 
@@ -358,7 +407,7 @@
 
     width:100%;
 
-    height:42px;
+    height:40px;
 
     display:flex;
 
@@ -382,6 +431,12 @@
 
     transition:.2s;
 
+    white-space:nowrap;
+
+    padding:0 8px;
+
+    cursor:pointer;
+
 }
 
 .btn-link:hover{
@@ -401,17 +456,17 @@
 
     width:100%;
 
-    height:90px;
+    height:110px;
 
     resize:none;
 
-    border-radius:16px;
+    border-radius:18px;
 
-    padding:12px;
+    padding:14px;
 
-    font-size:11px;
+    font-size:12px;
 
-    line-height:1.4;
+    line-height:1.5;
 
     font-family:inherit;
 
@@ -460,9 +515,9 @@
 
 .badge-estatus{
 
-    width:100%;
+    height:40px;
 
-    height:42px;
+    padding:0 20px;
 
     display:flex;
 
@@ -474,9 +529,11 @@
 
     font-size:11px;
 
-    font-weight:700;
+    font-weight:800;
 
-    letter-spacing:.4px;
+    letter-spacing:.5px;
+
+    white-space:nowrap;
 
 }
 
@@ -530,15 +587,15 @@
 
     width:100%;
 
-    height:42px;
+    height:40px;
 
     border:1px solid #D5DBE3;
 
-    border-radius:14px;
+    border-radius:16px;
 
     text-align:center;
 
-    font-size:12px;
+    font-size:13px;
 
     font-weight:700;
 
@@ -567,9 +624,9 @@
 
     width:100%;
 
-    height:42px;
+    height:40px;
 
-    border-radius:14px;
+    border-radius:16px;
 
     border:1px solid #D5DBE3;
 
@@ -581,7 +638,7 @@
 
     justify-content:center;
 
-    font-size:12px;
+    font-size:13px;
 
     font-weight:700;
 
@@ -600,15 +657,17 @@
 
     width:100%;
 
-    height:42px;
+    height:40px;
 
     border-radius:999px;
 
     font-size:11px;
 
-    font-weight:700;
+    font-weight:800;
 
     transition:.2s;
+
+    border:none;
 
 }
 
@@ -617,8 +676,6 @@
 ========================= */
 
 .btn-pagar{
-
-    border:none;
 
     background:#1F8B2C;
 
@@ -642,8 +699,6 @@
 
 .btn-rechazar{
 
-    border:none;
-
     background:#691C32;
 
     color:white;
@@ -666,8 +721,6 @@
 
 .btn-pagado{
 
-    border:none;
-
     background:#1F8B2C;
 
     color:white;
@@ -681,8 +734,6 @@
 ========================= */
 
 .btn-deshabilitado{
-
-    border:none;
 
     background:#9CA3AF;
 
@@ -714,14 +765,35 @@
    RESPONSIVE
 ========================= */
 
-@media(max-width:1450px){
+@media(max-width:1200px){
 
-    .registro-top{
+    .top-row1{
 
-        grid-template-columns:
-        1fr 1fr 1fr;
+        grid-template-columns:1fr 1fr 1fr auto;
 
     }
+
+    .top-row2{
+
+        flex-wrap:wrap;
+
+    }
+
+    .top-row2 .campo-mini{
+
+        min-width:calc(33.333% - 10px);
+
+    }
+
+    .registro-bottom{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+}
+
+@media(max-width:1450px){
 
     .registro-bottom{
 
@@ -774,10 +846,35 @@
 
     }
 
-    .registro-top,
+    .top-row1{
+
+        grid-template-columns:1fr 1fr;
+
+    }
+
+    .estatus-wrap{
+
+        grid-column:1 / -1;
+
+        align-items:flex-start;
+
+    }
+
+    .top-row2{
+
+        flex-wrap:wrap;
+
+    }
+
+    .top-row2 .campo-mini{
+
+        min-width:calc(50% - 10px);
+
+    }
+
     .registro-bottom{
 
-        grid-template-columns:1fr;
+        grid-template-columns:1fr 1fr;
 
     }
 
@@ -787,4 +884,12 @@
 
     }
 
+    .textarea-obs,
+    .textarea-obs-admin{
+
+        height:95px;
+
+    }
+
 }
+
