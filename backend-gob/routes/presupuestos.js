@@ -14,17 +14,19 @@ const fs = require('fs');
    CREAR CARPETA SI NO EXISTE
 ========================= */
 
-const uploadPath = 'uploads/oficios';
+const uploadPath =
+path.join(__dirname, '..', 'uploads', 'oficios');
 
-if(!fs.existsSync(uploadPath)){
+if (!fs.existsSync(uploadPath)) {
 
     fs.mkdirSync(uploadPath, {
 
-        recursive:true
+        recursive: true
 
     });
 
 }
+
 /* =========================
    CONFIG PDF
 ========================= */
@@ -33,35 +35,40 @@ const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
 
-        cb(
-            null,
-            uploadPath
-        );
+        cb(null, uploadPath);
 
     },
 
     filename: (req, file, cb) => {
 
+        const extension =
+        path.extname(file.originalname);
+
+        const nombreBase =
+        path.basename(file.originalname, extension);
+
         const nombreLimpio =
 
-            file.originalname
+            nombreBase
 
-            .normalize("NFD")
+            .normalize('NFD')
 
             .replace(/[\u0300-\u036f]/g, '')
 
             .replace(/\s+/g, '-')
 
-            .replace(/[^a-zA-Z0-9.-]/g, '');
+            .replace(/[^a-zA-Z0-9-_]/g, '');
 
-        cb(
-            null,
-            nombreLimpio
-        );
+        const nombreFinal =
+
+            `${Date.now()}-${nombreLimpio}${extension}`;
+
+        cb(null, nombreFinal);
 
     }
 
 });
+
 /* =========================
    MULTER
 ========================= */
@@ -78,16 +85,11 @@ const upload = multer({
 
     fileFilter: (req, file, cb) => {
 
-        if(
-            file.mimetype !==
-            'application/pdf'
-        ){
+        if (file.mimetype !== 'application/pdf') {
 
             return cb(
 
-                new Error(
-                    'Solo PDFs'
-                )
+                new Error('Solo se permiten PDFs')
 
             );
 
@@ -111,17 +113,17 @@ router.post(
 
         {
 
-            name:'oficio_autorizacion',
+            name: 'oficio_autorizacion',
 
-            maxCount:1
+            maxCount: 1
 
         },
 
         {
 
-            name:'oficio_adecuacion',
+            name: 'oficio_adecuacion',
 
-            maxCount:1
+            maxCount: 1
 
         }
 
@@ -129,7 +131,11 @@ router.post(
 
     async (req, res) => {
 
-        try{
+        try {
+
+            console.log('BODY:', req.body);
+
+            console.log('FILES:', req.files);
 
             const {
 
@@ -142,21 +148,20 @@ router.post(
 
             } = req.body;
 
-            if(
+            if (
 
                 !area_id ||
                 !anio ||
                 !mes ||
-                !saldo_autorizado
+                saldo_autorizado === undefined
 
-            ){
+            ) {
 
-                return res.status(400)
-                .json({
+                return res.status(400).json({
 
-                    ok:false,
+                    ok: false,
 
-                    msg:'Campos incompletos'
+                    msg: 'Campos incompletos'
 
                 });
 
@@ -183,78 +188,74 @@ router.post(
 
             );
 
-            if(
-                existe.rows.length > 0
-            ){
+            if (existe.rows.length > 0) {
 
-                return res.status(400)
-                .json({
+                return res.status(400).json({
 
-                    ok:false,
+                    ok: false,
 
-                    msg:
-                    'Ya existe registro para ese periodo'
+                    msg: 'Ya existe registro para ese periodo'
 
                 });
 
             }
 
+            const autorizado =
+            parseFloat(saldo_autorizado || 0);
+
+            const modificado =
+            parseFloat(saldo_modificado || 0);
+
             const disponible =
-
-                parseFloat(
-                    saldo_autorizado || 0
-                )
-
-                +
-
-                parseFloat(
-                    saldo_modificado || 0
-                );
+            autorizado + modificado;
 
             let oficio_autorizacion = null;
             let oficio_autorizacion_nombre = null;
+
             let oficio_adecuacion = null;
             let oficio_adecuacion_nombre = null;
 
-            if(
+            if (
 
                 req.files &&
-                req.files.oficio_autorizacion
+                req.files.oficio_autorizacion &&
+                req.files.oficio_autorizacion[0]
 
-            ){
+            ) {
 
                 oficio_autorizacion =
 
-                req.files
-                .oficio_autorizacion[0]
-                .filename;
+                    req.files
+                    .oficio_autorizacion[0]
+                    .filename;
 
                 oficio_autorizacion_nombre =
 
-                req.files
-                .oficio_autorizacion[0]
-                .originalname;
+                    req.files
+                    .oficio_autorizacion[0]
+                    .originalname;
 
             }
 
-            if(
+            if (
 
                 req.files &&
-                req.files.oficio_adecuacion
+                req.files.oficio_adecuacion &&
+                req.files.oficio_adecuacion[0]
 
-            ){
+            ) {
 
                 oficio_adecuacion =
 
-                req.files
-                .oficio_adecuacion[0]
-                .filename;
+                    req.files
+                    .oficio_adecuacion[0]
+                    .filename;
 
                 oficio_adecuacion_nombre =
 
-                req.files
-                .oficio_adecuacion[0]
-                .originalname;
+                    req.files
+                    .oficio_adecuacion[0]
+                    .originalname;
 
             }
 
@@ -315,8 +316,8 @@ router.post(
                     anio,
                     mes,
 
-                    saldo_autorizado,
-                    saldo_modificado,
+                    autorizado,
+                    modificado,
 
                     disponible,
 
@@ -331,7 +332,7 @@ router.post(
             );
 
             /* =========================
-            ACTUALIZAR ÚLTIMOS OFICIOS
+               ACTUALIZAR ÚLTIMOS OFICIOS
             ========================= */
 
             await pool.query(
@@ -396,26 +397,30 @@ router.post(
 
             res.json({
 
-                ok:true,
+                ok: true,
 
-                msg:
-                'Presupuesto registrado',
+                msg: 'Presupuesto registrado',
 
                 presupuesto:
                 nuevo.rows[0]
 
             });
+
         }
 
-        catch(error){
+        catch (error) {
+
+            console.log('ERROR CREAR PRESUPUESTO:');
 
             console.log(error);
 
             res.status(500).json({
 
-                ok:false,
+                ok: false,
 
-                msg:'Error servidor'
+                msg: 'Error servidor',
+
+                error: error.message
 
             });
 
@@ -433,16 +438,12 @@ router.get(
 
     '/:area',
 
-    async(req, res) => {
+    async (req, res) => {
 
-        try{
+        try {
 
             const { area } =
             req.params;
-
-            /* =========================
-               PRESUPUESTOS
-            ========================= */
 
             const presupuestos =
             await pool.query(
@@ -472,20 +473,12 @@ router.get(
 
             );
 
-            /* =========================
-               CLAVE CORTA GASTOS
-            ========================= */
-
             const claveCorta =
             area
             .split('-')
-            .slice(0,2)
+            .slice(0, 2)
             .join('-')
             .trim();
-
-            /* =========================
-               GASTOS
-            ========================= */
 
             const gastos =
             await pool.query(
@@ -509,7 +502,7 @@ router.get(
 
             res.json({
 
-                ok:true,
+                ok: true,
 
                 presupuestos:
                 presupuestos.rows,
@@ -521,15 +514,15 @@ router.get(
 
         }
 
-        catch(error){
+        catch (error) {
 
             console.log(error);
 
             res.status(500).json({
 
-                ok:false,
+                ok: false,
 
-                msg:'Error obteniendo historial'
+                msg: 'Error obteniendo historial'
 
             });
 
@@ -551,25 +544,25 @@ router.put(
 
         {
 
-            name:'oficio_autorizacion',
+            name: 'oficio_autorizacion',
 
-            maxCount:1
+            maxCount: 1
 
         },
 
         {
 
-            name:'oficio_adecuacion',
+            name: 'oficio_adecuacion',
 
-            maxCount:1
+            maxCount: 1
 
         }
 
     ]),
 
-    async(req, res) => {
+    async (req, res) => {
 
-        try{
+        try {
 
             const { id } =
             req.params;
@@ -584,20 +577,19 @@ router.put(
 
             } = req.body;
 
-            if(
+            if (
 
-                !saldo_autorizado ||
+                saldo_autorizado === undefined ||
                 !mes ||
                 !anio
 
-            ){
+            ) {
 
-                return res.status(400)
-                .json({
+                return res.status(400).json({
 
-                    ok:false,
+                    ok: false,
 
-                    msg:'Campos incompletos'
+                    msg: 'Campos incompletos'
 
                 });
 
@@ -615,16 +607,13 @@ router.put(
 
             );
 
-            if(
-                existe.rows.length === 0
-            ){
+            if (existe.rows.length === 0) {
 
-                return res.status(404)
-                .json({
+                return res.status(404).json({
 
-                    ok:false,
+                    ok: false,
 
-                    msg:'Registro no encontrado'
+                    msg: 'Registro no encontrado'
 
                 });
 
@@ -663,17 +652,13 @@ router.put(
 
             );
 
-            if(
-                duplicado.rows.length > 0
-            ){
+            if (duplicado.rows.length > 0) {
 
-                return res.status(400)
-                .json({
+                return res.status(400).json({
 
-                    ok:false,
+                    ok: false,
 
-                    msg:
-                    'Ya existe otro registro para ese periodo'
+                    msg: 'Ya existe otro registro para ese periodo'
 
                 });
 
@@ -681,15 +666,11 @@ router.put(
 
             const disponible =
 
-                parseFloat(
-                    saldo_autorizado || 0
-                )
+                parseFloat(saldo_autorizado || 0)
 
                 +
 
-                parseFloat(
-                    saldo_modificado || 0
-                );
+                parseFloat(saldo_modificado || 0);
 
             const restante =
 
@@ -697,24 +678,29 @@ router.put(
 
                 -
 
-                parseFloat(
-                    registro.gastado_mes || 0
-                );
+                parseFloat(registro.gastado_mes || 0);
 
             let nuevoPDFAutorizacion =
             registro.oficio_autorizacion;
 
+            let nuevoNombreAutorizacion =
+            registro.oficio_autorizacion_nombre;
+
             let nuevoPDFAdecuacion =
             registro.oficio_adecuacion;
 
-            if(
+            let nuevoNombreAdecuacion =
+            registro.oficio_adecuacion_nombre;
+
+            if (
 
                 req.files &&
-                req.files.oficio_autorizacion
+                req.files.oficio_autorizacion &&
+                req.files.oficio_autorizacion[0]
 
-            ){
+            ) {
 
-                if(registro.oficio_autorizacion){
+                if (registro.oficio_autorizacion) {
 
                     const rutaVieja =
 
@@ -726,7 +712,7 @@ router.put(
 
                         );
 
-                    if(fs.existsSync(rutaVieja)){
+                    if (fs.existsSync(rutaVieja)) {
 
                         fs.unlinkSync(rutaVieja);
 
@@ -736,20 +722,27 @@ router.put(
 
                 nuevoPDFAutorizacion =
 
-                req.files
-                .oficio_autorizacion[0]
-                .filename;
+                    req.files
+                    .oficio_autorizacion[0]
+                    .filename;
+
+                nuevoNombreAutorizacion =
+
+                    req.files
+                    .oficio_autorizacion[0]
+                    .originalname;
 
             }
 
-            if(
+            if (
 
                 req.files &&
-                req.files.oficio_adecuacion
+                req.files.oficio_adecuacion &&
+                req.files.oficio_adecuacion[0]
 
-            ){
+            ) {
 
-                if(registro.oficio_adecuacion){
+                if (registro.oficio_adecuacion) {
 
                     const rutaVieja =
 
@@ -761,7 +754,7 @@ router.put(
 
                         );
 
-                    if(fs.existsSync(rutaVieja)){
+                    if (fs.existsSync(rutaVieja)) {
 
                         fs.unlinkSync(rutaVieja);
 
@@ -771,9 +764,15 @@ router.put(
 
                 nuevoPDFAdecuacion =
 
-                req.files
-                .oficio_adecuacion[0]
-                .filename;
+                    req.files
+                    .oficio_adecuacion[0]
+                    .filename;
+
+                nuevoNombreAdecuacion =
+
+                    req.files
+                    .oficio_adecuacion[0]
+                    .originalname;
 
             }
 
@@ -799,9 +798,13 @@ router.put(
 
                     oficio_autorizacion = $7,
 
-                    oficio_adecuacion = $8
+                    oficio_autorizacion_nombre = $8,
 
-                WHERE id = $9
+                    oficio_adecuacion = $9,
+
+                    oficio_adecuacion_nombre = $10
+
+                WHERE id = $11
 
                 RETURNING *
                 `,
@@ -817,7 +820,10 @@ router.put(
                     restante,
 
                     nuevoPDFAutorizacion,
+                    nuevoNombreAutorizacion,
+
                     nuevoPDFAdecuacion,
+                    nuevoNombreAdecuacion,
 
                     id
 
@@ -827,9 +833,9 @@ router.put(
 
             res.json({
 
-                ok:true,
+                ok: true,
 
-                msg:'Registro actualizado',
+                msg: 'Registro actualizado',
 
                 registro:
                 actualizado.rows[0]
@@ -838,15 +844,17 @@ router.put(
 
         }
 
-        catch(error){
+        catch (error) {
 
             console.log(error);
 
             res.status(500).json({
 
-                ok:false,
+                ok: false,
 
-                msg:'Error editando'
+                msg: 'Error editando',
+
+                error: error.message
 
             });
 
@@ -864,9 +872,9 @@ router.delete(
 
     '/:id',
 
-    async(req, res) => {
+    async (req, res) => {
 
-        try{
+        try {
 
             const { id } =
             req.params;
@@ -883,16 +891,13 @@ router.delete(
 
             );
 
-            if(
-                existe.rows.length === 0
-            ){
+            if (existe.rows.length === 0) {
 
-                return res.status(404)
-                .json({
+                return res.status(404).json({
 
-                    ok:false,
+                    ok: false,
 
-                    msg:'No encontrado'
+                    msg: 'No encontrado'
 
                 });
 
@@ -901,45 +906,28 @@ router.delete(
             const registro =
             existe.rows[0];
 
-            if(registro.oficio_autorizacion){
+            const eliminarArchivo = (archivo) => {
 
-                const rutaPDF =
+                if (!archivo) return;
 
-                    path.join(
+                const ruta =
+                path.join(uploadPath, archivo);
 
-                        uploadPath,
+                if (fs.existsSync(ruta)) {
 
-                        registro.oficio_autorizacion
-
-                    );
-
-                if(fs.existsSync(rutaPDF)){
-
-                    fs.unlinkSync(rutaPDF);
+                    fs.unlinkSync(ruta);
 
                 }
 
-            }
+            };
 
-            if(registro.oficio_adecuacion){
+            eliminarArchivo(
+                registro.oficio_autorizacion
+            );
 
-                const rutaPDF =
-
-                    path.join(
-
-                        uploadPath,
-
-                        registro.oficio_adecuacion
-
-                    );
-
-                if(fs.existsSync(rutaPDF)){
-
-                    fs.unlinkSync(rutaPDF);
-
-                }
-
-            }
+            eliminarArchivo(
+                registro.oficio_adecuacion
+            );
 
             await pool.query(
 
@@ -954,23 +942,25 @@ router.delete(
 
             res.json({
 
-                ok:true,
+                ok: true,
 
-                msg:'Registro eliminado'
+                msg: 'Registro eliminado'
 
             });
 
         }
 
-        catch(error){
+        catch (error) {
 
             console.log(error);
 
             res.status(500).json({
 
-                ok:false,
+                ok: false,
 
-                msg:'Error eliminando'
+                msg: 'Error eliminando',
+
+                error: error.message
 
             });
 
