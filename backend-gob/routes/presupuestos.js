@@ -41,31 +41,31 @@ const storage = multer.diskStorage({
 
     filename: (req, file, cb) => {
 
-    const extension =
-    path.extname(file.originalname);
+        const extension =
+        path.extname(file.originalname);
 
-    const nombreBase =
-    path.basename(file.originalname, extension);
+        const nombreBase =
+        path.basename(file.originalname, extension);
 
-    const nombreLimpio =
+        const nombreLimpio =
 
-        nombreBase
+            nombreBase
 
-        .normalize('NFD')
+            .normalize('NFD')
 
-        .replace(/[\u0300-\u036f]/g, '')
+            .replace(/[\u0300-\u036f]/g, '')
 
-        .replace(/\s+/g, '-')
+            .replace(/\s+/g, '-')
 
-        .replace(/[^a-zA-Z0-9-_]/g, '');
+            .replace(/[^a-zA-Z0-9-_]/g, '');
 
-    const nombreFinal =
+        const nombreFinal =
 
-        `${nombreLimpio}${extension}`;
+            `${nombreLimpio}${extension}`;
 
-    cb(null, nombreFinal);
+        cb(null, nombreFinal);
 
-}
+    }
 
 });
 
@@ -100,6 +100,96 @@ const upload = multer({
     }
 
 });
+
+/* =========================
+   ÚLTIMO OFICIO POR ÁREA
+========================= */
+
+router.get(
+
+    '/ultimo-oficio/:area_id',
+
+    async(req, res) => {
+
+        try{
+
+            const { area_id } =
+            req.params;
+
+            console.log(
+                'AREA ID:',
+                area_id
+            );
+
+            const consulta =
+            await pool.query(
+
+                `
+                SELECT
+                oficio_autorizacion_nombre
+
+                FROM ultimos_oficios_por_up
+
+                WHERE area_id = $1
+
+                LIMIT 1
+                `,
+                [area_id]
+
+            );
+
+            console.log(
+                'CONSULTA OFICIO:',
+                consulta.rows
+            );
+
+            if(
+                consulta.rows.length === 0
+            ){
+
+                return res.json({
+
+                    ok:true,
+
+                    oficio:''
+
+                });
+
+            }
+
+            res.json({
+
+                ok:true,
+
+                oficio:
+
+                consulta.rows[0]
+                .oficio_autorizacion_nombre || ''
+
+            });
+
+        }
+
+        catch(error){
+
+            console.log(
+                'ERROR ÚLTIMO OFICIO:',
+                error
+            );
+
+            res.status(500).json({
+
+                ok:false,
+
+                msg:'Error obteniendo oficio'
+
+            });
+
+        }
+
+    }
+
+);
 
 /* =========================
    CREAR PRESUPUESTO

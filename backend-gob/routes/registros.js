@@ -13,42 +13,67 @@ const ESTATUS = ["Creado", "Enviado", "Rechazado", "Pagado"];
 /* =========================
    OBTENER REGISTRO POR CÓDIGO
 ========================= */
-
 router.get("/codigo/:codigo", async (req, res) => {
+
   try {
-    const codigo = req.params.codigo.trim();
 
-    const result = await pool.query(
+    const codigo =
+    req.params.codigo.trim();
+
+    const result =
+    await pool.query(
+
       `
-      SELECT *
+      SELECT
 
-      FROM registros
+          r.*,
 
-      WHERE codigo = $1
+          ap.id AS area_id
+
+      FROM registros r
+
+      LEFT JOIN areas_presupuestales ap
+      ON TRIM(ap.clave_area) = TRIM(r.area)
+
+      WHERE r.codigo = $1
       `,
-      [codigo],
+      [codigo]
+
     );
 
     if (result.rows.length === 0) {
+
       return res.status(404).json({
+
         ok: false,
 
         error: "Registro no encontrado",
+
       });
+
     }
 
-    res.json(result.rows[0]);
-  } catch (error) {
+    res.json(
+      result.rows[0]
+    );
+
+  }
+
+  catch (error) {
+
     console.log(error);
 
     res.status(500).json({
+
       ok: false,
 
       error: error.message,
-    });
-  }
-});
 
+    });
+
+  }
+
+});
 /* =========================
    OBTENER REGISTROS
 ========================= */
