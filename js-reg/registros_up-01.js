@@ -1,16 +1,3 @@
-/* ============================================================
-   RESULTADOS.JS  –  SEBISO · Sistema de Pliegos y Oficios
-   Módulo : Vista de resultados por Unidad Presupuestal (UP)
-   Versión: 3.2
-   Autor  : Juan Moisés Gómez Aispuro
-   Cambios v3.2:
-     - Se agrega función numeroALetras() completa para convertir
-       cantidades numéricas a texto en español (mayúsculas).
-       Ej: 2060 → "DOS MIL SESENTA PESOS"
-     - Se corrige el registro de facturaTotalLetra en el payload
-       de generarFactura() para que <<TOTLETRA>> llegue al backend.
-   ============================================================ */
-
 "use strict";
 
 /* ============================================================
@@ -23,8 +10,10 @@ const tbody = document.getElementById("tbodyResultados");
 /** URL base del backend (Render) */
 const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
-/** Código del registro activo en cada modal.
- *  Se asignan justo antes de abrir el modal correspondiente. */
+/**
+ * Código del registro activo en cada modal.
+ * Se asignan justo antes de abrir el modal correspondiente.
+ */
 let codigoEliminar = null;
 let codigoSPG      = null;
 let codigoRecibo   = null;
@@ -97,13 +86,8 @@ function desglosarDias(inicio, fin) {
    ============================================================ */
 
 /**
- * Convierte un número entero (sin decimales) a palabras en español,
- * en mayúsculas. Soporta hasta 999,999,999.
- *
- * Ejemplos:
- *   convertirGrupo(60)   → "SESENTA"
- *   convertirGrupo(115)  → "CIENTO QUINCE"
- *   convertirGrupo(1000) → ⚠ usar solo para grupos de 3 dígitos (0-999)
+ * Convierte un número entero (0-999) a palabras en español, mayúsculas.
+ * Utilizado internamente por numeroALetras().
  *
  * @param {number} n  Entero entre 0 y 999
  * @returns {string}
@@ -132,7 +116,6 @@ function convertirGrupo(n) {
   if (n === 100) return "CIEN";
 
   let resultado = "";
-
   const c = Math.floor(n / 100);
   const r = n % 100;
 
@@ -140,9 +123,7 @@ function convertirGrupo(n) {
 
   if (r > 0) {
     if (resultado) resultado += " ";
-
     if (r < 30) {
-      /* Las unidades del 1-29 tienen forma propia en el arreglo */
       resultado += unidades[r];
     } else {
       const d = Math.floor(r / 10);
@@ -170,13 +151,11 @@ function convertirGrupo(n) {
  * @returns {string}             Texto en MAYÚSCULAS con "PESOS"
  */
 function numeroALetras(valor) {
-  /* ── Sanear entrada ── */
   const num = parseFloat(String(valor).replace(/[^0-9.-]/g, "")) || 0;
 
   const entero    = Math.floor(Math.abs(num));
   const decimales = Math.round((Math.abs(num) - entero) * 100);
 
-  /* ── Parte entera ── */
   let texto = "";
 
   if (entero === 0) {
@@ -186,36 +165,21 @@ function numeroALetras(valor) {
     const miles    = Math.floor((entero % 1_000_000) / 1_000);
     const resto    = entero % 1_000;
 
-    /* Millones */
     if (millones > 0) {
-      if (millones === 1) {
-        texto += "UN MILLÓN";
-      } else {
-        texto += convertirGrupo(millones) + " MILLONES";
-      }
+      texto += millones === 1 ? "UN MILLÓN" : convertirGrupo(millones) + " MILLONES";
     }
-
-    /* Miles */
     if (miles > 0) {
       if (texto) texto += " ";
-      if (miles === 1) {
-        texto += "MIL";
-      } else {
-        texto += convertirGrupo(miles) + " MIL";
-      }
+      texto += miles === 1 ? "MIL" : convertirGrupo(miles) + " MIL";
     }
-
-    /* Unidades / centenas finales */
     if (resto > 0) {
       if (texto) texto += " ";
       texto += convertirGrupo(resto);
     }
   }
 
-  /* ── Agregar "PESOS" ── */
   texto += " PESOS";
 
-  /* ── Parte decimal (centavos) ── */
   if (decimales > 0) {
     texto += " CON " + convertirGrupo(decimales) + " CENTAVOS";
   }
@@ -238,7 +202,7 @@ function mostrarAlerta(titulo, mensaje) {
   const elModal   = document.getElementById("modalAlerta");
 
   if (!elTitulo || !elMensaje || !elModal) {
-    /* Fallback por si el HTML aún no tiene el modal */
+    // Fallback si el modal aún no existe en el DOM
     alert(`${titulo}\n\n${mensaje}`);
     return;
   }
@@ -249,7 +213,7 @@ function mostrarAlerta(titulo, mensaje) {
 }
 
 /**
- * Cierra el modal de alerta.
+ * Cierra el modal de alerta personalizada.
  */
 function cerrarAlerta() {
   document.getElementById("modalAlerta")?.classList.remove("activo");
@@ -274,9 +238,9 @@ const CAMPOS_REQUERIDOS = {
     { id: "spgOG",     label: "Objeto de Gasto" },
     { id: "spgPR",     label: "Proyecto"        },
     { id: "spgCuenta", label: "Cuenta"          },
-    { id: "spgMonto",  label: "Monto",       tipo: "money" },
-    { id: "spgRet",    label: "Retenciones", tipo: "money" },
-    { id: "spgTot",    label: "Total",       tipo: "money" },
+    { id: "spgMonto",  label: "Monto",        tipo: "money" },
+    { id: "spgRet",    label: "Retenciones",  tipo: "money" },
+    { id: "spgTot",    label: "Total",        tipo: "money" },
   ],
 
   RECIBO: [
@@ -325,9 +289,9 @@ const CAMPOS_REQUERIDOS = {
     { id: "oficio2Ofaut",          label: "Oficio autorizador" },
     { id: "oficio2OficioAdec",     label: "Oficio adecuación"  },
     { id: "oficio2Adec",           label: "Adecuación"         },
-    { id: "oficio2Monto",          label: "Monto",       tipo: "money" },
-    { id: "oficio2Retenciones",    label: "Retenciones", tipo: "money" },
-    { id: "oficio2Total",          label: "Total",       tipo: "money" },
+    { id: "oficio2Monto",          label: "Monto",        tipo: "money" },
+    { id: "oficio2Retenciones",    label: "Retenciones",  tipo: "money" },
+    { id: "oficio2Total",          label: "Total",        tipo: "money" },
     { id: "oficio2TotalLetra",     label: "Total en letra"     },
   ],
 };
@@ -338,10 +302,11 @@ const CAMPOS_REQUERIDOS = {
  *
  * Flujo:
  *  1. Recorre los campos del formulario indicado.
- *  2. Limpia errores previos.
+ *  2. Limpia errores previos en cada campo.
  *  3. Si un campo está vacío → agrega clase "input-error" y registra el label.
- *  4. Si hay errores → muestra alerta personalizada y retorna false.
- *  5. Si todo OK → retorna true.
+ *  4. Enfoca y hace scroll al primer campo con error.
+ *  5. Si hay errores → muestra alerta y retorna FALSE (detiene el flujo).
+ *  6. Si todo OK    → retorna TRUE (permite continuar).
  *
  * @param {"SPG"|"RECIBO"|"FACTURA"|"OFICIO2"} formulario
  * @returns {boolean}  true = todos los campos completos
@@ -353,17 +318,17 @@ function validarFormulario(formulario) {
   campos.forEach((campo) => {
     const el = document.getElementById(campo.id);
     if (!el) {
-      console.error(`Campo no encontrado: ${campo.id}`);
+      console.error(`validarFormulario: campo no encontrado → #${campo.id}`);
       return;
     }
 
-    /* Limpiar error previo */
+    // Limpiar error previo
     el.classList.remove("input-error");
 
     const valor = el.value.trim();
     let vacio   = !valor;
 
-    /* Para campos de dinero: verificar que haya un número real */
+    // Para campos de dinero: verificar que haya un número real (no solo "$" o espacios)
     if (!vacio && campo.tipo === "money") {
       const num = parseFloat(valor.replace(/[^0-9.-]+/g, ""));
       if (isNaN(num)) vacio = true;
@@ -373,7 +338,7 @@ function validarFormulario(formulario) {
       el.classList.add("input-error");
       errores.push(campo.label);
 
-      /* Enfocar el primer campo con error */
+      // Enfocar y hacer scroll al primer campo con error
       if (errores.length === 1) {
         el.focus();
         el.scrollIntoView({ behavior: "smooth", block: "center" });
@@ -382,21 +347,20 @@ function validarFormulario(formulario) {
   });
 
   if (errores.length > 0) {
-    const lista = errores.map((e) => `• ${e}`).join("<br>");
     mostrarAlerta(
       "⚠️ Campos incompletos",
-      `Por favor completa los siguientes campos antes de continuar:<br><br>${lista}`
+      "Llena todos los datos solicitados antes de continuar."
     );
-    return false;
+    return false; // ← DETIENE el flujo; el modal de confirmación NO abre
   }
 
-  return true;
+  return true; // ← Solo aquí continúa el flujo hacia el modal de confirmación
 }
 
 /**
  * Elimina la clase "input-error" de todos los campos de un modal.
  * Se llama al abrir el modal para limpiar errores de la sesión anterior.
- * @param {string} idModal – ID del contenedor modal
+ * @param {string} idModal – ID del contenedor del modal
  */
 function limpiarErroresModal(idModal) {
   document
@@ -433,19 +397,40 @@ function cerrarModal(id) {
 /* ---- 6.1 MODAL SPG --------------------------------------- */
 
 /**
- * Guarda el código activo, limpia errores y abre el modal SPG.
+ * Guarda el código activo, limpia errores, pre-llena los campos
+ * fijos y abre el modal SPG.
+ *
+ * Campos fijos (no editables por el usuario):
+ *   - UR      → "13"
+ *   - UP      → "01"
+ *   - Cuenta  → "------"
+ *
  * @param {string} codigo
  */
 function abrirModalSPG(codigo) {
   codigoSPG = codigo;
   limpiarErroresModal("modalSPG");
+
+  // Valores fijos pre-cargados
+  document.getElementById("spgUR").value     = "13";
+  document.getElementById("spgUP").value     = "01";
+  document.getElementById("spgCuenta").value = "------";
+
+  // Bloquear edición de campos fijos
+  // Nota: spgTot también es readOnly porque se calcula automáticamente
+  document.getElementById("spgUR").readOnly     = true;
+  document.getElementById("spgUP").readOnly     = true;
+  document.getElementById("spgCuenta").readOnly = true;
+  document.getElementById("spgTot").readOnly    = true;
+
   abrirModal("modalSPG");
 }
 
 /* ---- 6.2 MODAL RECIBO ------------------------------------ */
 
 /**
- * Carga los datos del registro y rellena el modal de Recibo.
+ * Carga los datos del registro desde el backend y rellena
+ * el modal de Recibo.
  * @param {string} codigo
  */
 async function abrirModalRecibo(codigo) {
@@ -456,18 +441,18 @@ async function abrirModalRecibo(codigo) {
     const registro  = await fetchRegistro(codigo);
     const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
 
-    document.getElementById("reciboFolio").value       = registro.codigo                 || "";
-    document.getElementById("reciboPersona").value     = registro.persona                || "";
-    document.getElementById("reciboMunicipio").value   = registro.municipio              || "";
-    document.getElementById("reciboMotivo").value      = registro.motivo_comision         || "";
-    document.getElementById("reciboLocalidades").value = registro.localidades_visitadas   || "";
+    document.getElementById("reciboFolio").value       = registro.codigo                || "";
+    document.getElementById("reciboPersona").value     = registro.persona               || "";
+    document.getElementById("reciboMunicipio").value   = registro.municipio             || "";
+    document.getElementById("reciboMotivo").value      = registro.motivo_comision        || "";
+    document.getElementById("reciboLocalidades").value = registro.localidades_visitadas  || "";
     document.getElementById("reciboDias").value        = diasTexto;
-    document.getElementById("reciboMes").value         = registro.mes                    || "";
-    document.getElementById("reciboAnio").value        = registro.anio                   || "";
-    document.getElementById("reciboUnidad").value      = registro.up                     || "";
-    document.getElementById("reciboImporte").value     = formatearMoneda(registro.spg_monto        || 0);
-    document.getElementById("reciboRetenciones").value = formatearMoneda(registro.spg_retenciones  || 0);
-    document.getElementById("reciboTotal").value       = formatearMoneda(registro.spg_total        || 0);
+    document.getElementById("reciboMes").value         = registro.mes                   || "";
+    document.getElementById("reciboAnio").value        = registro.anio                  || "";
+    document.getElementById("reciboUnidad").value      = registro.up                    || "";
+    document.getElementById("reciboImporte").value     = formatearMoneda(registro.spg_monto       || 0);
+    document.getElementById("reciboRetenciones").value = formatearMoneda(registro.spg_retenciones || 0);
+    document.getElementById("reciboTotal").value       = formatearMoneda(registro.spg_total       || 0);
 
     abrirModal("modalRecibo");
   } catch (error) {
@@ -479,11 +464,11 @@ async function abrirModalRecibo(codigo) {
 /* ---- 6.3 MODAL FACTURA ----------------------------------- */
 
 /**
- * Carga los datos del registro y rellena el modal de Factura.
+ * Carga los datos del registro desde el backend y rellena
+ * el modal de Factura.
  *
- * CORRECCIÓN v3.2: el campo facturaTotalLetra ahora se precarga
- * con numeroALetras(total) para que <<TOTLETRA>> llegue correctamente
- * al backend al momento de enviar el formulario.
+ * El campo facturaTotalLetra se pre-carga con numeroALetras(total)
+ * para que <<TOTLETRA>> llegue correctamente al backend.
  *
  * @param {string} codigo
  */
@@ -494,30 +479,23 @@ async function abrirModalFactura(codigo) {
 
     const registro  = await fetchRegistro(codigo);
     const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
-
-    /* Se extrae el total numérico del registro para reutilizarlo
-       tanto en el campo formateado como en la conversión a letras */
-    const total = Number(registro.spg_total || 0);
+    const total     = Number(registro.spg_total || 0);
 
     document.getElementById("facturaFolio").value          = "";
-    document.getElementById("facturaPersona").value        = registro.persona                || "";
-    document.getElementById("facturaMunicipio").value      = registro.municipio              || "";
-    document.getElementById("facturaMotivo").value         = registro.motivo_comision         || "";
-    document.getElementById("facturaLocalidad").value      = registro.localidades_visitadas   || "";
+    document.getElementById("facturaPersona").value        = registro.persona               || "";
+    document.getElementById("facturaMunicipio").value      = registro.municipio             || "";
+    document.getElementById("facturaMotivo").value         = registro.motivo_comision        || "";
+    document.getElementById("facturaLocalidad").value      = registro.localidades_visitadas  || "";
     document.getElementById("facturaDias").value           = diasTexto;
-    document.getElementById("facturaMes").value            = registro.mes                    || "";
-    document.getElementById("facturaImporte").value        = formatearMoneda(registro.spg_monto        || 0);
-    document.getElementById("facturaRetenciones").value    = formatearMoneda(registro.spg_retenciones  || 0);
+    document.getElementById("facturaMes").value            = registro.mes                   || "";
+    document.getElementById("facturaImporte").value        = formatearMoneda(registro.spg_monto       || 0);
+    document.getElementById("facturaRetenciones").value    = formatearMoneda(registro.spg_retenciones || 0);
     document.getElementById("facturaTotal").value          = formatearMoneda(total);
-
-    /* ✅ CORRECCIÓN: se usa numeroALetras() para generar el texto
-       correcto. Ej: 2060 → "DOS MIL SESENTA PESOS" */
     document.getElementById("facturaTotalLetra").value     = numeroALetras(total);
-
-    document.getElementById("facturaProyecto").value       = registro.proyecto   || "AI005";
+    document.getElementById("facturaProyecto").value       = registro.proyecto  || "AI005";
     document.getElementById("facturaNombreProyecto").value = "Atención Integral 005";
-    document.getElementById("facturaOficio").value         = registro.codigo     || "";
-    document.getElementById("facturaAdecuacion").value     = registro.cuenta     || "ADEC-001";
+    document.getElementById("facturaOficio").value         = registro.codigo    || "";
+    document.getElementById("facturaAdecuacion").value     = registro.cuenta    || "ADEC-001";
     document.getElementById("facturaFecha").value          = new Date(registro.fecha || Date.now())
       .toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
 
@@ -531,10 +509,11 @@ async function abrirModalFactura(codigo) {
 /* ---- 6.4 MODAL OFICIO 2 ---------------------------------- */
 
 /**
- * Carga los datos del registro y rellena el modal de Oficio 2.
+ * Carga los datos del registro desde el backend, consulta los últimos
+ * oficios y rellena el modal de Oficio 2.
  *
- * CORRECCIÓN v3.2: el campo oficio2TotalLetra ahora se precarga
- * con numeroALetras(total) para consistencia con el modal de Factura.
+ * El campo oficio2TotalLetra se pre-carga con numeroALetras(total)
+ * para consistencia con el modal de Factura.
  *
  * @param {string} codigo
  */
@@ -547,6 +526,28 @@ async function abrirModalOficio2(codigo) {
     const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
     const total     = Number(registro.spg_total || 0);
 
+    // Obtener los últimos oficios de autorización y adecuación
+    let oficioAutorizacion = "";
+    let oficioAdecuacion   = "";
+
+    try {
+      const responseOficios = await fetch(`${API}/api/presupuestos/ultimo-oficio/1`);
+
+      if (!responseOficios.ok) throw new Error("Error obteniendo oficios");
+
+      const dataOficios = await responseOficios.json();
+      console.log("ÚLTIMOS OFICIOS:", dataOficios);
+
+      if (dataOficios.ok) {
+        oficioAutorizacion = (dataOficios.oficio_autorizacion_nombre || "").replace(/\.pdf$/i, "");
+        oficioAdecuacion   = (dataOficios.oficio_adecuacion_nombre   || "").replace(/\.pdf$/i, "");
+      }
+    } catch (errorOficios) {
+      console.error("ERROR CARGANDO OFICIOS:", errorOficios);
+      // No se interrumpe el flujo; los campos quedan vacíos para llenado manual
+    }
+
+    // Llenar campos del modal
     document.getElementById("oficio2Persona").value        = registro.persona   || "";
     document.getElementById("oficio2Municipio").value      = registro.municipio || "";
     document.getElementById("oficio2Dias").value           = diasTexto;
@@ -554,13 +555,12 @@ async function abrirModalOficio2(codigo) {
     document.getElementById("oficio2Anio").value           = registro.anio      || "";
     document.getElementById("oficio2Proyecto").value       = registro.proyecto  || "";
     document.getElementById("oficio2NombreProyecto").value = "Atención Integral 005";
-    document.getElementById("oficio2Ofaut").value          = registro.codigo    || "";
+    document.getElementById("oficio2Ofaut").value          = oficioAutorizacion;
+    document.getElementById("oficio2OficioAdec").value     = oficioAdecuacion;
     document.getElementById("oficio2Adec").value           = registro.cuenta    || "";
-    document.getElementById("oficio2Monto").value          = formatearMoneda(registro.spg_monto        || 0);
-    document.getElementById("oficio2Retenciones").value    = formatearMoneda(registro.spg_retenciones  || 0);
+    document.getElementById("oficio2Monto").value          = formatearMoneda(registro.spg_monto       || 0);
+    document.getElementById("oficio2Retenciones").value    = formatearMoneda(registro.spg_retenciones || 0);
     document.getElementById("oficio2Total").value          = formatearMoneda(total);
-
-    /* ✅ CORRECCIÓN: mismo criterio que Factura */
     document.getElementById("oficio2TotalLetra").value     = numeroALetras(total);
 
     abrirModal("modalOficio2");
@@ -576,12 +576,23 @@ async function abrirModalOficio2(codigo) {
 
 /**
  * Obtiene el registro que coincide con el código recibido desde
- * la API de UP-01. Centraliza la lógica repetida en los modales.
+ * la API de la unidad presupuestal activa.
+ * Centraliza la lógica repetida en los modales.
+ *
+ * ─────────────────────────────────────────────────────────────
+ * CAMBIO DE ACUERDO A AREA:
+ *   La cadena "UP-01" en la URL define la unidad presupuestal
+ *   que se consulta. Para cambiar de área, reemplaza "UP-01"
+ *   por el código correspondiente, p. ej. "UP-02", "UP-03", etc.
+ *   Ejemplo: `${API}/api/registros/UP-02`
+ * ─────────────────────────────────────────────────────────────
+ *
  * @param {string} codigo
  * @returns {Promise<Object>}
  * @throws {Error}
  */
 async function fetchRegistro(codigo) {
+  // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
   const response = await fetch(`${API}/api/registros/UP-01`);
   if (!response.ok) throw new Error("Error obteniendo registros");
 
@@ -598,7 +609,8 @@ async function fetchRegistro(codigo) {
 
 /**
  * Recalcula el total del SPG (monto + retenciones) y lo muestra
- * en el campo de solo lectura.
+ * en el campo de solo lectura #spgTot.
+ * Se dispara en cada "input" de #spgMonto y #spgRet.
  */
 function calcularTotalSPG() {
   const montoInput = document.getElementById("spgMonto");
@@ -612,22 +624,39 @@ function calcularTotalSPG() {
 }
 
 /* ============================================================
-   9. SOLICITAR CONFIRMACIÓN (validar → confirmar → generar)
+   9. SOLICITAR CONFIRMACIÓN
+   ============================================================
+   Flujo completo al pulsar "Generar" en cualquier formulario:
+
+     [Botón Generar]
+          │
+          ▼
+     solicitarConfirmacion(tipo)
+          │
+          ├─ validarFormulario(tipo) → FALSE
+          │       └─ marca campos en rojo + muestra alerta
+          │          el usuario ve los campos a corregir
+          │          NO avanza al modal de confirmación
+          │
+          └─ validarFormulario(tipo) → TRUE
+                  └─ abre modalConfirmar[tipo]
+                          │
+                          ▼
+                    [Usuario confirma]
+                          │
+                          ▼
+                    generar[tipo]()  → genera PDF → modal de éxito
    ============================================================ */
 
 /**
  * Punto de entrada desde los botones principales de cada formulario.
- * Ejecuta el flujo completo:
- *   1. Valida todos los campos requeridos.
- *   2. Si hay vacíos  → marca en rojo, muestra alerta personalizada, detiene.
- *   3. Si todo OK     → abre el modal de confirmación.
- *
- * La generación real ocurre solo después de que el usuario
- * confirme en el modal de confirmación correspondiente.
+ * Solo avanza al modal de confirmación si TODOS los campos son válidos.
  *
  * @param {"SPG"|"RECIBO"|"FACTURA"|"OFICIO2"} tipo
  */
 function solicitarConfirmacion(tipo) {
+  // validarFormulario retorna false y muestra la alerta si hay campos vacíos.
+  // En ese caso, return detiene el flujo aquí.
   if (!validarFormulario(tipo)) return;
 
   const modalesConfirmacion = {
@@ -637,8 +666,8 @@ function solicitarConfirmacion(tipo) {
     OFICIO2: "modalConfirmarOficio2",
   };
 
-  const modalConfirmacion = modalesConfirmacion[tipo];
-  if (modalConfirmacion) abrirModal(modalConfirmacion);
+  const idModalConfirmar = modalesConfirmacion[tipo];
+  if (idModalConfirmar) abrirModal(idModalConfirmar);
 }
 
 /* ============================================================
@@ -650,6 +679,7 @@ function solicitarConfirmacion(tipo) {
 /**
  * Envía los datos del SPG al backend, guarda la URL del PDF
  * resultante en el registro y muestra el modal de éxito.
+ * Solo se llama desde el listener de #confirmarGenerarSPG.
  */
 async function generarSPG() {
   try {
@@ -755,9 +785,9 @@ async function generarRecibo() {
  * Envía los datos de la Factura al backend, guarda la URL del PDF
  * resultante en el registro y muestra el modal de éxito.
  *
- * CORRECCIÓN v3.2: la clave del payload ahora es "totalLetra"
- * (antes estaba como "totalLetra" pero el campo se leía de un input
- * que no se pre-llenaba; ahora sí se pre-llena en abrirModalFactura).
+ * El campo totalLetra se lee del input pre-cargado con numeroALetras()
+ * en abrirModalFactura(), garantizando que <<TOTLETRA>> llegue correcto
+ * al backend (p. ej. "DOS MIL SESENTA PESOS").
  */
 async function generarFactura() {
   try {
@@ -773,12 +803,7 @@ async function generarFactura() {
       importe:        document.getElementById("facturaImporte").value,
       retenciones:    document.getElementById("facturaRetenciones").value,
       total:          document.getElementById("facturaTotal").value,
-
-      /* ✅ CORRECCIÓN: se lee el campo que ahora sí está pre-llenado
-         con la conversión a letras correcta, p. ej.:
-         "DOS MIL SESENTA PESOS"  en lugar de "2060.00 PESOS 00/100 M.N." */
       totalLetra:     document.getElementById("facturaTotalLetra").value,
-
       proyecto:       document.getElementById("facturaProyecto").value,
       nombreProyecto: document.getElementById("facturaNombreProyecto").value,
       oficio:         document.getElementById("facturaOficio").value,
@@ -818,8 +843,11 @@ async function generarFactura() {
 /* ---- 10.4 GENERAR OFICIO 2 ------------------------------- */
 
 /**
- * Envía los datos del Oficio 2 al backend, guarda la URL del PDF
- * resultante en el registro y muestra el modal de éxito.
+ * Envía los datos del Oficio 2 al backend usando variables de plantilla,
+ * guarda la URL del PDF resultante en el registro y muestra el modal de éxito.
+ *
+ * El marcador <<TOTAL>> se alimenta del campo pre-cargado con
+ * numeroALetras() en abrirModalOficio2().
  */
 async function generarOficio2() {
   try {
@@ -841,8 +869,6 @@ async function generarOficio2() {
         "<<MONT>>":      document.getElementById("oficio2Monto").value,
         "<<RET>>":       document.getElementById("oficio2Retenciones").value,
         "<<TOT>>":       document.getElementById("oficio2Total").value,
-
-        /* ✅ CORRECCIÓN: se usa el campo pre-llenado con numeroALetras() */
         "<<TOTAL>>":     document.getElementById("oficio2TotalLetra").value,
       },
     };
@@ -881,7 +907,7 @@ async function generarOficio2() {
    ============================================================ */
 
 /**
- * Retorna el HTML del badge de estatus.
+ * Retorna el HTML del badge de estatus según el valor normalizado.
  * @param {string} estatus
  * @returns {string}
  */
@@ -931,8 +957,17 @@ function obtenerBotonEnviar(registro) {
 /* ---- 12.1 CARGAR REGISTROS ------------------------------- */
 
 /**
- * Obtiene todos los registros de UP-01 y los renderiza como tarjetas.
+ * Obtiene todos los registros de la unidad presupuestal activa
+ * y los renderiza como tarjetas en el tbody.
  * Muestra indicador de carga y maneja errores de red.
+ *
+ * ─────────────────────────────────────────────────────────────
+ * CAMBIO DE ACUERDO A AREA:
+ *   La cadena "UP-01" en la URL define la unidad presupuestal.
+ *   Para cambiar de área, reemplaza "UP-01" por el código
+ *   correspondiente, p. ej. "UP-02", "UP-03", etc.
+ *   Ejemplo: `${API}/api/registros/UP-02`
+ * ─────────────────────────────────────────────────────────────
  */
 async function cargarRegistros() {
   tbody.innerHTML = `
@@ -943,6 +978,7 @@ async function cargarRegistros() {
     </tr>`;
 
   try {
+    // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
     const response = await fetch(`${API}/api/registros/UP-01`);
     if (!response.ok) throw new Error("Error obteniendo registros");
 
@@ -959,7 +995,7 @@ async function cargarRegistros() {
       return;
     }
 
-    /* Orden: CREADO → RECHAZADO → ENVIADO → PAGADO/ACEPTADO */
+    // Orden de visualización: CREADO → RECHAZADO → ENVIADO → PAGADO/ACEPTADO
     const orden = { CREADO: 1, RECHAZADO: 2, ENVIADO: 3, PAGADO: 4, ACEPTADO: 4 };
     registros.sort(
       (a, b) =>
@@ -982,8 +1018,8 @@ async function cargarRegistros() {
 }
 
 /**
- * Construye el HTML de una tarjeta de registro escapando todos
- * los valores del servidor para evitar XSS.
+ * Construye el HTML de una tarjeta de registro.
+ * Todos los valores del servidor se escapan para evitar XSS.
  * @param {Object} registro
  * @returns {string}
  */
@@ -1004,6 +1040,7 @@ function construirTarjeta(registro) {
     ? `<button class="btn-eliminar" onclick="eliminarRegistro('${codigo}')">Eliminar</button>`
     : `<button class="btn-bloqueado" disabled>Bloqueado</button>`;
 
+  // Botón de trámite: avanza secuencialmente por los documentos pendientes
   const btnTerminar = !registro.spg_pdf
     ? `<button class="btn-enviar" onclick="abrirModalSPG('${codigo}')">Generar SPG</button>`
     : !registro.recibo_pdf
@@ -1014,17 +1051,18 @@ function construirTarjeta(registro) {
     ? `<button class="btn-enviar" onclick="abrirModalOficio2('${codigo}')">Generar Oficio 2</button>`
     : `<button class="btn-aceptado" disabled>Finalizado</button>`;
 
-  const linkPDF = (url, texto, labelSin) =>
+  // Helper: enlace a PDF existente o botón deshabilitado
+  const linkPDF = (url, textoSi, textoNo) =>
     url
-      ? `<a href="${escaparHTML(url)}" target="_blank" class="link-pdf">${texto}</a>`
-      : `<button class="btn-bloqueado" disabled>${labelSin}</button>`;
+      ? `<a href="${escaparHTML(url)}" target="_blank" class="link-pdf">${textoSi}</a>`
+      : `<button class="btn-bloqueado" disabled>${textoNo}</button>`;
 
   return `
     <tr>
       <td colspan="12">
         <div class="card-registro">
 
-          <!-- FILA SUPERIOR -->
+          <!-- FILA SUPERIOR: identificación y estatus -->
           <div class="fila-superior">
             <div class="info-item">
               <span class="info-label">ID</span>
@@ -1048,7 +1086,7 @@ function construirTarjeta(registro) {
             </div>
           </div>
 
-          <!-- FILA PDFs -->
+          <!-- FILA PDFs: accesos a documentos generados -->
           <div class="fila-pdfs">
             <div class="info-item">
               <span class="info-label">Oficio PDF</span>
@@ -1076,7 +1114,7 @@ function construirTarjeta(registro) {
             </div>
           </div>
 
-          <!-- FILA INFERIOR -->
+          <!-- FILA INFERIOR: observaciones y acciones -->
           <div class="fila-inferior">
             <div class="info-item">
               <span class="info-label">Observaciones Área</span>
@@ -1136,7 +1174,7 @@ async function enviarRegistro(codigo) {
 /* ---- 12.3 REENVIAR REGISTRO ------------------------------ */
 
 /**
- * Permite reenviar un registro rechazado, previa confirmación.
+ * Permite reenviar un registro rechazado, previa confirmación nativa.
  * @param {string} codigo
  */
 async function reenviarRegistro(codigo) {
@@ -1160,6 +1198,7 @@ async function reenviarRegistro(codigo) {
 
 /**
  * Guarda el código a eliminar y abre el modal de confirmación.
+ * La eliminación real ocurre en el listener de #confirmarEliminar.
  * @param {string} codigo
  */
 function eliminarRegistro(codigo) {
@@ -1171,6 +1210,7 @@ function eliminarRegistro(codigo) {
 
 /**
  * Persiste las observaciones del área en el backend.
+ * Se dispara en el evento "change" del textarea correspondiente.
  * @param {string} codigo
  * @param {string} observaciones
  */
@@ -1191,25 +1231,53 @@ async function guardarObservaciones(codigo, observaciones) {
 
 /* ============================================================
    13. INICIALIZACIÓN (DOMContentLoaded)
+   ============================================================
+   IMPORTANTE: Todo acceso al DOM debe ir dentro de este bloque.
+   Acceder al DOM fuera de aquí (en el nivel raíz del script)
+   lanza TypeError porque los elementos aún no existen, lo que
+   corta la ejecución del script completo e impide que los
+   listeners se registren.
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  /* ---- 13.1 Catálogos ------------------------------------ */
+  /* ── 13.1  Campos read-only del SPG ─────────────────────── */
+  /*
+   * CORRECCIÓN v3.3: estas 4 líneas estaban fuera de
+   * DOMContentLoaded en v3.2, causando un TypeError que
+   * interrumpía todo el script antes de registrar los listeners.
+   * Ahora están aquí, donde el DOM ya existe.
+   *
+   * CAMBIO DE ACUERDO A AREA:
+   *   El valor "01" del campo spgUP corresponde a la UP actual.
+   *   Si cambias de área, actualiza este valor y el de spgUR ("13")
+   *   en la función abrirModalSPG() también.
+   */
+  const elSpgUR     = document.getElementById("spgUR");
+  const elSpgUP     = document.getElementById("spgUP");
+  const elSpgCuenta = document.getElementById("spgCuenta");
+  const elSpgTot    = document.getElementById("spgTot");
+
+  if (elSpgUR)     elSpgUR.readOnly     = true;
+  if (elSpgUP)     elSpgUP.readOnly     = true;
+  if (elSpgCuenta) elSpgCuenta.readOnly = true;
+  if (elSpgTot)    elSpgTot.readOnly    = true;
+
+  /* ── 13.2  Catálogos ─────────────────────────────────────── */
   if (typeof llenarAnios       === "function") llenarAnios("spgAnio");
   if (typeof llenarUP          === "function") llenarUP();
   if (typeof llenarRubros      === "function") llenarRubros();
   if (typeof llenarProyectos   === "function") llenarProyectos();
   if (typeof llenarObjetoGasto === "function") llenarObjetoGasto();
 
-  /* ---- 13.2 Cálculo en tiempo real del total SPG --------- */
+  /* ── 13.3  Cálculo en tiempo real del total SPG ─────────── */
   document.getElementById("spgMonto")?.addEventListener("input", calcularTotalSPG);
   document.getElementById("spgRet")  ?.addEventListener("input", calcularTotalSPG);
 
-  /* ---- 13.3 Limpiar error al editar un campo ------------- */
+  /* ── 13.4  Limpiar error al editar un campo ─────────────── */
   /*
    * Cuando el usuario corrige un campo marcado en rojo,
-   * se quita el estilo de error inmediatamente para dar
+   * se quita el estilo de error de inmediato para dar
    * retroalimentación positiva sin necesidad de reenviar.
    */
   document.querySelectorAll("input, select, textarea").forEach((el) => {
@@ -1217,22 +1285,38 @@ document.addEventListener("DOMContentLoaded", () => {
     el.addEventListener("change", () => el.classList.remove("input-error"));
   });
 
-  /* ---- 13.4 Botones "Generar" de cada formulario ---------
+  /* ── 13.5  Botones "Generar" de cada formulario ─────────── */
+  /*
+   * FLUJO CORRECTO (v3.3):
+   *   [Botón Generar]
+   *        │
+   *        ▼
+   *   solicitarConfirmacion(tipo)
+   *        │
+   *        ├─ campos vacíos → alerta + campos en rojo → FIN (no abre confirmación)
+   *        │
+   *        └─ campos OK     → abre modalConfirmar[tipo]
+   *                                │
+   *                                ▼
+   *                         [Usuario confirma]
+   *                                │
+   *                                ▼
+   *                         generar[tipo]() → PDF → éxito
    *
-   * FLUJO:
-   *   Botón Generar → solicitarConfirmacion(tipo)
-   *                      ↓ campos incompletos → alerta personalizada + campos en rojo
-   *                      ↓ campos OK          → modal de confirmación
-   *                                               ↓ usuario confirma → generar...()
+   * Nota: Si el HTML tiene onclick="solicitarConfirmacion(...)" en el botón,
+   * NO añadas también addEventListener aquí para ese mismo botón, o se
+   * ejecutará dos veces. Elige solo uno de los dos métodos.
    */
   document.getElementById("btnGenerarSPG")    ?.addEventListener("click", () => solicitarConfirmacion("SPG"));
   document.getElementById("btnGenerarRecibo") ?.addEventListener("click", () => solicitarConfirmacion("RECIBO"));
   document.getElementById("btnGenerarFactura")?.addEventListener("click", () => solicitarConfirmacion("FACTURA"));
-  /* Oficio 2 no tiene botón propio; su flujo lo inicia construirTarjeta → abrirModalOficio2,
-     y el botón dentro del modal llama a solicitarConfirmacion directamente desde el HTML:
-     onclick="solicitarConfirmacion('OFICIO2')"                                            */
+  /*
+   * Oficio 2: su botón está en el HTML del modal con
+   * onclick="solicitarConfirmacion('OFICIO2')", por lo que
+   * no se registra listener aquí para evitar doble disparo.
+   */
 
-  /* ---- 13.5 Confirmaciones de generación ----------------- */
+  /* ── 13.6  Confirmaciones de generación ─────────────────── */
   document.getElementById("confirmarGenerarSPG")?.addEventListener("click", async () => {
     cerrarModal("modalConfirmarSPG");
     abrirModal("modalCargando");
@@ -1257,7 +1341,7 @@ document.addEventListener("DOMContentLoaded", () => {
     await generarOficio2();
   });
 
-  /* ---- 13.6 Confirmar eliminación ------------------------ */
+  /* ── 13.7  Confirmar eliminación ────────────────────────── */
   document.getElementById("confirmarEliminar")?.addEventListener("click", async () => {
     try {
       const response = await fetch(`${API}/api/registros/${codigoEliminar}`, {
@@ -1275,17 +1359,16 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 
-  /* ---- 13.7 Modal de alerta personalizada ---------------- */
-
-  /* Botón cerrar */
+  /* ── 13.8  Modal de alerta personalizada ────────────────── */
+  // Botón "Aceptar" del modal de alerta
   document.getElementById("btnCerrarAlerta")?.addEventListener("click", cerrarAlerta);
 
-  /* Cerrar al hacer clic en el fondo oscuro */
+  // Cerrar al hacer clic en el fondo oscuro del modal de alerta
   document.getElementById("modalAlerta")?.addEventListener("click", (e) => {
     if (e.target.id === "modalAlerta") cerrarAlerta();
   });
 
-  /* ---- 13.8 Carga inicial + refresco automático ---------- */
+  /* ── 13.9  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
-  setInterval(cargarRegistros, 30_000);
+  setInterval(cargarRegistros, 30_000); // Refresca cada 30 segundos
 });

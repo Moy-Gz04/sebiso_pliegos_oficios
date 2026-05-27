@@ -26,10 +26,11 @@
     <link rel="stylesheet" href="../css/ssidebar.css">
     <link rel="stylesheet" href="../css/revisiones.css">
 <!-- =============== PARA FORMATOS =====================-->
-    <link rel="stylesheet" href="../css/SPG.css">
     <link rel="stylesheet" href="../css/RECIBO.css">
     <link rel="stylesheet" href="../css/modales.css">
     <link rel="stylesheet" href="../css/factura.css">
+    <link rel="stylesheet" href="../css/SPG.css">
+    <link rel="stylesheet" href="../css/oficio2.css">
 <!-- =============== END Archivos CSS ==================-->
 </head>
 
@@ -147,7 +148,7 @@
 
                     <select id="spgAnio">
                         <option value="">
-                            Selecciona año
+                            SELECCIONA EL AÑO
                         </option>
                     </select>
                 </div>
@@ -157,7 +158,7 @@
                     <label for="spgUR">
                         UR
                     </label>
-                    <input type="text" id="spgUR" placeholder="Unidad Responsable">
+                    <input type="text" id="spgUR" readonly>
                 </div>
 
                 <!-- UP -->
@@ -165,9 +166,7 @@
                     <label for="spgUP">
                         UP
                     </label>
-                    <select id="spgUP">
-                        <option value=""> Selecciona UP </option>
-                    </select>
+                    <input type="text" id="spgUP" readonly>
                 </div>
 
                 <!-- RUBRO -->
@@ -212,7 +211,7 @@
                     <label for="spgCuenta">
                         Cuenta por pagar
                     </label>
-                    <input type="text" id="spgCuenta" placeholder="Cuenta por pagar">
+                    <input type="text" id="spgCuenta" readonly>
                 </div>
 
                 <!-- MONTO -->
@@ -856,50 +855,29 @@
     </div>
 </div>
 <!-- ====== END MODAL ÉXITO FACTURA =============================== -->
-
 <!-- ====== MODAL OFICIO 2 ========================================= -->
 
 <div id="modalOficio2">
-
     <div class="modal-spg-contenido">
-
         <!-- HEADER -->
         <div class="modal-header">
-
             <h2>
                 Generar Oficio 2
             </h2>
-
         </div>
 
         <!-- BODY -->
         <div class="modal-body-grid">
-
             <!-- NUMERO OFICIO -->
             <div class="campo-spg">
-
-                <label>
-                    Número Oficio
-                </label>
-
-                <input
-                    type="text"
-                    id="oficio2Numc"
-                >
-
+                <label>Número Oficio</label>
+                <input type="text" id="oficio2Numc">
             </div>
             
             <!-- PERSONA -->
             <div class="campo-spg">
-
-                <label>
-                    Persona
-                </label>
-
-                <input
-                    type="text"
-                    id="oficio2Persona"
-                >
+                <label>Persona</label>
+                <input type="text" id="oficio2Persona" readonly>
 
             </div>
 
@@ -913,6 +891,7 @@
                 <input
                     type="text"
                     id="oficio2Municipio"
+                    readonly
                 >
 
             </div>
@@ -927,6 +906,7 @@
                 <input
                     type="text"
                     id="oficio2Dias"
+                    readonly
                 >
 
             </div>
@@ -941,6 +921,7 @@
                 <input
                     type="text"
                     id="oficio2Mes"
+                    readonly
                 >
 
             </div>
@@ -955,6 +936,7 @@
                 <input
                     type="text"
                     id="oficio2Anio"
+                    readonly
                 >
 
             </div>
@@ -997,6 +979,7 @@
                 <input
                     type="text"
                     id="oficio2Ofaut"
+                    readonly
                 >
 
             </div>
@@ -1011,6 +994,7 @@
                 <input
                     type="text"
                     id="oficio2OficioAdec"
+                    readonly
                 >
 
             </div>
@@ -1025,6 +1009,7 @@
                 <input
                     type="text"
                     id="oficio2Adec"
+                    readonly
                 >
 
             </div>
@@ -1039,6 +1024,7 @@
                 <input
                     type="text"
                     id="oficio2Monto"
+                    readonly
                 >
 
             </div>
@@ -1053,11 +1039,12 @@
                 <input
                     type="text"
                     id="oficio2Retenciones"
+                    readonly
                 >
 
             </div>
 
-            <!-- TOTAL -->
+            <!-- LIQUIDO -->
             <div class="campo-spg">
 
                 <label>
@@ -1067,6 +1054,7 @@
                 <input
                     type="text"
                     id="oficio2Total"
+                    readonly
                 >
 
             </div>
@@ -1091,25 +1079,26 @@
         <div class="modal-footer">
 
             <button
+                type="button"
                 class="btn-cancelar"
                 onclick="cerrarModal('modalOficio2')"
             >
                 Cancelar
             </button>
 
-            <button
+           <button
+                type="button"
                 class="btn-guardar"
-                onclick="abrirModal('modalConfirmarOficio2')"
+                id="btnGenerarOficio2"
+                onclick="solicitarConfirmacion('OFICIO2')"
             >
                 Generar
             </button>
-
         </div>
 
     </div>
 
 </div>
-
 <!-- ====== END MODAL OFICIO 2 ==================================== -->
 
 
