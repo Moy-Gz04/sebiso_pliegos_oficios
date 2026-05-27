@@ -513,13 +513,15 @@ async function abrirModalFactura(codigo) {
     /* ✅ CORRECCIÓN: se usa numeroALetras() para generar el texto
        correcto. Ej: 2060 → "DOS MIL SESENTA PESOS" */
     document.getElementById("facturaTotalLetra").value     = numeroALetras(total);
-
-    document.getElementById("facturaProyecto").value       = registro.proyecto   || "AI005";
+    document.getElementById("facturaProyecto").value       = registro.proyecto || "AI005";
     document.getElementById("facturaNombreProyecto").value = "Atención Integral 005";
-    document.getElementById("facturaOficio").value         = registro.codigo     || "";
-    document.getElementById("facturaAdecuacion").value     = registro.cuenta     || "ADEC-001";
+    const responseOficio = await fetch(`${API}/api/presupuestos/ultimo-oficio/${registro.area_id}`);
+    const dataOficio = await responseOficio.json();
+    const oficioLimpio = (dataOficio.oficio || "").replace(/\.pdf$/i, "");
+    document.getElementById("facturaOficio").value         = oficioLimpio;
+    document.getElementById("facturaAdecuacion").value     = registro.cuenta || "ADEC-001";
     document.getElementById("facturaFecha").value          = new Date(registro.fecha || Date.now())
-      .toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
+    .toLocaleDateString("es-MX", { day: "numeric", month: "long", year: "numeric" });
 
     abrirModal("modalFactura");
   } catch (error) {
