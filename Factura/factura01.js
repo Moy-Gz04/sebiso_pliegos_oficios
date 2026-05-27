@@ -182,9 +182,17 @@ async function abrirModalFactura(codigo){
             const responseOficio =
             await fetch(
 
-                `${API}/api/presupuestos/ultimo-oficio/${registro.area_id}`
+                `${API}/api/presupuestos/ultimo-oficio/1`
 
             );
+
+            if(!responseOficio.ok){
+
+                throw new Error(
+                    "Error obteniendo oficio"
+                );
+
+            }
 
             const dataOficio =
             await responseOficio.json();
@@ -200,7 +208,10 @@ async function abrirModalFactura(codigo){
 
                 oficioLimpio =
 
-                (dataOficio.oficio || "")
+                (
+                    dataOficio
+                    .oficio_autorizacion_nombre || ""
+                )
 
                 .replace(/\.pdf$/i, "");
 

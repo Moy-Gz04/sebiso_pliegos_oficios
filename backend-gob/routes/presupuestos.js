@@ -127,11 +127,7 @@ router.get(
                 `
                 SELECT
 
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre
+                    oficio_autorizacion_nombre
 
                 FROM ultimos_oficios_por_up
 
@@ -148,10 +144,6 @@ router.get(
                 consulta.rows
             );
 
-            /* =========================
-               SIN RESULTADOS
-            ========================= */
-
             if(
                 consulta.rows.length === 0
             ){
@@ -160,43 +152,20 @@ router.get(
 
                     ok:false,
 
-                    oficio_autorizacion:'',
-                    oficio_autorizacion_nombre:'',
-
-                    oficio_adecuacion:'',
-                    oficio_adecuacion_nombre:''
+                    oficio_autorizacion_nombre:''
 
                 });
 
             }
 
-            /* =========================
-               RESPUESTA
-            ========================= */
-
             res.json({
 
                 ok:true,
 
-                oficio_autorizacion:
-
-                consulta.rows[0]
-                .oficio_autorizacion || '',
-
                 oficio_autorizacion_nombre:
 
                 consulta.rows[0]
-                .oficio_autorizacion_nombre || '',
-
-                oficio_adecuacion:
-
-                consulta.rows[0]
-                .oficio_adecuacion || '',
-
-                oficio_adecuacion_nombre:
-
-                consulta.rows[0]
-                .oficio_adecuacion_nombre || ''
+                .oficio_autorizacion_nombre || ''
 
             });
 
@@ -950,70 +919,6 @@ router.put(
                     nuevoNombreAdecuacion,
 
                     id
-
-                ]
-
-            );
-
-            /* =========================
-               ACTUALIZAR ÚLTIMOS OFICIOS
-            ========================= */
-
-            await pool.query(
-
-                `
-                INSERT INTO ultimos_oficios_por_up(
-
-                    area_id,
-
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre,
-
-                    fecha_actualizacion
-
-                )
-
-                VALUES(
-
-                    $1,
-                    $2,
-                    $3,
-                    $4,
-                    $5,
-                    NOW()
-
-                )
-
-                ON CONFLICT(area_id)
-
-                DO UPDATE SET
-
-                    oficio_autorizacion =
-                    EXCLUDED.oficio_autorizacion,
-
-                    oficio_autorizacion_nombre =
-                    EXCLUDED.oficio_autorizacion_nombre,
-
-                    oficio_adecuacion =
-                    EXCLUDED.oficio_adecuacion,
-
-                    oficio_adecuacion_nombre =
-                    EXCLUDED.oficio_adecuacion_nombre,
-
-                    fecha_actualizacion = NOW()
-                `,
-                [
-
-                    registro.area_id,
-
-                    nuevoPDFAutorizacion,
-                    nuevoNombreAutorizacion,
-
-                    nuevoPDFAdecuacion,
-                    nuevoNombreAdecuacion
 
                 ]
 
