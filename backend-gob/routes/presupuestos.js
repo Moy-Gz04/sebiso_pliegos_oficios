@@ -41,31 +41,31 @@ const storage = multer.diskStorage({
 
     filename: (req, file, cb) => {
 
-        const extension =
-        path.extname(file.originalname);
+    const extension =
+    path.extname(file.originalname);
 
-        const nombreBase =
-        path.basename(file.originalname, extension);
+    const nombreBase =
+    path.basename(file.originalname, extension);
 
-        const nombreLimpio =
+    const nombreLimpio =
 
-            nombreBase
+        nombreBase
 
-            .normalize('NFD')
+        .normalize('NFD')
 
-            .replace(/[\u0300-\u036f]/g, '')
+        .replace(/[\u0300-\u036f]/g, '')
 
-            .replace(/\s+/g, '-')
+        .replace(/\s+/g, '-')
 
-            .replace(/[^a-zA-Z0-9-_]/g, '');
+        .replace(/[^a-zA-Z0-9-_]/g, '');
 
-        const nombreFinal =
+    const nombreFinal =
 
-            `${Date.now()}-${nombreLimpio}${extension}`;
+        `${nombreLimpio}${extension}`;
 
-        cb(null, nombreFinal);
+    cb(null, nombreFinal);
 
-    }
+}
 
 });
 
