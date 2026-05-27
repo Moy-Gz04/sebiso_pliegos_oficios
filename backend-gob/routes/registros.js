@@ -33,7 +33,7 @@ router.get("/codigo/:codigo", async (req, res) => {
       FROM registros r
 
       LEFT JOIN areas_presupuestales ap
-      ON TRIM(ap.clave_area) = TRIM(r.area)
+        
 
       WHERE r.codigo = $1
       `,
@@ -75,85 +75,70 @@ router.get("/codigo/:codigo", async (req, res) => {
 
 });
 /* =========================
-   OBTENER REGISTROS
+   OBTENER REGISTRO POR CÓDIGO
 ========================= */
 
-router.get("/:area", async (req, res) => {
-  try {
-    const area = req.params.area.trim();
+router.get("/codigo/:codigo", async (req, res) => {
 
-    const result = await pool.query(
+  try {
+
+    const codigo =
+    req.params.codigo.trim();
+
+    const result =
+    await pool.query(
+
       `
       SELECT
 
           r.*,
 
-          CASE
-
-              WHEN gp.registro_id IS NOT NULL
-              THEN true
-
-              ELSE false
-
-          END AS pagado,
-
-          COALESCE(
-
-              gp.total_pagado,
-
-              0
-
-          ) AS cantidad_pagada
+          ap.id AS area_id
 
       FROM registros r
 
-      LEFT JOIN (
+      LEFT JOIN areas_presupuestales ap
 
-          SELECT
+      ON TRIM(ap.clave_area)
+      LIKE TRIM(r.area) || '%'
 
-              registro_id,
-
-              SUM(cantidad) AS total_pagado
-
-          FROM gastos
-
-          GROUP BY registro_id
-
-      ) gp
-
-      ON gp.registro_id = r.id
-
-      WHERE TRIM(r.area) = $1
-
-      ORDER BY
-
-          CASE r.estatus
-
-              WHEN 'Creado' THEN 1
-              WHEN 'Rechazado' THEN 2
-              WHEN 'Enviado' THEN 3
-              WHEN 'Pagado' THEN 4
-              ELSE 5
-
-          END,
-
-          r.fecha DESC NULLS LAST
+      WHERE r.codigo = $1
       `,
-      [area],
+      [codigo],
+
     );
 
-    res.json(result.rows);
-  } catch (error) {
+    if (result.rows.length === 0) {
+
+      return res.status(404).json({
+
+        ok: false,
+
+        error: "Registro no encontrado",
+
+      });
+
+    }
+
+    res.json(result.rows[0]);
+
+  }
+
+  catch (error) {
+
     console.log(error);
 
     res.status(500).json({
+
       ok: false,
 
-      error: "Error obteniendo registros",
-    });
-  }
-});
+      error: error.message,
 
+    });
+
+  }
+
+});
 /* =========================
    GUARDAR REGISTRO
 ========================= */
