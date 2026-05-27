@@ -13,132 +13,122 @@ const ESTATUS = ["Creado", "Enviado", "Rechazado", "Pagado"];
 /* =========================
    OBTENER REGISTRO POR CÓDIGO
 ========================= */
-router.get("/codigo/:codigo", async (req, res) => {
-
-  try {
-
-    const codigo =
-    req.params.codigo.trim();
-
-    const result =
-    await pool.query(
-
-      `
-      SELECT
-
-          r.*,
-
-          ap.id AS area_id
-
-      FROM registros r
-
-      LEFT JOIN areas_presupuestales ap
-        
-
-      WHERE r.codigo = $1
-      `,
-      [codigo]
-
-    );
-
-    if (result.rows.length === 0) {
-
-      return res.status(404).json({
-
-        ok: false,
-
-        error: "Registro no encontrado",
-
-      });
-
-    }
-
-    res.json(
-      result.rows[0]
-    );
-
-  }
-
-  catch (error) {
-
-    console.log(error);
-
-    res.status(500).json({
-
-      ok: false,
-
-      error: error.message,
-
-    });
-
-  }
-
-});
-/* =========================
-   OBTENER REGISTRO POR CÓDIGO
-========================= */
 
 router.get("/codigo/:codigo", async (req, res) => {
-
   try {
+    const codigo = req.params.codigo.trim();
 
-    const codigo =
-    req.params.codigo.trim();
-
-    const result =
-    await pool.query(
-
+    const result = await pool.query(
       `
-      SELECT
+      SELECT *
 
-          r.*,
+      FROM registros
 
-          ap.id AS area_id
-
-      FROM registros r
-
-      LEFT JOIN areas_presupuestales ap
-
-      ON TRIM(ap.clave_area)
-      LIKE TRIM(r.area) || '%'
-
-      WHERE r.codigo = $1
+      WHERE codigo = $1
       `,
       [codigo],
-
     );
 
     if (result.rows.length === 0) {
-
       return res.status(404).json({
-
         ok: false,
 
         error: "Registro no encontrado",
-
       });
-
     }
 
     res.json(result.rows[0]);
-
-  }
-
-  catch (error) {
-
+  } catch (error) {
     console.log(error);
 
     res.status(500).json({
-
       ok: false,
 
       error: error.message,
-
     });
-
   }
-
 });
+
+/* =========================
+   OBTENER REGISTROS
+========================= */
+
+router.get("/:area", async (req, res) => {
+  try {
+    const area = req.params.area.trim();
+
+    const result = await pool.query(
+      `
+      SELECT
+
+          r.*,
+
+          CASE
+
+              WHEN gp.registro_id IS NOT NULL
+              THEN true
+
+              ELSE false
+
+          END AS pagado,
+
+          COALESCE(
+
+              gp.total_pagado,
+
+              0
+
+          ) AS cantidad_pagada
+
+      FROM registros r
+
+      LEFT JOIN (
+
+          SELECT
+
+              registro_id,
+
+              SUM(cantidad) AS total_pagado
+
+          FROM gastos
+
+          GROUP BY registro_id
+
+      ) gp
+
+      ON gp.registro_id = r.id
+
+      WHERE TRIM(r.area) = $1
+
+      ORDER BY
+
+          CASE r.estatus
+
+              WHEN 'Creado' THEN 1
+              WHEN 'Rechazado' THEN 2
+              WHEN 'Enviado' THEN 3
+              WHEN 'Pagado' THEN 4
+              ELSE 5
+
+          END,
+
+          r.fecha DESC NULLS LAST
+      `,
+      [area],
+    );
+
+    res.json(result.rows);
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      ok: false,
+
+      error: "Error obteniendo registros",
+    });
+  }
+});
+
 /* =========================
    GUARDAR REGISTRO
 ========================= */
