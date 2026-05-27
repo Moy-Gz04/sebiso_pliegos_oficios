@@ -107,16 +107,6 @@ const catalogoAdecuacion = [
 ];
 
 /* =========================
-   CATÁLOGO OFICIOS
-========================= */
-
-const catalogoOficios = [
-
-    "OF-AUT-001"
-
-];
-
-/* =========================
    PERSONAS
 ========================= */
 
@@ -464,14 +454,39 @@ function llenarAdecuacionFactura(){
 
 }
 
-function llenarOficiosFactura(){
+/* =========================
+   ASIGNAR OFICIO DESDE API
+========================= */
 
-    llenarSelectAutomatico(
+function asignarOficioFactura(registro){
 
-        "facturaOficio",
-        catalogoOficios
-
+    const select =
+    document.getElementById(
+        "facturaOficio"
     );
+
+    if(!select){
+
+        return;
+
+    }
+
+    select.innerHTML = "";
+
+    const option =
+    document.createElement(
+        "option"
+    );
+
+    option.value =
+    registro.oficio_autorizacion_nombre || "";
+
+    option.textContent =
+    registro.oficio_autorizacion_nombre || "";
+
+    option.selected = true;
+
+    select.appendChild(option);
 
 }
 
@@ -566,8 +581,6 @@ document.addEventListener(
         llenarNombreProyectoFactura();
 
         llenarAdecuacionFactura();
-
-        llenarOficiosFactura();
 
     }
 
