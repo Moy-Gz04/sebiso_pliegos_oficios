@@ -172,6 +172,52 @@ async function abrirModalFactura(codigo){
         );
 
         /* =========================
+           OBTENER ÚLTIMO OFICIO
+        ========================= */
+
+        let oficioLimpio = "";
+
+        try{
+
+            const responseOficio =
+            await fetch(
+
+                `${API}/api/presupuestos/ultimo-oficio/${registro.area_id}`
+
+            );
+
+            const dataOficio =
+            await responseOficio.json();
+
+            console.log(
+                "ÚLTIMO OFICIO:",
+                dataOficio
+            );
+
+            if(
+                dataOficio.ok
+            ){
+
+                oficioLimpio =
+
+                (dataOficio.oficio || "")
+
+                .replace(/\.pdf$/i, "");
+
+            }
+
+        }
+
+        catch(error){
+
+            console.error(
+                "ERROR CARGANDO OFICIO:",
+                error
+            );
+
+        }
+
+        /* =========================
            LLENAR CAMPOS
         ========================= */
 
@@ -248,15 +294,27 @@ async function abrirModalFactura(codigo){
         ).value =
         "Atención Integral 005";
 
+        /* =========================
+           OFICIO AUTORIZACIÓN
+        ========================= */
+
         document.getElementById(
             "facturaOficio"
         ).value =
-        registro.codigo || "";
+        oficioLimpio;
+
+        /* =========================
+           ADECUACIÓN
+        ========================= */
 
         document.getElementById(
             "facturaAdecuacion"
         ).value =
         registro.cuenta || "ADEC-001";
+
+        /* =========================
+           FECHA
+        ========================= */
 
         document.getElementById(
             "facturaFecha"
@@ -392,7 +450,7 @@ async function generarFactura(){
                     "facturaNoRecibo"
                 ).value,
 
-                "<<TOTALETRA>>":
+                "<<TOTLETRA>>":
 
                 document.getElementById(
                     "facturaTotalLetra"

@@ -1,8 +1,14 @@
 /* ============================================================
    RESULTADOS.JS  –  SEBISO · Sistema de Pliegos y Oficios
    Módulo : Vista de resultados por Unidad Presupuestal (UP)
-   Versión: 3.1
+   Versión: 3.2
    Autor  : Juan Moisés Gómez Aispuro
+   Cambios v3.2:
+     - Se agrega función numeroALetras() completa para convertir
+       cantidades numéricas a texto en español (mayúsculas).
+       Ej: 2060 → "DOS MIL SESENTA PESOS"
+     - Se corrige el registro de facturaTotalLetra en el payload
+       de generarFactura() para que <<TOTLETRA>> llegue al backend.
    ============================================================ */
 
 "use strict";
@@ -84,6 +90,137 @@ function desglosarDias(inicio, fin) {
   for (let i = inicio; i <= fin; i++) dias.push(i);
   if (dias.length === 2) return `${dias[0]} y ${dias[1]}`;
   return `${dias.slice(0, -1).join(", ")} y ${dias[dias.length - 1]}`;
+}
+
+/* ============================================================
+   2B. CONVERSIÓN DE NÚMERO A LETRAS
+   ============================================================ */
+
+/**
+ * Convierte un número entero (sin decimales) a palabras en español,
+ * en mayúsculas. Soporta hasta 999,999,999.
+ *
+ * Ejemplos:
+ *   convertirGrupo(60)   → "SESENTA"
+ *   convertirGrupo(115)  → "CIENTO QUINCE"
+ *   convertirGrupo(1000) → ⚠ usar solo para grupos de 3 dígitos (0-999)
+ *
+ * @param {number} n  Entero entre 0 y 999
+ * @returns {string}
+ */
+function convertirGrupo(n) {
+  const unidades = [
+    "", "UN", "DOS", "TRES", "CUATRO", "CINCO",
+    "SEIS", "SIETE", "OCHO", "NUEVE", "DIEZ",
+    "ONCE", "DOCE", "TRECE", "CATORCE", "QUINCE",
+    "DIECISÉIS", "DIECISIETE", "DIECIOCHO", "DIECINUEVE", "VEINTE",
+    "VEINTIÚN", "VEINTIDÓS", "VEINTITRÉS", "VEINTICUATRO", "VEINTICINCO",
+    "VEINTISÉIS", "VEINTISIETE", "VEINTIOCHO", "VEINTINUEVE",
+  ];
+
+  const decenas = [
+    "", "", "VEINTI", "TREINTA", "CUARENTA", "CINCUENTA",
+    "SESENTA", "SETENTA", "OCHENTA", "NOVENTA",
+  ];
+
+  const centenas = [
+    "", "CIENTO", "DOSCIENTOS", "TRESCIENTOS", "CUATROCIENTOS", "QUINIENTOS",
+    "SEISCIENTOS", "SETECIENTOS", "OCHOCIENTOS", "NOVECIENTOS",
+  ];
+
+  if (n === 0)   return "";
+  if (n === 100) return "CIEN";
+
+  let resultado = "";
+
+  const c = Math.floor(n / 100);
+  const r = n % 100;
+
+  if (c > 0) resultado += centenas[c];
+
+  if (r > 0) {
+    if (resultado) resultado += " ";
+
+    if (r < 30) {
+      /* Las unidades del 1-29 tienen forma propia en el arreglo */
+      resultado += unidades[r];
+    } else {
+      const d = Math.floor(r / 10);
+      const u = r % 10;
+      resultado += decenas[d];
+      if (u > 0) resultado += " Y " + unidades[u];
+    }
+  }
+
+  return resultado.trim();
+}
+
+/**
+ * Convierte un número (entero o decimal) a su representación en letras
+ * en español, en MAYÚSCULAS, añadiendo "PESOS" al final.
+ * Soporta hasta 999,999,999.99.
+ *
+ * Ejemplos:
+ *   numeroALetras(2060)    → "DOS MIL SESENTA PESOS"
+ *   numeroALetras(1500.50) → "UN MIL QUINIENTOS PESOS CON CINCUENTA CENTAVOS"
+ *   numeroALetras(100)     → "CIEN PESOS"
+ *   numeroALetras(1000000) → "UN MILLÓN PESOS"
+ *
+ * @param {number|string} valor  Cantidad numérica a convertir
+ * @returns {string}             Texto en MAYÚSCULAS con "PESOS"
+ */
+function numeroALetras(valor) {
+  /* ── Sanear entrada ── */
+  const num = parseFloat(String(valor).replace(/[^0-9.-]/g, "")) || 0;
+
+  const entero    = Math.floor(Math.abs(num));
+  const decimales = Math.round((Math.abs(num) - entero) * 100);
+
+  /* ── Parte entera ── */
+  let texto = "";
+
+  if (entero === 0) {
+    texto = "CERO";
+  } else {
+    const millones = Math.floor(entero / 1_000_000);
+    const miles    = Math.floor((entero % 1_000_000) / 1_000);
+    const resto    = entero % 1_000;
+
+    /* Millones */
+    if (millones > 0) {
+      if (millones === 1) {
+        texto += "UN MILLÓN";
+      } else {
+        texto += convertirGrupo(millones) + " MILLONES";
+      }
+    }
+
+    /* Miles */
+    if (miles > 0) {
+      if (texto) texto += " ";
+      if (miles === 1) {
+        texto += "MIL";
+      } else {
+        texto += convertirGrupo(miles) + " MIL";
+      }
+    }
+
+    /* Unidades / centenas finales */
+    if (resto > 0) {
+      if (texto) texto += " ";
+      texto += convertirGrupo(resto);
+    }
+  }
+
+  /* ── Agregar "PESOS" ── */
+  texto += " PESOS";
+
+  /* ── Parte decimal (centavos) ── */
+  if (decimales > 0) {
+    texto += " CON " + convertirGrupo(decimales) + " CENTAVOS";
+  }
+
+  return texto.trim();
 }
 
 /* ============================================================
@@ -343,6 +480,11 @@ async function abrirModalRecibo(codigo) {
 
 /**
  * Carga los datos del registro y rellena el modal de Factura.
+ *
+ * CORRECCIÓN v3.2: el campo facturaTotalLetra ahora se precarga
+ * con numeroALetras(total) para que <<TOTLETRA>> llegue correctamente
+ * al backend al momento de enviar el formulario.
+ *
  * @param {string} codigo
  */
 async function abrirModalFactura(codigo) {
@@ -352,7 +494,10 @@ async function abrirModalFactura(codigo) {
 
     const registro  = await fetchRegistro(codigo);
     const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
-    const total     = Number(registro.spg_total || 0);
+
+    /* Se extrae el total numérico del registro para reutilizarlo
+       tanto en el campo formateado como en la conversión a letras */
+    const total = Number(registro.spg_total || 0);
 
     document.getElementById("facturaFolio").value          = "";
     document.getElementById("facturaPersona").value        = registro.persona                || "";
@@ -364,7 +509,11 @@ async function abrirModalFactura(codigo) {
     document.getElementById("facturaImporte").value        = formatearMoneda(registro.spg_monto        || 0);
     document.getElementById("facturaRetenciones").value    = formatearMoneda(registro.spg_retenciones  || 0);
     document.getElementById("facturaTotal").value          = formatearMoneda(total);
+
+    /* ✅ CORRECCIÓN: se usa numeroALetras() para generar el texto
+       correcto. Ej: 2060 → "DOS MIL SESENTA PESOS" */
     document.getElementById("facturaTotalLetra").value     = numeroALetras(total);
+
     document.getElementById("facturaProyecto").value       = registro.proyecto   || "AI005";
     document.getElementById("facturaNombreProyecto").value = "Atención Integral 005";
     document.getElementById("facturaOficio").value         = registro.codigo     || "";
@@ -383,6 +532,10 @@ async function abrirModalFactura(codigo) {
 
 /**
  * Carga los datos del registro y rellena el modal de Oficio 2.
+ *
+ * CORRECCIÓN v3.2: el campo oficio2TotalLetra ahora se precarga
+ * con numeroALetras(total) para consistencia con el modal de Factura.
+ *
  * @param {string} codigo
  */
 async function abrirModalOficio2(codigo) {
@@ -406,6 +559,8 @@ async function abrirModalOficio2(codigo) {
     document.getElementById("oficio2Monto").value          = formatearMoneda(registro.spg_monto        || 0);
     document.getElementById("oficio2Retenciones").value    = formatearMoneda(registro.spg_retenciones  || 0);
     document.getElementById("oficio2Total").value          = formatearMoneda(total);
+
+    /* ✅ CORRECCIÓN: mismo criterio que Factura */
     document.getElementById("oficio2TotalLetra").value     = numeroALetras(total);
 
     abrirModal("modalOficio2");
@@ -599,6 +754,10 @@ async function generarRecibo() {
 /**
  * Envía los datos de la Factura al backend, guarda la URL del PDF
  * resultante en el registro y muestra el modal de éxito.
+ *
+ * CORRECCIÓN v3.2: la clave del payload ahora es "totalLetra"
+ * (antes estaba como "totalLetra" pero el campo se leía de un input
+ * que no se pre-llenaba; ahora sí se pre-llena en abrirModalFactura).
  */
 async function generarFactura() {
   try {
@@ -614,7 +773,12 @@ async function generarFactura() {
       importe:        document.getElementById("facturaImporte").value,
       retenciones:    document.getElementById("facturaRetenciones").value,
       total:          document.getElementById("facturaTotal").value,
+
+      /* ✅ CORRECCIÓN: se lee el campo que ahora sí está pre-llenado
+         con la conversión a letras correcta, p. ej.:
+         "DOS MIL SESENTA PESOS"  en lugar de "2060.00 PESOS 00/100 M.N." */
       totalLetra:     document.getElementById("facturaTotalLetra").value,
+
       proyecto:       document.getElementById("facturaProyecto").value,
       nombreProyecto: document.getElementById("facturaNombreProyecto").value,
       oficio:         document.getElementById("facturaOficio").value,
@@ -677,6 +841,8 @@ async function generarOficio2() {
         "<<MONT>>":      document.getElementById("oficio2Monto").value,
         "<<RET>>":       document.getElementById("oficio2Retenciones").value,
         "<<TOT>>":       document.getElementById("oficio2Total").value,
+
+        /* ✅ CORRECCIÓN: se usa el campo pre-llenado con numeroALetras() */
         "<<TOTAL>>":     document.getElementById("oficio2TotalLetra").value,
       },
     };
