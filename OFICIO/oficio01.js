@@ -14,23 +14,18 @@ function validarCamposOficio2(){
 
     let error = false;
 
-    document
-    .querySelectorAll(
+    const camposRequeridos = [
 
-        "#modalOficio2 input, #modalOficio2 select"
+        "oficio2Numc"
 
-    )
-    .forEach(campo=>{
+    ];
 
-        if(
+    camposRequeridos.forEach(id=>{
 
-            campo.hasAttribute("readonly")
+        const campo =
+        document.getElementById(id);
 
-        ){
-
-            campo.classList.remove(
-                "input-error"
-            );
+        if(!campo){
 
             return;
 
@@ -61,6 +56,286 @@ function validarCamposOficio2(){
     });
 
     return !error;
+
+}
+
+/* =========================
+   ABRIR MODAL OFICIO 2
+========================= */
+
+async function abrirModalOficio2(codigo){
+
+    try{
+
+        codigoOficio2 = codigo;
+
+        const response =
+        await fetch(
+
+            `${API}/api/registros/codigo/${codigo}`
+
+        );
+
+        if(!response.ok){
+
+            throw new Error(
+                "Error obteniendo registro"
+            );
+
+        }
+
+        const registro =
+        await response.json();
+
+        if(!registro){
+
+            throw new Error(
+                "Registro no encontrado"
+            );
+
+        }
+
+        console.log(
+            "REGISTRO OFICIO2:",
+            registro
+        );
+
+        /* =========================
+           LIMPIAR ERRORES
+        ========================= */
+
+        document
+        .querySelectorAll(
+            "#modalOficio2 input, #modalOficio2 select"
+        )
+        .forEach(campo=>{
+
+            campo.classList.remove(
+                "input-error"
+            );
+
+        });
+
+        /* =========================
+           DATOS CALCULADOS
+        ========================= */
+
+        const dias =
+        desglosarDias(
+
+            registro.dia_inicio,
+
+            registro.dia_fin
+
+        ) || "";
+
+        const total =
+        Number(
+            registro.spg_total || 0
+        );
+
+        /* =========================
+           OBTENER OFICIOS
+        ========================= */
+
+        let oficioAutorizacion = "";
+        let oficioAdecuacion = "";
+
+        try{
+
+            const responseOficio =
+            await fetch(
+
+                `${API}/api/presupuestos/ultimo-oficio/1`
+
+            );
+
+            if(!responseOficio.ok){
+
+                throw new Error(
+                    "Error obteniendo oficios"
+                );
+
+            }
+
+            const dataOficio =
+            await responseOficio.json();
+
+            console.log(
+                "ÚLTIMO OFICIO:",
+                dataOficio
+            );
+
+            if(dataOficio.ok){
+
+                oficioAutorizacion =
+
+                (
+                    dataOficio
+                    .oficio_autorizacion_nombre || ""
+                )
+                .replace(/\.pdf$/i, "");
+
+                oficioAdecuacion =
+
+                (
+                    dataOficio
+                    .oficio_adecuacion_nombre || ""
+                )
+                .replace(/\.pdf$/i, "");
+
+            }
+
+        }
+
+        catch(error){
+
+            console.error(
+                "ERROR CARGANDO OFICIOS:",
+                error
+            );
+
+        }
+
+        /* =========================
+           LLENAR CAMPOS
+        ========================= */
+
+        document.getElementById(
+            "oficio2Numc"
+        ).value =
+        "";
+
+        document.getElementById(
+            "oficio2Persona"
+        ).value =
+        registro.persona || "";
+
+        document.getElementById(
+            "oficio2Municipio"
+        ).value =
+        registro.municipio || "";
+
+        document.getElementById(
+            "oficio2Dias"
+        ).value =
+        dias;
+
+        document.getElementById(
+            "oficio2Mes"
+        ).value =
+        registro.mes || "";
+
+        document.getElementById(
+            "oficio2Anio"
+        ).value =
+
+        new Date(
+            registro.fecha || Date.now()
+        )
+        .getFullYear();
+
+        document.getElementById(
+            "oficio2Proyecto"
+        ).value =
+        registro.proyecto || "AI005";
+
+        document.getElementById(
+            "oficio2NombreProyecto"
+        ).value =
+        "Atención Integral 005";
+
+        document.getElementById(
+            "oficio2Ofaut"
+        ).value =
+        oficioAutorizacion;
+
+        document.getElementById(
+            "oficio2OficioAdec"
+        ).value =
+        oficioAdecuacion;
+
+        document.getElementById(
+            "oficio2Adec"
+        ).value =
+        registro.cuenta || "0";
+
+        document.getElementById(
+            "oficio2Monto"
+        ).value =
+        formatearMoneda(
+            registro.spg_monto || 0
+        );
+
+        document.getElementById(
+            "oficio2Retenciones"
+        ).value =
+        formatearMoneda(
+            registro.spg_retenciones || 0
+        );
+
+        document.getElementById(
+            "oficio2Total"
+        ).value =
+        formatearMoneda(total);
+
+        document.getElementById(
+            "oficio2TotalLetra"
+        ).value =
+        numeroALetras(total);
+
+        /* =========================
+           BLOQUEAR CAMPOS
+        ========================= */
+
+        const camposBloqueados = [
+
+            "oficio2Persona",
+            "oficio2Municipio",
+            "oficio2Dias",
+            "oficio2Mes",
+            "oficio2Anio",
+            "oficio2Ofaut",
+            "oficio2OficioAdec",
+            "oficio2Adec",
+            "oficio2Monto",
+            "oficio2Retenciones",
+            "oficio2Total",
+            "oficio2TotalLetra"
+
+        ];
+
+        camposBloqueados.forEach(id=>{
+
+            const campo =
+            document.getElementById(id);
+
+            if(campo){
+
+                campo.readOnly = true;
+
+            }
+
+        });
+
+        abrirModal(
+            "modalOficio2"
+        );
+
+    }
+
+    catch(error){
+
+        console.error(
+            "ERROR ABRIENDO OFICIO2:",
+            error
+        );
+
+        alert(
+            error.message
+        );
+
+    }
 
 }
 
@@ -114,97 +389,97 @@ async function generarOficio2(){
 
             variables:{
 
-    "<<NUMC>>":
+                "<<NUMC>>":
 
-    document.getElementById(
-        "oficio2Numc"
-    ).value,
+                document.getElementById(
+                    "oficio2Numc"
+                ).value,
 
-    "<<NOMBRE>>":
+                "<<NOMBRE>>":
 
-    document.getElementById(
-        "oficio2Persona"
-    ).value,
+                document.getElementById(
+                    "oficio2Persona"
+                ).value,
 
-    "<<MUNICIPIO>>":
+                "<<MUNICIPIO>>":
 
-    document.getElementById(
-        "oficio2Municipio"
-    ).value,
+                document.getElementById(
+                    "oficio2Municipio"
+                ).value,
 
-    "<<DIAS>>":
+                "<<DIAS>>":
 
-    document.getElementById(
-        "oficio2Dias"
-    ).value,
+                document.getElementById(
+                    "oficio2Dias"
+                ).value,
 
-    "<<MES>>":
+                "<<MES>>":
 
-    document.getElementById(
-        "oficio2Mes"
-    ).value,
+                document.getElementById(
+                    "oficio2Mes"
+                ).value,
 
-    "<<ANIO>>":
+                "<<ANIO>>":
 
-    document.getElementById(
-        "oficio2Anio"
-    ).value,
+                document.getElementById(
+                    "oficio2Anio"
+                ).value,
 
-    "<<PROY>>":
+                "<<PROY>>":
 
-    document.getElementById(
-        "oficio2Proyecto"
-    ).value,
+                document.getElementById(
+                    "oficio2Proyecto"
+                ).value,
 
-    "<<NOMPROY>>":
+                "<<NOMPROY>>":
 
-    document.getElementById(
-        "oficio2NombreProyecto"
-    ).value,
+                document.getElementById(
+                    "oficio2NombreProyecto"
+                ).value,
 
-    "<<OFAUT>>":
+                "<<OFAUT>>":
 
-    document.getElementById(
-        "oficio2Ofaut"
-    ).value,
+                document.getElementById(
+                    "oficio2Ofaut"
+                ).value,
 
-    "<<OFADEC>>":
+                "<<OFADEC>>":
 
-    document.getElementById(
-        "oficio2OficioAdec"
-    ).value,
+                document.getElementById(
+                    "oficio2OficioAdec"
+                ).value,
 
-    "<<ADEC>>":
+                "<<ADEC>>":
 
-    document.getElementById(
-        "oficio2Adec"
-    ).value,
+                document.getElementById(
+                    "oficio2Adec"
+                ).value,
 
-    "<<MONT>>":
+                "<<MONT>>":
 
-    document.getElementById(
-        "oficio2Monto"
-    ).value,
+                document.getElementById(
+                    "oficio2Monto"
+                ).value,
 
-    "<<RET>>":
+                "<<RET>>":
 
-    document.getElementById(
-        "oficio2Retenciones"
-    ).value,
+                document.getElementById(
+                    "oficio2Retenciones"
+                ).value,
 
-    "<<TOT>>":
+                "<<TOT>>":
 
-    document.getElementById(
-        "oficio2Total"
-    ).value,
+                document.getElementById(
+                    "oficio2Total"
+                ).value,
 
-    "<<TOTAL>>":
+                "<<TOTAL>>":
 
-    document.getElementById(
-        "oficio2TotalLetra"
-    ).value
+                document.getElementById(
+                    "oficio2TotalLetra"
+                ).value
 
-}
+            }
 
         };
 

@@ -1,0 +1,459 @@
+/* =========================================================
+   MODAL OFICIO 2
+========================================================= */
+
+#modalOficio2{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.38);
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:99999;
+
+    padding:10px;
+
+    overflow:hidden;
+
+    backdrop-filter:blur(3px);
+
+    box-sizing:border-box;
+
+}
+
+#modalOficio2.activo{
+
+    display:flex;
+
+}
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+#modalOficio2 .modal-spg-contenido{
+
+    width:100%;
+
+    max-width:1220px;
+
+    background:#ffffff;
+
+    border-radius:28px;
+
+    padding:22px 28px;
+
+    box-shadow:
+        0 18px 45px rgba(0,0,0,.15);
+
+    animation:aparecerOficio2 .18s ease;
+
+    box-sizing:border-box;
+
+    overflow:hidden;
+
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+#modalOficio2 .modal-header{
+
+    text-align:center;
+
+    margin-bottom:18px;
+
+}
+
+#modalOficio2 .modal-header h2{
+
+    font-size:28px;
+
+    color:#70122b;
+
+    font-weight:800;
+
+    margin:0;
+
+    line-height:1.1;
+
+}
+
+/* =========================================================
+   GRID
+========================================================= */
+
+#modalOficio2 .modal-body-grid{
+
+    display:grid;
+
+    grid-template-columns:
+        repeat(3,minmax(0,1fr));
+
+    gap:16px 20px;
+
+    margin-bottom:20px;
+
+    align-items:start;
+
+}
+
+/* =========================================================
+   CAMPOS
+========================================================= */
+
+#modalOficio2 .campo-spg{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:5px;
+
+}
+
+#modalOficio2 .campo-spg label{
+
+    font-size:11px;
+
+    font-weight:800;
+
+    color:#64748b;
+
+    text-transform:uppercase;
+
+    letter-spacing:.4px;
+
+    margin-left:2px;
+
+}
+
+/* =========================================================
+   INPUTS
+========================================================= */
+
+#modalOficio2 input{
+
+    width:100%;
+
+    height:56px;
+
+    border-radius:18px;
+
+    border:1.8px solid #d7dce2;
+
+    background:#ffffff;
+
+    padding:0 18px;
+
+    font-size:14px;
+
+    color:#1f2937;
+
+    outline:none;
+
+    transition:.18s ease;
+
+    font-family:'Montserrat',sans-serif;
+
+    box-sizing:border-box;
+
+}
+
+/* =========================================================
+   INPUTS EDITABLES
+========================================================= */
+
+#modalOficio2 input:not([readonly]){
+
+    border:2px solid #8b1538;
+
+    background:#ffffff;
+
+    color:#222;
+
+}
+
+#modalOficio2 input:not([readonly]):focus{
+
+    border-color:#a11b46;
+
+    box-shadow:
+        0 0 0 4px rgba(139,21,56,.10);
+
+}
+
+/* =========================================================
+   INPUTS BLOQUEADOS
+========================================================= */
+
+#modalOficio2 input[readonly]{
+
+    background:
+        linear-gradient(
+            180deg,
+            #8f2b4b 0%,
+            #7a1f3d 100%
+        ) !important;
+
+    color:#ffffff !important;
+
+    border:1.5px solid rgba(255,255,255,.08) !important;
+
+    font-weight:650 !important;
+
+    cursor:not-allowed !important;
+
+    -webkit-text-fill-color:#ffffff !important;
+
+    opacity:1 !important;
+
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.06),
+        0 2px 8px rgba(122,31,61,.14);
+
+}
+
+/* =========================================================
+   PLACEHOLDER
+========================================================= */
+
+#modalOficio2 input::placeholder{
+
+    color:#cbd5e1;
+
+}
+
+/* =========================================================
+   TOTAL LETRA
+========================================================= */
+
+#modalOficio2 #oficio2TotalLetra{
+
+    font-size:13px;
+
+}
+
+/* =========================================================
+   BOTONES
+========================================================= */
+
+#modalOficio2 .modal-footer{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:16px;
+
+    margin-top:6px;
+
+}
+
+/* =========================================================
+   BOTÓN CANCELAR
+========================================================= */
+
+#modalOficio2 .btn-cancelar{
+
+    width:220px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:#e5e7eb;
+
+    color:#374151;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.18s ease;
+
+    font-family:'Montserrat',sans-serif;
+
+}
+
+#modalOficio2 .btn-cancelar:hover{
+
+    background:#d6dae0;
+
+    transform:translateY(-1px);
+
+}
+
+/* =========================================================
+   BOTÓN GENERAR
+========================================================= */
+
+#modalOficio2 .btn-guardar{
+
+    width:220px;
+
+    height:52px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:#8b1538;
+
+    color:#ffffff;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.18s ease;
+
+    font-family:'Montserrat',sans-serif;
+
+    box-shadow:
+        0 6px 16px rgba(139,21,56,.18);
+
+}
+
+#modalOficio2 .btn-guardar:hover{
+
+    background:#74112f;
+
+    transform:translateY(-1px);
+
+}
+
+/* =========================================================
+   INPUT ERROR
+========================================================= */
+
+#modalOficio2 .input-error{
+
+    border:2px solid #dc2626 !important;
+
+    background:#fff5f5 !important;
+
+    color:#991b1b !important;
+
+    box-shadow:
+        0 0 0 3px rgba(220,38,38,.08) !important;
+
+}
+
+/* =========================================================
+   ANIMACIÓN
+========================================================= */
+
+@keyframes aparecerOficio2{
+
+    from{
+
+        opacity:0;
+
+        transform:
+            translateY(8px)
+            scale(.985);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:
+            translateY(0)
+            scale(1);
+
+    }
+
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media(max-width:1100px){
+
+    #modalOficio2{
+
+        overflow-y:auto;
+
+        align-items:flex-start;
+
+    }
+
+    #modalOficio2 .modal-spg-contenido{
+
+        margin-top:10px;
+
+    }
+
+    #modalOficio2 .modal-body-grid{
+
+        grid-template-columns:
+            repeat(2,minmax(0,1fr));
+
+    }
+
+}
+
+@media(max-width:700px){
+
+    #modalOficio2{
+
+        padding:12px;
+
+    }
+
+    #modalOficio2 .modal-spg-contenido{
+
+        padding:18px;
+
+        border-radius:22px;
+
+    }
+
+    #modalOficio2 .modal-header h2{
+
+        font-size:24px;
+
+    }
+
+    #modalOficio2 .modal-body-grid{
+
+        grid-template-columns:1fr;
+
+        gap:14px;
+
+    }
+
+    #modalOficio2 .modal-footer{
+
+        flex-direction:column;
+
+    }
+
+    #modalOficio2 .btn-cancelar,
+    #modalOficio2 .btn-guardar{
+
+        width:100%;
+
+    }
+
+}
