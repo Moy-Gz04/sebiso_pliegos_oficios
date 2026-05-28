@@ -823,39 +823,18 @@ async function generarFactura() {
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Error generando Factura");
 
-    const guardar = await fetch(
+    const nombreProyecto = document.getElementById("facturaNombreProyecto").value;
+console.log("NOMBRE PROYECTO A GUARDAR:", nombreProyecto);
 
-  `${API}/api/registros/factura/${codigoFactura}`,
-
-  {
-
-    method: "PUT",
-
-    headers: {
-
-      "Content-Type": "application/json"
-
-    },
-
-    body: JSON.stringify({
-
-      factura_pdf: data.url,
-
-      proyecto:
-      document.getElementById(
-        "facturaProyecto"
-      ).value,
-
-      nombre_proyecto:
-      document.getElementById(
-        "facturaNombreProyecto"
-      ).value
-
-    }),
-
-  }
-
-);
+const guardar = await fetch(`${API}/api/registros/factura/${codigoFactura}`, {
+  method: "PUT",
+  headers: { "Content-Type": "application/json" },
+  body: JSON.stringify({
+    factura_pdf:     data.url,
+    proyecto:        document.getElementById("facturaProyecto").value,
+    nombre_proyecto: nombreProyecto,
+  }),
+});
 
 if (!guardar.ok)
 
@@ -897,6 +876,8 @@ cargarRegistros();
   );
 
 }}
+
+
 
 /* ---- 10.4 GENERAR OFICIO 2 ------------------------------- */
 
