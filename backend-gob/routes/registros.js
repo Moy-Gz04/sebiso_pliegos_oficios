@@ -677,38 +677,54 @@ router.delete("/:codigo", async (req, res) => {
     });
   }
 });
-
 /* =========================
    GUARDAR SPG PDF
 ========================= */
 
 router.put("/spg/:codigo", async (req, res) => {
+
   try {
-    const codigo = req.params.codigo.trim();
+
+    const codigo =
+    req.params.codigo.trim();
 
     const {
+
       spg_pdf,
+
       ur,
       up,
       rubro,
       og,
+
       proyecto,
+      nombre_proyecto,
+
       cuenta,
+
       monto,
       retenciones,
       total,
+
       anio,
+
     } = req.body;
 
     if (!spg_pdf) {
+
       return res.status(400).json({
+
         ok: false,
 
         error: "URL SPG requerida",
+
       });
+
     }
 
-    const validar = await pool.query(
+    const validar =
+    await pool.query(
+
       `
       SELECT id
 
@@ -716,18 +732,25 @@ router.put("/spg/:codigo", async (req, res) => {
 
       WHERE codigo = $1
       `,
+
       [codigo],
+
     );
 
     if (validar.rows.length === 0) {
+
       return res.status(404).json({
+
         ok: false,
 
         error: "Registro no encontrado",
+
       });
+
     }
 
     await pool.query(
+
       `
       UPDATE registros
 
@@ -739,54 +762,93 @@ router.put("/spg/:codigo", async (req, res) => {
           up = $3,
           rubro = $4,
           og = $5,
+
           proyecto = $6,
-          cuenta = $7,
+          nombre_proyecto = $7,
 
-          spg_monto = $8,
-          spg_retenciones = $9,
-          spg_total = $10,
+          cuenta = $8,
 
-          anio = $11
+          spg_monto = $9,
+          spg_retenciones = $10,
+          spg_total = $11,
 
-      WHERE codigo = $12
+          anio = $12
+
+      WHERE codigo = $13
       `,
+
       [
+
         spg_pdf,
+
         ur,
         up,
         rubro,
         og,
+
         proyecto,
+        nombre_proyecto,
+
         cuenta,
-        parseFloat(String(monto).replace(/[$,\s]/g, "")),
-        parseFloat(String(retenciones).replace(/[$,\s]/g, "")),
-        parseFloat(String(total).replace(/[$,\s]/g, "")),
+
+        parseFloat(
+          String(monto)
+          .replace(/[$,\s]/g, "")
+        ),
+
+        parseFloat(
+          String(retenciones)
+          .replace(/[$,\s]/g, "")
+        ),
+
+        parseFloat(
+          String(total)
+          .replace(/[$,\s]/g, "")
+        ),
+
         Number(anio),
+
         codigo,
+
       ],
+
     );
 
     res.json({
+
       ok: true,
 
       msg: "SPG guardado",
+
     });
-  } catch (error) {
-    console.log("ERROR REAL SPG:");
+
+  }
+
+  catch (error) {
+
+    console.log(
+      "ERROR REAL SPG:"
+    );
+
     console.log(error);
 
     res.status(500).json({
+
       ok: false,
 
       error: error.message,
 
-      detail: error.detail || null,
+      detail:
+      error.detail || null,
 
-      stack: error.stack,
+      stack:
+      error.stack,
+
     });
-  }
-});
 
+  }
+
+});
 /* =========================
    GUARDAR RECIBO PDF
 ========================= */
@@ -852,7 +914,6 @@ router.put("/recibo/:codigo", async (req, res) => {
     });
   }
 });
-
 /* =========================
    GUARDAR FACTURA PDF
 ========================= */
@@ -865,7 +926,12 @@ router.put("/factura/:codigo", async (req, res) => {
     req.params.codigo.trim();
 
     const {
-      factura_pdf
+
+      factura_pdf,
+
+      proyecto,
+      nombre_proyecto
+
     } = req.body;
 
     if (!factura_pdf) {
@@ -880,7 +946,9 @@ router.put("/factura/:codigo", async (req, res) => {
 
     }
 
-    const validar = await pool.query(
+    const validar =
+    await pool.query(
+
       `
       SELECT id
 
@@ -888,7 +956,9 @@ router.put("/factura/:codigo", async (req, res) => {
 
       WHERE codigo = $1
       `,
+
       [codigo],
+
     );
 
     if (validar.rows.length === 0) {
@@ -904,19 +974,31 @@ router.put("/factura/:codigo", async (req, res) => {
     }
 
     await pool.query(
+
       `
       UPDATE registros
 
       SET
 
-          factura_pdf = $1
+          factura_pdf = $1,
 
-      WHERE codigo = $2
+          proyecto = $2,
+          nombre_proyecto = $3
+
+      WHERE codigo = $4
       `,
+
       [
+
         factura_pdf,
-        codigo
+
+        proyecto || "",
+        nombre_proyecto || "",
+
+        codigo,
+
       ],
+
     );
 
     res.json({

@@ -806,10 +806,10 @@ async function generarFactura() {
       total:          document.getElementById("facturaTotal").value,
       totalLetra:     document.getElementById("facturaTotalLetra").value,
       proyecto:       document.getElementById("facturaProyecto").value,
-      nombreProyecto: document.getElementById("facturaNombreProyecto").value,
       oficio:         document.getElementById("facturaOficio").value,
       adecuacion:     document.getElementById("facturaAdecuacion").value,
       fecha:          document.getElementById("facturaFecha").value,
+      nombreProyecto: document.getElementById("facturaNombreProyecto").value,
     };
 
     console.log("PAYLOAD FACTURA:", payload);
@@ -823,23 +823,80 @@ async function generarFactura() {
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Error generando Factura");
 
-    const guardar = await fetch(`${API}/api/registros/factura/${codigoFactura}`, {
-      method:  "PUT",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ factura_pdf: data.url }),
-    });
-    if (!guardar.ok) throw new Error("Error guardando Factura en el registro");
+    const guardar = await fetch(
 
-    cerrarModal("modalCargandoFactura");
-    cerrarModal("modalFactura");
-    abrirModal("modalExitoFactura");
-    cargarRegistros();
-  } catch (error) {
-    console.error("ERROR FACTURA:", error);
-    cerrarModal("modalCargandoFactura");
-    mostrarAlerta("❌ Error al generar Factura", error.message);
+  `${API}/api/registros/factura/${codigoFactura}`,
+
+  {
+
+    method: "PUT",
+
+    headers: {
+
+      "Content-Type": "application/json"
+
+    },
+
+    body: JSON.stringify({
+
+      factura_pdf: data.url,
+
+      proyecto:
+      document.getElementById(
+        "facturaProyecto"
+      ).value,
+
+      nombre_proyecto:
+      document.getElementById(
+        "facturaNombreProyecto"
+      ).value
+
+    }),
+
   }
-}
+
+);
+
+if (!guardar.ok)
+
+  throw new Error(
+    "Error guardando Factura en el registro"
+  );
+
+cerrarModal(
+  "modalCargandoFactura"
+);
+
+cerrarModal(
+  "modalFactura"
+);
+
+abrirModal(
+  "modalExitoFactura"
+);
+
+cargarRegistros();
+
+} catch (error) {
+
+  console.error(
+    "ERROR FACTURA:",
+    error
+  );
+
+  cerrarModal(
+    "modalCargandoFactura"
+  );
+
+  mostrarAlerta(
+
+    "❌ Error al generar Factura",
+
+    error.message
+
+  );
+
+}}
 
 /* ---- 10.4 GENERAR OFICIO 2 ------------------------------- */
 
