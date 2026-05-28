@@ -56,7 +56,7 @@
 
     border-radius:26px;
 
-    padding:18px 22px;
+    padding:20px 24px;
 
     box-shadow:
         0 18px 42px rgba(0,0,0,.14);
@@ -93,7 +93,7 @@
 
     text-align:center;
 
-    margin-bottom:14px;
+    margin-bottom:18px;
 
 }
 
@@ -134,9 +134,9 @@
     grid-template-columns:
         repeat(2,minmax(0,1fr));
 
-    gap:12px 20px;
+    gap:14px 22px;
 
-    margin-bottom:14px;
+    margin-bottom:18px;
 
     align-items:start;
 
@@ -152,7 +152,17 @@
 
     flex-direction:column;
 
-    gap:4px;
+    gap:5px;
+
+}
+
+/* =========================
+   CAMPOS COMPLETOS
+========================= */
+
+.grupo-input-spg-full{
+
+    grid-column:1 / -1;
 
 }
 
@@ -222,18 +232,45 @@
 }
 
 /* =========================
-   TEXTAREA
+   TEXTAREA BASE
 ========================= */
 
 .modal-spg textarea{
 
-    min-height:70px;
+    min-height:42px;
 
-    max-height:78px;
+    height:42px;
 
     line-height:1.35;
 
     overflow-y:auto;
+
+    padding-top:11px !important;
+
+}
+
+/* =========================
+   TEXTAREA GRANDES
+========================= */
+
+#reciboMotivo,
+#reciboLocalidades{
+
+    min-height:104px;
+
+    height:104px;
+
+    padding-top:12px !important;
+
+}
+
+#reciboNota{
+
+    min-height:58px;
+
+    height:58px;
+
+    resize:vertical;
 
 }
 
@@ -287,11 +324,15 @@
 .modal-spg input[readonly],
 .modal-spg textarea[readonly]{
 
-    background:#374151 !important;
+    background:linear-gradient(
+        180deg,
+        #962553 0%,
+        #7c163d 100%
+    ) !important;
 
     color:#ffffff !important;
 
-    border:2px solid #1f2937 !important;
+    border:1.8px solid #7a1438 !important;
 
     -webkit-text-fill-color:#ffffff !important;
 
@@ -300,6 +341,9 @@
     cursor:not-allowed !important;
 
     opacity:1 !important;
+
+    box-shadow:
+        0 6px 14px rgba(112,18,43,.14);
 
 }
 
@@ -350,11 +394,11 @@
 
     justify-content:center;
 
-    gap:14px;
+    gap:16px;
 
     flex-wrap:nowrap;
 
-    margin-top:4px;
+    margin-top:6px;
 
 }
 
@@ -367,7 +411,7 @@
 
     min-width:170px !important;
 
-    height:42px !important;
+    height:44px !important;
 
     padding:0 18px;
 

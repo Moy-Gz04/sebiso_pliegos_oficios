@@ -748,6 +748,7 @@ async function generarRecibo() {
       importe:     document.getElementById("reciboImporte").value,
       retenciones: document.getElementById("reciboRetenciones").value,
       total:       document.getElementById("reciboTotal").value,
+      nota:        document.getElementById("reciboNota").value.trim() || " ",
     };
 
     console.log("PAYLOAD RECIBO:", payload);

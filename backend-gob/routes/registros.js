@@ -141,7 +141,6 @@ router.post("/", async (req, res) => {
       persona,
       oficio_pdf,
       pliego_pdf,
-
       municipio,
       dia_inicio,
       dia_fin,
@@ -150,6 +149,10 @@ router.post("/", async (req, res) => {
       motivo_comision,
 
       localidades_visitadas,
+
+      proyecto,
+      nombre_proyecto
+
     } = req.body;
 
     if (!codigo || !area || !persona) {
@@ -198,9 +201,10 @@ router.post("/", async (req, res) => {
           motivo_comision,
 
           localidades_visitadas,
+          proyecto,
+          nombre_proyecto,
 
           estatus
-
       )
 
       VALUES(
@@ -218,27 +222,30 @@ router.post("/", async (req, res) => {
           $9,
 
           $10,
-
           $11,
-
-          $12
-
+          $12,
+          $13,
+          $14
       )
       `,
       [
-        codigo.trim(),
-        area.trim(),
-        persona.trim(),
-        oficio_pdf || "",
-        pliego_pdf || "",
-        municipio || "",
-        dia_inicio || "",
-        dia_fin || "",
-        mes || "",
-        motivo_comision || "",
-        localidades_visitadas || "",
-        "Creado",
-      ],
+      codigo.trim(),
+      area.trim(),
+      persona.trim(),
+      oficio_pdf || "",
+      pliego_pdf || "",
+      municipio || "",
+      dia_inicio || "",
+      dia_fin || "",
+      mes || "",
+      motivo_comision || "",
+      localidades_visitadas || "",
+
+      proyecto || "",
+      nombre_proyecto || "",
+
+      "Creado",
+    ]
     );
 
     res.json({

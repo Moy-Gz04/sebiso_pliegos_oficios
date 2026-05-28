@@ -4,20 +4,42 @@
 
 const personas = [
 
-    "Ricardo Gomez Moreno",
-    "Marlen Elva Arista Amador",
-    "Dariana Olvera Mendoza",
-    "Juan Alexis Garcia Garcia",
-    "Mahali Vázquez Vega",
-    "Emmanuel Huerta Monzalvo",
-    "Sergio Eduardo Ruiz Arriaga",
-    "Paul Giovanni Sanchez Nieto",
-    "Susana Ruiz Reyes",
-    "Jorge Alberto Vargas Romero",
-    "Misael Lopez Macario",
-    "Josue Raymundo Sanchez Avalos",
-    "Diana Laura Fernández Monroy",
-    "Esperanza Quezada Xaxni"
+    "ROSA LETICIA MUÑOZ CHÁVEZ",
+    "ELIZABETH MARGARITA NOGUEZ ROMERO",
+    "MARÍA SARA ORTIZ GONZÁLEZ",
+    "ROBERTO CARLOS LÓPEZ ESTRADA",
+    "ARIANA SALAS LUGO",
+    "ANA BRISNA CERVANTES HIDALGO",
+    "MARTHA PATRICIA BARRAGÁN GARCÍA",
+    "LAURA TRINIDAD HERNÁNDEZ DÍAZ",
+    "ERICK ACOSTA TÉLLEZ",
+    "GABRIELA HERNÁNDEZ BUSTOS",
+    "MARÍA FERNANDA GUZMÁN ESCAMILLA",
+    "OSCAR ADRIÁN ESCORZA ARROYO",
+    "MARÍA DEL PILAR VEGA REYES",
+    "ALEJANDRO OSWALDO VILLEGAS ORTIZ",
+    "VÍCTOR HUGO PÉREZ GUATI ROJO",
+    "CARLOS RODRIGO ROJAS RUIZ",
+    "PERLA ALELÍ BARRERA GODÍNEZ",
+    "ANA LUISA BAÑOS CASTRO",
+    "MAYTHE MONSERRAT ESCARELA PÉREZ",
+    "CRISTHIAN OMAR CORDERO ESTRADA",
+    "JUAN ÁNGEL AGUILAR MENDOZA",
+    "CHRISTIAN FERNANDO VALDERRAMA URIBE",
+    "ARELY LÓPEZ VARGAS",
+    "ALFONSO GUDIÑO ZAMORA",
+    "RUBÉN SERRANO MORALES",
+    "MARY CARMEN LÓPEZ HERNÁNDEZ",
+    "DIANA MUNGUÍA ALARCÓN",
+    "LIZETH VIDAL CANO",
+    "CARLOS CHARGOY RODRÍGUEZ",
+    "VIANEY CRISTINA SOLARES MORENO",
+    "FRANCISCO REYES VÁZQUEZ",
+    "SUSANA JIMÉNEZ HERNÁNDEZ",
+    "LUZ MARÍA LUQUE GÓMEZ",
+    "MARÍA ELENA TELLO SÁNCHEZ",
+    "ERNESTO MARTÍNEZ AGUILAR",
+    "ANA MARÍA RODRÍGUEZ ROSALES"
 
 ];
 
@@ -70,8 +92,7 @@ const catalogoUP = [
 
 const catalogoRubro = [
 
-    "8402050",
-    "8402050",
+    "8402050"
 
 ];
 
