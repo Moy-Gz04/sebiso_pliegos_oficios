@@ -315,7 +315,7 @@ async function abrirModalFactura(codigo){
         document.getElementById(
             "facturaNombreProyecto"
         ).value =
-        "Atención Integral 005";
+        registro.nombre_proyecto || "Atención Integral 005";
 
         /* =========================
            OFICIO AUTORIZACIÓN
