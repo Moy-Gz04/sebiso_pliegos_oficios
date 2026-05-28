@@ -369,6 +369,8 @@ router.delete("/:codigo", async (req, res) => {
 
 /* =========================
    GUARDAR SPG PDF
+   NOTA: Este endpoint guarda proyecto pero NO nombre_proyecto,
+   ya que ese campo se captura hasta la etapa de Factura.
 ========================= */
 
 router.put("/spg/:codigo", async (req, res) => {
@@ -378,7 +380,7 @@ router.put("/spg/:codigo", async (req, res) => {
     const {
       spg_pdf,
       ur, up, rubro, og,
-      proyecto, nombre_proyecto,
+      proyecto,
       cuenta,
       monto, retenciones, total,
       anio,
@@ -407,19 +409,17 @@ router.put("/spg/:codigo", async (req, res) => {
           rubro           = $4,
           og              = $5,
           proyecto        = $6,
-          nombre_proyecto = $7,
-          cuenta          = $8,
-          spg_monto       = $9,
-          spg_retenciones = $10,
-          spg_total       = $11,
-          anio            = $12
-      WHERE codigo = $13
+          cuenta          = $7,
+          spg_monto       = $8,
+          spg_retenciones = $9,
+          spg_total       = $10,
+          anio            = $11
+      WHERE codigo = $12
       `,
       [
         spg_pdf,
         ur, up, rubro, og,
         proyecto        || "",
-        nombre_proyecto || "",
         cuenta,
         parseFloat(String(monto)      .replace(/[$,\s]/g, "")),
         parseFloat(String(retenciones).replace(/[$,\s]/g, "")),
@@ -477,6 +477,8 @@ router.put("/recibo/:codigo", async (req, res) => {
 
 /* =========================
    GUARDAR FACTURA PDF
+   NOTA: Este endpoint es donde se guarda nombre_proyecto
+   por primera vez, ya que ese campo se captura en este paso.
 ========================= */
 
 router.put("/factura/:codigo", async (req, res) => {
