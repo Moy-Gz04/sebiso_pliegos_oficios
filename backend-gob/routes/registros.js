@@ -1,7 +1,5 @@
 const express = require("express");
-
 const pool = require("../database/db");
-
 const router = express.Router();
 
 /* =========================
@@ -19,38 +17,23 @@ router.get("/codigo/:codigo", async (req, res) => {
     const codigo = req.params.codigo.trim();
 
     const result = await pool.query(
-      `
-      SELECT *
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT * FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (result.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     res.json(result.rows[0]);
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: error.message,
-    });
+    res.status(500).json({ ok: false, error: error.message });
   }
 });
 
 /* =========================
-   OBTENER REGISTROS
+   OBTENER REGISTROS POR ÁREA
 ========================= */
 
 router.get("/:area", async (req, res) => {
@@ -60,72 +43,36 @@ router.get("/:area", async (req, res) => {
     const result = await pool.query(
       `
       SELECT
-
           r.*,
-
           CASE
-
-              WHEN gp.registro_id IS NOT NULL
-              THEN true
-
+              WHEN gp.registro_id IS NOT NULL THEN true
               ELSE false
-
           END AS pagado,
-
-          COALESCE(
-
-              gp.total_pagado,
-
-              0
-
-          ) AS cantidad_pagada
-
+          COALESCE(gp.total_pagado, 0) AS cantidad_pagada
       FROM registros r
-
       LEFT JOIN (
-
-          SELECT
-
-              registro_id,
-
-              SUM(cantidad) AS total_pagado
-
+          SELECT registro_id, SUM(cantidad) AS total_pagado
           FROM gastos
-
           GROUP BY registro_id
-
-      ) gp
-
-      ON gp.registro_id = r.id
-
+      ) gp ON gp.registro_id = r.id
       WHERE TRIM(r.area) = $1
-
       ORDER BY
-
           CASE r.estatus
-
-              WHEN 'Creado' THEN 1
+              WHEN 'Creado'    THEN 1
               WHEN 'Rechazado' THEN 2
-              WHEN 'Enviado' THEN 3
-              WHEN 'Pagado' THEN 4
+              WHEN 'Enviado'   THEN 3
+              WHEN 'Pagado'    THEN 4
               ELSE 5
-
           END,
-
           r.fecha DESC NULLS LAST
       `,
-      [area],
+      [area]
     );
 
     res.json(result.rows);
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error obteniendo registros",
-    });
+    res.status(500).json({ ok: false, error: "Error obteniendo registros" });
   }
 });
 
@@ -145,122 +92,59 @@ router.post("/", async (req, res) => {
       dia_inicio,
       dia_fin,
       mes,
-
       motivo_comision,
-
       localidades_visitadas,
-
       proyecto,
-      nombre_proyecto
-
+      nombre_proyecto,
     } = req.body;
 
     if (!codigo || !area || !persona) {
-      return res.status(400).json({
-        ok: false,
-
-        error: "Campos obligatorios incompletos",
-      });
+      return res.status(400).json({ ok: false, error: "Campos obligatorios incompletos" });
     }
 
     const existe = await pool.query(
-      `
-      SELECT id
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo.trim()],
+      `SELECT id FROM registros WHERE codigo = $1`,
+      [codigo.trim()]
     );
 
     if (existe.rows.length > 0) {
-      return res.status(400).json({
-        ok: false,
-
-        error: "El código ya existe",
-      });
+      return res.status(400).json({ ok: false, error: "El código ya existe" });
     }
 
     await pool.query(
       `
       INSERT INTO registros(
-
-          codigo,
-          area,
-          persona,
-
-          oficio_pdf,
-          pliego_pdf,
-
-          municipio,
-          dia_inicio,
-          dia_fin,
-          mes,
-
-          motivo_comision,
-
-          localidades_visitadas,
-          proyecto,
-          nombre_proyecto,
-
+          codigo, area, persona,
+          oficio_pdf, pliego_pdf,
+          municipio, dia_inicio, dia_fin, mes,
+          motivo_comision, localidades_visitadas,
+          proyecto, nombre_proyecto,
           estatus
       )
-
-      VALUES(
-
-          $1,
-          $2,
-          $3,
-
-          $4,
-          $5,
-
-          $6,
-          $7,
-          $8,
-          $9,
-
-          $10,
-          $11,
-          $12,
-          $13,
-          $14
-      )
+      VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,$13,$14)
       `,
       [
-      codigo.trim(),
-      area.trim(),
-      persona.trim(),
-      oficio_pdf || "",
-      pliego_pdf || "",
-      municipio || "",
-      dia_inicio || "",
-      dia_fin || "",
-      mes || "",
-      motivo_comision || "",
-      localidades_visitadas || "",
-
-      proyecto || "",
-      nombre_proyecto || "",
-
-      "Creado",
-    ]
+        codigo.trim(),
+        area.trim(),
+        persona.trim(),
+        oficio_pdf             || "",
+        pliego_pdf             || "",
+        municipio              || "",
+        dia_inicio             || "",
+        dia_fin                || "",
+        mes                    || "",
+        motivo_comision        || "",
+        localidades_visitadas  || "",
+        proyecto               || "",
+        nombre_proyecto        || "",
+        "Creado",
+      ]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Registro guardado",
-    });
+    res.json({ ok: true, msg: "Registro guardado" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error guardando registro",
-    });
+    res.status(500).json({ ok: false, error: "Error guardando registro" });
   }
 });
 
@@ -273,68 +157,33 @@ router.put("/enviar/:codigo", async (req, res) => {
     const codigo = req.params.codigo.trim();
 
     const validar = await pool.query(
-      `
-      SELECT *
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT * FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     const registro = validar.rows[0];
 
     if (registro.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "El registro ya fue pagado",
-      });
+      return res.status(400).json({ ok: false, error: "El registro ya fue pagado" });
     }
 
     if (registro.estatus === "Enviado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "El registro ya fue enviado",
-      });
+      return res.status(400).json({ ok: false, error: "El registro ya fue enviado" });
     }
 
     await pool.query(
-      `
-      UPDATE registros
-
-      SET
-
-          estatus = 'Enviado'
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `UPDATE registros SET estatus = 'Enviado' WHERE codigo = $1`,
+      [codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Registro enviado",
-    });
+    res.json({ ok: true, msg: "Registro enviado" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error enviando registro",
-    });
+    res.status(500).json({ ok: false, error: "Error enviando registro" });
   }
 });
 
@@ -347,62 +196,29 @@ router.put("/reenviar/:codigo", async (req, res) => {
     const codigo = req.params.codigo.trim();
 
     const validar = await pool.query(
-      `
-      SELECT *
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT * FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     const registro = validar.rows[0];
 
     if (registro.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "No se puede reenviar un registro pagado",
-      });
+      return res.status(400).json({ ok: false, error: "No se puede reenviar un registro pagado" });
     }
 
     await pool.query(
-      `
-      UPDATE registros
-
-      SET
-
-          estatus = 'Enviado',
-
-          observaciones_admin = ''
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `UPDATE registros SET estatus = 'Enviado', observaciones_admin = '' WHERE codigo = $1`,
+      [codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Registro reenviado",
-    });
+    res.json({ ok: true, msg: "Registro reenviado" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error reenviando registro",
-    });
+    res.status(500).json({ ok: false, error: "Error reenviando registro" });
   }
 });
 
@@ -413,64 +229,32 @@ router.put("/reenviar/:codigo", async (req, res) => {
 router.put("/observaciones/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-
     const { observaciones } = req.body;
 
     const validar = await pool.query(
-      `
-      SELECT estatus
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT estatus FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     const estatus = validar.rows[0].estatus;
 
     if (estatus === "Enviado" || estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "No se puede editar este registro",
-      });
+      return res.status(400).json({ ok: false, error: "No se puede editar este registro" });
     }
 
     await pool.query(
-      `
-      UPDATE registros
-
-      SET
-
-          observaciones = $1
-
-      WHERE codigo = $2
-      `,
-      [observaciones || "", codigo],
+      `UPDATE registros SET observaciones = $1 WHERE codigo = $2`,
+      [observaciones || "", codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Observaciones guardadas",
-    });
+    res.json({ ok: true, msg: "Observaciones guardadas" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error guardando observaciones",
-    });
+    res.status(500).json({ ok: false, error: "Error guardando observaciones" });
   }
 });
 
@@ -481,54 +265,26 @@ router.put("/observaciones/:codigo", async (req, res) => {
 router.put("/observaciones-admin/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-
     const { observaciones_admin } = req.body;
 
     const validar = await pool.query(
-      `
-      SELECT id
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT id FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     await pool.query(
-      `
-      UPDATE registros
-
-      SET
-
-          observaciones_admin = $1
-
-      WHERE codigo = $2
-      `,
-      [observaciones_admin || "", codigo],
+      `UPDATE registros SET observaciones_admin = $1 WHERE codigo = $2`,
+      [observaciones_admin || "", codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Observaciones admin guardadas",
-    });
+    res.json({ ok: true, msg: "Observaciones admin guardadas" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error guardando observaciones admin",
-    });
+    res.status(500).json({ ok: false, error: "Error guardando observaciones admin" });
   }
 });
 
@@ -539,80 +295,40 @@ router.put("/observaciones-admin/:codigo", async (req, res) => {
 router.put("/estatus/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-
     const { estatus } = req.body;
 
     if (!ESTATUS.includes(estatus)) {
-      return res.status(400).json({
-        ok: false,
-
-        error: "Estatus inválido",
-      });
+      return res.status(400).json({ ok: false, error: "Estatus inválido" });
     }
 
     const validar = await pool.query(
-      `
-      SELECT *
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT * FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     const actual = validar.rows[0];
 
     if (actual.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "Registro finalizado",
-      });
+      return res.status(400).json({ ok: false, error: "Registro finalizado" });
     }
 
     if (estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "El estatus Pagado solo puede asignarse desde gastos",
-      });
+      return res.status(400).json({ ok: false, error: "El estatus Pagado solo puede asignarse desde gastos" });
     }
 
     await pool.query(
-      `
-      UPDATE registros
-
-      SET
-
-          estatus = $1
-
-      WHERE codigo = $2
-      `,
-      [estatus, codigo],
+      `UPDATE registros SET estatus = $1 WHERE codigo = $2`,
+      [estatus, codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Estatus actualizado",
-    });
+    res.json({ ok: true, msg: "Estatus actualizado" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error actualizando estatus",
-    });
+    res.status(500).json({ ok: false, error: "Error actualizando estatus" });
   }
 });
 
@@ -625,230 +341,106 @@ router.delete("/:codigo", async (req, res) => {
     const codigo = req.params.codigo.trim();
 
     const validar = await pool.query(
-      `
-      SELECT *
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT * FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     const registro = validar.rows[0];
 
     if (registro.estatus === "Enviado" || registro.estatus === "Pagado") {
-      return res.status(400).json({
-        ok: false,
-
-        error: "No se puede eliminar este registro",
-      });
+      return res.status(400).json({ ok: false, error: "No se puede eliminar este registro" });
     }
 
     await pool.query(
-      `
-      DELETE FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `DELETE FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Registro eliminado",
-    });
+    res.json({ ok: true, msg: "Registro eliminado" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error eliminando registro",
-    });
+    res.status(500).json({ ok: false, error: "Error eliminando registro" });
   }
 });
+
 /* =========================
    GUARDAR SPG PDF
 ========================= */
 
 router.put("/spg/:codigo", async (req, res) => {
-
   try {
-
-    const codigo =
-    req.params.codigo.trim();
+    const codigo = req.params.codigo.trim();
 
     const {
-
       spg_pdf,
-
-      ur,
-      up,
-      rubro,
-      og,
-
-      proyecto,
-      nombre_proyecto,
-
+      ur, up, rubro, og,
+      proyecto, nombre_proyecto,
       cuenta,
-
-      monto,
-      retenciones,
-      total,
-
+      monto, retenciones, total,
       anio,
-
     } = req.body;
 
     if (!spg_pdf) {
-
-      return res.status(400).json({
-
-        ok: false,
-
-        error: "URL SPG requerida",
-
-      });
-
+      return res.status(400).json({ ok: false, error: "URL SPG requerida" });
     }
 
-    const validar =
-    await pool.query(
-
-      `
-      SELECT id
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-
-      [codigo],
-
+    const validar = await pool.query(
+      `SELECT id FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-
-      return res.status(404).json({
-
-        ok: false,
-
-        error: "Registro no encontrado",
-
-      });
-
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     await pool.query(
-
       `
       UPDATE registros
-
       SET
-
-          spg_pdf = $1,
-
-          ur = $2,
-          up = $3,
-          rubro = $4,
-          og = $5,
-
-          proyecto = $6,
+          spg_pdf         = $1,
+          ur              = $2,
+          up              = $3,
+          rubro           = $4,
+          og              = $5,
+          proyecto        = $6,
           nombre_proyecto = $7,
-
-          cuenta = $8,
-
-          spg_monto = $9,
+          cuenta          = $8,
+          spg_monto       = $9,
           spg_retenciones = $10,
-          spg_total = $11,
-
-          anio = $12
-
+          spg_total       = $11,
+          anio            = $12
       WHERE codigo = $13
       `,
-
       [
-
         spg_pdf,
-
-        ur,
-        up,
-        rubro,
-        og,
-
-        proyecto,
-        nombre_proyecto,
-
+        ur, up, rubro, og,
+        proyecto        || "",
+        nombre_proyecto || "",
         cuenta,
-
-        parseFloat(
-          String(monto)
-          .replace(/[$,\s]/g, "")
-        ),
-
-        parseFloat(
-          String(retenciones)
-          .replace(/[$,\s]/g, "")
-        ),
-
-        parseFloat(
-          String(total)
-          .replace(/[$,\s]/g, "")
-        ),
-
+        parseFloat(String(monto)      .replace(/[$,\s]/g, "")),
+        parseFloat(String(retenciones).replace(/[$,\s]/g, "")),
+        parseFloat(String(total)      .replace(/[$,\s]/g, "")),
         Number(anio),
-
         codigo,
-
-      ],
-
+      ]
     );
 
-    res.json({
-
-      ok: true,
-
-      msg: "SPG guardado",
-
-    });
-
-  }
-
-  catch (error) {
-
-    console.log(
-      "ERROR REAL SPG:"
-    );
-
-    console.log(error);
-
+    res.json({ ok: true, msg: "SPG guardado" });
+  } catch (error) {
+    console.log("ERROR REAL SPG:", error);
     res.status(500).json({
-
       ok: false,
-
-      error: error.message,
-
-      detail:
-      error.detail || null,
-
-      stack:
-      error.stack,
-
+      error:  error.message,
+      detail: error.detail || null,
+      stack:  error.stack,
     });
-
   }
-
 });
+
 /* =========================
    GUARDAR RECIBO PDF
 ========================= */
@@ -856,64 +448,33 @@ router.put("/spg/:codigo", async (req, res) => {
 router.put("/recibo/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-
     const { recibo_pdf } = req.body;
 
     if (!recibo_pdf) {
-      return res.status(400).json({
-        ok: false,
-
-        error: "URL recibo requerida",
-      });
+      return res.status(400).json({ ok: false, error: "URL recibo requerida" });
     }
 
     const validar = await pool.query(
-      `
-      SELECT id
-
-      FROM registros
-
-      WHERE codigo = $1
-      `,
-      [codigo],
+      `SELECT id FROM registros WHERE codigo = $1`,
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
     await pool.query(
-      `
-      UPDATE registros
-
-      SET
-
-          recibo_pdf = $1
-
-      WHERE codigo = $2
-      `,
-      [recibo_pdf, codigo],
+      `UPDATE registros SET recibo_pdf = $1 WHERE codigo = $2`,
+      [recibo_pdf, codigo]
     );
 
-    res.json({
-      ok: true,
-
-      msg: "Recibo guardado",
-    });
+    res.json({ ok: true, msg: "Recibo guardado" });
   } catch (error) {
     console.log(error);
-
-    res.status(500).json({
-      ok: false,
-
-      error: "Error guardando recibo",
-    });
+    res.status(500).json({ ok: false, error: "Error guardando recibo" });
   }
 });
+
 /* =========================
    GUARDAR FACTURA PDF
 ========================= */
@@ -921,150 +482,77 @@ router.put("/recibo/:codigo", async (req, res) => {
 router.put("/factura/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-
     const { factura_pdf, proyecto, nombre_proyecto } = req.body;
 
-    console.log("BODY FACTURA RECIBIDO:", req.body); // ← LOG para verificar
+    console.log("BODY FACTURA RECIBIDO:", req.body);
 
     if (!factura_pdf) {
-      return res.status(400).json({
-        ok: false,
-        error: "URL factura requerida",
-      });
-    }
-
-    if (!nombre_proyecto) {
-      return res.status(400).json({
-        ok: false,
-        error: "nombre_proyecto requerido",
-      });
+      return res.status(400).json({ ok: false, error: "URL factura requerida" });
     }
 
     const validar = await pool.query(
       `SELECT id FROM registros WHERE codigo = $1`,
-      [codigo],
+      [codigo]
     );
 
     if (validar.rows.length === 0) {
-      return res.status(404).json({
-        ok: false,
-        error: "Registro no encontrado",
-      });
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
-    const result = await pool.query(
-      `UPDATE registros
-       SET
-           factura_pdf     = $1,
-           proyecto        = $2,
-           nombre_proyecto = $3
-       WHERE codigo = $4
-       RETURNING nombre_proyecto`, // ← confirma lo que se guardó
+    await pool.query(
+      `
+      UPDATE registros
+      SET
+          factura_pdf     = $1,
+          proyecto        = $2,
+          nombre_proyecto = $3
+      WHERE codigo = $4
+      `,
       [
         factura_pdf,
         proyecto        || "",
         nombre_proyecto || "",
         codigo,
-      ],
+      ]
     );
 
-    console.log("NOMBRE_PROYECTO GUARDADO:", result.rows[0]); // ← LOG
+    console.log("FACTURA GUARDADA OK — nombre_proyecto:", nombre_proyecto || "");
 
-    res.json({
-      ok: true,
-      msg: "Factura guardada",
-      nombre_proyecto: result.rows[0].nombre_proyecto, // ← respuesta verificable
-    });
-
+    res.json({ ok: true, msg: "Factura guardada" });
   } catch (error) {
     console.log(error);
-    res.status(500).json({
-      ok: false,
-      error: "Error guardando factura",
-    });
+    res.status(500).json({ ok: false, error: "Error guardando factura" });
   }
 });
+
 /* =========================
    GUARDAR OFICIO2 PDF
 ========================= */
 
-router.put(
+router.put("/oficio2/:codigo", async (req, res) => {
+  try {
+    const codigo = req.params.codigo.trim();
+    const { oficio2_pdf } = req.body;
 
-    '/oficio2/:codigo',
+    const result = await pool.query(
+      `
+      UPDATE registros
+      SET oficio2_pdf = $1
+      WHERE codigo = $2
+      RETURNING *
+      `,
+      [oficio2_pdf, codigo]
+    );
 
-    async(req,res)=>{
-
-        try{
-
-            const { codigo } =
-            req.params;
-
-            const {
-
-                oficio2_pdf
-
-            } = req.body;
-
-            const result =
-            await pool.query(
-
-                `
-                UPDATE registros
-                SET oficio2_pdf = $1
-                WHERE codigo = $2
-                RETURNING *
-                `,
-
-                [
-
-                    oficio2_pdf,
-
-                    codigo
-
-                ]
-
-            );
-
-            if(result.rows.length === 0)
-            {
-                return res.status(404).json({
-
-                    ok:false,
-
-                    error:'Registro no encontrado'
-
-                });
-            }
-
-            res.json({
-
-                ok:true,
-
-                registro:
-                result.rows[0]
-
-            });
-
-        }
-
-        catch(error){
-
-            console.error(
-                'ERROR OFICIO2 PDF:',
-                error
-            );
-
-            res.status(500).json({
-
-                ok:false,
-
-                error:error.message
-
-            });
-
-        }
-
+    if (result.rows.length === 0) {
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
     }
 
-);
+    res.json({ ok: true, registro: result.rows[0] });
+  } catch (error) {
+    console.error("ERROR OFICIO2 PDF:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
 module.exports = router;
