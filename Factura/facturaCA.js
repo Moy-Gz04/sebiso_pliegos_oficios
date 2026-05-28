@@ -1,88 +1,41 @@
 /* =========================
-   URL APPS SCRIPT
+   URL APPS SCRIPT FACTURA
 ========================= */
 
-const API_RECIBO =
+const API_FACTURA =
 
-"https://script.google.com/macros/s/AKfycbziSXLMmWXptSpXP57HvOpfTUg-dD6E451jtnc5WHRKkqgiPdO72yg10sHFv5w3xNkaBA/exec";
+"https://script.google.com/macros/s/AKfycbyiThMI-CWVWa-OrTmea9m2UmRD7fCt_fGktksHjOHo38s-twk5YK4g8aFg-tfQ8HuFmA/exec";
 
 /* =========================
-   FORMATEAR MONEDA
+   NUMERO A LETRAS
 ========================= */
 
-function formatearMoneda(valor){
+function numeroALetras(numero){
 
-    return '$ ' + Number(valor)
-    .toLocaleString('en-US', {
+    numero = Number(numero);
 
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-
-    });
-
-}
-
-/* =========================
-   DESGLOSAR DÍAS
-========================= */
-
-function desglosarDias(inicio, fin){
-
-    inicio = parseInt(inicio);
-
-    fin = parseInt(fin);
-
-    if(isNaN(inicio) || isNaN(fin)){
+    if(isNaN(numero)){
 
         return "";
 
     }
 
-    if(inicio === fin){
-
-        return `${inicio}`;
-
-    }
-
-    const dias = [];
-
-    for(let i = inicio; i <= fin; i++){
-
-        dias.push(i);
-
-    }
-
-    if(dias.length === 2){
-
-        return `${dias[0]} y ${dias[1]}`;
-
-    }
-
-    return `
-
-        ${dias.slice(0,-1).join(', ')}
-        y
-        ${dias[dias.length - 1]}
-
-    `
-
-    .replace(/\s+/g,' ')
-    .trim();
+    return `${numero.toFixed(2)} PESOS 00/100 M.N.`;
 
 }
 
 /* =========================
-   VALIDAR CAMPOS
+   VALIDAR CAMPOS FACTURA
 ========================= */
 
-function validarCamposRecibo(){
+function validarCamposFactura(){
 
     let error = false;
 
     document
     .querySelectorAll(
 
-        "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
+        "#modalFactura input, #modalFactura textarea"
 
     )
     .forEach(campo=>{
@@ -138,18 +91,14 @@ function validarCamposRecibo(){
 }
 
 /* =========================
-   ABRIR MODAL RECIBO
+   ABRIR MODAL FACTURA
 ========================= */
 
-async function abrirModalRecibo(codigo){
+async function abrirModalFactura(codigo){
 
     try{
 
-        codigoRecibo = codigo;
-
-        /* =========================
-           OBTENER REGISTRO
-        ========================= */
+        codigoFactura = codigo;
 
         const response =
         await fetch(
@@ -178,7 +127,7 @@ async function abrirModalRecibo(codigo){
         }
 
         console.log(
-            "REGISTRO RECIBO:",
+            "REGISTRO FACTURA:",
             registro
         );
 
@@ -188,7 +137,7 @@ async function abrirModalRecibo(codigo){
 
         document
         .querySelectorAll(
-            "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
+            "#modalFactura input, #modalFactura textarea"
         )
         .forEach(campo=>{
 
@@ -199,92 +148,234 @@ async function abrirModalRecibo(codigo){
         });
 
         /* =========================
-           LLENAR CAMPOS
+           DATOS CALCULADOS
         ========================= */
 
-        document.getElementById(
-            "reciboFolio"
-        ).value =
-        "";
-
-        document.getElementById(
-            "reciboTipo"
-        ).value =
-        "RECIBO";
-
-        document.getElementById(
-            "reciboPersona"
-        ).value =
-        registro.persona || "";
-
-        document.getElementById(
-            "reciboMunicipio"
-        ).value =
-        registro.municipio || "";
-
-        document.getElementById(
-            "reciboMotivo"
-        ).value =
-        registro.motivo_comision || "";
-
-        document.getElementById(
-            "reciboLocalidades"
-        ).value =
-        registro.localidades_visitadas || "";
-
-        document.getElementById(
-            "reciboDias"
-        ).value =
+        const dias =
         desglosarDias(
 
             registro.dia_inicio,
 
             registro.dia_fin
 
-        );
+        ) || "";
 
-        document.getElementById(
-            "reciboMes"
-        ).value =
+        const localidad =
+        registro.localidades_visitadas || "";
+
+        const mes =
         registro.mes || "";
 
-        document.getElementById(
-            "reciboAnio"
-        ).value =
-        registro.anio || "";
-
-        document.getElementById(
-            "reciboUnidad"
-        ).value =
-        registro.up || "";
+        const total =
+        Number(
+            registro.spg_total || 0
+        );
 
         /* =========================
-           SPG
+           OBTENER ÚLTIMO OFICIO
+        ========================= */
+
+        let oficioLimpio = "";
+        let adecuacionLimpia = "";
+
+        let dataOficio = {};
+
+        try{
+
+            const responseOficio =
+            await fetch(
+
+                `${API}/api/presupuestos/ultimo-oficio/2`
+
+            );
+
+            if(!responseOficio.ok){
+
+                throw new Error(
+                    "Error obteniendo oficio"
+                );
+
+            }
+
+            dataOficio =
+            await responseOficio.json();
+
+            console.log(
+                "ÚLTIMO OFICIO:",
+                dataOficio
+            );
+
+            if(
+                dataOficio.ok
+            ){
+
+                oficioLimpio =
+
+                (
+                    dataOficio
+                    .oficio_autorizacion_nombre || ""
+                )
+
+                .replace(/\.pdf$/i, "");
+
+                adecuacionLimpia =
+
+                (
+                    dataOficio
+                    .oficio_adecuacion_nombre || ""
+                )
+
+                .replace(/\.pdf$/i, "");
+
+            }
+
+        }
+
+        catch(error){
+
+            console.error(
+                "ERROR CARGANDO OFICIO:",
+                error
+            );
+
+        }
+
+        /* =========================
+           LLENAR CAMPOS
         ========================= */
 
         document.getElementById(
-            "reciboImporte"
+            "facturaNoRecibo"
+        ).value =
+        "";
+
+        document.getElementById(
+            "facturaPersona"
+        ).value =
+        registro.persona || "";
+
+        document.getElementById(
+            "facturaMunicipio"
+        ).value =
+        registro.municipio || "";
+
+        document.getElementById(
+            "facturaMotivo"
+        ).value =
+        registro.motivo_comision || "";
+
+        document.getElementById(
+            "facturaLocalidad"
+        ).value =
+        localidad;
+
+        document.getElementById(
+            "facturaDias"
+        ).value =
+        dias;
+
+        document.getElementById(
+            "facturaMes"
+        ).value =
+        mes;
+
+        document.getElementById(
+            "facturaImporte"
         ).value =
         formatearMoneda(
             registro.spg_monto || 0
         );
 
         document.getElementById(
-            "reciboRetenciones"
+            "facturaRetenciones"
         ).value =
         formatearMoneda(
             registro.spg_retenciones || 0
         );
 
         document.getElementById(
-            "reciboTotal"
+            "facturaTotal"
         ).value =
-        formatearMoneda(
-            registro.spg_total || 0
+        formatearMoneda(total);
+
+        document.getElementById(
+            "facturaTotalLetra"
+        ).value =
+        numeroALetras(total);
+
+        /* =========================
+           DATOS FACTURA
+        ========================= */
+
+        document.getElementById(
+            "facturaProyecto"
+        ).value =
+        registro.proyecto || "AI005";
+
+        document.getElementById(
+            "facturaNombreProyecto"
+        ).value =
+        "Atención Integral 005";
+
+        /* =========================
+           OFICIO AUTORIZACIÓN
+        ========================= */
+
+        const inputOficio =
+        document.getElementById(
+            "facturaOficio"
+        );
+
+        if(inputOficio){
+
+            inputOficio.value =
+            oficioLimpio;
+
+        }
+
+        /* =========================
+           OFICIO ADECUACIÓN
+        ========================= */
+
+        const inputAdecuacion =
+        document.getElementById(
+            "facturaAdecuacion"
+        );
+
+        if(inputAdecuacion){
+
+            inputAdecuacion.value =
+            adecuacionLimpia;
+
+        }
+
+        /* =========================
+           FECHA
+        ========================= */
+
+        document.getElementById(
+            "facturaFecha"
+        ).value =
+
+        new Date(
+            registro.fecha || Date.now()
+        )
+        .toLocaleDateString(
+
+            "es-MX",
+
+            {
+
+                day:"numeric",
+                month:"long",
+                year:"numeric"
+
+            }
+
         );
 
         abrirModal(
-            "modalRecibo"
+            "modalFactura"
         );
 
     }
@@ -292,7 +383,7 @@ async function abrirModalRecibo(codigo){
     catch(error){
 
         console.error(
-            "ERROR ABRIENDO RECIBO:",
+            "ERROR ABRIENDO FACTURA:",
             error
         );
 
@@ -305,16 +396,16 @@ async function abrirModalRecibo(codigo){
 }
 
 /* =========================
-   GENERAR RECIBO
+   GENERAR FACTURA
 ========================= */
 
-async function generarRecibo(){
+async function generarFactura(){
 
     try{
 
         const btn =
         document.getElementById(
-            "btnGenerarRecibo"
+            "btnGenerarFactura"
         );
 
         btn.disabled = true;
@@ -329,99 +420,115 @@ async function generarRecibo(){
         const payload = {
 
             codigo:
-            codigoRecibo,
+            codigoFactura,
 
             fileName:
-            `RECIBO_${codigoRecibo}`,
+            `FACTURA_${codigoFactura}`,
 
             variables:{
-
-                "<<UNIDADP>>":
-                "01",
-
-                "<<R/F>>":
-
-                document.getElementById(
-                    "reciboTipo"
-                ).value,
-
-                "<<FOLIO>>":
-
-                document.getElementById(
-                    "reciboFolio"
-                ).value,
-
-                "<<MONTO>>":
-
-                document.getElementById(
-                    "reciboImporte"
-                ).value,
-
-                "<<RET>>":
-
-                document.getElementById(
-                    "reciboRetenciones"
-                ).value,
-
-                "<<TOTAL>>":
-
-                document.getElementById(
-                    "reciboTotal"
-                ).value,
 
                 "<<NOMBRE>>":
 
                 document.getElementById(
-                    "reciboPersona"
-                ).value,
-
-                "<<MOTIVO>>":
-
-                document.getElementById(
-                    "reciboMotivo"
-                ).value,
-
-                "<<LOCALIDAD>>":
-
-                document.getElementById(
-                    "reciboLocalidades"
+                    "facturaPersona"
                 ).value,
 
                 "<<MUNICIPIO>>":
 
                 document.getElementById(
-                    "reciboMunicipio"
+                    "facturaMunicipio"
+                ).value,
+
+                "<<MOTIVO>>":
+
+                document.getElementById(
+                    "facturaMotivo"
+                ).value,
+
+                "<<LOCALIDAD>>":
+
+                document.getElementById(
+                    "facturaLocalidad"
                 ).value,
 
                 "<<DIAS>>":
 
                 document.getElementById(
-                    "reciboDias"
+                    "facturaDias"
                 ).value,
 
                 "<<MES>>":
 
                 document.getElementById(
-                    "reciboMes"
+                    "facturaMes"
                 ).value,
 
-                "<<ANIO>>":
+                "<<MONTO>>":
 
                 document.getElementById(
-                    "reciboAnio"
+                    "facturaImporte"
                 ).value,
 
-                "<<NOTA>>":
+                "<<RET>>":
 
                 document.getElementById(
-                    "reciboNota"
+                    "facturaRetenciones"
+                ).value,
+
+                "<<TOTAL>>":
+
+                document.getElementById(
+                    "facturaTotal"
+                ).value,
+
+                "<<NOREC>>":
+
+                document.getElementById(
+                    "facturaNoRecibo"
+                ).value,
+
+                "<<TOTLETRA>>":
+
+                document.getElementById(
+                    "facturaTotalLetra"
+                ).value,
+
+                "<<PROY>>":
+
+                document.getElementById(
+                    "facturaProyecto"
+                ).value,
+
+                "<<NOMPROY>>":
+
+                document.getElementById(
+                    "facturaNombreProyecto"
+                ).value,
+
+                "<<OFAUT>>":
+
+                document.getElementById(
+                    "facturaOficio"
+                ).value,
+
+                "<<ADEC>>":
+
+                document.getElementById(
+                    "facturaAdecuacion"
+                ).value,
+
+                "<<FECHA>>":
+
+                document.getElementById(
+                    "facturaFecha"
                 ).value
+
             }
 
         };
 
         console.log(
-            "PAYLOAD RECIBO:",
+            "PAYLOAD FACTURA:",
             payload
         );
 
@@ -432,7 +539,7 @@ async function generarRecibo(){
         const response =
         await fetch(
 
-            API_RECIBO,
+            API_FACTURA,
 
             {
 
@@ -457,7 +564,7 @@ async function generarRecibo(){
         await response.text();
 
         console.log(
-            "RESPUESTA RAW RECIBO:",
+            "RESPUESTA RAW FACTURA:",
             text
         );
 
@@ -486,7 +593,7 @@ async function generarRecibo(){
         }
 
         console.log(
-            "RESPUESTA JSON RECIBO:",
+            "RESPUESTA JSON FACTURA:",
             data
         );
 
@@ -502,7 +609,7 @@ async function generarRecibo(){
 
                 data.error ||
 
-                "No se pudo generar el PDF"
+                "No se pudo generar la factura"
 
             );
 
@@ -515,7 +622,7 @@ async function generarRecibo(){
         const guardar =
         await fetch(
 
-            `${API}/api/registros/recibo/${codigoRecibo}`,
+            `${API}/api/registros/factura/${codigoFactura}`,
 
             {
 
@@ -530,7 +637,7 @@ async function generarRecibo(){
 
                 body:JSON.stringify({
 
-                    recibo_pdf:
+                    factura_pdf:
                     data.url
 
                 })
@@ -542,7 +649,7 @@ async function generarRecibo(){
         if(!guardar.ok){
 
             throw new Error(
-                "Error guardando recibo"
+                "Error guardando factura"
             );
 
         }
@@ -552,19 +659,19 @@ async function generarRecibo(){
         ========================= */
 
         cerrarModal(
-            "modalCargandoRecibo"
+            "modalCargandoFactura"
         );
 
         cerrarModal(
-            "modalConfirmarRecibo"
+            "modalConfirmarFactura"
         );
 
         cerrarModal(
-            "modalRecibo"
+            "modalFactura"
         );
 
         abrirModal(
-            "modalExitoRecibo"
+            "modalExitoFactura"
         );
 
         cargarRegistros();
@@ -574,12 +681,12 @@ async function generarRecibo(){
     catch(error){
 
         console.error(
-            "ERROR RECIBO:",
+            "ERROR FACTURA:",
             error
         );
 
         cerrarModal(
-            "modalCargandoRecibo"
+            "modalCargandoFactura"
         );
 
         alert(
@@ -592,7 +699,7 @@ async function generarRecibo(){
 
         const btn =
         document.getElementById(
-            "btnGenerarRecibo"
+            "btnGenerarFactura"
         );
 
         if(btn){
@@ -600,7 +707,7 @@ async function generarRecibo(){
             btn.disabled = false;
 
             btn.textContent =
-            "Generar Recibo";
+            "Generar Factura";
 
         }
 
@@ -609,7 +716,7 @@ async function generarRecibo(){
 }
 
 /* =========================
-   LIMPIAR ERROR INPUT
+   INIT FACTURA
 ========================= */
 
 document.addEventListener(
@@ -621,7 +728,7 @@ document.addEventListener(
         document
         .querySelectorAll(
 
-            "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
+            "#modalFactura input, #modalFactura textarea"
 
         )
         .forEach(campo=>{

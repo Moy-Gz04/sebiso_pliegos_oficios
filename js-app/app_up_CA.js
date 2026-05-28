@@ -117,6 +117,32 @@ btnConfirmar.addEventListener(
             new FormData(formulario);
 
             /* =========================
+               DEBUG DATOS
+            ========================= */
+
+            console.log({
+
+                municipio:
+                formData.get('municipio'),
+
+                dia_inicio:
+                formData.get('diaInicio'),
+
+                dia_fin:
+                formData.get('diaFin'),
+
+                mes:
+                formData.get('mes'),
+
+                motivo_comision:
+                formData.get('motivo'),
+
+                localidades_visitadas:
+                formData.get('localidades')
+
+            });
+
+            /* =========================
                APPS SCRIPT
             ========================= */
 
@@ -219,7 +245,25 @@ btnConfirmar.addEventListener(
                             item.oficio,
 
                             pliego_pdf:
-                            item.pliego
+                            item.pliego,
+
+                            municipio:
+                            formData.get('municipio'),
+
+                            dia_inicio:
+                            formData.get('diaInicio'),
+
+                            dia_fin:
+                            formData.get('diaFin'),
+
+                            mes:
+                            formData.get('mes'),
+
+                            motivo_comision:
+                            formData.get('motivo'),
+
+                            localidades_visitadas:
+                            formData.get('localidades')
 
                         })
 
@@ -233,6 +277,13 @@ btnConfirmar.addEventListener(
                 );
 
                 if(!respuestaDB.ok){
+
+                    const errorDB =
+                    await respuestaDB.text();
+
+                    console.log(
+                        errorDB
+                    );
 
                     throw new Error(
                         'Error guardando en PostgreSQL'

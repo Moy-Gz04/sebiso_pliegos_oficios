@@ -10,7 +10,7 @@
 
     inset:0;
 
-    background:rgba(0,0,0,.34);
+    background:rgba(0,0,0,.38);
 
     justify-content:center;
 
@@ -18,11 +18,11 @@
 
     z-index:99999;
 
-    padding:10px;
+    padding:8px;
 
-    overflow:hidden;
+    overflow-y:auto;
 
-    backdrop-filter:blur(5px);
+    backdrop-filter:blur(3px);
 
     box-sizing:border-box;
 
@@ -52,18 +52,32 @@
 
     border-radius:26px;
 
-    padding:18px 22px;
+    padding:16px 22px;
 
     box-shadow:
-        0 16px 45px rgba(0,0,0,.12);
+        0 18px 42px rgba(0,0,0,.14);
 
     animation:aparecerSPG .18s ease;
 
     box-sizing:border-box;
 
-    overflow:hidden;
+}
 
-    border:1px solid rgba(112,18,43,.06);
+/* =========================
+   SCROLL
+========================= */
+
+.modal-spg-contenido::-webkit-scrollbar{
+
+    width:6px;
+
+}
+
+.modal-spg-contenido::-webkit-scrollbar-thumb{
+
+    background:#cfcfcf;
+
+    border-radius:999px;
 
 }
 
@@ -75,7 +89,7 @@
 
     text-align:center;
 
-    margin-bottom:14px;
+    margin-bottom:10px;
 
 }
 
@@ -95,7 +109,7 @@
 
 .spg-header p{
 
-    font-size:11px;
+    font-size:12px;
 
     color:#6b7280;
 
@@ -116,16 +130,16 @@
     grid-template-columns:
         repeat(2,minmax(0,1fr));
 
-    gap:12px 18px;
+    gap:10px 18px;
 
-    margin-bottom:14px;
+    margin-bottom:12px;
 
     align-items:start;
 
 }
 
 /* =========================
-   GRUPO INPUT
+   INPUT GROUP
 ========================= */
 
 .grupo-input-spg{
@@ -139,12 +153,22 @@
 }
 
 /* =========================
+   FULL WIDTH
+========================= */
+
+.grupo-input-spg-full{
+
+    grid-column:1 / -1;
+
+}
+
+/* =========================
    LABEL
 ========================= */
 
 .grupo-input-spg label{
 
-    font-size:10px;
+    font-size:11px;
 
     font-weight:800;
 
@@ -152,14 +176,14 @@
 
     text-transform:uppercase;
 
-    letter-spacing:.5px;
+    letter-spacing:.4px;
 
-    margin-left:3px;
+    margin-left:2px;
 
 }
 
 /* =========================
-   INPUTS / SELECTS / TEXTAREA
+   INPUTS / SELECT / TEXTAREA
 ========================= */
 
 .modal-spg input,
@@ -170,25 +194,19 @@
 
     border-radius:16px !important;
 
-    border:1.8px solid #8b1538 !important;
+    border:1.8px solid #8b1235 !important;
 
     background:#ffffff !important;
 
-    padding:8px 14px !important;
+    padding:10px 14px !important;
 
-    font-size:12px !important;
+    font-size:13px !important;
 
-    color:#1f2937 !important;
+    color:#222 !important;
 
     outline:none !important;
 
     transition:.18s ease;
-
-    appearance:none;
-
-    -webkit-appearance:none;
-
-    -moz-appearance:none;
 
     font-family:'Montserrat',sans-serif;
 
@@ -203,19 +221,15 @@
 .modal-spg input,
 .modal-spg select{
 
-    height:44px !important;
+    height:42px !important;
 
 }
 
 /* =========================
-   TEXTAREA
+   TEXTAREA BASE
 ========================= */
 
 .modal-spg textarea{
-
-    min-height:84px !important;
-
-    max-height:84px !important;
 
     resize:none;
 
@@ -225,35 +239,52 @@
 
     padding-top:12px !important;
 
+    min-height:44px !important;
+
 }
 
 /* =========================
-   SCROLL TEXTAREA
+   TEXTAREAS GRANDES
 ========================= */
 
-.modal-spg textarea::-webkit-scrollbar{
+#reciboMotivo,
+#reciboLocalidades{
 
-    width:5px;
+    min-height:88px !important;
 
-}
-
-.modal-spg textarea::-webkit-scrollbar-thumb{
-
-    background:#d1d5db;
-
-    border-radius:999px;
+    height:88px !important;
 
 }
 
 /* =========================
-   SELECTS
+   NOTA
+========================= */
+
+#reciboNota{
+
+    min-height:50px !important;
+
+    height:50px !important;
+
+    resize:vertical;
+
+}
+
+/* =========================
+   SELECT
 ========================= */
 
 .modal-spg select{
 
     cursor:pointer;
 
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    -moz-appearance:none;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
 
     background-repeat:no-repeat;
 
@@ -273,88 +304,42 @@
 .modal-spg select:focus,
 .modal-spg textarea:focus{
 
-    border-color:#a11946 !important;
+    border-color:#70122b !important;
 
     background:#fff !important;
 
     box-shadow:
-        0 0 0 4px rgba(112,18,43,.08) !important;
+        0 0 0 3px rgba(112,18,43,.08) !important;
 
 }
 
 /* =========================
-   CAMPOS BLOQUEADOS
+   READONLY OSCURO
 ========================= */
 
 .modal-spg input[readonly],
-.modal-spg textarea[readonly],
-.modal-spg input:disabled,
-.modal-spg textarea:disabled,
-.modal-spg select:disabled{
+.modal-spg textarea[readonly]{
 
-    background:
-        linear-gradient(
-            180deg,
-            #8f2b4b 0%,
-            #7a1f3d 100%
-        ) !important;
+    background:linear-gradient(
+        180deg,
+        #962553 0%,
+        #7c163d 100%
+    ) !important;
 
     color:#ffffff !important;
 
-    border:1.5px solid rgba(255,255,255,.10) !important;
-
-    font-weight:650 !important;
-
-    cursor:not-allowed !important;
+    border:1.8px solid #7a1438 !important;
 
     -webkit-text-fill-color:#ffffff !important;
+
+    font-weight:700 !important;
+
+    cursor:not-allowed !important;
 
     opacity:1 !important;
 
     box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 2px 8px rgba(122,31,61,.15);
-
-}
-
-/* =========================
-   PLACEHOLDER BLOQUEADOS
-========================= */
-
-.modal-spg input[readonly]::placeholder,
-.modal-spg textarea[readonly]::placeholder{
-
-    color:#fce7ef !important;
-
-}
-
-/* =========================
-   EFECTO VISUAL BLOQUEADOS
-========================= */
-
-.modal-spg input[readonly]:hover,
-.modal-spg textarea[readonly]:hover,
-.modal-spg input:disabled:hover,
-.modal-spg textarea:disabled:hover,
-.modal-spg select:disabled:hover{
-
-    filter:brightness(1.02);
-
-}
-
-/* =========================
-   CAMPOS EDITABLES
-========================= */
-
-.modal-spg input:not([readonly]):not(:disabled),
-.modal-spg textarea:not([readonly]):not(:disabled),
-.modal-spg select:not(:disabled){
-
-    background:#ffffff !important;
-
-    color:#222 !important;
-
-    border:1.8px solid #8b1538 !important;
+        0 6px 14px rgba(112,18,43,.14);
 
 }
 
@@ -364,7 +349,7 @@
 
 .input-error{
 
-    border:1.8px solid #dc2626 !important;
+    border:2px solid #dc2626 !important;
 
     background:#fff5f5 !important;
 
@@ -374,32 +359,24 @@
         0 0 0 3px rgba(220,38,38,.08) !important;
 
 }
+
 /* =========================
    TOTAL
 ========================= */
 
 #spgTot{
 
-    background:
-        linear-gradient(
-            180deg,
-            #8f2b4b 0%,
-            #7a1f3d 100%
-        ) !important;
+    background:#374151 !important;
 
     color:#ffffff !important;
 
-    border:1.5px solid rgba(255,255,255,.10) !important;
+    border:2px solid #1f2937 !important;
 
-    font-weight:700 !important;
+    font-weight:700;
 
-    cursor:not-allowed !important;
+    cursor:not-allowed;
 
     -webkit-text-fill-color:#ffffff !important;
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 2px 8px rgba(122,31,61,.15);
 
 }
 
@@ -413,31 +390,30 @@
 
     justify-content:center;
 
-    gap:14px;
+    gap:16px;
 
     flex-wrap:nowrap;
 
-    margin-top:10px;
+    margin-top:4px;
 
 }
 
 /* =========================
-   BOTÓN CANCELAR
+   BOTONES BASE
 ========================= */
 
-.btn-spg-cancelar{
+.btn-spg-cancelar,
+.btn-spg-generar{
 
-    width:185px !important;
+    min-width:170px !important;
 
     height:44px !important;
+
+    padding:0 18px;
 
     border:none;
 
     border-radius:999px;
-
-    background:#eceef2;
-
-    color:#374151;
 
     font-size:13px;
 
@@ -446,39 +422,222 @@
     cursor:pointer;
 
     transition:.18s ease;
+
+    font-family:'Montserrat',sans-serif;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+/* =========================
+   CANCELAR
+========================= */
+
+.btn-spg-cancelar{
+
+    background:#e5e7eb;
+
+    color:#374151;
 
 }
 
 .btn-spg-cancelar:hover{
 
-    background:#dfe3e8;
+    background:#d6d9df;
 
     transform:translateY(-1px);
 
 }
 
 /* =========================
-   BOTÓN GENERAR
+   GENERAR
 ========================= */
 
 .btn-spg-generar{
 
-    width:215px !important;
+    background:#70122b;
 
-    height:44px !important;
+    color:white;
+
+}
+
+.btn-spg-generar:hover{
+
+    background:#5d1025;
+
+    transform:translateY(-1px);
+
+}
+
+.btn-spg-generar:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
+
+}
+
+/* =========================
+   MODALES PEQUEÑOS
+========================= */
+
+.modal{
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.40);
+
+    display:none;
+
+    justify-content:center;
+
+    align-items:center;
+
+    z-index:999999;
+
+    padding:18px;
+
+    box-sizing:border-box;
+
+}
+
+.modal.activo{
+
+    display:flex;
+
+}
+
+/* =========================
+   MODAL CONTENIDO
+========================= */
+
+.modal-contenido{
+
+    width:320px;
+
+    max-width:92%;
+
+    background:white;
+
+    border-radius:20px;
+
+    padding:20px;
+
+    box-shadow:
+        0 16px 35px rgba(0,0,0,.14);
+
+    animation:modalEntrada .18s ease;
+
+    box-sizing:border-box;
+
+}
+
+/* =========================
+   MODAL CARGANDO
+========================= */
+
+.modal-cargando{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    gap:10px;
+
+}
+
+/* =========================
+   LOADER
+========================= */
+
+.loader-spg{
+
+    width:42px;
+
+    height:42px;
+
+    border:4px solid #e5e5e5;
+
+    border-top:4px solid #70122b;
+
+    border-radius:50%;
+
+    animation:girar .8s linear infinite;
+
+}
+
+/* =========================
+   TITULOS MODAL
+========================= */
+
+.modal-contenido h2{
+
+    color:#70122b;
+
+    font-size:20px;
+
+    font-weight:800;
+
+    margin:0 0 8px 0;
+
+    text-align:center;
+
+}
+
+.modal-contenido p{
+
+    color:#555;
+
+    font-size:13px;
+
+    line-height:1.5;
+
+    text-align:center;
+
+    margin-bottom:16px;
+
+}
+
+/* =========================
+   BOTONES MODAL
+========================= */
+
+.modal-botones{
+
+    display:flex;
+
+    justify-content:center;
+
+    gap:10px;
+
+    flex-wrap:wrap;
+
+}
+
+/* =========================
+   BOTONES MODAL
+========================= */
+
+.btn-principal,
+.btn-secundario{
+
+    min-width:120px;
+
+    height:40px;
 
     border:none;
 
     border-radius:999px;
-
-    background:
-        linear-gradient(
-            180deg,
-            #8b1538 0%,
-            #70122b 100%
-        );
-
-    color:white;
 
     font-size:13px;
 
@@ -488,48 +647,52 @@
 
     transition:.18s ease;
 
-    box-shadow:
-        0 8px 18px rgba(112,18,43,.18);
+    font-family:'Montserrat',sans-serif;
 
 }
 
-.btn-spg-generar:hover{
+/* =========================
+   PRINCIPAL
+========================= */
+
+.btn-principal{
+
+    background:#70122b;
+
+    color:white;
+
+}
+
+.btn-principal:hover{
+
+    background:#5b0f23;
 
     transform:translateY(-1px);
 
-    filter:brightness(1.04);
-
 }
 
 /* =========================
-   BOTONES FIX
+   SECUNDARIO
 ========================= */
 
-.modal-spg button{
+.btn-secundario{
 
-    margin:0 !important;
+    background:#d8d8d8;
 
-    padding:0 !important;
+    color:#222;
 
-    flex:none !important;
+}
+
+.btn-secundario:hover{
+
+    background:#c8c8c8;
+
+    transform:translateY(-1px);
 
 }
 
 /* =========================
-   PLACEHOLDER
-========================= */
-
-.modal-spg input::placeholder,
-.modal-spg textarea::placeholder{
-
-    color:#9ca3af;
-
-    font-size:12px;
-
-}
-
-/* =========================
-   ANIMACIÓN
+   ANIMACIONES
 ========================= */
 
 @keyframes aparecerSPG{
@@ -556,6 +719,42 @@
 
 }
 
+@keyframes modalEntrada{
+
+    from{
+
+        opacity:0;
+
+        transform:scale(.94);
+
+    }
+
+    to{
+
+        opacity:1;
+
+        transform:scale(1);
+
+    }
+
+}
+
+@keyframes girar{
+
+    from{
+
+        transform:rotate(0deg);
+
+    }
+
+    to{
+
+        transform:rotate(360deg);
+
+    }
+
+}
+
 /* =========================
    RESPONSIVE
 ========================= */
@@ -568,8 +767,6 @@
 
         padding:10px;
 
-        overflow-y:auto;
-
     }
 
     .modal-spg-contenido{
@@ -579,8 +776,6 @@
         border-radius:20px;
 
         margin-top:10px;
-
-        overflow-y:auto;
 
     }
 
@@ -594,7 +789,7 @@
 
     .spg-header h2{
 
-        font-size:20px;
+        font-size:21px;
 
     }
 
@@ -605,9 +800,16 @@
 
     }
 
-    .modal-spg-botones{
+    .modal-botones{
 
         flex-direction:column;
+
+    }
+
+    .btn-principal,
+    .btn-secundario{
+
+        width:100%;
 
     }
 
