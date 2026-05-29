@@ -250,9 +250,44 @@ async function abrirModalFactura(codigo){
         "";
 
         document.getElementById(
-            "facturaPersona"
-        ).value =
-        registro.persona || "";
+    "facturaPersona"
+).value =
+registro.persona || "";
+
+/* =========================
+   RFC Y CARGO
+========================= */
+
+const datosPersona =
+    personas.find(
+        persona =>
+        persona.nombre === registro.persona
+    );
+
+if(datosPersona){
+
+    document.getElementById(
+        "facturaRFC"
+    ).value =
+    datosPersona.rfc || "";
+
+    document.getElementById(
+        "facturaCategoria"
+    ).value =
+    datosPersona.categoria || "";
+
+}
+else{
+
+    document.getElementById(
+        "facturaRFC"
+    ).value = "";
+
+    document.getElementById(
+        "facturaCategoria"
+    ).value = "";
+
+}
 
         document.getElementById(
             "facturaMunicipio"
@@ -419,118 +454,130 @@ async function generarFactura(){
 
         const payload = {
 
-            codigo:
-            codigoFactura,
+    codigo:
+    codigoFactura,
 
-            fileName:
-            `FACTURA_${codigoFactura}`,
+    fileName:
+    `FACTURA_${codigoFactura}`,
 
-            variables:{
+    variables:{
 
-                "<<NOMBRE>>":
+        "<<NOMBRE>>":
 
-                document.getElementById(
-                    "facturaPersona"
-                ).value,
+        document.getElementById(
+            "facturaPersona"
+        ).value,
 
-                "<<MUNICIPIO>>":
+        "<<RFC>>":
 
-                document.getElementById(
-                    "facturaMunicipio"
-                ).value,
+        document.getElementById(
+            "facturaRFC"
+        ).value,
 
-                "<<MOTIVO>>":
+        "<<CARGO>>":
 
-                document.getElementById(
-                    "facturaMotivo"
-                ).value,
+        document.getElementById(
+            "facturaCategoria"
+        ).value,
 
-                "<<LOCALIDAD>>":
+        "<<MUNICIPIO>>":
 
-                document.getElementById(
-                    "facturaLocalidad"
-                ).value,
+        document.getElementById(
+            "facturaMunicipio"
+        ).value,
 
-                "<<DIAS>>":
+        "<<MOTIVO>>":
 
-                document.getElementById(
-                    "facturaDias"
-                ).value,
+        document.getElementById(
+            "facturaMotivo"
+        ).value,
 
-                "<<MES>>":
+        "<<LOCALIDAD>>":
 
-                document.getElementById(
-                    "facturaMes"
-                ).value,
+        document.getElementById(
+            "facturaLocalidad"
+        ).value,
 
-                "<<MONTO>>":
+        "<<DIAS>>":
 
-                document.getElementById(
-                    "facturaImporte"
-                ).value,
+        document.getElementById(
+            "facturaDias"
+        ).value,
 
-                "<<RET>>":
+        "<<MES>>":
 
-                document.getElementById(
-                    "facturaRetenciones"
-                ).value,
+        document.getElementById(
+            "facturaMes"
+        ).value,
 
-                "<<TOTAL>>":
+        "<<MONTO>>":
 
-                document.getElementById(
-                    "facturaTotal"
-                ).value,
+        document.getElementById(
+            "facturaImporte"
+        ).value,
 
-                "<<NOREC>>":
+        "<<RET>>":
 
-                document.getElementById(
-                    "facturaNoRecibo"
-                ).value,
+        document.getElementById(
+            "facturaRetenciones"
+        ).value,
 
-                "<<TOTLETRA>>":
+        "<<TOTAL>>":
 
-                document.getElementById(
-                    "facturaTotalLetra"
-                ).value,
+        document.getElementById(
+            "facturaTotal"
+        ).value,
 
-                "<<PROY>>":
+        "<<NOREC>>":
 
-                document.getElementById(
-                    "facturaProyecto"
-                ).value,
+        document.getElementById(
+            "facturaNoRecibo"
+        ).value,
 
-                "<<NOMPROY>>":
+        "<<TOTLETRA>>":
 
-                document.getElementById(
-                    "facturaNombreProyecto"
-                ).value,
+        document.getElementById(
+            "facturaTotalLetra"
+        ).value,
 
-                "<<OFAUT>>":
+        "<<PROY>>":
 
-                document.getElementById(
-                    "facturaOficio"
-                ).value,
+        document.getElementById(
+            "facturaProyecto"
+        ).value,
 
-                "<<ADEC>>":
+        "<<NOMPROY>>":
 
-                document.getElementById(
-                    "facturaAdecuacion"
-                ).value,
+        document.getElementById(
+            "facturaNombreProyecto"
+        ).value,
 
-                "<<FECHA>>":
+        "<<OFAUT>>":
 
-                document.getElementById(
-                    "facturaFecha"
-                ).value
+        document.getElementById(
+            "facturaOficio"
+        ).value,
 
-            }
+        "<<ADEC>>":
 
-        };
+        document.getElementById(
+            "facturaAdecuacion"
+        ).value,
 
-        console.log(
-            "PAYLOAD FACTURA:",
-            payload
-        );
+        "<<FECHA>>":
+
+        document.getElementById(
+            "facturaFecha"
+        ).value
+
+    }
+
+};
+
+console.log(
+    "PAYLOAD FACTURA:",
+    payload
+);
 
         /* =========================
            FETCH APPS SCRIPT
