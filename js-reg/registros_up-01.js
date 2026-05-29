@@ -501,6 +501,11 @@ async function abrirModalFactura(codigo) {
 
 /* ---- 6.4 MODAL OFICIO 2 ---------------------------------- */
 
+function transformarNombreArchivo(nombreArchivo) {
+    if (!nombreArchivo) return "";
+    const sinExtension = nombreArchivo.replace(/\.[^/.]+$/, "");
+    return sinExtension.replace(/ /g, "/");
+}
 /**
  * Carga los datos del registro desde el backend, consulta los últimos
  * oficios y rellena el modal de Oficio 2.
@@ -543,10 +548,27 @@ async function abrirModalOficio2(codigo) {
     document.getElementById("oficio2Dias").value           = diasTexto;
     document.getElementById("oficio2Mes").value            = registro.mes             || "";
     document.getElementById("oficio2Anio").value           = registro.anio            || "";
-    document.getElementById("oficio2Proyecto").value       = registro.proyecto        || "";
-    document.getElementById("oficio2NombreProyecto").value = registro.nombre_proyecto || "Atención Integral 005";
-    document.getElementById("oficio2Ofaut").value          = oficioAutorizacion;
-    document.getElementById("oficio2OficioAdec").value     = oficioAdecuacion;
+    llenarSelectAutomatico(
+    "oficio2Proyecto",
+    catalogoProyecto
+);
+
+llenarSelectAutomatico(
+    "oficio2NombreProyecto",
+    catalogoNombreProyecto
+);
+
+document.getElementById(
+    "oficio2Proyecto"
+).value =
+catalogoProyecto[0] || "AI005";
+
+document.getElementById(
+    "oficio2NombreProyecto"
+).value =
+catalogoNombreProyecto[0] || "Atención Integral 005";
+    document.getElementById("oficio2Ofaut").value      = transformarNombreArchivo(oficioAutorizacion);
+    document.getElementById("oficio2OficioAdec").value  = transformarNombreArchivo(oficioAdecuacion);
     document.getElementById("oficio2Adec").value           = registro.cuenta          || "";
     document.getElementById("oficio2Monto").value          = formatearMoneda(registro.spg_monto       || 0);
     document.getElementById("oficio2Retenciones").value    = formatearMoneda(registro.spg_retenciones || 0);
@@ -1006,11 +1028,11 @@ function construirTarjeta(registro) {
   const btnTerminar = !registro.spg_pdf
     ? `<button class="btn-enviar" onclick="abrirModalSPG('${codigo}')">Generar SPG</button>`
     : !registro.recibo_pdf
-    ? `<button class="btn-enviar" onclick="abrirModalRecibo('${codigo}')">Generar Recibo</button>`
+    ? `<button class="btn-enviar" onclick="abrirModalRecibo('${codigo}')">Generar LAG</button>`
     : !registro.factura_pdf
-    ? `<button class="btn-enviar" onclick="abrirModalFactura('${codigo}')">Generar Factura</button>`
+    ? `<button class="btn-enviar" onclick="abrirModalFactura('${codigo}')">Generar Recibo</button>`
     : !registro.oficio2_pdf
-    ? `<button class="btn-enviar" onclick="abrirModalOficio2('${codigo}')">Generar Oficio 2</button>`
+    ? `<button class="btn-enviar" onclick="abrirModalOficio2('${codigo}')">Generar Anexo C</button>`
     : `<button class="btn-aceptado" disabled>Finalizado</button>`;
 
   // Helper: enlace a PDF existente o botón deshabilitado
@@ -1059,20 +1081,20 @@ function construirTarjeta(registro) {
               ${linkPDF(registro.pliego_pdf,  "Ver Pliego",   "Sin Pliego")}
             </div>
             <div class="info-item">
-              <span class="info-label">SPG PDF</span>
+              <span class="info-label">Solicitud Programática del Gasto PDF</span>
               ${linkPDF(registro.spg_pdf,     "Ver SPG",      "Sin SPG")}
             </div>
             <div class="info-item">
-              <span class="info-label">Recibo PDF</span>
-              ${linkPDF(registro.recibo_pdf,  "Ver Recibo",   "Sin Recibo")}
+              <span class="info-label">Leyenda Alusiva al Gasto PDF</span>
+              ${linkPDF(registro.recibo_pdf,  "Ver LAG",   "Sin LAG")}
             </div>
             <div class="info-item">
-              <span class="info-label">Factura PDF</span>
-              ${linkPDF(registro.factura_pdf, "Ver Factura",  "Sin Factura")}
+              <span class="info-label"> Recibo PDF</span>
+              ${linkPDF(registro.factura_pdf, "Ver Recibo",  "Sin Recibo")}
             </div>
             <div class="info-item">
-              <span class="info-label">Oficio 2 PDF</span>
-              ${linkPDF(registro.oficio2_pdf, "Ver Oficio 2", "Sin Oficio 2")}
+              <span class="info-label">Anexo C PDF</span>
+              ${linkPDF(registro.oficio2_pdf, "Ver Anexo C", "Sin Anexo C")}
             </div>
           </div>
 

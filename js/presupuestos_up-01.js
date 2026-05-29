@@ -1,1205 +1,624 @@
-const API =
+/* ================================================
+   CONFIGURACIÓN GLOBAL
+   URL base del servidor API
+================================================ */
 
-"https://sebiso-pliegos-oficios-1.onrender.com";
+const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
-/* =========================
+
+/* ================================================
+   MAPA DE ÁREAS
+   Relaciona el nombre del área con su ID numérico
+   en la base de datos
+================================================ */
+
+const mapaAreas = {
+    "UP-01-DESPACHO"    : 1,
+    "UP-CA"             : 2,
+    "UP-01-S-DRM"       : 3,
+    "UP-04-DGFA"        : 4,
+    "UP-05-Subse_I_D"   : 5,
+    "UP-06-DGOLP"       : 6,
+    "UP-07-MIGRANTES"   : 7,
+    "UP-08-ASISTENCIA"  : 8,
+    "UP-13-SSPSyFA"     : 9,
+    "UP-14-DISCAPACIDAD": 10,
+    "UP-15-SSDSyH"      : 11,
+    "UP-16"             : 12
+};
+
+
+/* ================================================
+   ORDEN DE MESES
+   Se usa para ordenar el historial cronológicamente
+================================================ */
+
+const ordenMeses = {
+    "ENERO"     : 1,
+    "FEBRERO"   : 2,
+    "MARZO"     : 3,
+    "ABRIL"     : 4,
+    "MAYO"      : 5,
+    "JUNIO"     : 6,
+    "JULIO"     : 7,
+    "AGOSTO"    : 8,
+    "SEPTIEMBRE": 9,
+    "OCTUBRE"   : 10,
+    "NOVIEMBRE" : 11,
+    "DICIEMBRE" : 12
+};
+
+
+/* ================================================
+   REFERENCIAS A ELEMENTOS DEL DOM
+================================================ */
+
+const btnGuardar      = document.getElementById("btnGuardarPresupuesto");
+const tbodyIngresos   = document.getElementById("tbodyIngresos");
+const tbodyGastos     = document.getElementById("tbodyGastos");
+const saldoDisponible = document.getElementById("saldoDisponible");
+
+
+/* ================================================
+   TRANSFORMAR NOMBRE DE ARCHIVO
+   Reemplaza los espacios del nombre del archivo
+   por "/" para estandarizar su visualización.
+
+   Ejemplos:
+     "SH 3033 2025.pdf"    → "SH/3033/2025"
+     "SH-CPF-518 2025.pdf" → "SH-CPF-518/2025"
+
+   - Los guiones "-" se conservan tal cual.
+   - La extensión (.pdf, .docx, etc.) se elimina.
+   - Los espacios se convierten en "/".
+================================================ */
+
+function transformarNombreArchivo(nombreArchivo) {
+
+    if (!nombreArchivo) return "";
+
+    // Eliminar extensión del archivo (ej. ".pdf", ".docx")
+    const sinExtension = nombreArchivo.replace(/\.[^/.]+$/, "");
+
+    // Reemplazar cada espacio por "/"
+    const transformado = sinExtension.replace(/ /g, "/");
+
+    return transformado;
+}
+
+
+/* ================================================
+   VALIDAR ÁREA
+   Verifica que el área seleccionada exista
+   en el mapa de áreas definido
+================================================ */
+
+function validarArea(area) {
+
+    console.log("AREA recibida:", area);
+    console.log("MAPA de áreas:", mapaAreas);
+
+    return Object.prototype.hasOwnProperty.call(mapaAreas, area);
+}
+
+
+/* ================================================
+   FORMATEAR FECHA
+   Convierte una fecha ISO a formato legible
+   en español México
+================================================ */
+
+function formatearFecha(fecha) {
+
+    return new Date(fecha).toLocaleString("es-MX");
+}
+
+
+/* ================================================
    MODAL MENSAJES
-========================= */
+   Muestra un modal reutilizable para:
+     - Mensajes informativos (tipo "ok")
+     - Confirmaciones con callback (tipo "confirmar")
+================================================ */
 
-function abrirModalMensaje(
+function abrirModalMensaje(titulo, mensaje, tipo = "ok", callback = null) {
 
-    titulo,
-    mensaje,
-    tipo = "ok",
-    callback = null
-
-){
-
-    const modal =
-
-    document.getElementById(
-        "modalMensaje"
-    );
-
-    const overlay =
-
-    document.getElementById(
-        "overlay"
-    );
-
-    const tituloModal =
-
-    document.getElementById(
-        "tituloModalMensaje"
-    );
-
-    const textoModal =
-
-    document.getElementById(
-        "textoModalMensaje"
-    );
-
-    const botones =
-
-    document.getElementById(
-        "botonesModalMensaje"
-    );
+    const modal       = document.getElementById("modalMensaje");
+    const overlay     = document.getElementById("overlay");
+    const tituloModal = document.getElementById("tituloModalMensaje");
+    const textoModal  = document.getElementById("textoModalMensaje");
+    const botones     = document.getElementById("botonesModalMensaje");
 
     tituloModal.innerText = titulo;
+    textoModal.innerText  = mensaje;
 
-    textoModal.innerText = mensaje;
-
-    if(tipo === "confirmar"){
+    // Botones según el tipo de modal
+    if (tipo === "confirmar") {
 
         botones.innerHTML = `
-
-            <button
-                type="button"
-                class="btn-secundario"
-                onclick="cerrarModalMensaje()"
-            >
-
+            <button type="button" class="btn-secundario" onclick="cerrarModalMensaje()">
                 Cancelar
-
             </button>
-
-            <button
-                type="button"
-                class="btn-principal"
-                id="btnConfirmarModal"
-            >
-
+            <button type="button" class="btn-principal" id="btnConfirmarModal">
                 Aceptar
-
             </button>
-
         `;
 
-    }
-
-    else{
+    } else {
 
         botones.innerHTML = `
-
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModalMensaje()"
-            >
-
+            <button type="button" class="btn-principal" onclick="cerrarModalMensaje()">
                 Aceptar
-
             </button>
-
         `;
-
     }
 
-    modal.style.display = "flex";
-
+    modal.style.display   = "flex";
     overlay.style.display = "block";
 
-    if(tipo === "confirmar"){
+    // Asignar callback al botón confirmar si aplica
+    if (tipo === "confirmar") {
 
-        document.getElementById(
-            "btnConfirmarModal"
-        ).onclick = () => {
+        document.getElementById("btnConfirmarModal").onclick = () => {
 
             cerrarModalMensaje();
 
-            if(callback){
-
-                callback();
-
-            }
-
+            if (callback) callback();
         };
-
     }
-
 }
 
-function cerrarModalMensaje(){
 
-    document.getElementById(
-        "modalMensaje"
-    ).style.display = "none";
+/* ================================================
+   CERRAR MODAL MENSAJES
+================================================ */
 
-    document.getElementById(
-        "overlay"
-    ).style.display = "none";
+function cerrarModalMensaje() {
 
+    document.getElementById("modalMensaje").style.display = "none";
+    document.getElementById("overlay").style.display      = "none";
 }
 
-/* =========================
-   ELEMENTOS
-========================= */
 
-const btnGuardar =
-document.getElementById(
-    "btnGuardarPresupuesto"
-);
+/* ================================================
+   CERRAR MODAL EDITAR
+================================================ */
 
-const tbodyIngresos =
-document.getElementById(
-    "tbodyIngresos"
-);
+function cerrarModalEditar() {
 
-const tbodyGastos =
-document.getElementById(
-    "tbodyGastos"
-);
-
-const saldoDisponible =
-document.getElementById(
-    "saldoDisponible"
-);
-
-/* =========================
-   MAPA ÁREAS
-========================= */
-
-const mapaAreas = {
-
-    "UP-01-DESPACHO":1,
-
-    "UP-CA":2,
-
-    "UP-01-S-DRM":3,
-
-    "UP-04-DGFA":4,
-
-    "UP-05-Subse_I_D":5,
-
-    "UP-06-DGOLP":6,
-
-    "UP-07-MIGRANTES":7,
-
-    "UP-08-ASISTENCIA":8,
-
-    "UP-13-SSPSyFA":9,
-
-    "UP-14-DISCAPACIDAD":10,
-
-    "UP-15-SSDSyH":11,
-
-    "UP-16":12
-
-};
-
-/* =========================
-   ORDEN MESES
-========================= */
-
-const ordenMeses = {
-
-    "ENERO":1,
-    "FEBRERO":2,
-    "MARZO":3,
-    "ABRIL":4,
-    "MAYO":5,
-    "JUNIO":6,
-    "JULIO":7,
-    "AGOSTO":8,
-    "SEPTIEMBRE":9,
-    "OCTUBRE":10,
-    "NOVIEMBRE":11,
-    "DICIEMBRE":12
-
-};
-
-/* =========================
-   VALIDAR ÁREA
-========================= */
-
-function validarArea(area){
-
-    console.log(
-        "AREA:",
-        area
-    );
-
-    console.log(
-        "MAPA:",
-        mapaAreas
-    );
-
-    return Object.prototype.hasOwnProperty.call(
-
-        mapaAreas,
-
-        area
-
-    );
-
+    document.getElementById("modalEditar").style.display = "none";
+    document.getElementById("overlay").style.display     = "none";
 }
 
-/* =========================
+
+/* ================================================
    GUARDAR PRESUPUESTO
-========================= */
+   Lee los campos del formulario principal,
+   valida los datos, arma el FormData y envía
+   la petición POST al servidor.
+   Los archivos PDF se adjuntan si fueron seleccionados.
+================================================ */
 
-btnGuardar.addEventListener(
+btnGuardar.addEventListener("click", async () => {
 
-    "click",
+    try {
 
-    async () => {
+        const area             = document.getElementById("selectArea").value.trim();
+        const mes              = document.getElementById("mesPresupuesto").value;
+        const anio             = document.getElementById("anioPresupuesto").value;
+        const saldoAutorizado  = document.getElementById("saldoAutorizado").value;
+        const saldoModificado  = document.getElementById("saldoModificado").value || 0;
+        const oficioAutorizacion = document.getElementById("oficioAutorizacionPDF").files[0];
+        const oficioAdecuacion   = document.getElementById("oficioAdecuacionPDF").files[0];
 
-        try{
+        // Validar saldo autorizado
+        if (!saldoAutorizado) {
 
-            const area =
-            document.getElementById(
-                "selectArea"
-            ).value.trim();
-
-            const mes =
-            document.getElementById(
-                "mesPresupuesto"
-            ).value;
-
-            const anio =
-            document.getElementById(
-                "anioPresupuesto"
-            ).value;
-
-            const saldoAutorizado =
-            document.getElementById(
-                "saldoAutorizado"
-            ).value;
-
-            const saldoModificado =
-            document.getElementById(
-                "saldoModificado"
-            ).value || 0;
-
-            const oficioAutorizacion =
-            document.getElementById(
-                "oficioAutorizacionPDF"
-            ).files[0];
-
-            const oficioAdecuacion =
-            document.getElementById(
-                "oficioAdecuacionPDF"
-            ).files[0];
-
-            if(!saldoAutorizado){
-
-                abrirModalMensaje(
-
-                    "Campos incompletos",
-
-                    "Ingrese saldo autorizado"
-
-                );
-
-                return;
-
-            }
-
-            if(!validarArea(area)){
-
-                abrirModalMensaje(
-
-                    "Área inválida",
-
-                    `Área recibida: ${area}`
-
-                );
-
-                return;
-
-            }
-
-            const formData =
-            new FormData();
-
-            formData.append(
-                "area_id",
-                mapaAreas[area]
-            );
-
-            formData.append(
-                "mes",
-                mes
-            );
-
-            formData.append(
-                "anio",
-                anio
-            );
-
-            formData.append(
-                "saldo_autorizado",
-                saldoAutorizado
-            );
-
-            formData.append(
-                "saldo_modificado",
-                saldoModificado
-            );
-
-            if(oficioAutorizacion){
-
-                formData.append(
-                    "oficio_autorizacion",
-                    oficioAutorizacion
-                );
-
-            }
-
-            if(oficioAdecuacion){
-
-                formData.append(
-                    "oficio_adecuacion",
-                    oficioAdecuacion
-                );
-
-            }
-
-            const respuesta =
-            await fetch(
-
-                `${API}/api/presupuestos/crear`,
-
-                {
-
-                    method:"POST",
-
-                    body:formData
-
-                }
-
-            );
-
-            const data =
-            await respuesta.json();
-
-            if(!data.ok){
-
-                abrirModalMensaje(
-
-                    "Error",
-
-                    data.msg || "Error al guardar"
-
-                );
-
-                return;
-
-            }
-
-            abrirModalMensaje(
-
-                "Registro guardado",
-
-                "El registro fue guardado correctamente."
-
-            );
-
-            document.getElementById(
-                "saldoAutorizado"
-            ).value = "";
-
-            document.getElementById(
-                "saldoModificado"
-            ).value = "";
-
-            document.getElementById(
-                "oficioAutorizacionPDF"
-            ).value = "";
-
-            document.getElementById(
-                "oficioAdecuacionPDF"
-            ).value = "";
-
-            cargarHistorial();
-
-            cargarGastos();
-
+            abrirModalMensaje("Campos incompletos", "Ingrese saldo autorizado");
+            return;
         }
 
-        catch(error){
+        // Validar que el área exista en el mapa
+        if (!validarArea(area)) {
 
-            console.log(error);
-
-            abrirModalMensaje(
-
-                "Error servidor",
-
-                "Ocurrió un error inesperado"
-
-            );
-
+            abrirModalMensaje("Área inválida", `Área recibida: ${area}`);
+            return;
         }
 
+        const formData = new FormData();
+
+        formData.append("area_id",         mapaAreas[area]);
+        formData.append("mes",             mes);
+        formData.append("anio",            anio);
+        formData.append("saldo_autorizado", saldoAutorizado);
+        formData.append("saldo_modificado", saldoModificado);
+
+        // Adjuntar PDFs solo si fueron seleccionados
+        if (oficioAutorizacion) formData.append("oficio_autorizacion", oficioAutorizacion);
+        if (oficioAdecuacion)   formData.append("oficio_adecuacion",   oficioAdecuacion);
+
+        const respuesta = await fetch(`${API}/api/presupuestos/crear`, {
+            method: "POST",
+            body:   formData
+        });
+
+        const data = await respuesta.json();
+
+        if (!data.ok) {
+
+            abrirModalMensaje("Error", data.msg || "Error al guardar");
+            return;
+        }
+
+        abrirModalMensaje("Registro guardado", "El registro fue guardado correctamente.");
+
+        // Limpiar campos del formulario
+        document.getElementById("saldoAutorizado").value      = "";
+        document.getElementById("saldoModificado").value      = "";
+        document.getElementById("oficioAutorizacionPDF").value = "";
+        document.getElementById("oficioAdecuacionPDF").value   = "";
+
+        // Recargar tablas
+        cargarHistorial();
+        cargarGastos();
+
+    } catch (error) {
+
+        console.error("Error al guardar presupuesto:", error);
+        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado");
     }
+});
 
-);
 
-/* =========================
+/* ================================================
    CARGAR HISTORIAL
-========================= */
+   Obtiene los presupuestos del área seleccionada,
+   los ordena por año y mes descendente,
+   y los pinta en la tabla de ingresos.
+   También muestra el saldo disponible más reciente.
+================================================ */
 
-async function cargarHistorial(){
+async function cargarHistorial() {
 
-    try{
+    try {
 
-        const area =
-        document.getElementById(
-            "selectArea"
-        ).value.trim();
+        const area = document.getElementById("selectArea").value.trim();
 
-        const respuesta =
-        await fetch(
+        const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
+        const resultado = await respuesta.json();
+        const data      = resultado.presupuestos || [];
 
-            `${API}/api/presupuestos/${area}`
-
-        );
-
-        const resultado =
-        await respuesta.json();
-
-        const data =
-        resultado.presupuestos || [];
-
+        // Ordenar por año DESC, luego por mes DESC
         data.sort((a, b) => {
 
-            if(b.anio !== a.anio){
+            if (b.anio !== a.anio) return b.anio - a.anio;
 
-                return b.anio - a.anio;
-
-            }
-
-            return ordenMeses[b.mes]
-            - ordenMeses[a.mes];
-
+            return ordenMeses[b.mes] - ordenMeses[a.mes];
         });
 
         tbodyIngresos.innerHTML = "";
 
-        if(data.length === 0){
+        if (data.length === 0) {
 
             tbodyIngresos.innerHTML = `
-
                 <tr>
-
-                    <td colspan="7">
-
-                        No hay registros
-
-                    </td>
-
+                    <td colspan="7">No hay registros</td>
                 </tr>
-
             `;
 
-            saldoDisponible.innerHTML =
-            "$0.00";
-
+            saldoDisponible.innerHTML = "$0.00";
             return;
-
         }
 
-        let ultimoSaldo = data[0].saldo_restante || 0;
+        // El saldo disponible es el del registro más reciente
+        const ultimoSaldo = data[0].saldo_restante || 0;
 
         data.forEach((registro) => {
 
+            // Transformar nombres de archivos: espacios → "/"
+            const nombreAutorizacion = transformarNombreArchivo(registro.oficio_autorizacion);
+            const nombreAdecuacion   = transformarNombreArchivo(registro.oficio_adecuacion);
+
             tbodyIngresos.innerHTML += `
-
                 <tr>
+                    <td>${registro.mes} ${registro.anio}</td>
+
+                    <td>$${parseFloat(registro.saldo_autorizado || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+
+                    <td>$${parseFloat(registro.saldo_modificado || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+
+                    <td>$${parseFloat(registro.saldo_restante || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
 
                     <td>
-
-                        ${registro.mes} ${registro.anio}
-
-                    </td>
-
-                    <td>
-
-                        $${parseFloat(
-                            registro.saldo_autorizado || 0
-                        ).toLocaleString(
-                            "es-MX",
-                            {
-                                minimumFractionDigits:2
-                            }
-                        )}
-
-                    </td>
-
-                    <td>
-
-                        $${parseFloat(
-                            registro.saldo_modificado || 0
-                        ).toLocaleString(
-                            "es-MX",
-                            {
-                                minimumFractionDigits:2
-                            }
-                        )}
-
-                    </td>
-
-                    <td>
-
-                        $${parseFloat(
-                            registro.saldo_restante || 0
-                        ).toLocaleString(
-                            "es-MX",
-                            {
-                                minimumFractionDigits:2
-                            }
-                        )}
-
-                    </td>
-
-                    <td>
-
-                        ${
-                            registro.oficio_autorizacion
-
-                            ?
-
-                            `<a
+                        ${registro.oficio_autorizacion
+                            ? `<a
                                 href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
                                 target="_blank"
                                 class="btn-pdf"
                                 title="${registro.oficio_autorizacion}"
-                            >
-
-                                ${registro.oficio_autorizacion}
-
-                            </a>`
-
-                            :
-
-                            'Sin PDF'
+                               >
+                                   ${nombreAutorizacion}
+                               </a>`
+                            : "Sin PDF"
                         }
-
                     </td>
 
                     <td>
-
-                       ${
-                        registro.oficio_adecuacion
-
-                        ?
-
-                        `<a
-                            href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
-                            target="_blank"
-                            class="btn-pdf"
-                            title="${registro.oficio_adecuacion}"
-                        >
-
-                            ${registro.oficio_adecuacion}
-
-                        </a>`
-
-                        :
-
-                        'Sin PDF'
-                    }
-
+                        ${registro.oficio_adecuacion
+                            ? `<a
+                                href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
+                                target="_blank"
+                                class="btn-pdf"
+                                title="${registro.oficio_adecuacion}"
+                               >
+                                   ${nombreAdecuacion}
+                               </a>`
+                            : "Sin PDF"
+                        }
                     </td>
 
                     <td class="acciones">
-
-                        <button
-                            class="btn-editar"
-                            onclick="editarRegistro(${registro.id})"
-                        >
-
-                            Editar
-
-                        </button>
-
-                        <button
-                            class="btn-eliminar"
-                            onclick="eliminarRegistro(${registro.id})"
-                        >
-
-                            Eliminar
-
-                        </button>
-
+                        <button class="btn-editar"   onclick="editarRegistro(${registro.id})">Editar</button>
+                        <button class="btn-eliminar" onclick="eliminarRegistro(${registro.id})">Eliminar</button>
                     </td>
-
                 </tr>
-
             `;
-
         });
 
         saldoDisponible.innerHTML =
+            `$${parseFloat(ultimoSaldo).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
 
-            `$${parseFloat(
-                ultimoSaldo || 0
-            ).toLocaleString(
-                "es-MX",
-                {
-                    minimumFractionDigits:2
-                }
-            )}`;
+    } catch (error) {
 
+        console.error("Error al cargar historial:", error);
     }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
 }
 
-/* =========================
+
+/* ================================================
    CARGAR GASTOS
-========================= */
+   Obtiene los gastos del área seleccionada
+   y los pinta en la tabla de gastos
+================================================ */
 
-async function cargarGastos(){
+async function cargarGastos() {
 
-    try{
+    try {
 
-        const area =
-        document.getElementById(
-            "selectArea"
-        ).value.trim();
+        const area = document.getElementById("selectArea").value.trim();
 
-        const respuesta =
-        await fetch(
-
-            `${API}/api/presupuestos/${area}`
-
-        );
-
-        const resultado =
-        await respuesta.json();
-
-        const gastos =
-        resultado.gastos || [];
+        const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
+        const resultado = await respuesta.json();
+        const gastos    = resultado.gastos || [];
 
         tbodyGastos.innerHTML = "";
 
-        if(gastos.length === 0){
+        if (gastos.length === 0) {
 
             tbodyGastos.innerHTML = `
-
                 <tr>
-
-                    <td colspan="4">
-
-                        No hay gastos registrados
-
-                    </td>
-
+                    <td colspan="4">No hay gastos registrados</td>
                 </tr>
-
             `;
 
             return;
-
         }
 
         gastos.forEach((gasto) => {
 
             tbodyGastos.innerHTML += `
-
                 <tr>
-
-                    <td>
-
-                        ${formatearFecha(
-                            gasto.fecha
-                        )}
-
-                    </td>
-
-                    <td>
-
-                        ${gasto.persona || '-'}
-
-                    </td>
-
-                    <td>
-
-                        $${parseFloat(
-                            gasto.cantidad || 0
-                        ).toLocaleString(
-                            "es-MX",
-                            {
-                                minimumFractionDigits:2
-                            }
-                        )}
-
-                    </td>
-
-                    <td>
-
-                        ${gasto.observacion || '-'}
-
-                    </td>
-
+                    <td>${formatearFecha(gasto.fecha)}</td>
+                    <td>${gasto.persona      || "-"}</td>
+                    <td>$${parseFloat(gasto.cantidad || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+                    <td>${gasto.observacion  || "-"}</td>
                 </tr>
-
             `;
-
         });
 
+    } catch (error) {
+
+        console.error("Error al cargar gastos:", error);
     }
-
-    catch(error){
-
-        console.log(error);
-
-    }
-
 }
 
-/* =========================
-   EDITAR
-========================= */
 
-async function editarRegistro(id){
+/* ================================================
+   EDITAR REGISTRO
+   Busca el registro por ID en el historial
+   y rellena el modal de edición con sus datos
+================================================ */
 
-    try{
+async function editarRegistro(id) {
 
-        const area =
-        document.getElementById(
-            "selectArea"
-        ).value.trim();
+    try {
 
-        const respuesta =
-        await fetch(
+        const area = document.getElementById("selectArea").value.trim();
 
-            `${API}/api/presupuestos/${area}`
+        const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
+        const resultado = await respuesta.json();
+        const data      = resultado.presupuestos || [];
 
-        );
+        const registro = data.find((item) => item.id === id);
 
-        const resultado =
-        await respuesta.json();
+        if (!registro) {
 
-        const data =
-        resultado.presupuestos || [];
-
-        const registro =
-        data.find(
-
-            item => item.id === id
-
-        );
-
-        if(!registro){
-
-            abrirModalMensaje(
-
-                "Error",
-
-                "Registro no encontrado"
-
-            );
-
+            abrirModalMensaje("Error", "Registro no encontrado");
             return;
-
         }
 
-        document.getElementById(
-            "editId"
-        ).value = registro.id;
+        // Rellenar campos del modal
+        document.getElementById("editId").value             = registro.id;
+        document.getElementById("editMes").value            = registro.mes;
+        document.getElementById("editAnio").value           = registro.anio;
+        document.getElementById("editSaldoAutorizado").value = registro.saldo_autorizado;
+        document.getElementById("editSaldoModificado").value = registro.saldo_modificado;
 
-        document.getElementById(
-            "editMes"
-        ).value = registro.mes;
+        document.getElementById("editDisponible").innerHTML =
+            `$${parseFloat(registro.saldo_disponible || 0)
+                .toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
 
-        document.getElementById(
-            "editAnio"
-        ).value = registro.anio;
+        document.getElementById("editGastado").innerHTML =
+            `$${parseFloat(registro.gastado_mes || 0)
+                .toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
 
-        document.getElementById(
-            "editSaldoAutorizado"
-        ).value =
-        registro.saldo_autorizado;
+        document.getElementById("editRestante").innerHTML =
+            `$${parseFloat(registro.saldo_restante || 0)
+                .toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
 
-        document.getElementById(
-            "editSaldoModificado"
-        ).value =
-        registro.saldo_modificado;
+        document.getElementById("modalEditar").style.display = "flex";
+        document.getElementById("overlay").style.display     = "block";
 
-        document.getElementById(
-            "editDisponible"
-        ).innerHTML =
-        `$${parseFloat(
-            registro.saldo_disponible || 0
-        ).toLocaleString(
-            "es-MX",
-            {
-                minimumFractionDigits:2
-            }
-        )}`;
+    } catch (error) {
 
-        document.getElementById(
-            "editGastado"
-        ).innerHTML =
-        `$${parseFloat(
-            registro.gastado_mes || 0
-        ).toLocaleString(
-            "es-MX",
-            {
-                minimumFractionDigits:2
-            }
-        )}`;
-
-        document.getElementById(
-            "editRestante"
-        ).innerHTML =
-        `$${parseFloat(
-            registro.saldo_restante || 0
-        ).toLocaleString(
-            "es-MX",
-            {
-                minimumFractionDigits:2
-            }
-        )}`;
-
-        document.getElementById(
-            "modalEditar"
-        ).style.display = "flex";
-
-        document.getElementById(
-            "overlay"
-        ).style.display = "block";
-
+        console.error("Error al editar registro:", error);
+        abrirModalMensaje("Error", "Error cargando registro");
     }
-
-    catch(error){
-
-        console.log(error);
-
-        abrirModalMensaje(
-
-            "Error",
-
-            "Error cargando registro"
-
-        );
-
-    }
-
 }
 
-/* =========================
-   CERRAR MODAL
-========================= */
 
-function cerrarModalEditar(){
+/* ================================================
+   ACTUALIZAR REGISTRO
+   Lee los campos del modal de edición
+   y envía la petición PUT al servidor
+================================================ */
 
-    document.getElementById(
-        "modalEditar"
-    ).style.display = "none";
+document.getElementById("btnActualizar").addEventListener("click", async () => {
 
-    document.getElementById(
-        "overlay"
-    ).style.display = "none";
+    try {
 
-}
+        const id              = document.getElementById("editId").value;
+        const saldoAutorizado = document.getElementById("editSaldoAutorizado").value;
+        const saldoModificado = document.getElementById("editSaldoModificado").value;
+        const mes             = document.getElementById("editMes").value;
+        const anio            = document.getElementById("editAnio").value;
 
-/* =========================
-   ACTUALIZAR
-========================= */
+        const formData = new FormData();
 
-document.getElementById(
+        formData.append("saldo_autorizado", saldoAutorizado);
+        formData.append("saldo_modificado", saldoModificado);
+        formData.append("mes",              mes);
+        formData.append("anio",             anio);
 
-    "btnActualizar"
+        const respuesta = await fetch(`${API}/api/presupuestos/editar/${id}`, {
+            method: "PUT",
+            body:   formData
+        });
 
-).addEventListener(
+        const data = await respuesta.json();
 
-    "click",
+        if (data.ok) {
 
-    async () => {
+            abrirModalMensaje("Registro actualizado", "Los cambios fueron guardados correctamente.");
 
-        try{
+            cerrarModalEditar();
+            cargarHistorial();
+            cargarGastos();
 
-            const id =
-            document.getElementById(
-                "editId"
-            ).value;
+        } else {
 
-            const saldoAutorizado =
-            document.getElementById(
-                "editSaldoAutorizado"
-            ).value;
-
-            const saldoModificado =
-            document.getElementById(
-                "editSaldoModificado"
-            ).value;
-
-            const mes =
-            document.getElementById(
-                "editMes"
-            ).value;
-
-            const anio =
-            document.getElementById(
-                "editAnio"
-            ).value;
-
-            const formData =
-            new FormData();
-
-            formData.append(
-                "saldo_autorizado",
-                saldoAutorizado
-            );
-
-            formData.append(
-                "saldo_modificado",
-                saldoModificado
-            );
-
-            formData.append(
-                "mes",
-                mes
-            );
-
-            formData.append(
-                "anio",
-                anio
-            );
-
-            const respuesta =
-            await fetch(
-
-                `${API}/api/presupuestos/editar/${id}`,
-
-                {
-
-                    method:"PUT",
-
-                    body:formData
-
-                }
-
-            );
-
-            const data =
-            await respuesta.json();
-
-            if(data.ok){
-
-                abrirModalMensaje(
-
-                    "Registro actualizado",
-
-                    "Los cambios fueron guardados correctamente."
-
-                );
-
-                cerrarModalEditar();
-
-                cargarHistorial();
-
-                cargarGastos();
-
-            }
-
-            else{
-
-                abrirModalMensaje(
-
-                    "Error",
-
-                    data.msg || "Error actualizando"
-
-                );
-
-            }
-
+            abrirModalMensaje("Error", data.msg || "Error actualizando");
         }
 
-        catch(error){
+    } catch (error) {
 
-            console.log(error);
-
-            abrirModalMensaje(
-
-                "Error servidor",
-
-                "Ocurrió un error inesperado"
-
-            );
-
-        }
-
+        console.error("Error al actualizar registro:", error);
+        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado");
     }
+});
 
-);
 
-/* =========================
-   ELIMINAR
-========================= */
+/* ================================================
+   ELIMINAR REGISTRO
+   Muestra confirmación y, si se acepta,
+   envía la petición DELETE al servidor
+================================================ */
 
-async function eliminarRegistro(id){
+async function eliminarRegistro(id) {
 
     abrirModalMensaje(
 
         "Eliminar registro",
-
         "¿Desea eliminar este registro?",
-
         "confirmar",
 
         async () => {
 
-            try{
+            try {
 
-                const respuesta =
-                await fetch(
+                const respuesta = await fetch(`${API}/api/presupuestos/${id}`, {
+                    method: "DELETE"
+                });
 
-                    `${API}/api/presupuestos/${id}`,
+                const data = await respuesta.json();
 
-                    {
+                if (data.ok) {
 
-                        method:"DELETE"
-
-                    }
-
-                );
-
-                const data =
-                await respuesta.json();
-
-                if(data.ok){
-
-                    abrirModalMensaje(
-
-                        "Registro eliminado",
-
-                        "El registro fue eliminado correctamente."
-
-                    );
+                    abrirModalMensaje("Registro eliminado", "El registro fue eliminado correctamente.");
 
                     cargarHistorial();
-
                     cargarGastos();
 
+                } else {
+
+                    abrirModalMensaje("Error", data.msg || "Error eliminando");
                 }
 
-                else{
+            } catch (error) {
 
-                    abrirModalMensaje(
-
-                        "Error",
-
-                        data.msg || "Error eliminando"
-
-                    );
-
-                }
-
+                console.error("Error al eliminar registro:", error);
+                abrirModalMensaje("Error servidor", "Ocurrió un error inesperado");
             }
-
-            catch(error){
-
-                console.log(error);
-
-                abrirModalMensaje(
-
-                    "Error servidor",
-
-                    "Ocurrió un error inesperado"
-
-                );
-
-            }
-
         }
-
     );
-
 }
 
-/* =========================
-   FORMATEAR FECHA
-========================= */
 
-function formatearFecha(fecha){
+/* ================================================
+   TABS — INGRESOS / GASTOS
+   Alterna la visibilidad entre las dos tablas
+================================================ */
 
-    return new Date(fecha)
-    .toLocaleString(
-        "es-MX"
-    );
+function mostrarIngresos() {
 
+    document.getElementById("contenedorIngresos").style.display = "block";
+    document.getElementById("contenedorGastos").style.display   = "none";
+
+    document.getElementById("btnIngresos").classList.add("activo");
+    document.getElementById("btnGastos").classList.remove("activo");
 }
 
-/* =========================
-   TABS
-========================= */
+function mostrarGastos() {
 
-function mostrarIngresos(){
+    document.getElementById("contenedorIngresos").style.display = "none";
+    document.getElementById("contenedorGastos").style.display   = "block";
 
-    document.getElementById(
-        "contenedorIngresos"
-    ).style.display = "block";
-
-    document.getElementById(
-        "contenedorGastos"
-    ).style.display = "none";
-
-    document.getElementById(
-        "btnIngresos"
-    ).classList.add("activo");
-
-    document.getElementById(
-        "btnGastos"
-    ).classList.remove("activo");
-
+    document.getElementById("btnGastos").classList.add("activo");
+    document.getElementById("btnIngresos").classList.remove("activo");
 }
 
-function mostrarGastos(){
 
-    document.getElementById(
-        "contenedorIngresos"
-    ).style.display = "none";
+/* ================================================
+   EVENTO — CAMBIO DE ÁREA
+   Al cambiar el área seleccionada se recargan
+   automáticamente el historial y los gastos
+================================================ */
 
-    document.getElementById(
-        "contenedorGastos"
-    ).style.display = "block";
+document.getElementById("selectArea").addEventListener("change", () => {
 
-    document.getElementById(
-        "btnGastos"
-    ).classList.add("activo");
+    cargarHistorial();
+    cargarGastos();
+});
 
-    document.getElementById(
-        "btnIngresos"
-    ).classList.remove("activo");
 
-}
-
-/* =========================
-   CAMBIO ÁREA
-========================= */
-
-document.getElementById(
-
-    "selectArea"
-
-).addEventListener(
-
-    "change",
-
-    () => {
-
-        cargarHistorial();
-
-        cargarGastos();
-
-    }
-
-);
-
-/* =========================
-   INIT
-========================= */
+/* ================================================
+   INICIALIZACIÓN
+   Carga los datos al abrir la página
+================================================ */
 
 cargarHistorial();
-
 cargarGastos();
