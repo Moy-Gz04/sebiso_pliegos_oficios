@@ -58,7 +58,6 @@ function validarCamposOficio2(){
     return !error;
 
 }
-
 /* =========================
    ABRIR MODAL OFICIO 2
 ========================= */
@@ -196,7 +195,6 @@ async function abrirModalOficio2(codigo){
             );
 
         }
-
         /* =========================
            LLENAR CAMPOS
         ========================= */
@@ -229,21 +227,75 @@ async function abrirModalOficio2(codigo){
         document.getElementById(
             "oficio2Anio"
         ).value =
-
         new Date(
             registro.fecha || Date.now()
-        )
-        .getFullYear();
+        ).getFullYear();
+
+        /* =========================
+           CARGAR CATÁLOGOS
+        ========================= */
+
+        if(
+            document.getElementById(
+                "oficio2Proyecto"
+            )
+        ){
+            llenarSelectAutomatico(
+                "oficio2Proyecto",
+                catalogoProyecto
+            );
+        }
+
+        if(
+            document.getElementById(
+                "oficio2NombreProyecto"
+            )
+        ){
+            llenarSelectAutomatico(
+                "oficio2NombreProyecto",
+                catalogoNombreProyecto
+            );
+        }
+
+        /* =========================
+           ASIGNAR VALORES
+        ========================= */
 
         document.getElementById(
             "oficio2Proyecto"
         ).value =
-        registro.proyecto || "AI005";
+        registro.proyecto ||
+        catalogoProyecto[0] ||
+        "";
 
         document.getElementById(
             "oficio2NombreProyecto"
         ).value =
-        "Atención Integral 005";
+        registro.nombre_proyecto ||
+        catalogoNombreProyecto[0] ||
+        "";
+
+        const campoFecha =
+        document.getElementById(
+            "oficio2Fecha"
+        );
+
+        if(campoFecha){
+
+            campoFecha.value =
+            new Date(
+                registro.fecha || Date.now()
+            )
+            .toLocaleDateString(
+                "es-MX",
+                {
+                    day:"numeric",
+                    month:"long",
+                    year:"numeric"
+                }
+            );
+
+        }
 
         document.getElementById(
             "oficio2Ofaut"
@@ -662,7 +714,6 @@ async function generarOficio2(){
     }
 
 }
-
 /* =========================
    INIT OFICIO 2
 ========================= */
@@ -672,6 +723,62 @@ document.addEventListener(
     "DOMContentLoaded",
 
     ()=>{
+
+        /* =========================
+           CARGAR CATÁLOGOS
+        ========================= */
+
+        const proyectoSelect =
+        document.getElementById(
+            "oficio2Proyecto"
+        );
+
+        const nombreProyectoSelect =
+        document.getElementById(
+            "oficio2NombreProyecto"
+        );
+
+        if(proyectoSelect){
+
+            llenarSelectAutomatico(
+
+                "oficio2Proyecto",
+                catalogoProyecto
+
+            );
+
+            proyectoSelect.value =
+            catalogoProyecto[0] || "";
+
+        }
+
+        if(nombreProyectoSelect){
+
+            llenarSelectAutomatico(
+
+                "oficio2NombreProyecto",
+                catalogoNombreProyecto
+
+            );
+
+            nombreProyectoSelect.value =
+            catalogoNombreProyecto[0] || "";
+
+        }
+
+        console.log(
+            "PROYECTO CARGADO:",
+            proyectoSelect?.value
+        );
+
+        console.log(
+            "NOMBRE PROYECTO CARGADO:",
+            nombreProyectoSelect?.value
+        );
+
+        /* =========================
+           BOTÓN GENERAR
+        ========================= */
 
         const btn =
         document.getElementById(
@@ -689,6 +796,10 @@ document.addEventListener(
             );
 
         }
+
+        /* =========================
+           LIMPIAR ERRORES
+        ========================= */
 
         document
         .querySelectorAll(
