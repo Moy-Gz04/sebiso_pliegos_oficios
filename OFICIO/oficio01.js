@@ -9,6 +9,11 @@ const API_OFICIO2 =
 /* =========================
    VALIDAR CAMPOS OFICIO 2
 ========================= */
+function transformarNombreArchivo(nombreArchivo) {
+    if (!nombreArchivo) return "";
+    const sinExtension = nombreArchivo.replace(/\.[^/.]+$/, "");
+    return sinExtension.replace(/ /g, "/");
+}
 
 function validarCamposOficio2(){
 
@@ -297,15 +302,8 @@ async function abrirModalOficio2(codigo){
 
         }
 
-        document.getElementById(
-            "oficio2Ofaut"
-        ).value =
-        oficioAutorizacion;
-
-        document.getElementById(
-            "oficio2OficioAdec"
-        ).value =
-        oficioAdecuacion;
+        document.getElementById("oficio2Ofaut").value      = transformarNombreArchivo(oficioAutorizacion);
+        document.getElementById("oficio2OficioAdec").value  = transformarNombreArchivo(oficioAdecuacion);
 
         document.getElementById(
             "oficio2Adec"
@@ -487,6 +485,12 @@ async function generarOficio2(){
 
                 document.getElementById(
                     "oficio2NombreProyecto"
+                ).value,
+
+                "<<FECHA>>":
+
+                document.getElementById(
+                    "oficio2Fecha"
                 ).value,
 
                 "<<OFAUT>>":

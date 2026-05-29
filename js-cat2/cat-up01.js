@@ -96,34 +96,18 @@ const personas = [
 
 const meses = [
 
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre"
-
-];
-
-/* =========================
-   CATÁLOGO ZONAS
-========================= */
-
-const zonasTarifa = [
-
-    "I-I",
-    "II-I",
-    "II-II",
-    "II-I y II",
-    "III-I",
-    "III-I y II",
-    "III-II"
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
 
 ];
 
@@ -139,16 +123,20 @@ const catalogoUP = [
 
 const catalogoRubro = [
 
-    "8402050",
-    "8402050",
+    "8404030",
+    "8405040",
+    "8402050"
 
 ];
+
 
 const catalogoProyecto = [
 
-    "AI005"
+    "AI001",
+    "AI002"
 
 ];
+
 
 const catalogoObjetoGasto = [
 
@@ -162,7 +150,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "Atención Integral 005"
+    "Evaluación a los programas sociales"
 
 ];
 
@@ -524,6 +512,32 @@ function llenarAdecuacionFactura(){
 }
 
 /* =========================
+   OFICIO 2
+========================= */
+
+function llenarProyectoOficio2(){
+
+    llenarSelectAutomatico(
+
+        "oficio2Proyecto",
+        catalogoProyecto
+
+    );
+
+}
+
+function llenarNombreProyectoOficio2(){
+
+    llenarSelectAutomatico(
+
+        "oficio2NombreProyecto",
+        catalogoNombreProyecto
+
+    );
+
+}
+
+/* =========================
    ASIGNAR OFICIO DESDE API
 ========================= */
 
@@ -643,13 +657,19 @@ document.addEventListener(
 
         llenarObjetoGasto();
 
-        /* FACTURA */
+       /* FACTURA */
 
         llenarProyectoFactura();
 
         llenarNombreProyectoFactura();
 
         llenarAdecuacionFactura();
+
+        /* OFICIO 2 */
+
+        llenarProyectoOficio2();
+
+        llenarNombreProyectoOficio2();
 
     }
 
