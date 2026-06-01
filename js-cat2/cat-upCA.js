@@ -1,45 +1,223 @@
 /* =========================
    CATÁLOGO DE PERSONAS
 ========================= */
-
 const personas = [
 
-    "ROSA LETICIA MUÑOZ CHÁVEZ",
-    "ELIZABETH MARGARITA NOGUEZ ROMERO",
-    "MARÍA SARA ORTIZ GONZÁLEZ",
-    "ROBERTO CARLOS LÓPEZ ESTRADA",
-    "ARIANA SALAS LUGO",
-    "ANA BRISNA CERVANTES HIDALGO",
-    "MARTHA PATRICIA BARRAGÁN GARCÍA",
-    "LAURA TRINIDAD HERNÁNDEZ DÍAZ",
-    "ERICK ACOSTA TÉLLEZ",
-    "GABRIELA HERNÁNDEZ BUSTOS",
-    "MARÍA FERNANDA GUZMÁN ESCAMILLA",
-    "OSCAR ADRIÁN ESCORZA ARROYO",
-    "MARÍA DEL PILAR VEGA REYES",
-    "ALEJANDRO OSWALDO VILLEGAS ORTIZ",
-    "VÍCTOR HUGO PÉREZ GUATI ROJO",
-    "CARLOS RODRIGO ROJAS RUIZ",
-    "PERLA ALELÍ BARRERA GODÍNEZ",
-    "ANA LUISA BAÑOS CASTRO",
-    "MAYTHE MONSERRAT ESCARELA PÉREZ",
-    "CRISTHIAN OMAR CORDERO ESTRADA",
-    "JUAN ÁNGEL AGUILAR MENDOZA",
-    "CHRISTIAN FERNANDO VALDERRAMA URIBE",
-    "ARELY LÓPEZ VARGAS",
-    "ALFONSO GUDIÑO ZAMORA",
-    "RUBÉN SERRANO MORALES",
-    "MARY CARMEN LÓPEZ HERNÁNDEZ",
-    "DIANA MUNGUÍA ALARCÓN",
-    "LIZETH VIDAL CANO",
-    "CARLOS CHARGOY RODRÍGUEZ",
-    "VIANEY CRISTINA SOLARES MORENO",
-    "FRANCISCO REYES VÁZQUEZ",
-    "SUSANA JIMÉNEZ HERNÁNDEZ",
-    "LUZ MARÍA LUQUE GÓMEZ",
-    "MARÍA ELENA TELLO SÁNCHEZ",
-    "ERNESTO MARTÍNEZ AGUILAR",
-    "ANA MARÍA RODRÍGUEZ ROSALES"
+    {
+        nombre: "ROSA LETICIA MUÑOZ CHÁVEZ",
+        categoria: "Director General A",
+        rfc: "MUCR720830BM9"
+    },
+
+    {
+        nombre: "ELIZABETH MARGARITA NOGUEZ ROMERO",
+        categoria: "Supervisor/Analista",
+        rfc: "NORE790713JT6"
+    },
+
+    {
+        nombre: "MARÍA SARA ORTIZ GONZÁLEZ",
+        categoria: "Jefe de Departamento-C",
+        rfc: "OIGS600128258"
+    },
+
+    {
+        nombre: "ROBERTO CARLOS LÓPEZ ESTRADA",
+        categoria: "Asesor Técnico/Gestor",
+        rfc: "LOER7505134G9"
+    },
+
+    {
+        nombre: "ARIANA SALAS LUGO",
+        categoria: "Director de Area-B",
+        rfc: "SALA921114UX2"
+    },
+
+    {
+        nombre: "ANA BRISNA CERVANTES HIDALGO",
+        categoria: "Subdirector de Area-C",
+        rfc: "CEHA8501139K1"
+    },
+
+    {
+        nombre: "MARTHA PATRICIA BARRAGÁN GARCÍA",
+        categoria: "Jefe de Departamento-C",
+        rfc: "BAGM691116L87"
+    },
+
+    {
+        nombre: "LAURA TRINIDAD HERNÁNDEZ DÍAZ",
+        categoria: "Jefe de Departamento-C",
+        rfc: "HEDL700330SR9"
+    },
+
+    {
+        nombre: "ERICK ACOSTA TÉLLEZ",
+        categoria: "Jefe de Area-A",
+        rfc: "AOTE900304Q71"
+    },
+
+    {
+        nombre: "GABRIELA HERNÁNDEZ BUSTOS",
+        categoria: "Técnico Especializado",
+        rfc: "HEBG9307035YA"
+    },
+
+    {
+        nombre: "MARÍA FERNANDA GUZMÁN ESCAMILLA",
+        categoria: "Supervisor/Analista",
+        rfc: "GUEF940712KV1"
+    },
+
+    {
+        nombre: "OSCAR ADRIÁN ESCORZA ARROYO",
+        categoria: "Supervisor/Analista",
+        rfc: "EOAO660305AN9"
+    },
+
+    {
+        nombre: "MARÍA DEL PILAR VEGA REYES",
+        categoria: "Supervisor/Analista",
+        rfc: "VERP781012VC0"
+    },
+
+    {
+        nombre: "ALEJANDRO OSWALDO VILLEGAS ORTIZ",
+        categoria: "Asesor Técnico/Gestor",
+        rfc: "VIOA811022FM9"
+    },
+
+    {
+        nombre: "VÍCTOR HUGO PÉREZ GUATI ROJO",
+        categoria: "Director de Area-B",
+        rfc: "PEGV700506FW2"
+    },
+
+    {
+        nombre: "CARLOS RODRIGO ROJAS RUIZ",
+        categoria: "Subdirector de Area-C",
+        rfc: "RORC760312AP4"
+    },
+
+    {
+        nombre: "PERLA ALELÍ BARRERA GODÍNEZ",
+        categoria: "Subdirector Adjunto-A",
+        rfc: "BAGP020901LK4"
+    },
+
+    {
+        nombre: "ANA LUISA BAÑOS CASTRO",
+        categoria: "Jefe de Area-B",
+        rfc: "BACA800120KH5"
+    },
+
+    {
+        nombre: "MAYTHE MONSERRAT ESCARELA PÉREZ",
+        categoria: "Jefe de Area-A",
+        rfc: "EAPM880624I23"
+    },
+
+    {
+        nombre: "CRISTHIAN OMAR CORDERO ESTRADA",
+        categoria: "Jefe de Area-A",
+        rfc: "COEC8508235P0"
+    },
+
+    {
+        nombre: "JUAN ÁNGEL AGUILAR MENDOZA",
+        categoria: "Jefe de Area-A",
+        rfc: "AUMJ030607NS6"
+    },
+
+    {
+        nombre: "CHRISTIAN FERNANDO VALDERRAMA URIBE",
+        categoria: "Técnico Especializado",
+        rfc: "VAUC891106T32"
+    },
+
+    {
+        nombre: "ARELY LÓPEZ VARGAS",
+        categoria: "Técnico Especializado",
+        rfc: "LOVA7610057P7"
+    },
+
+    {
+        nombre: "ALFONSO GUDIÑO ZAMORA",
+        categoria: "Supervisor/Analista",
+        rfc: "GUZA860818PX3"
+    },
+
+    {
+        nombre: "RUBÉN SERRANO MORALES",
+        categoria: "Subdirector de Area-C",
+        rfc: "SEMR850327PT2"
+    },
+
+    {
+        nombre: "MARY CARMEN LÓPEZ HERNÁNDEZ",
+        categoria: "Supervisor/Analista",
+        rfc: "LOHM7606046P8"
+    },
+
+    {
+        nombre: "DIANA MUNGUÍA ALARCÓN",
+        categoria: "Técnico Especializado",
+        rfc: "MUAD9709051S7"
+    },
+
+    {
+        nombre: "LIZETH VIDAL CANO",
+        categoria: "Director de Area-B",
+        rfc: "VICL870529LE7"
+    },
+
+    {
+        nombre: "CARLOS CHARGOY RODRÍGUEZ",
+        categoria: "Subdirector Adjunto-A",
+        rfc: "CARC841225753"
+    },
+
+    {
+        nombre: "VIANEY CRISTINA SOLARES MORENO",
+        categoria: "Subdirector Adjunto-A",
+        rfc: "SOMV750723GA0"
+    },
+
+    {
+        nombre: "FRANCISCO REYES VÁZQUEZ",
+        categoria: "Jefe de Departamento-C",
+        rfc: "REVF770125UQ6"
+    },
+
+    {
+        nombre: "SUSANA JIMÉNEZ HERNÁNDEZ",
+        categoria: "Jefe de Area-B",
+        rfc: "JIHS8508113Z9"
+    },
+
+    {
+        nombre: "LUZ MARÍA LUQUE GÓMEZ",
+        categoria: "Subdirector de Area-C",
+        rfc: "LUGL621129UL3"
+    },
+
+    {
+        nombre: "MARÍA ELENA TELLO SÁNCHEZ",
+        categoria: "Subdirector Adjunto-A",
+        rfc: "TESE640423BY2"
+    },
+
+    {
+        nombre: "ERNESTO MARTÍNEZ AGUILAR",
+        categoria: "Jefe de Departamento-C",
+        rfc: "MAAE811216MQ9"
+    },
+
+    {
+        nombre: "ANA MARÍA RODRÍGUEZ ROSALES",
+        categoria: "Supervisor/Analista",
+        rfc: "RORA991223R70"
+    }
 
 ];
 
@@ -49,34 +227,18 @@ const personas = [
 
 const meses = [
 
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre"
-
-];
-
-/* =========================
-   CATÁLOGO ZONAS
-========================= */
-
-const zonasTarifa = [
-
-    "I-I",
-    "II-I",
-    "II-II",
-    "II-I y II",
-    "III-I",
-    "III-I y II",
-    "III-II"
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
 
 ];
 
@@ -92,15 +254,20 @@ const catalogoUP = [
 
 const catalogoRubro = [
 
+    "8404030",
+    "8405040",
     "8402050"
 
 ];
 
+
 const catalogoProyecto = [
 
-    "AI005"
+    "AI001",
+    "AI002"
 
 ];
+
 
 const catalogoObjetoGasto = [
 
@@ -114,7 +281,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "Atención Integral 005"
+    "Evaluación a los programas sociales"
 
 ];
 
@@ -127,7 +294,6 @@ const catalogoAdecuacion = [
     "ADEC-001"
 
 ];
-
 /* =========================
    PERSONAS
 ========================= */
@@ -158,7 +324,7 @@ function cargarPersonas(){
         
             <td>
 
-                ${persona}
+                ${persona.nombre}
 
             </td>
 
@@ -167,7 +333,7 @@ function cargarPersonas(){
                 <input 
                     type="checkbox"
                     name="seleccionados"
-                    value="${persona}"
+                    value="${persona.nombre}"
                 >
 
             </td>
@@ -477,6 +643,32 @@ function llenarAdecuacionFactura(){
 }
 
 /* =========================
+   OFICIO 2
+========================= */
+
+function llenarProyectoOficio2(){
+
+    llenarSelectAutomatico(
+
+        "oficio2Proyecto",
+        catalogoProyecto
+
+    );
+
+}
+
+function llenarNombreProyectoOficio2(){
+
+    llenarSelectAutomatico(
+
+        "oficio2NombreProyecto",
+        catalogoNombreProyecto
+
+    );
+
+}
+
+/* =========================
    ASIGNAR OFICIO DESDE API
 ========================= */
 
@@ -596,13 +788,19 @@ document.addEventListener(
 
         llenarObjetoGasto();
 
-        /* FACTURA */
+       /* FACTURA */
 
         llenarProyectoFactura();
 
         llenarNombreProyectoFactura();
 
         llenarAdecuacionFactura();
+
+        /* OFICIO 2 */
+
+        llenarProyectoOficio2();
+
+        llenarNombreProyectoOficio2();
 
     }
 

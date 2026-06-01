@@ -57,13 +57,10 @@ if(area !== 'UP-01'){
       </div>
 
     </div>
-
-    
-
     <!-- FORMULARIO -->
   
     <form id="formulario"
-      action="https://script.google.com/macros/s/AKfycbynss562aMWO-qxSbSVq_P58p43TvvMGWXnFZ6xjzapMF3n5LiX_oO4ET4ZhMRHOyw53g/exec"
+      action="https://script.google.com/macros/s/AKfycby3nltwh89mRCcbxUSd4iQ5f88YF9RY9wfnznPqn5wKLijfGsCAuWFBWiKZ6hxr0TmoOg/exec"
       method="POST">
 
       <div class="contenedor">
@@ -111,11 +108,11 @@ if(area !== 'UP-01'){
           <!-- MUNICIPIO -->
 
           <div class="fila">
-
-            <label>MUNICIPIO</label>
-
-            <input type="text" name="municipio" placeholder="Municipio" required>
-
+              <label>MUNICIPIO</label>
+              <div class="grupo-flex">
+                  <select id="municipio" name="municipio">
+                  </select>
+              </div>
           </div>
 
           <!-- DÍA -->
@@ -171,7 +168,7 @@ if(area !== 'UP-01'){
               MOTIVO DE LA COMISIÓN
             </label>
 
-            <textarea name="motivo" required></textarea>
+            <textarea name="motivo" required placeholder="Coloca un punto al final." ></textarea>
 
           </div>
 
@@ -183,7 +180,9 @@ if(area !== 'UP-01'){
               REPORTE DE ACTIVIDADES
             </label>
 
-            <textarea name="actividades" required></textarea>
+            <textarea name="actividades" required placeholder="- Actividad 1  
+- Actividad 2
+- Actividad 3"></textarea>
 
           </div>
 
@@ -195,7 +194,7 @@ if(area !== 'UP-01'){
               LOCALIDADES VISITADAS
             </label>
 
-            <textarea name="localidades" required></textarea>
+            <textarea name="localidades" required placeholder="NO coloques un punto al final."></textarea>
 
           </div>
 
@@ -372,6 +371,34 @@ if(area !== 'UP-01'){
     </div>
 
   </div>
+
+  <!-- =========================
+   MODAL ADVERTENCIA
+========================= -->
+<div class="modal" id="modalAdvertencia">
+
+  <div class="modal-contenido">
+
+    <h2>
+      ⚠️ Atención
+    </h2>
+
+    <p id="mensajeAdvertencia">
+      Selecciona al menos una persona
+    </p>
+
+    <button
+      type="button"
+      class="btn-principal"
+      onclick="cerrarModal('modalAdvertencia')">
+
+      Aceptar
+
+    </button>
+
+  </div>
+
+</div>
 
   <!-- =========================
      MODAL LOGOUT

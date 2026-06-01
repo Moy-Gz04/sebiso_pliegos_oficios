@@ -53,17 +53,14 @@ if(area !== 'UP-04'){
       </div>
 
       <div class="subtitulo">
-        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP_04 - 
+        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP 04 DIRECCIÓN GENERAL DE FOMENTO ARTESANAL
       </div>
 
     </div>
-
-    
-
     <!-- FORMULARIO -->
   
     <form id="formulario"
-      action="https://script.google.com/macros/s/AKfycbzTulkTq1ZZF9WTN_I1ckLnWmcIbfk8LgyAbvixM0Tc_YWEhpBnyY5yZn3gpA8rs7D_/exec"
+      action="https://script.google.com/macros/s/AKfycbybutVNEuXG5ZR9wDyxFQj8YT1D68fQaLS59339a8eH86_qKj4ZO4aBINupuKR0wBWC/exec"
       method="POST">
 
       <div class="contenedor">
@@ -111,11 +108,11 @@ if(area !== 'UP-04'){
           <!-- MUNICIPIO -->
 
           <div class="fila">
-
-            <label>MUNICIPIO</label>
-
-            <input type="text" name="municipio" placeholder="Municipio" required>
-
+              <label>MUNICIPIO</label>
+              <div class="grupo-flex">
+                  <select id="municipio" name="municipio">
+                  </select>
+              </div>
           </div>
 
           <!-- DÍA -->
@@ -171,7 +168,7 @@ if(area !== 'UP-04'){
               MOTIVO DE LA COMISIÓN
             </label>
 
-            <textarea name="motivo" required></textarea>
+            <textarea name="motivo" required placeholder="Coloca un punto al final." ></textarea>
 
           </div>
 
@@ -183,7 +180,9 @@ if(area !== 'UP-04'){
               REPORTE DE ACTIVIDADES
             </label>
 
-            <textarea name="actividades" required></textarea>
+            <textarea name="actividades" required placeholder="- Actividad 1  
+- Actividad 2
+- Actividad 3"></textarea>
 
           </div>
 
@@ -195,7 +194,7 @@ if(area !== 'UP-04'){
               LOCALIDADES VISITADAS
             </label>
 
-            <textarea name="localidades" required></textarea>
+            <textarea name="localidades" required placeholder="NO coloques un punto al final."></textarea>
 
           </div>
 
@@ -372,6 +371,34 @@ if(area !== 'UP-04'){
     </div>
 
   </div>
+
+  <!-- =========================
+   MODAL ADVERTENCIA
+========================= -->
+<div class="modal" id="modalAdvertencia">
+
+  <div class="modal-contenido">
+
+    <h2>
+      ⚠️ Atención
+    </h2>
+
+    <p id="mensajeAdvertencia">
+      Selecciona al menos una persona
+    </p>
+
+    <button
+      type="button"
+      class="btn-principal"
+      onclick="cerrarModal('modalAdvertencia')">
+
+      Aceptar
+
+    </button>
+
+  </div>
+
+</div>
 
   <!-- =========================
      MODAL LOGOUT

@@ -300,14 +300,6 @@ const CAMPOS_REQUERIDOS = {
  * Valida que todos los campos requeridos de un formulario estén completos.
  * Marca en rojo los campos vacíos y muestra una alerta personalizada.
  *
- * Flujo:
- *  1. Recorre los campos del formulario indicado.
- *  2. Limpia errores previos en cada campo.
- *  3. Si un campo está vacío → agrega clase "input-error" y registra el label.
- *  4. Enfoca y hace scroll al primer campo con error.
- *  5. Si hay errores → muestra alerta y retorna FALSE (detiene el flujo).
- *  6. Si todo OK    → retorna TRUE (permite continuar).
- *
  * @param {"SPG"|"RECIBO"|"FACTURA"|"OFICIO2"} formulario
  * @returns {boolean}  true = todos los campos completos
  */
@@ -351,15 +343,14 @@ function validarFormulario(formulario) {
       "⚠️ Campos incompletos",
       "Llena todos los datos solicitados antes de continuar."
     );
-    return false; // ← DETIENE el flujo; el modal de confirmación NO abre
+    return false;
   }
 
-  return true; // ← Solo aquí continúa el flujo hacia el modal de confirmación
+  return true;
 }
 
 /**
  * Elimina la clase "input-error" de todos los campos de un modal.
- * Se llama al abrir el modal para limpiar errores de la sesión anterior.
  * @param {string} idModal – ID del contenedor del modal
  */
 function limpiarErroresModal(idModal) {
@@ -405,6 +396,9 @@ function cerrarModal(id) {
  *   - UP      → "01"
  *   - Cuenta  → "------"
  *
+ * NOTA: nombre_proyecto NO se captura en el SPG.
+ *       Se captura en la etapa de Factura.
+ *
  * @param {string} codigo
  */
 function abrirModalSPG(codigo) {
@@ -417,7 +411,6 @@ function abrirModalSPG(codigo) {
   document.getElementById("spgCuenta").value = "------";
 
   // Bloquear edición de campos fijos
-  // Nota: spgTot también es readOnly porque se calcula automáticamente
   document.getElementById("spgUR").readOnly     = true;
   document.getElementById("spgUP").readOnly     = true;
   document.getElementById("spgCuenta").readOnly = true;
@@ -467,8 +460,8 @@ async function abrirModalRecibo(codigo) {
  * Carga los datos del registro desde el backend y rellena
  * el modal de Factura.
  *
- * El campo facturaTotalLetra se pre-carga con numeroALetras(total)
- * para que <<TOTLETRA>> llegue correctamente al backend.
+ * NOTA: nombre_proyecto se captura aquí por primera vez.
+ * El campo facturaTotalLetra se pre-carga con numeroALetras(total).
  *
  * @param {string} codigo
  */
@@ -493,7 +486,7 @@ async function abrirModalFactura(codigo) {
     document.getElementById("facturaTotal").value          = formatearMoneda(total);
     document.getElementById("facturaTotalLetra").value     = numeroALetras(total);
     document.getElementById("facturaProyecto").value       = registro.proyecto  || "AI005";
-    document.getElementById("facturaNombreProyecto").value = "Atención Integral 005";
+    document.getElementById("facturaNombreProyecto").value = registro.nombre_proyecto || "Atención Integral 005";
     document.getElementById("facturaOficio").value         = registro.codigo    || "";
     document.getElementById("facturaAdecuacion").value     = registro.cuenta    || "ADEC-001";
     document.getElementById("facturaFecha").value          = new Date(registro.fecha || Date.now())
@@ -508,12 +501,14 @@ async function abrirModalFactura(codigo) {
 
 /* ---- 6.4 MODAL OFICIO 2 ---------------------------------- */
 
+function transformarNombreArchivo(nombreArchivo) {
+    if (!nombreArchivo) return "";
+    const sinExtension = nombreArchivo.replace(/\.[^/.]+$/, "");
+    return sinExtension.replace(/ /g, "/");
+}
 /**
  * Carga los datos del registro desde el backend, consulta los últimos
  * oficios y rellena el modal de Oficio 2.
- *
- * El campo oficio2TotalLetra se pre-carga con numeroALetras(total)
- * para consistencia con el modal de Factura.
  *
  * @param {string} codigo
  */
@@ -548,16 +543,33 @@ async function abrirModalOficio2(codigo) {
     }
 
     // Llenar campos del modal
-    document.getElementById("oficio2Persona").value        = registro.persona   || "";
-    document.getElementById("oficio2Municipio").value      = registro.municipio || "";
+    document.getElementById("oficio2Persona").value        = registro.persona         || "";
+    document.getElementById("oficio2Municipio").value      = registro.municipio       || "";
     document.getElementById("oficio2Dias").value           = diasTexto;
-    document.getElementById("oficio2Mes").value            = registro.mes       || "";
-    document.getElementById("oficio2Anio").value           = registro.anio      || "";
-    document.getElementById("oficio2Proyecto").value       = registro.proyecto  || "";
-    document.getElementById("oficio2NombreProyecto").value = "Atención Integral 005";
-    document.getElementById("oficio2Ofaut").value          = oficioAutorizacion;
-    document.getElementById("oficio2OficioAdec").value     = oficioAdecuacion;
-    document.getElementById("oficio2Adec").value           = registro.cuenta    || "";
+    document.getElementById("oficio2Mes").value            = registro.mes             || "";
+    document.getElementById("oficio2Anio").value           = registro.anio            || "";
+    llenarSelectAutomatico(
+    "oficio2Proyecto",
+    catalogoProyecto
+);
+
+llenarSelectAutomatico(
+    "oficio2NombreProyecto",
+    catalogoNombreProyecto
+);
+
+document.getElementById(
+    "oficio2Proyecto"
+).value =
+catalogoProyecto[0] || "AI005";
+
+document.getElementById(
+    "oficio2NombreProyecto"
+).value =
+catalogoNombreProyecto[0] || "Atención Integral 005";
+    document.getElementById("oficio2Ofaut").value      = transformarNombreArchivo(oficioAutorizacion);
+    document.getElementById("oficio2OficioAdec").value  = transformarNombreArchivo(oficioAdecuacion);
+    document.getElementById("oficio2Adec").value           = registro.cuenta          || "";
     document.getElementById("oficio2Monto").value          = formatearMoneda(registro.spg_monto       || 0);
     document.getElementById("oficio2Retenciones").value    = formatearMoneda(registro.spg_retenciones || 0);
     document.getElementById("oficio2Total").value          = formatearMoneda(total);
@@ -577,14 +589,10 @@ async function abrirModalOficio2(codigo) {
 /**
  * Obtiene el registro que coincide con el código recibido desde
  * la API de la unidad presupuestal activa.
- * Centraliza la lógica repetida en los modales.
  *
  * ─────────────────────────────────────────────────────────────
  * CAMBIO DE ACUERDO A AREA:
- *   La cadena "UP-01" en la URL define la unidad presupuestal
- *   que se consulta. Para cambiar de área, reemplaza "UP-01"
- *   por el código correspondiente, p. ej. "UP-02", "UP-03", etc.
- *   Ejemplo: `${API}/api/registros/UP-02`
+ *   Reemplaza "UP-01" por el código correspondiente.
  * ─────────────────────────────────────────────────────────────
  *
  * @param {string} codigo
@@ -592,7 +600,7 @@ async function abrirModalOficio2(codigo) {
  * @throws {Error}
  */
 async function fetchRegistro(codigo) {
-  // CAMBIO DE ACUERDO A AREA → cambiar "UP-CA" por el código de la nueva área
+  // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
   const response = await fetch(`${API}/api/registros/UP-CA`);
   if (!response.ok) throw new Error("Error obteniendo registros");
 
@@ -610,7 +618,6 @@ async function fetchRegistro(codigo) {
 /**
  * Recalcula el total del SPG (monto + retenciones) y lo muestra
  * en el campo de solo lectura #spgTot.
- * Se dispara en cada "input" de #spgMonto y #spgRet.
  */
 function calcularTotalSPG() {
   const montoInput = document.getElementById("spgMonto");
@@ -625,27 +632,6 @@ function calcularTotalSPG() {
 
 /* ============================================================
    9. SOLICITAR CONFIRMACIÓN
-   ============================================================
-   Flujo completo al pulsar "Generar" en cualquier formulario:
-
-     [Botón Generar]
-          │
-          ▼
-     solicitarConfirmacion(tipo)
-          │
-          ├─ validarFormulario(tipo) → FALSE
-          │       └─ marca campos en rojo + muestra alerta
-          │          el usuario ve los campos a corregir
-          │          NO avanza al modal de confirmación
-          │
-          └─ validarFormulario(tipo) → TRUE
-                  └─ abre modalConfirmar[tipo]
-                          │
-                          ▼
-                    [Usuario confirma]
-                          │
-                          ▼
-                    generar[tipo]()  → genera PDF → modal de éxito
    ============================================================ */
 
 /**
@@ -655,8 +641,6 @@ function calcularTotalSPG() {
  * @param {"SPG"|"RECIBO"|"FACTURA"|"OFICIO2"} tipo
  */
 function solicitarConfirmacion(tipo) {
-  // validarFormulario retorna false y muestra la alerta si hay campos vacíos.
-  // En ese caso, return detiene el flujo aquí.
   if (!validarFormulario(tipo)) return;
 
   const modalesConfirmacion = {
@@ -677,9 +661,8 @@ function solicitarConfirmacion(tipo) {
 /* ---- 10.1 GENERAR SPG ------------------------------------ */
 
 /**
- * Envía los datos del SPG al backend, guarda la URL del PDF
- * resultante en el registro y muestra el modal de éxito.
- * Solo se llama desde el listener de #confirmarGenerarSPG.
+ * Envía los datos del SPG al backend.
+ * NOTA: nombre_proyecto NO se envía aquí; se captura hasta Factura.
  */
 async function generarSPG() {
   try {
@@ -728,10 +711,6 @@ async function generarSPG() {
 
 /* ---- 10.2 GENERAR RECIBO --------------------------------- */
 
-/**
- * Envía los datos del Recibo al backend, guarda la URL del PDF
- * resultante en el registro y muestra el modal de éxito.
- */
 async function generarRecibo() {
   try {
     const payload = {
@@ -748,6 +727,7 @@ async function generarRecibo() {
       importe:     document.getElementById("reciboImporte").value,
       retenciones: document.getElementById("reciboRetenciones").value,
       total:       document.getElementById("reciboTotal").value,
+      nota:        document.getElementById("reciboNota").value.trim() || " ",
     };
 
     console.log("PAYLOAD RECIBO:", payload);
@@ -782,15 +762,17 @@ async function generarRecibo() {
 /* ---- 10.3 GENERAR FACTURA -------------------------------- */
 
 /**
- * Envía los datos de la Factura al backend, guarda la URL del PDF
- * resultante en el registro y muestra el modal de éxito.
+ * Envía los datos de la Factura al backend y guarda nombre_proyecto.
  *
- * El campo totalLetra se lee del input pre-cargado con numeroALetras()
- * en abrirModalFactura(), garantizando que <<TOTLETRA>> llegue correcto
- * al backend (p. ej. "DOS MIL SESENTA PESOS").
+ * CORRECCIÓN: el bloque try/catch estaba fragmentado con saltos de línea
+ * que dejaban cerrarModal(), abrirModal() y cargarRegistros() fuera del try,
+ * impidiendo que se ejecutaran correctamente tras guardar la factura.
+ * Ahora todo el flujo está dentro del mismo bloque try.
  */
 async function generarFactura() {
   try {
+    const nombreProyecto = document.getElementById("facturaNombreProyecto").value;
+
     const payload = {
       codigo:         codigoFactura,
       folio:          document.getElementById("facturaFolio").value,
@@ -805,14 +787,16 @@ async function generarFactura() {
       total:          document.getElementById("facturaTotal").value,
       totalLetra:     document.getElementById("facturaTotalLetra").value,
       proyecto:       document.getElementById("facturaProyecto").value,
-      nombreProyecto: document.getElementById("facturaNombreProyecto").value,
       oficio:         document.getElementById("facturaOficio").value,
       adecuacion:     document.getElementById("facturaAdecuacion").value,
       fecha:          document.getElementById("facturaFecha").value,
+      nombreProyecto: nombreProyecto,
     };
 
     console.log("PAYLOAD FACTURA:", payload);
+    console.log("NOMBRE PROYECTO A GUARDAR:", nombreProyecto);
 
+    // 1. Generar el PDF de la factura
     const response = await fetch(`${API}/api/factura/generar`, {
       method:  "POST",
       headers: { "Content-Type": "application/json" },
@@ -822,13 +806,20 @@ async function generarFactura() {
     const data = await response.json();
     if (!response.ok || !data.ok) throw new Error(data.error || "Error generando Factura");
 
+    // 2. Guardar la URL del PDF y nombre_proyecto en el registro
     const guardar = await fetch(`${API}/api/registros/factura/${codigoFactura}`, {
       method:  "PUT",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ factura_pdf: data.url }),
+      body:    JSON.stringify({
+        factura_pdf:     data.url,
+        proyecto:        document.getElementById("facturaProyecto").value,
+        nombre_proyecto: nombreProyecto,
+      }),
     });
+
     if (!guardar.ok) throw new Error("Error guardando Factura en el registro");
 
+    // 3. Cerrar modales y mostrar éxito
     cerrarModal("modalCargandoFactura");
     cerrarModal("modalFactura");
     abrirModal("modalExitoFactura");
@@ -843,11 +834,9 @@ async function generarFactura() {
 /* ---- 10.4 GENERAR OFICIO 2 ------------------------------- */
 
 /**
- * Envía los datos del Oficio 2 al backend usando variables de plantilla,
- * guarda la URL del PDF resultante en el registro y muestra el modal de éxito.
- *
- * El marcador <<TOTAL>> se alimenta del campo pre-cargado con
- * numeroALetras() en abrirModalOficio2().
+ * Envía los datos del Oficio 2 al backend usando variables de plantilla.
+ * nombre_proyecto se toma del campo oficio2NombreProyecto, que fue
+ * pre-cargado con el valor ya guardado en Factura.
  */
 async function generarOficio2() {
   try {
@@ -959,14 +948,10 @@ function obtenerBotonEnviar(registro) {
 /**
  * Obtiene todos los registros de la unidad presupuestal activa
  * y los renderiza como tarjetas en el tbody.
- * Muestra indicador de carga y maneja errores de red.
  *
  * ─────────────────────────────────────────────────────────────
  * CAMBIO DE ACUERDO A AREA:
- *   La cadena "UP-01" en la URL define la unidad presupuestal.
- *   Para cambiar de área, reemplaza "UP-01" por el código
- *   correspondiente, p. ej. "UP-02", "UP-03", etc.
- *   Ejemplo: `${API}/api/registros/UP-02`
+ *   Reemplaza "UP-01" por el código correspondiente.
  * ─────────────────────────────────────────────────────────────
  */
 async function cargarRegistros() {
@@ -978,7 +963,7 @@ async function cargarRegistros() {
     </tr>`;
 
   try {
-    // CAMBIO DE ACUERDO A AREA → cambiar "UP-CA" por el código de la nueva área
+    // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
     const response = await fetch(`${API}/api/registros/UP-CA`);
     if (!response.ok) throw new Error("Error obteniendo registros");
 
@@ -1019,7 +1004,6 @@ async function cargarRegistros() {
 
 /**
  * Construye el HTML de una tarjeta de registro.
- * Todos los valores del servidor se escapan para evitar XSS.
  * @param {Object} registro
  * @returns {string}
  */
@@ -1044,11 +1028,11 @@ function construirTarjeta(registro) {
   const btnTerminar = !registro.spg_pdf
     ? `<button class="btn-enviar" onclick="abrirModalSPG('${codigo}')">Generar SPG</button>`
     : !registro.recibo_pdf
-    ? `<button class="btn-enviar" onclick="abrirModalRecibo('${codigo}')">Generar Recibo</button>`
+    ? `<button class="btn-enviar" onclick="abrirModalRecibo('${codigo}')">Generar LAG</button>`
     : !registro.factura_pdf
-    ? `<button class="btn-enviar" onclick="abrirModalFactura('${codigo}')">Generar Factura</button>`
+    ? `<button class="btn-enviar" onclick="abrirModalFactura('${codigo}')">Generar Recibo</button>`
     : !registro.oficio2_pdf
-    ? `<button class="btn-enviar" onclick="abrirModalOficio2('${codigo}')">Generar Oficio 2</button>`
+    ? `<button class="btn-enviar" onclick="abrirModalOficio2('${codigo}')">Generar Anexo C</button>`
     : `<button class="btn-aceptado" disabled>Finalizado</button>`;
 
   // Helper: enlace a PDF existente o botón deshabilitado
@@ -1097,20 +1081,20 @@ function construirTarjeta(registro) {
               ${linkPDF(registro.pliego_pdf,  "Ver Pliego",   "Sin Pliego")}
             </div>
             <div class="info-item">
-              <span class="info-label">SPG PDF</span>
+              <span class="info-label">Solicitud Programática del Gasto PDF</span>
               ${linkPDF(registro.spg_pdf,     "Ver SPG",      "Sin SPG")}
             </div>
             <div class="info-item">
-              <span class="info-label">Recibo PDF</span>
-              ${linkPDF(registro.recibo_pdf,  "Ver Recibo",   "Sin Recibo")}
+              <span class="info-label">Leyenda Alusiva al Gasto PDF</span>
+              ${linkPDF(registro.recibo_pdf,  "Ver LAG",   "Sin LAG")}
             </div>
             <div class="info-item">
-              <span class="info-label">Factura PDF</span>
-              ${linkPDF(registro.factura_pdf, "Ver Factura",  "Sin Factura")}
+              <span class="info-label"> Recibo PDF</span>
+              ${linkPDF(registro.factura_pdf, "Ver Recibo",  "Sin Recibo")}
             </div>
             <div class="info-item">
-              <span class="info-label">Oficio 2 PDF</span>
-              ${linkPDF(registro.oficio2_pdf, "Ver Oficio 2", "Sin Oficio 2")}
+              <span class="info-label">Anexo C PDF</span>
+              ${linkPDF(registro.oficio2_pdf, "Ver Anexo C", "Sin Anexo C")}
             </div>
           </div>
 
@@ -1152,10 +1136,6 @@ function construirTarjeta(registro) {
 
 /* ---- 12.2 ENVIAR REGISTRO -------------------------------- */
 
-/**
- * Cambia el estatus del registro a "ENVIADO" en el backend.
- * @param {string} codigo
- */
 async function enviarRegistro(codigo) {
   try {
     const response = await fetch(`${API}/api/registros/enviar/${codigo}`, {
@@ -1173,10 +1153,6 @@ async function enviarRegistro(codigo) {
 
 /* ---- 12.3 REENVIAR REGISTRO ------------------------------ */
 
-/**
- * Permite reenviar un registro rechazado, previa confirmación nativa.
- * @param {string} codigo
- */
 async function reenviarRegistro(codigo) {
   try {
     if (!confirm("¿Deseas reenviar este registro?")) return;
@@ -1196,11 +1172,6 @@ async function reenviarRegistro(codigo) {
 
 /* ---- 12.4 ELIMINAR REGISTRO ------------------------------ */
 
-/**
- * Guarda el código a eliminar y abre el modal de confirmación.
- * La eliminación real ocurre en el listener de #confirmarEliminar.
- * @param {string} codigo
- */
 function eliminarRegistro(codigo) {
   codigoEliminar = codigo;
   abrirModal("modalEliminar");
@@ -1208,12 +1179,6 @@ function eliminarRegistro(codigo) {
 
 /* ---- 12.5 GUARDAR OBSERVACIONES -------------------------- */
 
-/**
- * Persiste las observaciones del área en el backend.
- * Se dispara en el evento "change" del textarea correspondiente.
- * @param {string} codigo
- * @param {string} observaciones
- */
 async function guardarObservaciones(codigo, observaciones) {
   try {
     const response = await fetch(`${API}/api/registros/observaciones/${codigo}`, {
@@ -1231,28 +1196,11 @@ async function guardarObservaciones(codigo, observaciones) {
 
 /* ============================================================
    13. INICIALIZACIÓN (DOMContentLoaded)
-   ============================================================
-   IMPORTANTE: Todo acceso al DOM debe ir dentro de este bloque.
-   Acceder al DOM fuera de aquí (en el nivel raíz del script)
-   lanza TypeError porque los elementos aún no existen, lo que
-   corta la ejecución del script completo e impide que los
-   listeners se registren.
    ============================================================ */
 
 document.addEventListener("DOMContentLoaded", () => {
 
   /* ── 13.1  Campos read-only del SPG ─────────────────────── */
-  /*
-   * CORRECCIÓN v3.3: estas 4 líneas estaban fuera de
-   * DOMContentLoaded en v3.2, causando un TypeError que
-   * interrumpía todo el script antes de registrar los listeners.
-   * Ahora están aquí, donde el DOM ya existe.
-   *
-   * CAMBIO DE ACUERDO A AREA:
-   *   El valor "01" del campo spgUP corresponde a la UP actual.
-   *   Si cambias de área, actualiza este valor y el de spgUR ("13")
-   *   en la función abrirModalSPG() también.
-   */
   const elSpgUR     = document.getElementById("spgUR");
   const elSpgUP     = document.getElementById("spgUP");
   const elSpgCuenta = document.getElementById("spgCuenta");
@@ -1275,46 +1223,16 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("spgRet")  ?.addEventListener("input", calcularTotalSPG);
 
   /* ── 13.4  Limpiar error al editar un campo ─────────────── */
-  /*
-   * Cuando el usuario corrige un campo marcado en rojo,
-   * se quita el estilo de error de inmediato para dar
-   * retroalimentación positiva sin necesidad de reenviar.
-   */
   document.querySelectorAll("input, select, textarea").forEach((el) => {
     el.addEventListener("input",  () => el.classList.remove("input-error"));
     el.addEventListener("change", () => el.classList.remove("input-error"));
   });
 
   /* ── 13.5  Botones "Generar" de cada formulario ─────────── */
-  /*
-   * FLUJO CORRECTO (v3.3):
-   *   [Botón Generar]
-   *        │
-   *        ▼
-   *   solicitarConfirmacion(tipo)
-   *        │
-   *        ├─ campos vacíos → alerta + campos en rojo → FIN (no abre confirmación)
-   *        │
-   *        └─ campos OK     → abre modalConfirmar[tipo]
-   *                                │
-   *                                ▼
-   *                         [Usuario confirma]
-   *                                │
-   *                                ▼
-   *                         generar[tipo]() → PDF → éxito
-   *
-   * Nota: Si el HTML tiene onclick="solicitarConfirmacion(...)" en el botón,
-   * NO añadas también addEventListener aquí para ese mismo botón, o se
-   * ejecutará dos veces. Elige solo uno de los dos métodos.
-   */
   document.getElementById("btnGenerarSPG")    ?.addEventListener("click", () => solicitarConfirmacion("SPG"));
   document.getElementById("btnGenerarRecibo") ?.addEventListener("click", () => solicitarConfirmacion("RECIBO"));
   document.getElementById("btnGenerarFactura")?.addEventListener("click", () => solicitarConfirmacion("FACTURA"));
-  /*
-   * Oficio 2: su botón está en el HTML del modal con
-   * onclick="solicitarConfirmacion('OFICIO2')", por lo que
-   * no se registra listener aquí para evitar doble disparo.
-   */
+  // Oficio 2: su botón usa onclick="solicitarConfirmacion('OFICIO2')" en el HTML
 
   /* ── 13.6  Confirmaciones de generación ─────────────────── */
   document.getElementById("confirmarGenerarSPG")?.addEventListener("click", async () => {
@@ -1360,15 +1278,12 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   /* ── 13.8  Modal de alerta personalizada ────────────────── */
-  // Botón "Aceptar" del modal de alerta
   document.getElementById("btnCerrarAlerta")?.addEventListener("click", cerrarAlerta);
-
-  // Cerrar al hacer clic en el fondo oscuro del modal de alerta
   document.getElementById("modalAlerta")?.addEventListener("click", (e) => {
     if (e.target.id === "modalAlerta") cerrarAlerta();
   });
 
   /* ── 13.9  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
-  setInterval(cargarRegistros, 30_000); // Refresca cada 30 segundos
+  setInterval(cargarRegistros, 30_000);
 });

@@ -4,7 +4,7 @@
 
 const API_RECIBO =
 
-"https://script.google.com/macros/s/AKfycbz4lKEFpqEzhHRe9FR79nCcBGri4-2hks2Dvz_Va0lNcNaVRbifzyCD3WeUgWUJNtOrBQ/exec";
+"https://script.google.com/macros/s/AKfycbwg1kurzbeelp5AGwezPEE7KEOVMgTpJczCH7qr2kZzwpAM2ASK0MvePDED1Ugyt0-ofg/exec";
 
 /* =========================
    FORMATEAR MONEDA
@@ -409,8 +409,13 @@ async function generarRecibo(){
 
                 document.getElementById(
                     "reciboAnio"
-                ).value
+                ).value,
 
+                "<<NOTA>>":
+
+                document.getElementById(
+                    "reciboNota"
+                ).value
             }
 
         };

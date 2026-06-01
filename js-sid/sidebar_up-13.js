@@ -24,11 +24,6 @@ const PAGINAS = [
         ruta:"../vistas-p/vista_up13.html"
     },
 
-    {
-        nombre:"Reportes",
-        ruta:"../r-up/REP_UP-06.html"
-    }
-
 ];
 
 /* =========================
