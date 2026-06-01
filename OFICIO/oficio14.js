@@ -1,66 +1,40 @@
 /* =========================
-   URL APPS SCRIPT FACTURA
+   URL APPS SCRIPT OFICIO 2
 ========================= */
 
-const API_FACTURA =
+const API_OFICIO2 =
 
-"https://script.google.com/macros/s/AKfycbyiThMI-CWVWa-OrTmea9m2UmRD7fCt_fGktksHjOHo38s-twk5YK4g8aFg-tfQ8HuFmA/exec";
+"https://script.google.com/macros/s/AKfycbyIat6ZY_-OANmzObONC05-5mhbqQVympYcD4-XGr8wWtcJXCz5DEwOPKqTVicSm2LQ/exec";
 
 /* =========================
-   NUMERO A LETRAS
+   VALIDAR CAMPOS OFICIO 2
 ========================= */
-
-function numeroALetras(numero){
-
-    numero = Number(numero);
-
-    if(isNaN(numero)){
-
-        return "";
-
-    }
-
-    return `${numero.toFixed(2)} PESOS 00/100 M.N.`;
-
+function transformarNombreArchivo(nombreArchivo) {
+    if (!nombreArchivo) return "";
+    const sinExtension = nombreArchivo.replace(/\.[^/.]+$/, "");
+    return sinExtension.replace(/ /g, "/");
 }
 
-/* =========================
-   VALIDAR CAMPOS FACTURA
-========================= */
-
-function validarCamposFactura(){
+function validarCamposOficio2(){
 
     let error = false;
 
-    document
-    .querySelectorAll(
+    const camposRequeridos = [
 
-        "#modalFactura input, #modalFactura textarea"
+        "oficio2Numc"
 
-    )
-    .forEach(campo=>{
+    ];
 
-        /* =========================
-           IGNORAR READONLY
-        ========================= */
+    camposRequeridos.forEach(id=>{
 
-        if(
+        const campo =
+        document.getElementById(id);
 
-            campo.hasAttribute("readonly")
-
-        ){
-
-            campo.classList.remove(
-                "input-error"
-            );
+        if(!campo){
 
             return;
 
         }
-
-        /* =========================
-           VALIDAR VACÍOS
-        ========================= */
 
         if(
 
@@ -89,16 +63,15 @@ function validarCamposFactura(){
     return !error;
 
 }
-
 /* =========================
-   ABRIR MODAL FACTURA
+   ABRIR MODAL OFICIO 2
 ========================= */
 
-async function abrirModalFactura(codigo){
+async function abrirModalOficio2(codigo){
 
     try{
 
-        codigoFactura = codigo;
+        codigoOficio2 = codigo;
 
         const response =
         await fetch(
@@ -127,7 +100,7 @@ async function abrirModalFactura(codigo){
         }
 
         console.log(
-            "REGISTRO FACTURA:",
+            "REGISTRO OFICIO2:",
             registro
         );
 
@@ -137,7 +110,7 @@ async function abrirModalFactura(codigo){
 
         document
         .querySelectorAll(
-            "#modalFactura input, #modalFactura textarea"
+            "#modalOficio2 input, #modalOficio2 select"
         )
         .forEach(campo=>{
 
@@ -160,44 +133,36 @@ async function abrirModalFactura(codigo){
 
         ) || "";
 
-        const localidad =
-        registro.localidades_visitadas || "";
-
-        const mes =
-        registro.mes || "";
-
         const total =
         Number(
             registro.spg_total || 0
         );
 
         /* =========================
-           OBTENER ÚLTIMO OFICIO
+           OBTENER OFICIOS
         ========================= */
 
-        let oficioLimpio = "";
-        let adecuacionLimpia = "";
-
-        let dataOficio = {};
+        let oficioAutorizacion = "";
+        let oficioAdecuacion = "";
 
         try{
 
             const responseOficio =
             await fetch(
 
-                `${API}/api/presupuestos/ultimo-oficio/2`
+                `${API}/api/presupuestos/ultimo-oficio/10`
 
             );
 
             if(!responseOficio.ok){
 
                 throw new Error(
-                    "Error obteniendo oficio"
+                    "Error obteniendo oficios"
                 );
 
             }
 
-            dataOficio =
+            const dataOficio =
             await responseOficio.json();
 
             console.log(
@@ -205,26 +170,22 @@ async function abrirModalFactura(codigo){
                 dataOficio
             );
 
-            if(
-                dataOficio.ok
-            ){
+            if(dataOficio.ok){
 
-                oficioLimpio =
+                oficioAutorizacion =
 
                 (
                     dataOficio
                     .oficio_autorizacion_nombre || ""
                 )
-
                 .replace(/\.pdf$/i, "");
 
-                adecuacionLimpia =
+                oficioAdecuacion =
 
                 (
                     dataOficio
                     .oficio_adecuacion_nombre || ""
                 )
-
                 .replace(/\.pdf$/i, "");
 
             }
@@ -234,148 +195,181 @@ async function abrirModalFactura(codigo){
         catch(error){
 
             console.error(
-                "ERROR CARGANDO OFICIO:",
+                "ERROR CARGANDO OFICIOS:",
                 error
             );
 
         }
-
         /* =========================
            LLENAR CAMPOS
         ========================= */
 
         document.getElementById(
-            "facturaNoRecibo"
+            "oficio2Numc"
         ).value =
         "";
 
         document.getElementById(
-            "facturaPersona"
+            "oficio2Persona"
         ).value =
         registro.persona || "";
 
         document.getElementById(
-            "facturaMunicipio"
+            "oficio2Municipio"
         ).value =
         registro.municipio || "";
 
         document.getElementById(
-            "facturaMotivo"
-        ).value =
-        registro.motivo_comision || "";
-
-        document.getElementById(
-            "facturaLocalidad"
-        ).value =
-        localidad;
-
-        document.getElementById(
-            "facturaDias"
+            "oficio2Dias"
         ).value =
         dias;
 
         document.getElementById(
-            "facturaMes"
+            "oficio2Mes"
         ).value =
-        mes;
+        registro.mes || "";
 
         document.getElementById(
-            "facturaImporte"
+            "oficio2Anio"
+        ).value =
+        new Date(
+            registro.fecha || Date.now()
+        ).getFullYear();
+
+        /* =========================
+           CARGAR CATÁLOGOS
+        ========================= */
+
+        if(
+            document.getElementById(
+                "oficio2Proyecto"
+            )
+        ){
+            llenarSelectAutomatico(
+                "oficio2Proyecto",
+                catalogoProyecto
+            );
+        }
+
+        if(
+            document.getElementById(
+                "oficio2NombreProyecto"
+            )
+        ){
+            llenarSelectAutomatico(
+                "oficio2NombreProyecto",
+                catalogoNombreProyecto
+            );
+        }
+
+        /* =========================
+           ASIGNAR VALORES
+        ========================= */
+
+        document.getElementById(
+            "oficio2Proyecto"
+        ).value =
+        registro.proyecto ||
+        catalogoProyecto[0] ||
+        "";
+
+        document.getElementById(
+            "oficio2NombreProyecto"
+        ).value =
+        registro.nombre_proyecto ||
+        catalogoNombreProyecto[0] ||
+        "";
+
+        const campoFecha =
+        document.getElementById(
+            "oficio2Fecha"
+        );
+
+        if(campoFecha){
+
+            campoFecha.value =
+            new Date(
+                registro.fecha || Date.now()
+            )
+            .toLocaleDateString(
+                "es-MX",
+                {
+                    day:"numeric",
+                    month:"long",
+                    year:"numeric"
+                }
+            );
+
+        }
+
+        document.getElementById("oficio2Ofaut").value      = transformarNombreArchivo(oficioAutorizacion);
+        document.getElementById("oficio2OficioAdec").value  = transformarNombreArchivo(oficioAdecuacion);
+
+        document.getElementById(
+            "oficio2Adec"
+        ).value =
+        registro.cuenta || "0";
+
+        document.getElementById(
+            "oficio2Monto"
         ).value =
         formatearMoneda(
             registro.spg_monto || 0
         );
 
         document.getElementById(
-            "facturaRetenciones"
+            "oficio2Retenciones"
         ).value =
         formatearMoneda(
             registro.spg_retenciones || 0
         );
 
         document.getElementById(
-            "facturaTotal"
+            "oficio2Total"
         ).value =
         formatearMoneda(total);
 
         document.getElementById(
-            "facturaTotalLetra"
+            "oficio2TotalLetra"
         ).value =
         numeroALetras(total);
 
         /* =========================
-           DATOS FACTURA
+           BLOQUEAR CAMPOS
         ========================= */
 
-        document.getElementById(
-            "facturaProyecto"
-        ).value =
-        registro.proyecto || "AI005";
+        const camposBloqueados = [
 
-        document.getElementById(
-            "facturaNombreProyecto"
-        ).value =
-        "Atención Integral 005";
+            "oficio2Persona",
+            "oficio2Municipio",
+            "oficio2Dias",
+            "oficio2Mes",
+            "oficio2Anio",
+            "oficio2Ofaut",
+            "oficio2OficioAdec",
+            "oficio2Adec",
+            "oficio2Monto",
+            "oficio2Retenciones",
+            "oficio2Total",
+            "oficio2TotalLetra"
 
-        /* =========================
-           OFICIO AUTORIZACIÓN
-        ========================= */
+        ];
 
-        const inputOficio =
-        document.getElementById(
-            "facturaOficio"
-        );
+        camposBloqueados.forEach(id=>{
 
-        if(inputOficio){
+            const campo =
+            document.getElementById(id);
 
-            inputOficio.value =
-            oficioLimpio;
+            if(campo){
 
-        }
-
-        /* =========================
-           OFICIO ADECUACIÓN
-        ========================= */
-
-        const inputAdecuacion =
-        document.getElementById(
-            "facturaAdecuacion"
-        );
-
-        if(inputAdecuacion){
-
-            inputAdecuacion.value =
-            adecuacionLimpia;
-
-        }
-
-        /* =========================
-           FECHA
-        ========================= */
-
-        document.getElementById(
-            "facturaFecha"
-        ).value =
-
-        new Date(
-            registro.fecha || Date.now()
-        )
-        .toLocaleDateString(
-
-            "es-MX",
-
-            {
-
-                day:"numeric",
-                month:"long",
-                year:"numeric"
+                campo.readOnly = true;
 
             }
 
-        );
+        });
 
         abrirModal(
-            "modalFactura"
+            "modalOficio2"
         );
 
     }
@@ -383,7 +377,7 @@ async function abrirModalFactura(codigo){
     catch(error){
 
         console.error(
-            "ERROR ABRIENDO FACTURA:",
+            "ERROR ABRIENDO OFICIO2:",
             error
         );
 
@@ -396,22 +390,37 @@ async function abrirModalFactura(codigo){
 }
 
 /* =========================
-   GENERAR FACTURA
+   GENERAR OFICIO 2
 ========================= */
 
-async function generarFactura(){
+async function generarOficio2(){
 
     try{
 
         const btn =
         document.getElementById(
-            "btnGenerarFactura"
+            "btnGenerarOficio2"
         );
 
-        btn.disabled = true;
+        if(btn){
 
-        btn.textContent =
-        "Generando...";
+            btn.disabled = true;
+
+            btn.textContent =
+            "Generando...";
+
+        }
+
+        const valido =
+        validarCamposOficio2();
+
+        if(!valido){
+
+            throw new Error(
+                "Completa los campos requeridos"
+            );
+
+        }
 
         /* =========================
            PAYLOAD
@@ -420,107 +429,110 @@ async function generarFactura(){
         const payload = {
 
             codigo:
-            codigoFactura,
+            codigoOficio2,
 
             fileName:
-            `FACTURA_${codigoFactura}`,
+            `OFICIO2_${codigoOficio2}`,
+
+            folderId:
+            "1u3x753D7ICw8P2_k40vp9-IrJMfzzj8d",
 
             variables:{
+
+                "<<NUMC>>":
+
+                document.getElementById(
+                    "oficio2Numc"
+                ).value,
 
                 "<<NOMBRE>>":
 
                 document.getElementById(
-                    "facturaPersona"
+                    "oficio2Persona"
                 ).value,
 
                 "<<MUNICIPIO>>":
 
                 document.getElementById(
-                    "facturaMunicipio"
-                ).value,
-
-                "<<MOTIVO>>":
-
-                document.getElementById(
-                    "facturaMotivo"
-                ).value,
-
-                "<<LOCALIDAD>>":
-
-                document.getElementById(
-                    "facturaLocalidad"
+                    "oficio2Municipio"
                 ).value,
 
                 "<<DIAS>>":
 
                 document.getElementById(
-                    "facturaDias"
+                    "oficio2Dias"
                 ).value,
 
                 "<<MES>>":
 
                 document.getElementById(
-                    "facturaMes"
+                    "oficio2Mes"
                 ).value,
 
-                "<<MONTO>>":
+                "<<ANIO>>":
 
                 document.getElementById(
-                    "facturaImporte"
-                ).value,
-
-                "<<RET>>":
-
-                document.getElementById(
-                    "facturaRetenciones"
-                ).value,
-
-                "<<TOTAL>>":
-
-                document.getElementById(
-                    "facturaTotal"
-                ).value,
-
-                "<<NOREC>>":
-
-                document.getElementById(
-                    "facturaNoRecibo"
-                ).value,
-
-                "<<TOTLETRA>>":
-
-                document.getElementById(
-                    "facturaTotalLetra"
+                    "oficio2Anio"
                 ).value,
 
                 "<<PROY>>":
 
                 document.getElementById(
-                    "facturaProyecto"
+                    "oficio2Proyecto"
                 ).value,
 
                 "<<NOMPROY>>":
 
                 document.getElementById(
-                    "facturaNombreProyecto"
-                ).value,
-
-                "<<OFAUT>>":
-
-                document.getElementById(
-                    "facturaOficio"
-                ).value,
-
-                "<<ADEC>>":
-
-                document.getElementById(
-                    "facturaAdecuacion"
+                    "oficio2NombreProyecto"
                 ).value,
 
                 "<<FECHA>>":
 
                 document.getElementById(
-                    "facturaFecha"
+                    "oficio2Fecha"
+                ).value,
+
+                "<<OFAUT>>":
+
+                document.getElementById(
+                    "oficio2Ofaut"
+                ).value,
+
+                "<<OFADEC>>":
+
+                document.getElementById(
+                    "oficio2OficioAdec"
+                ).value,
+
+                "<<ADEC>>":
+
+                document.getElementById(
+                    "oficio2Adec"
+                ).value,
+
+                "<<MONT>>":
+
+                document.getElementById(
+                    "oficio2Monto"
+                ).value,
+
+                "<<RET>>":
+
+                document.getElementById(
+                    "oficio2Retenciones"
+                ).value,
+
+                "<<TOT>>":
+
+                document.getElementById(
+                    "oficio2Total"
+                ).value,
+
+                "<<TOTAL>>":
+
+                document.getElementById(
+                    "oficio2TotalLetra"
                 ).value
 
             }
@@ -528,7 +540,7 @@ async function generarFactura(){
         };
 
         console.log(
-            "PAYLOAD FACTURA:",
+            "PAYLOAD OFICIO2:",
             payload
         );
 
@@ -539,7 +551,7 @@ async function generarFactura(){
         const response =
         await fetch(
 
-            API_FACTURA,
+            API_OFICIO2,
 
             {
 
@@ -564,7 +576,7 @@ async function generarFactura(){
         await response.text();
 
         console.log(
-            "RESPUESTA RAW FACTURA:",
+            "RESPUESTA RAW OFICIO2:",
             text
         );
 
@@ -593,7 +605,7 @@ async function generarFactura(){
         }
 
         console.log(
-            "RESPUESTA JSON FACTURA:",
+            "RESPUESTA JSON OFICIO2:",
             data
         );
 
@@ -609,7 +621,7 @@ async function generarFactura(){
 
                 data.error ||
 
-                "No se pudo generar la factura"
+                "No se pudo generar Oficio 2"
 
             );
 
@@ -622,7 +634,7 @@ async function generarFactura(){
         const guardar =
         await fetch(
 
-            `${API}/api/registros/factura/${codigoFactura}`,
+            `${API}/api/registros/oficio2/${codigoOficio2}`,
 
             {
 
@@ -637,7 +649,7 @@ async function generarFactura(){
 
                 body:JSON.stringify({
 
-                    factura_pdf:
+                    oficio2_pdf:
                     data.url
 
                 })
@@ -649,29 +661,25 @@ async function generarFactura(){
         if(!guardar.ok){
 
             throw new Error(
-                "Error guardando factura"
+                "Error guardando Oficio 2"
             );
 
         }
 
-        /* =========================
-           FINAL
-        ========================= */
-
         cerrarModal(
-            "modalCargandoFactura"
+            "modalCargandoOficio2"
         );
 
         cerrarModal(
-            "modalConfirmarFactura"
+            "modalConfirmarOficio2"
         );
 
         cerrarModal(
-            "modalFactura"
+            "modalOficio2"
         );
 
         abrirModal(
-            "modalExitoFactura"
+            "modalExitoOficio2"
         );
 
         cargarRegistros();
@@ -681,12 +689,8 @@ async function generarFactura(){
     catch(error){
 
         console.error(
-            "ERROR FACTURA:",
+            "ERROR OFICIO2:",
             error
-        );
-
-        cerrarModal(
-            "modalCargandoFactura"
         );
 
         alert(
@@ -699,7 +703,7 @@ async function generarFactura(){
 
         const btn =
         document.getElementById(
-            "btnGenerarFactura"
+            "btnGenerarOficio2"
         );
 
         if(btn){
@@ -707,16 +711,15 @@ async function generarFactura(){
             btn.disabled = false;
 
             btn.textContent =
-            "Generar Factura";
+            "Generar Oficio 2";
 
         }
 
     }
 
 }
-
 /* =========================
-   INIT FACTURA
+   INIT OFICIO 2
 ========================= */
 
 document.addEventListener(
@@ -725,10 +728,87 @@ document.addEventListener(
 
     ()=>{
 
+        /* =========================
+           CARGAR CATÁLOGOS
+        ========================= */
+
+        const proyectoSelect =
+        document.getElementById(
+            "oficio2Proyecto"
+        );
+
+        const nombreProyectoSelect =
+        document.getElementById(
+            "oficio2NombreProyecto"
+        );
+
+        if(proyectoSelect){
+
+            llenarSelectAutomatico(
+
+                "oficio2Proyecto",
+                catalogoProyecto
+
+            );
+
+            proyectoSelect.value =
+            catalogoProyecto[0] || "";
+
+        }
+
+        if(nombreProyectoSelect){
+
+            llenarSelectAutomatico(
+
+                "oficio2NombreProyecto",
+                catalogoNombreProyecto
+
+            );
+
+            nombreProyectoSelect.value =
+            catalogoNombreProyecto[0] || "";
+
+        }
+
+        console.log(
+            "PROYECTO CARGADO:",
+            proyectoSelect?.value
+        );
+
+        console.log(
+            "NOMBRE PROYECTO CARGADO:",
+            nombreProyectoSelect?.value
+        );
+
+        /* =========================
+           BOTÓN GENERAR
+        ========================= */
+
+        const btn =
+        document.getElementById(
+            "btnGenerarOficio2"
+        );
+
+        if(btn){
+
+            btn.addEventListener(
+
+                "click",
+
+                generarOficio2
+
+            );
+
+        }
+
+        /* =========================
+           LIMPIAR ERRORES
+        ========================= */
+
         document
         .querySelectorAll(
 
-            "#modalFactura input, #modalFactura textarea"
+            "#modalOficio2 input, #modalOficio2 select"
 
         )
         .forEach(campo=>{

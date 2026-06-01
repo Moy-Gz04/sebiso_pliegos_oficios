@@ -1,3 +1,4 @@
+
 const formulario =
 document.getElementById("formulario");
 
@@ -16,45 +17,73 @@ document.getElementById("tablaResultados");
 const tbody =
 document.getElementById("tbodyResultados");
 
-/* =========================
-   MODALES
-========================= */
 
+/* ============================================================
+   MODALES
+   Funciones reutilizables para abrir y cerrar cualquier
+   modal del documento por su ID.
+   ============================================================ */
+
+/* Muestra el modal con el ID indicado */
 function abrirModal(id){
 
     const modal =
     document.getElementById(id);
 
     if(modal){
-
         modal.style.display = "flex";
-
     }
 
 }
 
+/* Oculta el modal con el ID indicado */
 function cerrarModal(id){
 
     const modal =
     document.getElementById(id);
 
     if(modal){
-
         modal.style.display = "none";
-
     }
 
 }
 
-/* =========================
-   BOTÓN GENERAR
-========================= */
+
+/* ============================================================
+   MODAL ADVERTENCIA
+   Función auxiliar para mostrar el modal de advertencia
+   con un mensaje personalizado. Reemplaza el alert() nativo
+   del navegador en todos los casos.
+   @param {string} mensaje - Texto a mostrar en el modal.
+   ============================================================ */
+
+function mostrarAdvertencia(mensaje){
+
+    document.getElementById("mensajeAdvertencia")
+    .innerText = mensaje;
+
+    abrirModal("modalAdvertencia");
+
+}
+
+
+/* ============================================================
+   BOTÓN GENERAR PLIEGOS
+   Ejecuta dos validaciones antes de abrir el modal de
+   confirmación:
+     1. Que haya al menos una persona seleccionada
+     2. Que los tres campos de texto estén completos
+   Los selects no se validan porque siempre tienen valor
+   por defecto al llenarse automáticamente desde el catálogo.
+   ============================================================ */
 
 boton.addEventListener(
 
     "click",
 
     function(){
+
+        /* --- Validación 1: personas seleccionadas --- */
 
         const seleccionados =
         document.querySelectorAll(
@@ -63,30 +92,83 @@ boton.addEventListener(
 
         if(seleccionados.length === 0){
 
-            alert(
-                "Selecciona al menos una persona"
+            mostrarAdvertencia(
+                "Selecciona al menos una persona."
             );
 
             return;
 
         }
 
-        abrirModal(
-            "modalConfirmacion"
-        );
+        /* --- Validación 2: campos de texto obligatorios --- */
+
+        const motivo =
+        document.querySelector(
+            'textarea[name="motivo"]'
+        ).value.trim();
+
+        const actividades =
+        document.querySelector(
+            'textarea[name="actividades"]'
+        ).value.trim();
+
+        const localidades =
+        document.querySelector(
+            'textarea[name="localidades"]'
+        ).value.trim();
+
+        if(!motivo){
+
+            mostrarAdvertencia(
+                "El campo MOTIVO DE LA COMISIÓN es obligatorio."
+            );
+
+            return;
+
+        }
+
+        if(!actividades){
+
+            mostrarAdvertencia(
+                "El campo REPORTE DE ACTIVIDADES es obligatorio."
+            );
+
+            return;
+
+        }
+
+        if(!localidades){
+
+            mostrarAdvertencia(
+                "El campo LOCALIDADES VISITADAS es obligatorio."
+            );
+
+            return;
+
+        }
+
+        /* --- Todo válido: abrir confirmación --- */
+
+        abrirModal("modalConfirmacion");
 
     }
 
 );
 
-/* =========================
+
+/* ============================================================
    CONFIRMAR GENERACIÓN
-========================= */
+   Se ejecuta al aceptar el modal de confirmación.
+   Flujo:
+     1. Cierra confirmación y abre modal de carga
+     2. Envía el formulario al Google Apps Script (POST)
+     3. Por cada resultado, guarda el registro en PostgreSQL
+     4. Renderiza los resultados en la tabla
+     5. Muestra modal de éxito o modal de advertencia con error
+   ============================================================ */
 
 const btnConfirmar =
-document.getElementById(
-    "confirmarGeneracion"
-);
+document.getElementById("confirmarGeneracion");
 
 btnConfirmar.addEventListener(
 
@@ -94,21 +176,14 @@ btnConfirmar.addEventListener(
 
     async function(){
 
-        cerrarModal(
-            "modalConfirmacion"
-        );
+        /* --- UI: abrir carga, deshabilitar botón --- */
 
-        abrirModal(
-            "modalCarga"
-        );
+        cerrarModal("modalConfirmacion");
+        abrirModal("modalCarga");
 
         boton.disabled = true;
-
         loader.style.display = "block";
-
-        estado.innerText =
-        "Generando PDFs...";
-
+        estado.innerText = "Generando PDFs...";
         tbody.innerHTML = "";
 
         try{
@@ -117,7 +192,20 @@ btnConfirmar.addEventListener(
             new FormData(formulario);
 
             /* =========================
-               APPS SCRIPT
+               DEBUG: log de datos enviados
+            ========================= */
+
+            console.log({
+                municipio:             formData.get('municipio'),
+                dia_inicio:            formData.get('diaInicio'),
+                dia_fin:               formData.get('diaFin'),
+                mes:                   formData.get('mes'),
+                motivo_comision:       formData.get('motivo'),
+                localidades_visitadas: formData.get('localidades')
+            });
+
+            /* =========================
+               PASO 1: Envío a Google Apps Script
             ========================= */
 
             const response =
@@ -126,11 +214,8 @@ btnConfirmar.addEventListener(
                 formulario.action,
 
                 {
-
-                    method:"POST",
-
-                    body:formData
-
+                    method: "POST",
+                    body:   formData
                 }
 
             );
@@ -138,57 +223,40 @@ btnConfirmar.addEventListener(
             const data =
             await response.json();
 
-            console.log(
-                'RESPUESTA APPS SCRIPT:',
-                data
-            );
+            console.log('RESPUESTA APPS SCRIPT:', data);
 
             if(!data.success){
-
-                throw new Error(
-                    data.error
-                );
-
+                throw new Error(data.error);
             }
 
-            tabla.style.display =
-            "table";
+            /* Mostrar tabla de resultados */
+            tabla.style.display = "table";
 
             /* =========================
-               RECORRER RESULTADOS
+               PASO 2: Recorrer resultados y guardar en DB
             ========================= */
 
             for(const item of data.resultados){
 
+                /* Generar ID único basado en timestamp */
                 const consecutivo =
-                String(Date.now())
-                .slice(-4);
+                String(Date.now()).slice(-4);
 
                 const idGenerado =
                 `UP-16_R-${consecutivo}`;
 
                 const nuevoRegistro = {
-
-                    id:idGenerado,
-
-                    nombre:item.nombre,
-
-                    oficio:item.oficio,
-
-                    pliego:item.pliego,
-
-                    fecha:new Date()
-                    .toLocaleString()
-
+                    id:     idGenerado,
+                    nombre: item.nombre,
+                    oficio: item.oficio,
+                    pliego: item.pliego,
+                    fecha:  new Date().toLocaleString()
                 };
 
-                console.log(
-                    'ENVIANDO A POSTGRESQL:',
-                    nuevoRegistro
-                );
+                console.log('ENVIANDO A POSTGRESQL:', nuevoRegistro);
 
                 /* =========================
-                   INSERT POSTGRESQL
+                   INSERT en PostgreSQL
                 ========================= */
 
                 const respuestaDB =
@@ -197,42 +265,37 @@ btnConfirmar.addEventListener(
                     'https://sebiso-pliegos-oficios-1.onrender.com/api/registros',
 
                     {
-
-                        method:'POST',
+                        method: 'POST',
 
                         headers:{
-                            'Content-Type':
-                            'application/json'
+                            'Content-Type': 'application/json'
                         },
 
-                        body:JSON.stringify({
-
-                            codigo:
-                            nuevoRegistro.id,
-
-                            area:'UP-16',
-
-                            persona:
-                            item.nombre,
-
-                            oficio_pdf:
-                            item.oficio,
-
-                            pliego_pdf:
-                            item.pliego
-
+                        body: JSON.stringify({
+                            codigo:                nuevoRegistro.id,
+                            area:                  'UP-16',
+                            persona:               item.nombre,
+                            oficio_pdf:            item.oficio,
+                            pliego_pdf:            item.pliego,
+                            municipio:             formData.get('municipio'),
+                            dia_inicio:            formData.get('diaInicio'),
+                            dia_fin:               formData.get('diaFin'),
+                            mes:                   formData.get('mes'),
+                            motivo_comision:       formData.get('motivo'),
+                            localidades_visitadas: formData.get('localidades')
                         })
-
                     }
 
                 );
 
-                console.log(
-                    'RESPUESTA DB:',
-                    respuestaDB.status
-                );
+                console.log('RESPUESTA DB:', respuestaDB.status);
 
                 if(!respuestaDB.ok){
+
+                    const errorDB =
+                    await respuestaDB.text();
+
+                    console.error(errorDB);
 
                     throw new Error(
                         'Error guardando en PostgreSQL'
@@ -241,90 +304,86 @@ btnConfirmar.addEventListener(
                 }
 
                 /* =========================
-                   TABLA
+                   PASO 3: Renderizar fila en tabla
                 ========================= */
 
                 tbody.innerHTML += `
-
                     <tr>
-
+                        <td>${nuevoRegistro.id}</td>
+                        <td>${item.nombre}</td>
+                        <td>${nuevoRegistro.fecha}</td>
                         <td>
-                            ${nuevoRegistro.id}
-                        </td>
-
-                        <td>
-                            ${item.nombre}
-                        </td>
-
-                        <td>
-                            ${nuevoRegistro.fecha}
-                        </td>
-
-                        <td>
-
-                            <a
-                                href="${item.oficio}"
-                                target="_blank">
-
+                            <a href="${item.oficio}" target="_blank">
                                 Ver Oficio
-
                             </a>
-
                         </td>
-
                         <td>
-
-                            <a
-                                href="${item.pliego}"
-                                target="_blank">
-
+                            <a href="${item.pliego}" target="_blank">
                                 Ver Pliego
-
                             </a>
-
                         </td>
-
                     </tr>
-
                 `;
 
             }
 
-            cerrarModal(
-                "modalCarga"
-            );
+            /* --- UI: cerrar carga, abrir éxito --- */
 
-            abrirModal(
-                "modalExito"
-            );
+            cerrarModal("modalCarga");
+            abrirModal("modalExito");
 
-            estado.innerText =
-            "PDFs generados correctamente";
+            estado.innerText = "PDFs generados correctamente";
 
         }
 
         catch(error){
 
-            console.error(
-                'ERROR GENERAL:',
-                error
-            );
+            console.error('ERROR GENERAL:', error);
 
-            cerrarModal(
-                "modalCarga"
-            );
+            cerrarModal("modalCarga");
 
-            alert(
-                error.message
-            );
+            /* Mostrar error en modal en lugar de alert nativo */
+            mostrarAdvertencia(error.message);
 
         }
 
-        loader.style.display =
-        "none";
+        /* --- UI: restaurar botón y ocultar loader --- */
 
+        loader.style.display = "none";
         boton.disabled = false;
 
     }
 
 );
+
+
+/* ============================================================
+   RESTRICCIÓN : TEXTAREA ACTIVIDADES
+   Impide que el usuario escriba números o puntos en el
+   campo "Reporte de Actividades".
+
+   Se usan dos eventos complementarios:
+     - keydown : bloquea la tecla antes de que se registre
+     - input   : limpia cualquier caracter no permitido que
+                 llegue por pegado (Ctrl+V) u otros métodos
+   ============================================================ */
+
+const textareaActividades =
+document.querySelector('textarea[name="actividades"]');
+
+/* Bloquear tecla al presionar */
+textareaActividades.addEventListener("keydown", function(e){
+
+    if(/[0-9.]/.test(e.key)){
+        e.preventDefault();
+    }
+
+});
+
+/* Limpiar si el contenido llega por pegado u otro método */
+textareaActividades.addEventListener("input", function(){
+
+    this.value =
+    this.value.replace(/[0-9.]/g, "");
+
+});

@@ -18,7 +18,6 @@ if(area !== 'UP-06'){
 
 </script>
 
-
 <!DOCTYPE html>
 <html lang="es">
 
@@ -54,17 +53,14 @@ if(area !== 'UP-06'){
       </div>
 
       <div class="subtitulo">
-        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP_06 - DGOLP
+        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP 06 DIRECCIÓN GENERAL DE OPERACIÓN Y LOGÍSTICA DE PROGRAMAS
       </div>
 
     </div>
-
-    <br><br>
-
     <!-- FORMULARIO -->
-
+  
     <form id="formulario"
-      action="https://script.google.com/macros/s/AKfycbwgMBOke081nlml7W4jbpVuNaXRJ4QlglNdXchheaG-yPjW7ab56a7xF3-HWh6_T4hG/exec"
+      action="https://script.google.com/macros/s/AKfycbxZyQEdut1mac7fVt4oNZDS3a9Qh3I3n_wU-0Yb6jqjtTHMz5sjD-doB7Jqo3Kk2g9N/exec"
       method="POST">
 
       <div class="contenedor">
@@ -112,11 +108,11 @@ if(area !== 'UP-06'){
           <!-- MUNICIPIO -->
 
           <div class="fila">
-
-            <label>MUNICIPIO</label>
-
-            <input type="text" name="municipio" placeholder="Municipio" required>
-
+              <label>MUNICIPIO</label>
+              <div class="grupo-flex">
+                  <select id="municipio" name="municipio">
+                  </select>
+              </div>
           </div>
 
           <!-- DÍA -->
@@ -172,7 +168,7 @@ if(area !== 'UP-06'){
               MOTIVO DE LA COMISIÓN
             </label>
 
-            <textarea name="motivo" required></textarea>
+            <textarea name="motivo" required placeholder="Coloca un punto al final." ></textarea>
 
           </div>
 
@@ -184,7 +180,9 @@ if(area !== 'UP-06'){
               REPORTE DE ACTIVIDADES
             </label>
 
-            <textarea name="actividades" required></textarea>
+            <textarea name="actividades" required placeholder="- Actividad 1  
+- Actividad 2
+- Actividad 3"></textarea>
 
           </div>
 
@@ -196,7 +194,7 @@ if(area !== 'UP-06'){
               LOCALIDADES VISITADAS
             </label>
 
-            <textarea name="localidades" required></textarea>
+            <textarea name="localidades" required placeholder="NO coloques un punto al final."></textarea>
 
           </div>
 
@@ -373,6 +371,34 @@ if(area !== 'UP-06'){
     </div>
 
   </div>
+
+  <!-- =========================
+   MODAL ADVERTENCIA
+========================= -->
+<div class="modal" id="modalAdvertencia">
+
+  <div class="modal-contenido">
+
+    <h2>
+      ⚠️ Atención
+    </h2>
+
+    <p id="mensajeAdvertencia">
+      Selecciona al menos una persona
+    </p>
+
+    <button
+      type="button"
+      class="btn-principal"
+      onclick="cerrarModal('modalAdvertencia')">
+
+      Aceptar
+
+    </button>
+
+  </div>
+
+</div>
 
   <!-- =========================
      MODAL LOGOUT

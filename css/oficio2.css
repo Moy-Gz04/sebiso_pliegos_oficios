@@ -1,459 +1,436 @@
-/* =========================================================
-   MODAL OFICIO 2
-========================================================= */
+/* ============================================================
+   oficio2.css
+   Modal Anexo C – Secretaría del Bienestar e Inclusión Social
+   Revisión de Registros · UP-01 Despacho
+   ============================================================
+   Índice de secciones:
+     1.  Overlay / fondo del modal (#modalOficio2)
+     2.  Estado activo
+     3.  Contenedor principal (tarjeta)
+     4.  Header del modal
+     5.  Grid de campos (modal-body-grid)
+     6.  Grupo de campo (campo-spg)
+     7.  Labels
+     8.  Inputs – base general
+     9.  Inputs editables (no readonly)
+    10.  Estado: focus en inputs editables
+    11.  Inputs bloqueados (readonly)
+    12.  Placeholder de inputs
+    13.  Campo especial – Total en Letra
+    14.  Select – flecha personalizada
+    15.  Estado: error de validación
+    16.  Footer / barra de botones
+    17.  Botones – base compartida
+    18.  Botón Cancelar
+    19.  Botón Generar Anexo C (acción primaria)
+    20.  Animación de entrada
+    21.  Responsive – pantallas ≤ 1100 px
+    22.  Responsive – pantallas ≤ 700 px
+   ============================================================ */
 
-#modalOficio2{
 
-    display:none;
+/* ============================================================
+   1. OVERLAY / FONDO DEL MODAL
+   Cubre toda la pantalla con un fondo semitransparente y
+   desenfoque de fondo. Oculto por defecto (display:none).
+   overflow:hidden evita scroll mientras el modal está cerrado;
+   se habilita en responsive cuando el contenido puede desbordar.
+   ============================================================ */
 
-    position:fixed;
-
-    inset:0;
-
-    background:rgba(0,0,0,.38);
-
-    justify-content:center;
-
-    align-items:center;
-
-    z-index:99999;
-
-    padding:10px;
-
-    overflow:hidden;
-
-    backdrop-filter:blur(3px);
-
-    box-sizing:border-box;
-
+#modalOficio2 {
+    display:          none;
+    position:         fixed;
+    inset:            0;
+    background:       rgba(0, 0, 0, .38);
+    backdrop-filter:  blur(3px);
+    justify-content:  center;
+    align-items:      center;
+    z-index:          99999;
+    padding:          10px;
+    overflow:         hidden;
+    box-sizing:       border-box;
 }
 
-#modalOficio2.activo{
 
-    display:flex;
+/* ============================================================
+   2. ESTADO ACTIVO
+   Se muestra como flex cuando JS agrega la clase .activo.
+   ============================================================ */
 
+#modalOficio2.activo {
+    display: flex;
 }
 
-/* =========================================================
-   CONTENIDO
-========================================================= */
 
-#modalOficio2 .modal-spg-contenido{
+/* ============================================================
+   3. CONTENEDOR PRINCIPAL (TARJETA)
+   Tarjeta blanca centrada con ancho máximo generoso para
+   acomodar el grid de 3 columnas sin compresión.
+   overflow:hidden recorta sombras internas y bordes animados.
+   ============================================================ */
 
-    width:100%;
+#modalOficio2 .modal-spg-contenido {
+    width:         100%;
+    max-width:     1220px;
+    background:    #ffffff;
+    border-radius: 28px;
+    padding:       22px 28px 26px;
+    box-shadow:    0 18px 45px rgba(0, 0, 0, .15);
+    animation:     aparecerOficio2 .18s ease;
+    box-sizing:    border-box;
+    overflow:      hidden;
+}
 
-    max-width:1220px;
 
-    background:#ffffff;
+/* ============================================================
+   4. HEADER DEL MODAL
+   Título centrado con línea divisoria inferior para separar
+   visualmente el encabezado del cuerpo del formulario.
+   ============================================================ */
 
-    border-radius:28px;
+#modalOficio2 .modal-header {
+    text-align:    center;
+    margin-bottom: 18px;
+    padding-bottom:14px;
+    border-bottom: 1.5px solid #f1f1f1;
+}
 
-    padding:22px 28px;
+#modalOficio2 .modal-header h2 {
+    font-size:   26px;
+    color:       #70122b;
+    font-weight: 800;
+    margin:      0;
+    line-height: 1.15;
+    font-family: 'Montserrat', sans-serif;
+}
 
+
+/* ============================================================
+   5. GRID DE CAMPOS (modal-body-grid)
+   Tres columnas por defecto para aprovechar el ancho máximo.
+   Se reduce a 2 y luego a 1 columna en breakpoints menores.
+   gap-x mayor que gap-y para separar columnas visualmente.
+   ============================================================ */
+
+#modalOficio2 .modal-body-grid {
+    display:               grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap:                   14px 20px;
+    margin-bottom:         20px;
+    align-items:           start;
+}
+
+
+/* ============================================================
+   6. GRUPO DE CAMPO (campo-spg)
+   Columna flexbox que apila label y control con espacio mínimo.
+   ============================================================ */
+
+#modalOficio2 .campo-spg {
+    display:        flex;
+    flex-direction: column;
+    gap:            5px;
+}
+
+
+/* ============================================================
+   7. LABELS
+   Texto diminuto en mayúsculas y semibold para identificar
+   cada campo sin competir con el valor del input.
+   ============================================================ */
+
+#modalOficio2 .campo-spg label {
+    font-size:      11px;
+    font-weight:    800;
+    color:          #64748b;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    margin-left:    3px;
+    font-family:    'Montserrat', sans-serif;
+}
+
+
+/* ============================================================
+   8. INPUTS – BASE GENERAL
+   Altura fija para alineación vertical uniforme en el grid.
+   Borde neutro que se redefine para estados editable/bloqueado.
+   ============================================================ */
+
+#modalOficio2 input,
+#modalOficio2 select {
+    width:       100%;
+    height:      52px;
+    border-radius: 18px;
+    border:      1.8px solid #d7dce2;
+    background:  #ffffff;
+    padding:     0 18px;
+    font-size:   14px;
+    color:       #1f2937;
+    outline:     none;
+    transition:  .18s ease;
+    font-family: 'Montserrat', sans-serif;
+    box-sizing:  border-box;
+}
+
+
+/* ============================================================
+   9. INPUTS EDITABLES (no readonly)
+   Borde de color primario para indicar que el campo es
+   interactivo y espera entrada del usuario.
+   ============================================================ */
+
+#modalOficio2 input:not([readonly]),
+#modalOficio2 select {
+    border:     2px solid #8b1538;
+    background: #ffffff;
+    color:      #222;
+}
+
+
+/* ============================================================
+   10. ESTADO: FOCUS EN INPUTS EDITABLES
+   Resalta el control activo con un halo de color primario.
+   ============================================================ */
+
+#modalOficio2 input:not([readonly]):focus,
+#modalOficio2 select:focus {
+    border-color: #a11b46;
+    box-shadow:   0 0 0 4px rgba(139, 21, 56, .10);
+}
+
+
+/* ============================================================
+   11. INPUTS BLOQUEADOS (readonly)
+   Fondo degradado vino para comunicar que el dato es
+   pre-cargado y no editable por el usuario.
+   Las sombras internas refuerzan la apariencia "rellenado".
+   ============================================================ */
+
+#modalOficio2 input[readonly] {
+    background:              linear-gradient(
+                                 180deg,
+                                 #8f2b4b 0%,
+                                 #7a1f3d 100%
+                             ) !important;
+    color:                   #ffffff !important;
+    border:                  1.5px solid rgba(255, 255, 255, .08) !important;
+    font-weight:             700 !important;
+    cursor:                  not-allowed !important;
+    -webkit-text-fill-color: #ffffff !important;
+    opacity:                 1 !important;
     box-shadow:
-        0 18px 45px rgba(0,0,0,.15);
-
-    animation:aparecerOficio2 .18s ease;
-
-    box-sizing:border-box;
-
-    overflow:hidden;
-
+        inset 0 1px 0 rgba(255, 255, 255, .06),
+        0 2px 8px rgba(122, 31, 61, .14);
 }
 
-/* =========================================================
-   HEADER
-========================================================= */
 
-#modalOficio2 .modal-header{
+/* ============================================================
+   12. PLACEHOLDER DE INPUTS
+   Color gris claro para el texto de ayuda en campos vacíos.
+   ============================================================ */
 
-    text-align:center;
-
-    margin-bottom:18px;
-
+#modalOficio2 input::placeholder {
+    color: #cbd5e1;
 }
 
-#modalOficio2 .modal-header h2{
 
-    font-size:28px;
+/* ============================================================
+   13. CAMPO ESPECIAL – TOTAL EN LETRA
+   Fuente ligeramente más pequeña para acomodar texto largo
+   sin desbordamiento horizontal.
+   ============================================================ */
 
-    color:#70122b;
-
-    font-weight:800;
-
-    margin:0;
-
-    line-height:1.1;
-
+#modalOficio2 #oficio2TotalLetra {
+    font-size: 13px;
 }
 
-/* =========================================================
-   GRID
-========================================================= */
 
-#modalOficio2 .modal-body-grid{
+/* ============================================================
+   14. SELECT – FLECHA PERSONALIZADA
+   Reemplaza el control nativo del navegador por un SVG inline
+   posicionado a la derecha del select.
+   ============================================================ */
 
-    display:grid;
-
-    grid-template-columns:
-        repeat(3,minmax(0,1fr));
-
-    gap:16px 20px;
-
-    margin-bottom:20px;
-
-    align-items:start;
-
+#modalOficio2 select {
+    cursor:              pointer;
+    appearance:          none;
+    -webkit-appearance:  none;
+    -moz-appearance:     none;
+    background-image:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+    background-repeat:   no-repeat;
+    background-position: right 14px center;
+    background-size:     11px;
+    padding-right:       38px;
 }
 
-/* =========================================================
-   CAMPOS
-========================================================= */
 
-#modalOficio2 .campo-spg{
+/* ============================================================
+   15. ESTADO: ERROR DE VALIDACIÓN
+   Borde rojo y fondo rosado para campos con datos incorrectos.
+   !important necesario para sobreescribir los estados base.
+   ============================================================ */
 
-    display:flex;
-
-    flex-direction:column;
-
-    gap:5px;
-
+#modalOficio2 .input-error {
+    border:     2px solid #dc2626 !important;
+    background: #fff5f5 !important;
+    color:      #991b1b !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, .08) !important;
 }
 
-#modalOficio2 .campo-spg label{
 
-    font-size:11px;
+/* ============================================================
+   16. FOOTER / BARRA DE BOTONES
+   Separada del grid por línea divisoria superior.
+   Centrada con gap uniforme entre acciones.
+   ============================================================ */
 
-    font-weight:800;
-
-    color:#64748b;
-
-    text-transform:uppercase;
-
-    letter-spacing:.4px;
-
-    margin-left:2px;
-
+#modalOficio2 .modal-footer {
+    display:         flex;
+    justify-content: center;
+    align-items:     center;
+    gap:             16px;
+    margin-top:      6px;
+    padding-top:     16px;
+    border-top:      1.5px solid #f1f1f1;
 }
 
-/* =========================================================
-   INPUTS
-========================================================= */
 
-#modalOficio2 input{
+/* ============================================================
+   17. BOTONES – BASE COMPARTIDA
+   Dimensiones, radio y tipografía comunes a Cancelar y Generar.
+   ============================================================ */
 
-    width:100%;
-
-    height:56px;
-
-    border-radius:18px;
-
-    border:1.8px solid #d7dce2;
-
-    background:#ffffff;
-
-    padding:0 18px;
-
-    font-size:14px;
-
-    color:#1f2937;
-
-    outline:none;
-
-    transition:.18s ease;
-
-    font-family:'Montserrat',sans-serif;
-
-    box-sizing:border-box;
-
+#modalOficio2 .btn-cancelar,
+#modalOficio2 .btn-guardar {
+    width:       220px;
+    height:      52px;
+    border:      none;
+    border-radius: 999px;
+    font-size:   15px;
+    font-weight: 700;
+    cursor:      pointer;
+    transition:  .18s ease;
+    font-family: 'Montserrat', sans-serif;
+    display:     inline-flex;
+    justify-content: center;
+    align-items: center;
+    letter-spacing: .3px;
 }
 
-/* =========================================================
-   INPUTS EDITABLES
-========================================================= */
 
-#modalOficio2 input:not([readonly]){
+/* ============================================================
+   18. BOTÓN CANCELAR
+   Fondo gris neutro; acción secundaria / de salida.
+   ============================================================ */
 
-    border:2px solid #8b1538;
-
-    background:#ffffff;
-
-    color:#222;
-
+#modalOficio2 .btn-cancelar {
+    background: #e5e7eb;
+    color:      #374151;
 }
 
-#modalOficio2 input:not([readonly]):focus{
-
-    border-color:#a11b46;
-
-    box-shadow:
-        0 0 0 4px rgba(139,21,56,.10);
-
+#modalOficio2 .btn-cancelar:hover {
+    background: #d6dae0;
+    transform:  translateY(-1px);
 }
 
-/* =========================================================
-   INPUTS BLOQUEADOS
-========================================================= */
 
-#modalOficio2 input[readonly]{
+/* ============================================================
+   19. BOTÓN GENERAR ANEXO C (acción primaria)
+   Fondo vino con sombra de color para reforzar la jerarquía.
+   ============================================================ */
 
-    background:
-        linear-gradient(
-            180deg,
-            #8f2b4b 0%,
-            #7a1f3d 100%
-        ) !important;
-
-    color:#ffffff !important;
-
-    border:1.5px solid rgba(255,255,255,.08) !important;
-
-    font-weight:650 !important;
-
-    cursor:not-allowed !important;
-
-    -webkit-text-fill-color:#ffffff !important;
-
-    opacity:1 !important;
-
-    box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.06),
-        0 2px 8px rgba(122,31,61,.14);
-
+#modalOficio2 .btn-guardar {
+    background: #8b1538;
+    color:      #ffffff;
+    box-shadow: 0 6px 16px rgba(139, 21, 56, .22);
 }
 
-/* =========================================================
-   PLACEHOLDER
-========================================================= */
-
-#modalOficio2 input::placeholder{
-
-    color:#cbd5e1;
-
+#modalOficio2 .btn-guardar:hover {
+    background: #74112f;
+    transform:  translateY(-1px);
+    box-shadow: 0 8px 20px rgba(139, 21, 56, .30);
 }
 
-/* =========================================================
-   TOTAL LETRA
-========================================================= */
-
-#modalOficio2 #oficio2TotalLetra{
-
-    font-size:13px;
-
+#modalOficio2 .btn-guardar:disabled {
+    opacity:    .65;
+    cursor:     not-allowed;
+    box-shadow: none;
 }
 
-/* =========================================================
-   BOTONES
-========================================================= */
 
-#modalOficio2 .modal-footer{
+/* ============================================================
+   20. ANIMACIÓN DE ENTRADA
+   Desliza la tarjeta desde abajo con ligero fade y escala.
+   ============================================================ */
 
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    gap:16px;
-
-    margin-top:6px;
-
+@keyframes aparecerOficio2 {
+    from {
+        opacity:   0;
+        transform: translateY(10px) scale(.985);
+    }
+    to {
+        opacity:   1;
+        transform: translateY(0) scale(1);
+    }
 }
 
-/* =========================================================
-   BOTÓN CANCELAR
-========================================================= */
 
-#modalOficio2 .btn-cancelar{
+/* ============================================================
+   21. RESPONSIVE – PANTALLAS ≤ 1100 px
+   El grid de 3 columnas pasa a 2. El overlay permite scroll
+   vertical para acomodar el contenido extra alto.
+   ============================================================ */
 
-    width:220px;
+@media (max-width: 1100px) {
 
-    height:52px;
-
-    border:none;
-
-    border-radius:999px;
-
-    background:#e5e7eb;
-
-    color:#374151;
-
-    font-size:15px;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    transition:.18s ease;
-
-    font-family:'Montserrat',sans-serif;
-
-}
-
-#modalOficio2 .btn-cancelar:hover{
-
-    background:#d6dae0;
-
-    transform:translateY(-1px);
-
-}
-
-/* =========================================================
-   BOTÓN GENERAR
-========================================================= */
-
-#modalOficio2 .btn-guardar{
-
-    width:220px;
-
-    height:52px;
-
-    border:none;
-
-    border-radius:999px;
-
-    background:#8b1538;
-
-    color:#ffffff;
-
-    font-size:15px;
-
-    font-weight:700;
-
-    cursor:pointer;
-
-    transition:.18s ease;
-
-    font-family:'Montserrat',sans-serif;
-
-    box-shadow:
-        0 6px 16px rgba(139,21,56,.18);
-
-}
-
-#modalOficio2 .btn-guardar:hover{
-
-    background:#74112f;
-
-    transform:translateY(-1px);
-
-}
-
-/* =========================================================
-   INPUT ERROR
-========================================================= */
-
-#modalOficio2 .input-error{
-
-    border:2px solid #dc2626 !important;
-
-    background:#fff5f5 !important;
-
-    color:#991b1b !important;
-
-    box-shadow:
-        0 0 0 3px rgba(220,38,38,.08) !important;
-
-}
-
-/* =========================================================
-   ANIMACIÓN
-========================================================= */
-
-@keyframes aparecerOficio2{
-
-    from{
-
-        opacity:0;
-
-        transform:
-            translateY(8px)
-            scale(.985);
-
+    #modalOficio2 {
+        overflow-y:  auto;
+        align-items: flex-start;
     }
 
-    to{
-
-        opacity:1;
-
-        transform:
-            translateY(0)
-            scale(1);
-
+    #modalOficio2 .modal-spg-contenido {
+        margin-top: 10px;
     }
 
+    #modalOficio2 .modal-body-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
-/* =========================================================
-   RESPONSIVE
-========================================================= */
 
-@media(max-width:1100px){
+/* ============================================================
+   22. RESPONSIVE – PANTALLAS ≤ 700 px
+   Grid colapsa a una sola columna. Botones apilados a ancho
+   completo para facilitar el toque en pantallas pequeñas.
+   ============================================================ */
 
-    #modalOficio2{
+@media (max-width: 700px) {
 
-        overflow-y:auto;
-
-        align-items:flex-start;
-
+    #modalOficio2 {
+        padding: 12px;
     }
 
-    #modalOficio2 .modal-spg-contenido{
-
-        margin-top:10px;
-
+    #modalOficio2 .modal-spg-contenido {
+        padding:       18px;
+        border-radius: 22px;
     }
 
-    #modalOficio2 .modal-body-grid{
-
-        grid-template-columns:
-            repeat(2,minmax(0,1fr));
-
+    #modalOficio2 .modal-header h2 {
+        font-size: 22px;
     }
 
-}
-
-@media(max-width:700px){
-
-    #modalOficio2{
-
-        padding:12px;
-
+    #modalOficio2 .modal-body-grid {
+        grid-template-columns: 1fr;
+        gap:                   12px;
     }
 
-    #modalOficio2 .modal-spg-contenido{
-
-        padding:18px;
-
-        border-radius:22px;
-
-    }
-
-    #modalOficio2 .modal-header h2{
-
-        font-size:24px;
-
-    }
-
-    #modalOficio2 .modal-body-grid{
-
-        grid-template-columns:1fr;
-
-        gap:14px;
-
-    }
-
-    #modalOficio2 .modal-footer{
-
-        flex-direction:column;
-
+    #modalOficio2 .modal-footer {
+        flex-direction: column;
+        gap:            10px;
     }
 
     #modalOficio2 .btn-cancelar,
-    #modalOficio2 .btn-guardar{
-
-        width:100%;
-
+    #modalOficio2 .btn-guardar {
+        width: 100%;
     }
-
 }

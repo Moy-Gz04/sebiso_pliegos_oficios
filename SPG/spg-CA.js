@@ -1,5 +1,78 @@
+/* ============================================================
+   SPG.JS  –  SEBISO · Sistema de Pliegos y Oficios
+   Módulo : Generación de SPG vía Google Apps Script
+   Versión: 2.1
+   Autor  : Juan Moisés Gómez Aispuro
+
+   Historial de cambios:
+   ─────────────────────────────────────────────────────────────
+   v2.1 (correcciones de flujo):
+
+     - CORRECCIÓN CRÍTICA DE FLUJO: El listener de #btnGenerarSPG
+       ahora llama a solicitarConfirmacion("SPG") en lugar de abrir
+       directamente modalConfirmarSPG. Antes, este archivo ignoraba
+       la validación de resultados.js y abría el modal de confirmación
+       sin importar si los campos estaban vacíos, causando que el
+       usuario viera el modal de confirmación incluso después de la
+       alerta de "campos incompletos".
+
+     - CORRECCIÓN DEL ERROR DE LOCALHOST: Se reemplazó alert()
+       nativo del navegador (el "error de localhost") por la función
+       mostrarAlerta() del sistema. El alert() nativo generaba el
+       diálogo del sistema operativo que aparecía dos veces.
+
+     - ELIMINACIÓN DE LISTENER DUPLICADO: Se eliminó el listener de
+       #confirmarGenerarSPG de este archivo porque ya está registrado
+       en resultados.js. Tenerlo en ambos archivos causaba que
+       generarSPG() se ejecutara dos veces por cada confirmación.
+
+     - DOCUMENTACIÓN: Se añadieron comentarios en todos los bloques
+       relevantes explicando el flujo y las dependencias entre archivos.
+
+   ─────────────────────────────────────────────────────────────
+   DEPENDENCIAS (deben cargarse antes que este archivo):
+     - resultados.js  → define: API, codigoSPG, abrirModal(),
+                        cerrarModal(), mostrarAlerta(),
+                        solicitarConfirmacion(), cargarRegistros()
+   ─────────────────────────────────────────────────────────────
+   FLUJO CORRECTO de generación de SPG:
+
+     [#btnGenerarSPG] click
+             │
+             ▼
+     solicitarConfirmacion("SPG")   ← definida en resultados.js
+             │
+             ├─ campos vacíos → alerta + campos en rojo → FIN
+             │
+             └─ campos OK → abre #modalConfirmarSPG
+                                     │
+                                     ▼
+                         [#confirmarGenerarSPG] click
+                         (listener en resultados.js)
+                                     │
+                                     ▼
+                             generarSPG()  ← definida AQUÍ
+                             (usa Google Apps Script)
+   ============================================================ */
 
 "use strict";
+
+/* ============================================================
+   GENERAR SPG
+   ─────────────────────────────────────────────────────────────
+   Esta función es llamada exclusivamente desde el listener de
+   #confirmarGenerarSPG registrado en resultados.js, nunca
+   directamente desde un botón.
+
+   Proceso:
+     1. Deshabilita el botón para evitar doble envío.
+     2. Lee y valida los campos del formulario SPG.
+     3. Construye el payload con variables de plantilla (<<VAR>>).
+     4. Envía el payload a Google Apps Script para generar el PDF.
+     5. Guarda la URL del PDF y los datos SPG en el backend.
+     6. Cierra modales y muestra modal de éxito.
+   ============================================================ */
+
 async function generarSPG() {
 
   try {

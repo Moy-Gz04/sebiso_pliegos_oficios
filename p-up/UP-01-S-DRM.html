@@ -53,17 +53,14 @@ if(area !== 'UP-01-S-DRM'){
       </div>
 
       <div class="subtitulo">
-        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP_01 - S-DRM
+        GENERACIÓN DE OFICIO Y PLIEGO DE COMISIÓN      <br>UP_01 - SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL S-DRM
       </div>
 
     </div>
-
-    
-
     <!-- FORMULARIO -->
   
     <form id="formulario"
-      action="https://script.google.com/macros/s/AKfycbxAx_BZvf1S6mwkfF2PjhcDT42MjZirRKXPPppEP_hmDcz3jsBeKN8Gcap5Lix_UW2f/exec"
+      action="https://script.google.com/macros/s/AKfycbzHrBiAh9uQHb0Fwmvr7jxMR08SwQ5gnNxYFvAl0kKvKkG2Fe2VXM7Frg_lr9uHZqGf-A/exec"
       method="POST">
 
       <div class="contenedor">
@@ -111,11 +108,11 @@ if(area !== 'UP-01-S-DRM'){
           <!-- MUNICIPIO -->
 
           <div class="fila">
-
-            <label>MUNICIPIO</label>
-
-            <input type="text" name="municipio" placeholder="Municipio" required>
-
+              <label>MUNICIPIO</label>
+              <div class="grupo-flex">
+                  <select id="municipio" name="municipio">
+                  </select>
+              </div>
           </div>
 
           <!-- DÍA -->
@@ -171,7 +168,7 @@ if(area !== 'UP-01-S-DRM'){
               MOTIVO DE LA COMISIÓN
             </label>
 
-            <textarea name="motivo" required></textarea>
+            <textarea name="motivo" required placeholder="Coloca un punto al final." ></textarea>
 
           </div>
 
@@ -183,7 +180,9 @@ if(area !== 'UP-01-S-DRM'){
               REPORTE DE ACTIVIDADES
             </label>
 
-            <textarea name="actividades" required></textarea>
+            <textarea name="actividades" required placeholder="- Actividad 1  
+- Actividad 2
+- Actividad 3"></textarea>
 
           </div>
 
@@ -195,7 +194,7 @@ if(area !== 'UP-01-S-DRM'){
               LOCALIDADES VISITADAS
             </label>
 
-            <textarea name="localidades" required></textarea>
+            <textarea name="localidades" required placeholder="NO coloques un punto al final."></textarea>
 
           </div>
 
@@ -372,6 +371,34 @@ if(area !== 'UP-01-S-DRM'){
     </div>
 
   </div>
+
+  <!-- =========================
+   MODAL ADVERTENCIA
+========================= -->
+<div class="modal" id="modalAdvertencia">
+
+  <div class="modal-contenido">
+
+    <h2>
+      ⚠️ Atención
+    </h2>
+
+    <p id="mensajeAdvertencia">
+      Selecciona al menos una persona
+    </p>
+
+    <button
+      type="button"
+      class="btn-principal"
+      onclick="cerrarModal('modalAdvertencia')">
+
+      Aceptar
+
+    </button>
+
+  </div>
+
+</div>
 
   <!-- =========================
      MODAL LOGOUT
