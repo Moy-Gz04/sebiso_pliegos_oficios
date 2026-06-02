@@ -1,3 +1,23 @@
+<script>
+
+const token = localStorage.getItem('token');
+
+const area = localStorage.getItem('area');
+
+if(!token){
+
+    window.location.href = 'index.html';
+
+}
+
+if(area !== 'Administracion'){
+
+    window.location.href = 'index.html';
+
+}
+
+</script>
+
 <!DOCTYPE html>
 <html lang="es">
 
@@ -13,10 +33,10 @@
 
     </title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/ssidebar.css">
-    <link rel="stylesheet" href="css/presupuestos.css">
-    <link rel="stylesheet" href="css/modales.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/ssidebar.css">
+    <link rel="stylesheet" href="../css/modales.css">
+    <link rel="stylesheet" href="../css/presupuestos.css">
 
 </head>
 
@@ -36,7 +56,7 @@
 
             <div class="titulo-principal">
 
-                SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+                SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL
 
             </div>
 
@@ -656,39 +676,33 @@
     <!-- =========================
      MODAL MENSAJES
 ========================= -->
-
 <div class="modal" id="modalMensaje">
+    <div class="modal-contenido modal-confirm">
 
-    <div class="modal-contenido modal-mensaje">
+        <div class="modal-confirm-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                 stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14H6L5 6"/>
+                <path d="M10 11v6M14 11v6"/>
+                <path d="M9 6V4h6v2"/>
+            </svg>
+        </div>
 
-        <h2 id="tituloModalMensaje">
+        <h2 id="tituloModalMensaje">Eliminar registro</h2>
 
-            Mensaje
-
-        </h2>
-
-        <p id="textoModalMensaje">
-
-            Texto
-
-        </p>
+        <p id="textoModalMensaje">¿Deseas eliminar este registro? Esta acción no se puede deshacer.</p>
 
         <div class="modal-botones" id="botonesModalMensaje">
-
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="cerrarModalMensaje()"
-            >
-
-                Aceptar
-
+            <button type="button" class="btn-secundario" onclick="cerrarModalMensaje()">
+                Cancelar
             </button>
-
+            <button type="button" class="btn-danger" onclick="cerrarModalMensaje()">
+                Eliminar
+            </button>
         </div>
 
     </div>
-
 </div>
 
     <!-- OVERLAY -->
@@ -697,8 +711,8 @@
 
     <!-- SCRIPTS -->
 
-    <script src="js/sidebar_CP.js"></script>
-    <script src="js/presupuestos_up-01.js"></script>
+    <script src="../js/sidebar_CP.js"></script>
+    <script src="../js/presupuestos_up-01.js"></script>
 
 </body>
 

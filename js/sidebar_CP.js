@@ -8,7 +8,7 @@ window.location.pathname
 ========================= */
 
 const PAGINA_INICIO =
-'A-P.html';
+'Administracion.html';
 
 const PAGINA_REGISTROS =
 'G-U-P.html';
@@ -33,7 +33,7 @@ document.getElementById(
         <div class="sidebar-logo">
 
             <img
-                src="img/logo.png"
+                src="../img/logo.png"
                 alt="Logo"
                 class="logo-sidebar">
 

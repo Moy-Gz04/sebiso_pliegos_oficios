@@ -234,53 +234,34 @@ function pintarTabla(registros){
 ========================= */
 
 inputBusqueda.addEventListener(
-
     "input",
-
     () => {
-
         const texto =
-
             inputBusqueda.value
             .toLowerCase()
             .trim();
-
         const filtrados =
-
             registrosPagados.filter((registro) => {
-
                 const persona =
-
                     (
                         registro.persona || ""
                     )
                     .toLowerCase();
-
                 const fecha =
-
                     formatearFecha(
                         registro.fecha
                     )
                     .toLowerCase();
-
                 return (
-
                     persona.includes(texto)
-
                     ||
-
                     fecha.includes(texto)
-
                 );
-
             });
-
         pintarTabla(
             filtrados
         );
-
     }
-
 );
 
 /* =========================

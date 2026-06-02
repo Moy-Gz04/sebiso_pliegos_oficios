@@ -27,10 +27,9 @@
     <link rel="stylesheet" href="../css/revisiones.css">
 <!-- =============== PARA FORMATOS =====================-->
     <link rel="stylesheet" href="../css/RECIBO.css">
-    <link rel="stylesheet" href="../css/modales.css">
     <link rel="stylesheet" href="../css/factura.css">
-    <link rel="stylesheet" href="../css/SPG.css">
     <link rel="stylesheet" href="../css/oficio2.css">
+     <link rel="stylesheet" href="../css/modales.css">
 <!-- =============== END Archivos CSS ==================-->
 </head>
 
@@ -45,7 +44,7 @@
     <!-- ======== BARRA SUPERIOR (ENCABEZADO)=================== -->
         <div class="topbar">
             <div class="titulo-principal">
-                SECRETARÍA DEL BIENESTAR E INCLUSIÓN SOCIAL
+                SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL
             </div>
             <div class="subtitulo">
                 REVISIÓN DE REGISTROS
@@ -217,9 +216,9 @@
                 <!-- MONTO -->
                 <div class="grupo-input-spg">
                     <label for="spgMonto">
-                        Monto
+                        Importe
                     </label>
-                    <input type="text" id="spgMonto" placeholder="$0.00">
+                    <input type="text" id="spgMonto" placeholder="($0.00) El importe no puede ser mayor al Total del Pliego.">
                 </div>
 
                 <!-- RETENCIONES -->
@@ -703,7 +702,7 @@
                 <input
                     type="text"
                     id="facturaTotalLetra"
-                    placeholder="MIL PESOS 00/100 M.N."
+                    readonly
                 >
             </div>
 
@@ -1141,7 +1140,7 @@
 <!-- ====== END MODAL OFICIO 2 ==================================== -->
 <!-- ====== MODAL CONFIRMAR OFICIO 2 ============================== -->
 
-<div id="modalConfirmarOficio2">
+<div id="modalConfirmarOficio2" class="modal">
 
     <div class="modal-confirmar-contenido">
 

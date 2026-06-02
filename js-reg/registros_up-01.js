@@ -178,13 +178,13 @@ function numeroALetras(valor) {
     }
   }
 
-  texto += " PESOS";
+  texto += "";
 
   if (decimales > 0) {
     texto += " CON " + convertirGrupo(decimales) + " CENTAVOS";
   }
 
-  return texto.trim();
+  return texto.trim().toLowerCase();
 }
 
 /* ============================================================
@@ -627,7 +627,7 @@ function calcularTotalSPG() {
 
   const monto       = parseFloat(montoInput.value.replace(/[^0-9.-]+/g, "")) || 0;
   const retenciones = parseFloat(retInput.value.replace(/[^0-9.-]+/g, ""))   || 0;
-  totalInput.value  = formatearMoneda(monto + retenciones);
+  totalInput.value = formatearMoneda(monto - retenciones);
 }
 
 /* ============================================================

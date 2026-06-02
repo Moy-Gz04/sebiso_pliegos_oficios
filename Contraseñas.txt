@@ -34,3 +34,5 @@ up 13
 USER: UP13 
 PASSWORD: up13gobmx
 
+UP-Administracion
+adminsebisogob

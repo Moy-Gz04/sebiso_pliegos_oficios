@@ -28,13 +28,6 @@ const API_FACTURA =
    @returns {string} Ej: "1250.00 PESOS 00/100 M.N."
 ============================================================= */
 
-function numeroALetras(numero) {
-    numero = Number(numero);
-    if (isNaN(numero)) return "";
-    return `${numero.toFixed(2)} PESOS 00/100 M.N.`;
-}
-
-
 /* =============================================================
    TRANSFORMAR NOMBRE DE ARCHIVO / FOLIO
    Elimina la extensión del archivo (si existe) y reemplaza
