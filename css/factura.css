@@ -1,630 +1,866 @@
 /* ============================================================
    factura.css
-   Sistema de Modales: Recibo, Oficio 2 y flujos de confirmación
-   Secretaría del Bienestar e Inclusión Social · UP-01 Despacho
-   ============================================================
-   Índice de secciones:
-     1.  Overlay / fondo – todos los modales de este archivo
-     2.  Estado activo (.activo)
-     3.  Contenedor principal – modales grandes (Factura / Oficio 2)
-     4.  Animación de entrada compartida
-     5.  Header de modales grandes
-     6.  Botón de cierre (oculto por diseño)
-     7.  Grid de campos – modales grandes
-     8.  Grupo de campo (campo-spg)
-     9.  Labels
-    10.  Inputs, selects y textareas – base
-    11.  Estado: readonly
-    12.  Placeholder
-    13.  Estado: focus
-    14.  Select – flecha personalizada
-    15.  Estado: error de validación
-    16.  Footer / barra de botones – modales grandes
-    17.  Botones de modales grandes – base compartida
-    18.  Botón Cancelar (grande)
-    19.  Botón Generar / Guardar (grande – acción primaria)
-    20.  Hover compartido de todos los botones
-    21.  Contenedor – modales pequeños (confirmar / cargando / éxito)
-    22.  Tipografía – modales pequeños
-    23.  Barra de botones – modales de confirmación
-    24.  Botones – modales pequeños – base compartida
-    25.  Botón Cancelar (pequeño)
-    26.  Botón Confirmar / Principal (pequeño – acción primaria)
-    27.  Spinner de carga
-    28.  Animación del spinner
-    29.  Responsive – pantallas ≤ 950 px
-    30.  Responsive – pantallas ≤ 768 px
+   SISTEMA FACTURA UNIFICADO
    ============================================================ */
 
 
 /* ============================================================
-   1. OVERLAY / FONDO – TODOS LOS MODALES
-   Un único bloque unificado cubre todos los modales de este
-   archivo. display:none por defecto; se activa con .activo.
+   1. OVERLAY — jerarquía alineada con modales.css
+      modal grande  → 1000
+      confirmación  → 2000
+      cargando      → 2000  (mismo nivel, se muestran uno a la vez)
+      éxito         → 2000
    ============================================================ */
 
-#modalFactura,
+#modalFactura{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(80,10,30,.55);
+
+    backdrop-filter:blur(3px);
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:10px;
+
+    box-sizing:border-box;
+
+    z-index:1000;
+}
+
 #modalConfirmarFactura,
 #modalCargandoFactura,
-#modalExitoFactura,
-#modalOficio2,
-#modalConfirmarOficio2,
-#modalCargandoOficio2,
-#modalExitoOficio2 {
-    display:          none;
-    position:         fixed;
-    inset:            0;
-    background:       rgba(0, 0, 0, .38);
-    justify-content:  center;
-    align-items:      center;
-    z-index:          99999;
-    padding:          15px;
-    box-sizing:       border-box;
+#modalExitoFactura{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(80,10,30,.62);
+
+    backdrop-filter:blur(4px);
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:18px;
+
+    box-sizing:border-box;
+
+    z-index:2000;
 }
 
 
 /* ============================================================
-   2. ESTADO ACTIVO
-   JS agrega .activo para mostrar el modal como flex.
+   2. ACTIVO
    ============================================================ */
 
 #modalFactura.activo,
 #modalConfirmarFactura.activo,
 #modalCargandoFactura.activo,
-#modalExitoFactura.activo,
-#modalOficio2.activo,
-#modalConfirmarOficio2.activo,
-#modalCargandoOficio2.activo,
-#modalExitoOficio2.activo {
-    display: flex;
+#modalExitoFactura.activo{
+
+    display:flex;
 }
 
 
 /* ============================================================
-   3. CONTENEDOR PRINCIPAL – MODALES GRANDES
-   Tarjeta blanca con radio amplio y sombra elevada.
-   overflow:hidden recorta cualquier contenido desbordante.
+   3. CONTENEDOR PRINCIPAL
    ============================================================ */
 
-#modalFactura  .modal-spg-contenido,
-#modalOficio2  .modal-spg-contenido {
-    position:      relative;
-    width:         100%;
-    max-width:     980px;
-    background:    #ffffff;
-    border-radius: 26px;
-    padding:       22px 26px 26px;
-    box-sizing:    border-box;
-    overflow:      hidden;
-    animation:     modalFacturaEntrada .18s ease;
-    box-shadow:    0 18px 45px rgba(0, 0, 0, .14);
+#modalFactura .modal-spg-contenido{
+
+    width:100%;
+
+    max-width:950px;
+
+    max-height:92vh;
+
+    background:#ffffff;
+
+    border-radius:22px;
+
+    overflow:hidden;
+
+    display:flex;
+
+    flex-direction:column;
+
+    box-shadow:0 24px 60px rgba(0,0,0,.18);
+
+    animation:modalFacturaEntrada .15s ease;
+
+    box-sizing:border-box;
 }
 
 
 /* ============================================================
-   4. ANIMACIÓN DE ENTRADA COMPARTIDA
-   Escala suave desde ligeramente reducido hasta tamaño normal.
+   4. ANIMACIÓN
    ============================================================ */
 
-@keyframes modalFacturaEntrada {
-    from {
-        opacity:   0;
-        transform: scale(.97);
+@keyframes modalFacturaEntrada{
+
+    from{
+
+        opacity:0;
+
+        transform:translateY(8px) scale(.985);
     }
-    to {
-        opacity:   1;
-        transform: scale(1);
+
+    to{
+
+        opacity:1;
+
+        transform:translateY(0) scale(1);
     }
 }
 
 
 /* ============================================================
-   5. HEADER DE MODALES GRANDES
-   Título centrado con línea divisoria inferior para separar
-   visualmente el encabezado del cuerpo del formulario.
+   5. HEADER
    ============================================================ */
 
-#modalFactura .modal-header,
-#modalOficio2 .modal-header {
-    position:       relative;
-    display:        flex;
-    justify-content:center;
-    align-items:    center;
-    margin-bottom:  16px;
-    padding-bottom: 14px;
-    border-bottom:  1.5px solid #f1f1f1;
+#modalFactura .modal-header{
+
+    background:
+        linear-gradient(
+            135deg,
+            #8b1235 0%,
+            #5d0c22 100%
+        );
+
+    padding:14px 20px;
+
+    text-align:center;
+
+    flex-shrink:0;
 }
 
-#modalFactura .modal-header h2,
-#modalOficio2 .modal-header h2 {
-    margin:      0;
-    font-size:   26px;
-    font-weight: 800;
-    color:       #8b0d3a;
-    line-height: 1.1;
-    font-family: 'Montserrat', sans-serif;
-}
+#modalFactura .modal-header h2{
 
+    margin:0;
 
-/* ============================================================
-   6. BOTÓN DE CIERRE (OCULTO POR DISEÑO)
-   Se mantiene en el HTML pero no se muestra; los cierres
-   se gestionan a través del botón Cancelar.
-   ============================================================ */
+    color:#ffffff;
 
-#modalFactura .cerrar-modal,
-#modalOficio2 .cerrar-modal {
-    display: none;
+    font-size:18px;
+
+    font-weight:800;
+
+    line-height:1.2;
+
+    font-family:'Montserrat',sans-serif;
 }
 
 
 /* ============================================================
-   7. GRID DE CAMPOS – MODALES GRANDES
-   Tres columnas por defecto para aprovechar el ancho disponible.
-   Se reduce a 2 y luego a 1 en breakpoints menores.
+   6. CERRAR
    ============================================================ */
 
-#modalFactura  .spg-grid,
-#modalOficio2  .modal-body-grid {
-    display:               grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap:                   12px 18px;
-    margin-bottom:         6px;
+#modalFactura .cerrar-modal{
+
+    display:none;
 }
 
 
 /* ============================================================
-   8. GRUPO DE CAMPO (campo-spg)
-   Columna flexbox que apila label y control.
+   7. GRID
    ============================================================ */
 
-#modalFactura .campo-spg,
-#modalOficio2 .campo-spg {
-    display:        flex;
-    flex-direction: column;
-    gap:            5px;
+#modalFactura .spg-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(2,minmax(0,1fr));
+
+    gap:10px 14px;
+
+    padding:14px 18px;
+
+    overflow-y:auto;
+
+    box-sizing:border-box;
+}
+
+
+/* ============================================================
+   8. GRUPOS
+   ============================================================ */
+
+#modalFactura .campo-spg{
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:4px;
 }
 
 
 /* ============================================================
    9. LABELS
-   Texto de identificación de cada campo en mayúsculas.
    ============================================================ */
 
-#modalFactura .campo-spg label,
-#modalOficio2 .campo-spg label {
-    font-size:      11px;
-    font-weight:    800;
-    color:          #64748b;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    margin-left:    3px;
-    font-family:    'Montserrat', sans-serif;
-    text-align:     left;
+#modalFactura .campo-spg label{
+
+    font-size:11px;
+
+    font-weight:800;
+
+    color:#94a3b8;
+
+    text-transform:uppercase;
+
+    letter-spacing:.5px;
+
+    padding-left:2px;
+
+    font-family:'Montserrat',sans-serif;
 }
 
 
 /* ============================================================
-   10. INPUTS, SELECTS Y TEXTAREAS – BASE
-   Altura mínima uniforme, borde neutro y tipografía consistente.
-   resize:none en textarea para mantener el layout del grid.
+   10. INPUTS
    ============================================================ */
 
 #modalFactura .campo-spg input,
 #modalFactura .campo-spg select,
-#modalFactura .campo-spg textarea,
-#modalOficio2 .campo-spg input,
-#modalOficio2 .campo-spg select,
-#modalOficio2 .campo-spg textarea {
-    width:       100%;
-    min-height:  46px;
-    border-radius: 14px;
-    border:      1px solid #d6d6d6;
-    padding:     10px 14px;
-    font-size:   13px;
-    font-family: 'Montserrat', sans-serif;
-    box-sizing:  border-box;
-    outline:     none;
-    background:  #ffffff;
-    color:       #374151;
-    transition:  .18s ease;
-    resize:      none;
+#modalFactura .campo-spg textarea{
+
+    width:100%;
+
+    min-height:38px;
+
+    border-radius:10px;
+
+    border:1.5px solid #e2e8f0;
+
+    background:#f8fafc;
+
+    color:#334155;
+
+    padding:8px 12px;
+
+    font-size:13px;
+
+    font-family:'Montserrat',sans-serif;
+
+    outline:none;
+
+    transition:.15s ease;
+
+    resize:none;
+
+    box-sizing:border-box;
 }
 
 
 /* ============================================================
-   11. ESTADO: READONLY
-   Fondo gris claro para distinguir campos no editables
-   sin usar el degradado vino reservado para otros modales.
+   11. READONLY
    ============================================================ */
 
 #modalFactura .campo-spg input[readonly],
-#modalFactura .campo-spg textarea[readonly],
-#modalOficio2 .campo-spg input[readonly],
-#modalOficio2 .campo-spg textarea[readonly] {
-    background: #eef2f7;
-    color:      #556070;
-    cursor:     not-allowed;
+#modalFactura .campo-spg textarea[readonly]{
+
+    background:
+        linear-gradient(
+            180deg,
+            #962553 0%,
+            #7c163d 100%
+        ) !important;
+
+    color:#ffffff !important;
+
+    border:1.5px solid #7a1438 !important;
+
+    -webkit-text-fill-color:#ffffff !important;
+
+    font-weight:700 !important;
+
+    cursor:not-allowed !important;
+
+    opacity:1 !important;
+
+    box-shadow:0 4px 10px rgba(122,31,61,.14);
 }
 
 
 /* ============================================================
    12. PLACEHOLDER
-   Color gris claro para el texto de ayuda en campos vacíos.
    ============================================================ */
 
 #modalFactura .campo-spg input::placeholder,
-#modalFactura .campo-spg textarea::placeholder,
-#modalOficio2 .campo-spg input::placeholder,
-#modalOficio2 .campo-spg textarea::placeholder {
-    color: #b6bcc8;
+#modalFactura .campo-spg textarea::placeholder{
+
+    color:#cbd5e1;
 }
 
 
 /* ============================================================
-   13. ESTADO: FOCUS
-   Resalta el control activo con borde y halo de color primario.
+   13. FOCUS
    ============================================================ */
 
 #modalFactura .campo-spg input:focus,
 #modalFactura .campo-spg select:focus,
-#modalFactura .campo-spg textarea:focus,
-#modalOficio2 .campo-spg input:focus,
-#modalOficio2 .campo-spg select:focus,
-#modalOficio2 .campo-spg textarea:focus {
-    border-color: #8b0d3a;
-    box-shadow:   0 0 0 3px rgba(139, 13, 58, .10);
+#modalFactura .campo-spg textarea:focus{
+
+    border-color:#8b1235;
+
+    background:#ffffff;
+
+    box-shadow:0 0 0 3px rgba(139,18,53,.09);
 }
 
 
 /* ============================================================
-   14. SELECT – FLECHA PERSONALIZADA
-   Reemplaza el control nativo del navegador por un SVG inline.
+   14. SELECT
    ============================================================ */
 
-#modalFactura .campo-spg select,
-#modalOficio2 .campo-spg select {
-    cursor:              pointer;
-    appearance:          none;
-    -webkit-appearance:  none;
-    -moz-appearance:     none;
-    background-image:    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b7280' stroke-width='2.4' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-    background-repeat:   no-repeat;
-    background-position: right 13px center;
-    background-size:     11px;
-    padding-right:       36px;
+#modalFactura .campo-spg select{
+
+    cursor:pointer;
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    -moz-appearance:none;
+
+    background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2394a3b8' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+
+    background-position:right 12px center;
+
+    background-size:11px;
+
+    padding-right:34px;
 }
 
 
 /* ============================================================
-   15. ESTADO: ERROR DE VALIDACIÓN
-   Borde rojo con halo para campos con datos inválidos.
-   !important necesario para sobreescribir los estados base.
+   15. TEXTAREAS ESPECIALES
    ============================================================ */
 
-.input-error {
-    border:     1px solid #d11a2a !important;
-    box-shadow: 0 0 0 3px rgba(209, 26, 42, .10) !important;
-    background: #fff5f5 !important;
+#modalFactura textarea{
+
+    min-height:52px;
+
+    line-height:1.4;
+}
+
+#modalFactura textarea[name="motivo"],
+#modalFactura textarea[name="localidades"]{
+
+    min-height:70px;
 }
 
 
 /* ============================================================
-   16. FOOTER / BARRA DE BOTONES – MODALES GRANDES
-   Separada del grid con línea divisoria y espacio generoso.
-   flex-wrap permite que los botones bajen en pantallas angostas.
+   16. ERROR
    ============================================================ */
 
-#modalFactura .modal-footer,
-#modalOficio2 .modal-footer {
-    display:         flex;
-    justify-content: center;
-    align-items:     center;
-    gap:             12px;
-    margin-top:      22px;
-    padding-top:     16px;
-    border-top:      1.5px solid #f1f1f1;
-    flex-wrap:       wrap;
+#modalFactura .input-error{
+
+    border:1.5px solid #dc2626 !important;
+
+    background:#fff5f5 !important;
+
+    color:#991b1b !important;
+
+    box-shadow:0 0 0 3px rgba(220,38,38,.08) !important;
 }
 
 
 /* ============================================================
-   17. BOTONES DE MODALES GRANDES – BASE COMPARTIDA
-   Dimensiones, radio pill y tipografía comunes a
-   Cancelar y Generar de los modales Factura y Oficio 2.
+   17. FOOTER
+   ============================================================ */
+
+#modalFactura .modal-footer{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    align-items:center;
+
+    gap:12px;
+
+    padding:12px 18px;
+
+    border-top:1px solid #f1f5f9;
+
+    background:#ffffff;
+
+    flex-shrink:0;
+
+    margin-top:0;
+}
+
+
+/* ============================================================
+   18. BOTONES MODAL GRANDE
    ============================================================ */
 
 .btn-factura-cancelar,
-.btn-factura-generar,
-.btn-cancelar,
-.btn-guardar {
-    min-width:       145px;
-    height:          44px;
-    padding:         0 20px;
-    border:          none;
-    border-radius:   999px;
-    font-size:       14px;
-    font-weight:     700;
-    cursor:          pointer;
-    display:         inline-flex;
-    justify-content: center;
-    align-items:     center;
-    box-sizing:      border-box;
-    transition:      .18s ease;
-    white-space:     nowrap;
-    font-family:     'Montserrat', sans-serif;
-    letter-spacing:  .2px;
+.btn-factura-generar{
+
+    height:40px;
+
+    min-width:140px;
+
+    padding:0 20px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.15s ease;
+
+    display:inline-flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    white-space:nowrap;
+
+    font-family:'Montserrat',sans-serif;
+}
+
+.btn-factura-cancelar{
+
+    background:#f8fafc;
+
+    border:1.5px solid #e2e8f0;
+
+    color:#64748b;
+}
+
+.btn-factura-cancelar:hover{
+
+    background:#f1f5f9;
+
+    border-color:#cbd5e1;
+
+    transform:translateY(-1px);
+}
+
+.btn-factura-generar{
+
+    background:#8b1235;
+
+    border:none;
+
+    color:#ffffff;
+
+    box-shadow:0 4px 12px rgba(139,18,53,.22);
+}
+
+.btn-factura-generar:hover{
+
+    background:#6d0e29;
+
+    box-shadow:0 6px 16px rgba(139,18,53,.30);
+
+    transform:translateY(-1px);
+}
+
+.btn-factura-generar:disabled{
+
+    opacity:.60;
+
+    cursor:not-allowed;
+
+    box-shadow:none;
+
+    transform:none;
 }
 
 
 /* ============================================================
-   18. BOTÓN CANCELAR (GRANDE)
-   Fondo gris neutro; acción secundaria / de salida.
-   ============================================================ */
-
-.btn-factura-cancelar,
-.btn-cancelar {
-    background: #e4e4e4;
-    color:      #333333;
-}
-
-
-/* ============================================================
-   19. BOTÓN GENERAR / GUARDAR (GRANDE – ACCIÓN PRIMARIA)
-   Fondo vino con sombra de color para reforzar jerarquía.
-   ============================================================ */
-
-.btn-factura-generar,
-.btn-guardar {
-    background: #8b0d3a;
-    color:      #ffffff;
-    box-shadow: 0 4px 12px rgba(139, 13, 58, .22);
-}
-
-.btn-factura-generar:hover,
-.btn-guardar:hover {
-    background: #730b30;
-    box-shadow: 0 6px 16px rgba(139, 13, 58, .30);
-}
-
-.btn-factura-generar:disabled,
-.btn-guardar:disabled {
-    opacity:    .65;
-    cursor:     not-allowed;
-    box-shadow: none;
-}
-
-
-/* ============================================================
-   20. HOVER COMPARTIDO DE TODOS LOS BOTONES
-   Elevación sutil con translateY para retroalimentación táctil.
-   ============================================================ */
-
-.btn-factura-cancelar:hover,
-.btn-factura-generar:hover,
-.btn-cancelar:hover,
-.btn-guardar:hover,
-.btn-confirmar-cancelar:hover,
-.btn-confirmar-generar:hover {
-    transform: translateY(-1px);
-}
-
-
-/* ============================================================
-   21. CONTENEDOR – MODALES PEQUEÑOS
-   Tarjeta compacta compartida por: confirmar, cargando y éxito.
-   Columna centrada con padding cómodo para lectura rápida.
+   19. MODALES PEQUEÑOS — CONTENEDOR
    ============================================================ */
 
 .modal-confirmar-contenido,
-.modal-cargando-contenido,
-.modal-exito {
-    width:           100%;
-    max-width:       360px;
-    background:      #ffffff;
-    border-radius:   22px;
-    padding:         26px 22px 22px;
-    box-sizing:      border-box;
-    display:         flex;
-    flex-direction:  column;
-    align-items:     center;
-    justify-content: center;
-    text-align:      center;
-    box-shadow:      0 15px 35px rgba(0, 0, 0, .14);
-    animation:       modalFacturaEntrada .18s ease;
+.modal-cargando-contenido{
+
+    width:100%;
+
+    max-width:360px;
+
+    background:#ffffff;
+
+    border-radius:20px;
+
+    padding:24px 20px;
+
+    box-sizing:border-box;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    box-shadow:0 20px 50px rgba(0,0,0,.16);
+
+    animation:modalFacturaEntrada .15s ease;
 }
 
 
 /* ============================================================
-   22. TIPOGRAFÍA – MODALES PEQUEÑOS
+   20. TÍTULOS MODALES PEQUEÑOS
    ============================================================ */
 
-/* Título */
 .modal-confirmar-contenido h2,
-.modal-cargando-contenido  h2,
-.modal-exito               h2 {
-    margin:      0;
-    font-size:   22px;
-    font-weight: 800;
-    color:       #7d1238;
-    line-height: 1.2;
-    font-family: 'Montserrat', sans-serif;
+.modal-cargando-contenido h2{
+
+    margin:0;
+
+    font-size:20px;
+
+    font-weight:800;
+
+    color:#8b1235;
+
+    line-height:1.2;
+
+    font-family:'Montserrat',sans-serif;
 }
 
-/* Subtexto / descripción */
 .modal-confirmar-contenido p,
-.modal-cargando-contenido  p,
-.modal-exito               p {
-    margin-top:  10px;
-    font-size:   14px;
-    color:       #727272;
-    line-height: 1.55;
-    font-family: 'Montserrat', sans-serif;
+.modal-cargando-contenido p{
+
+    margin-top:10px;
+
+    font-size:13px;
+
+    color:#64748b;
+
+    line-height:1.55;
+
+    font-family:'Montserrat',sans-serif;
 }
 
 
 /* ============================================================
-   23. BARRA DE BOTONES – MODALES DE CONFIRMACIÓN
-   Columna de ancho completo con espacio entre acciones.
+   21. BOTONERA CONFIRMACIÓN
    ============================================================ */
 
-.modal-confirmar-botones {
-    width:      100%;
-    display:    flex;
-    flex-direction: column;
-    gap:        10px;
-    margin-top: 22px;
+.modal-confirmar-botones{
+
+    width:100%;
+
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+
+    margin-top:20px;
 }
 
 
 /* ============================================================
-   24. BOTONES – MODALES PEQUEÑOS – BASE COMPARTIDA
-   Ancho completo para ocupar el contenedor de confirmación.
+   22. BOTONES CONFIRMACIÓN
    ============================================================ */
 
 .btn-confirmar-cancelar,
-.btn-confirmar-generar,
-.btn-principal {
-    width:         100%;
-    height:        44px;
-    border:        none;
-    border-radius: 999px;
-    font-size:     14px;
-    font-weight:   700;
-    font-family:   'Montserrat', sans-serif;
-    cursor:        pointer;
-    transition:    .18s ease;
+.btn-confirmar-generar{
+
+    width:100%;
+
+    height:40px;
+
+    border-radius:10px;
+
+    font-size:13px;
+
+    font-weight:700;
+
+    cursor:pointer;
+
+    transition:.15s ease;
+
+    font-family:'Montserrat',sans-serif;
+
     letter-spacing:.2px;
 }
 
+.btn-confirmar-cancelar{
 
-/* ============================================================
-   25. BOTÓN CANCELAR (PEQUEÑO)
-   ============================================================ */
+    background:#f8fafc;
 
-.btn-confirmar-cancelar {
-    background: #e4e4e4;
-    color:      #333333;
+    border:1.5px solid #e2e8f0;
+
+    color:#64748b;
 }
 
-.btn-confirmar-cancelar:hover {
-    background: #d5d5d5;
+.btn-confirmar-cancelar:hover{
+
+    background:#f1f5f9;
+
+    border-color:#cbd5e1;
+
+    transform:translateY(-1px);
 }
 
+.btn-confirmar-generar{
 
-/* ============================================================
-   26. BOTÓN CONFIRMAR / PRINCIPAL (PEQUEÑO – ACCIÓN PRIMARIA)
-   ============================================================ */
+    background:#8b1235;
 
-.btn-confirmar-generar,
-.btn-principal {
-    background: #7d1238;
-    color:      #ffffff;
-    box-shadow: 0 4px 12px rgba(125, 18, 56, .20);
+    border:none;
+
+    color:#ffffff;
+
+    box-shadow:0 4px 12px rgba(139,18,53,.22);
 }
 
-.btn-confirmar-generar:hover,
-.btn-principal:hover {
-    background: #661030;
-    box-shadow: 0 6px 16px rgba(125, 18, 56, .28);
-}
+.btn-confirmar-generar:hover{
 
+    background:#6d0e29;
 
-/* ============================================================
-   27. SPINNER DE CARGA
-   Círculo animado que se muestra mientras se genera el PDF.
-   ============================================================ */
+    box-shadow:0 6px 16px rgba(139,18,53,.30);
 
-.loader-factura {
-    width:         52px;
-    height:        52px;
-    border:        5px solid #ececec;
-    border-top:    5px solid #7d1238;
-    border-radius: 50%;
-    animation:     spinFactura 1s linear infinite;
-    margin-bottom: 16px;
-    flex-shrink:   0;
+    transform:translateY(-1px);
 }
 
 
 /* ============================================================
-   28. ANIMACIÓN DEL SPINNER
+   23. SPINNER
    ============================================================ */
 
-@keyframes spinFactura {
-    to { transform: rotate(360deg); }
+.loader-factura{
+
+    width:46px;
+
+    height:46px;
+
+    border:4px solid #e2e8f0;
+
+    border-top:4px solid #8b1235;
+
+    border-radius:50%;
+
+    animation:spinFactura .75s linear infinite;
+
+    margin-bottom:14px;
+
+    flex-shrink:0;
+}
+
+@keyframes spinFactura{
+
+    from{ transform:rotate(0deg); }
+
+    to{ transform:rotate(360deg); }
 }
 
 
 /* ============================================================
-   29. RESPONSIVE – PANTALLAS ≤ 950 px
-   El grid de 3 columnas pasa a 2 para mantener legibilidad.
+   24. AJUSTES VISUALES
    ============================================================ */
 
-@media (max-width: 950px) {
+#modalFactura input,
+#modalFactura select,
+#modalFactura textarea{
 
-    #modalFactura .spg-grid,
-    #modalOficio2 .modal-body-grid {
-        grid-template-columns: repeat(2, 1fr);
+    box-shadow:none;
+}
+
+#modalFactura input:hover,
+#modalFactura select:hover,
+#modalFactura textarea:hover{
+
+    border-color:#cbd5e1;
+}
+
+#modalFactura input[readonly]:hover,
+#modalFactura textarea[readonly]:hover{
+
+    border-color:#7a1438 !important;
+}
+
+
+/* ============================================================
+   25. ACTIVE STATES
+   ============================================================ */
+
+.btn-factura-cancelar,
+.btn-factura-generar,
+.btn-confirmar-cancelar,
+.btn-confirmar-generar{
+
+    user-select:none;
+}
+
+.btn-factura-cancelar:active,
+.btn-factura-generar:active,
+.btn-confirmar-cancelar:active,
+.btn-confirmar-generar:active{
+
+    transform:translateY(1px);
+}
+
+
+/* ============================================================
+   26. FULL HD
+   ============================================================ */
+
+@media (min-width:1400px){
+
+    #modalFactura .modal-spg-contenido{
+
+        max-width:980px;
+    }
+
+    #modalFactura .spg-grid{
+
+        gap:10px 16px;
     }
 }
 
 
 /* ============================================================
-   30. RESPONSIVE – PANTALLAS ≤ 768 px
-   Grid de una sola columna, altura máxima con scroll interno
-   y botones apilados a ancho completo.
+   27. TABLETS
    ============================================================ */
 
-@media (max-width: 768px) {
+@media (max-width:950px){
 
-    /* Padding reducido en el overlay */
-    #modalFactura,
-    #modalOficio2 {
-        padding: 10px;
+    #modalFactura{
+
+        padding:10px;
     }
 
-    /* Tarjeta con scroll propio para evitar desbordamiento */
-    #modalFactura .modal-spg-contenido,
-    #modalOficio2 .modal-spg-contenido {
-        max-height:    95vh;
-        overflow-y:    auto;
-        padding:       18px;
-        border-radius: 22px;
+    #modalFactura .modal-spg-contenido{
+
+        width:100%;
+
+        max-height:94vh;
     }
 
-    /* Título más pequeño */
-    #modalFactura .modal-header h2,
-    #modalOficio2 .modal-header h2 {
-        font-size: 22px;
+    #modalFactura .spg-grid{
+
+        grid-template-columns:repeat(2,minmax(0,1fr));
+
+        gap:12px;
+    }
+}
+
+
+/* ============================================================
+   28. MÓVIL
+   ============================================================ */
+
+@media (max-width:768px){
+
+    #modalFactura{
+
+        align-items:flex-start;
+
+        overflow-y:auto;
     }
 
-    /* Grid de una sola columna */
-    #modalFactura .spg-grid,
-    #modalOficio2 .modal-body-grid {
-        grid-template-columns: 1fr;
+    #modalFactura .modal-spg-contenido{
+
+        margin-top:10px;
+
+        border-radius:18px;
+
+        max-height:none;
     }
 
-    /* Footer apilado */
-    #modalFactura .modal-footer,
-    #modalOficio2 .modal-footer {
-        flex-direction: column;
-        gap:            10px;
+    #modalFactura .modal-header{
+
+        padding:14px 16px;
     }
 
-    /* Botones a ancho completo */
+    #modalFactura .modal-header h2{
+
+        font-size:17px;
+    }
+
+    #modalFactura .spg-grid{
+
+        grid-template-columns:1fr;
+
+        padding:16px;
+
+        gap:12px;
+    }
+
+    #modalFactura .modal-footer{
+
+        flex-direction:column;
+
+        justify-content:center;
+
+        align-items:stretch;
+
+        gap:10px;
+    }
+
     .btn-factura-cancelar,
-    .btn-factura-generar,
-    .btn-cancelar,
-    .btn-guardar {
-        width: 100%;
-    }
+    .btn-factura-generar{
 
-    /* Modales pequeños a casi todo el ancho */
-    .modal-confirmar-contenido,
-    .modal-cargando-contenido,
-    .modal-exito {
-        max-width: 95%;
-        padding:   22px;
+        width:100%;
+
+        min-width:100%;
     }
 }
+
+
+/* ============================================================
+   29. MODALES PEQUEÑOS RESPONSIVE
+   ============================================================ */
+
+@media (max-width:600px){
+
+    .modal-confirmar-contenido,
+    .modal-cargando-contenido{
+
+        width:100%;
+
+        max-width:100%;
+
+        border-radius:18px;
+
+        padding:20px 16px;
+    }
+
+    .modal-confirmar-contenido h2,
+    .modal-cargando-contenido h2{
+
+        font-size:18px;
+    }
+
+    .modal-confirmar-contenido p,
+    .modal-cargando-contenido p{
+
+        font-size:12px;
+    }
+}
+
+
+/* ============================================================
+   FIN FACTURA.CSS
+   ============================================================ */
