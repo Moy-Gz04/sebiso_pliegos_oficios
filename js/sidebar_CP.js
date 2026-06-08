@@ -143,8 +143,13 @@ function abrirModal(id){
 
         modal.style.display = "flex";
 
-    }
+        const overlay =
+        document.getElementById("overlay");
 
+        if(overlay){
+            overlay.style.display = "block";
+        }
+    }
 }
 
 function cerrarModal(id){
@@ -156,8 +161,13 @@ function cerrarModal(id){
 
         modal.style.display = "none";
 
-    }
+        const overlay =
+        document.getElementById("overlay");
 
+        if(overlay){
+            overlay.style.display = "none";
+        }
+    }
 }
 
 /* =========================
@@ -166,42 +176,35 @@ function cerrarModal(id){
 
 function logout(){
 
-    abrirModal(
-        'modalLogout'
-    );
-
+    abrirModal('modalLogout');
 }
 
 /* =========================
    CONFIRMAR LOGOUT
+   Se usa setTimeout para esperar a que
+   el sidebar termine de inyectarse en el DOM
+   antes de buscar el botón confirmarLogout
 ========================= */
 
-const btnConfirmarLogout =
-document.getElementById(
-    'confirmarLogout'
-);
+setTimeout(() => {
 
-if(btnConfirmarLogout){
+    const btnConfirmarLogout =
+    document.getElementById('confirmarLogout');
 
-    btnConfirmarLogout.addEventListener(
+    if(btnConfirmarLogout){
 
-        'click',
+        btnConfirmarLogout.addEventListener(
 
-        function(){
+            'click',
 
-            localStorage.removeItem(
-                'token'
-            );
+            function(){
 
-            localStorage.removeItem(
-                'area'
-            );
+                localStorage.removeItem('token');
+                localStorage.removeItem('area');
 
-            window.location.href =
-            'index.html';
+                window.location.href = 'index.html';
+            }
+        );
+    }
 
-        }
-
-    );
-
-}
+}, 0);
