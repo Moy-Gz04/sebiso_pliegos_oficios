@@ -202,7 +202,7 @@ setTimeout(() => {
                 localStorage.removeItem('token');
                 localStorage.removeItem('area');
 
-                window.location.href = 'index.html';
+                window.location.href = '../index.html';
             }
         );
     }
