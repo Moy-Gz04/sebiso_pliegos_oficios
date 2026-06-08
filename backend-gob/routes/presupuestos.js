@@ -11,15 +11,15 @@ const path = require('path');
 const fs = require('fs');
 
 /* =========================
-   CREAR CARPETA SI NO EXISTE
+   CARPETA BASE
 ========================= */
 
-const uploadPath =
+const uploadBase =
 path.join(__dirname, '..', 'uploads', 'oficios');
 
-if (!fs.existsSync(uploadPath)) {
+if (!fs.existsSync(uploadBase)) {
 
-    fs.mkdirSync(uploadPath, {
+    fs.mkdirSync(uploadBase, {
 
         recursive: true
 
@@ -29,13 +29,31 @@ if (!fs.existsSync(uploadPath)) {
 
 /* =========================
    CONFIG PDF
+   Guarda en subcarpeta por area_id
+   para evitar que archivos con el mismo
+   nombre se sobreescriban entre áreas
 ========================= */
 
 const storage = multer.diskStorage({
 
     destination: (req, file, cb) => {
 
-        cb(null, uploadPath);
+        const area_id = req.body.area_id || 'sin-area';
+
+        const carpeta =
+        path.join(uploadBase, String(area_id));
+
+        if (!fs.existsSync(carpeta)) {
+
+            fs.mkdirSync(carpeta, {
+
+                recursive: true
+
+            });
+
+        }
+
+        cb(null, carpeta);
 
     },
 
@@ -148,10 +166,6 @@ router.get(
                 consulta.rows
             );
 
-            /* =========================
-               SIN RESULTADOS
-            ========================= */
-
             if(
                 consulta.rows.length === 0
             ){
@@ -169,10 +183,6 @@ router.get(
                 });
 
             }
-
-            /* =========================
-               RESPUESTA
-            ========================= */
 
             res.json({
 
@@ -224,6 +234,7 @@ router.get(
     }
 
 );
+
 /* =========================
    CREAR PRESUPUESTO
 ========================= */
@@ -346,11 +357,10 @@ router.post(
 
             ) {
 
+                // Guardar como "area_id/nombrearchivo.pdf"
                 oficio_autorizacion =
 
-                    req.files
-                    .oficio_autorizacion[0]
-                    .filename;
+                    `${area_id}/${req.files.oficio_autorizacion[0].filename}`;
 
                 oficio_autorizacion_nombre =
 
@@ -368,11 +378,10 @@ router.post(
 
             ) {
 
+                // Guardar como "area_id/nombrearchivo.pdf"
                 oficio_adecuacion =
 
-                    req.files
-                    .oficio_adecuacion[0]
-                    .filename;
+                    `${area_id}/${req.files.oficio_adecuacion[0].filename}`;
 
                 oficio_adecuacion_nombre =
 
@@ -454,10 +463,6 @@ router.post(
 
             );
 
-            /* =========================
-               ACTUALIZAR ÚLTIMOS OFICIOS
-            ========================= */
-
             await pool.query(
 
                 `
@@ -491,16 +496,32 @@ router.post(
                 DO UPDATE SET
 
                     oficio_autorizacion =
-                    EXCLUDED.oficio_autorizacion,
+                    CASE
+                        WHEN EXCLUDED.oficio_autorizacion IS NOT NULL
+                        THEN EXCLUDED.oficio_autorizacion
+                        ELSE ultimos_oficios_por_up.oficio_autorizacion
+                    END,
 
                     oficio_autorizacion_nombre =
-                    EXCLUDED.oficio_autorizacion_nombre,
+                    CASE
+                        WHEN EXCLUDED.oficio_autorizacion_nombre IS NOT NULL
+                        THEN EXCLUDED.oficio_autorizacion_nombre
+                        ELSE ultimos_oficios_por_up.oficio_autorizacion_nombre
+                    END,
 
                     oficio_adecuacion =
-                    EXCLUDED.oficio_adecuacion,
+                    CASE
+                        WHEN EXCLUDED.oficio_adecuacion IS NOT NULL
+                        THEN EXCLUDED.oficio_adecuacion
+                        ELSE ultimos_oficios_por_up.oficio_adecuacion
+                    END,
 
                     oficio_adecuacion_nombre =
-                    EXCLUDED.oficio_adecuacion_nombre,
+                    CASE
+                        WHEN EXCLUDED.oficio_adecuacion_nombre IS NOT NULL
+                        THEN EXCLUDED.oficio_adecuacion_nombre
+                        ELSE ultimos_oficios_por_up.oficio_adecuacion_nombre
+                    END,
 
                     fecha_actualizacion = NOW()
                 `,
@@ -596,30 +617,18 @@ router.get(
 
             );
 
-            const claveCorta =
-            area
-            .split('-')
-            .slice(0, 2)
-            .join('-')
-            .trim();
-
             const gastos =
             await pool.query(
 
                 `
-                SELECT *
-
-                FROM gastos
-
-                WHERE TRIM(area) LIKE $1
-
-                ORDER BY fecha DESC
+                SELECT g.*
+                FROM gastos g
+                INNER JOIN presupuestos_mensuales pm ON pm.id = g.presupuesto_id
+                INNER JOIN areas_presupuestales ap ON ap.id = pm.area_id
+                WHERE ap.clave_area = $1
+                ORDER BY g.fecha DESC
                 `,
-                [
-
-                    `${claveCorta}%`
-
-                ]
+                [area]
 
             );
 
@@ -829,7 +838,7 @@ router.put(
 
                         path.join(
 
-                            uploadPath,
+                            uploadBase,
 
                             registro.oficio_autorizacion
 
@@ -845,9 +854,7 @@ router.put(
 
                 nuevoPDFAutorizacion =
 
-                    req.files
-                    .oficio_autorizacion[0]
-                    .filename;
+                    `${registro.area_id}/${req.files.oficio_autorizacion[0].filename}`;
 
                 nuevoNombreAutorizacion =
 
@@ -871,7 +878,7 @@ router.put(
 
                         path.join(
 
-                            uploadPath,
+                            uploadBase,
 
                             registro.oficio_adecuacion
 
@@ -887,9 +894,7 @@ router.put(
 
                 nuevoPDFAdecuacion =
 
-                    req.files
-                    .oficio_adecuacion[0]
-                    .filename;
+                    `${registro.area_id}/${req.files.oficio_adecuacion[0].filename}`;
 
                 nuevoNombreAdecuacion =
 
@@ -1034,7 +1039,7 @@ router.delete(
                 if (!archivo) return;
 
                 const ruta =
-                path.join(uploadPath, archivo);
+                path.join(uploadBase, archivo);
 
                 if (fs.existsSync(ruta)) {
 
