@@ -60,6 +60,16 @@ const saldoDisponible = document.getElementById("saldoDisponible");
 
 
 /* ================================================
+   CONTROL DE CARGA ACTIVA
+   Evita que peticiones antiguas sobreescriban
+   resultados de peticiones más recientes
+================================================ */
+
+let cargaHistorialId = 0;
+let cargaGastosId = 0;
+
+
+/* ================================================
    TRANSFORMAR NOMBRE DE ARCHIVO
    Reemplaza los espacios del nombre del archivo
    por "/" para estandarizar su visualización.
@@ -128,6 +138,39 @@ function abrirModalMensaje(titulo, mensaje, tipo = "ok", callback = null) {
     const tituloModal = document.getElementById("tituloModalMensaje");
     const textoModal  = document.getElementById("textoModalMensaje");
     const botones     = document.getElementById("botonesModalMensaje");
+
+    // Cambiar ícono según el tipo de modal
+    const icono = document.getElementById("modalConfirmIcon");
+
+    if (tipo === "confirmar") {
+
+        icono.style.background = "#e53e3e";
+        icono.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+        </svg>`;
+
+    } else if (tipo === "error") {
+
+        icono.style.background = "#e53e3e";
+        icono.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>`;
+
+    } else {
+
+        icono.style.background = "#38a169";
+        icono.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+        </svg>`;
+    }
 
     tituloModal.innerText = titulo;
     textoModal.innerText  = mensaje;
@@ -214,14 +257,14 @@ btnGuardar.addEventListener("click", async () => {
         // Validar saldo autorizado
         if (!saldoAutorizado) {
 
-            abrirModalMensaje("Campos incompletos", "Ingrese saldo autorizado");
+            abrirModalMensaje("Campos incompletos", "Ingrese saldo autorizado", "error");
             return;
         }
 
         // Validar que el área exista en el mapa
         if (!validarArea(area)) {
 
-            abrirModalMensaje("Área inválida", `Área recibida: ${area}`);
+            abrirModalMensaje("Área inválida", `Área recibida: ${area}`, "error");
             return;
         }
 
@@ -246,7 +289,7 @@ btnGuardar.addEventListener("click", async () => {
 
         if (!data.ok) {
 
-            abrirModalMensaje("Error", data.msg || "Error al guardar");
+            abrirModalMensaje("Error", data.msg || "Error al guardar", "error");
             return;
         }
 
@@ -265,7 +308,7 @@ btnGuardar.addEventListener("click", async () => {
     } catch (error) {
 
         console.error("Error al guardar presupuesto:", error);
-        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado");
+        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado", "error");
     }
 });
 
@@ -280,13 +323,18 @@ btnGuardar.addEventListener("click", async () => {
 
 async function cargarHistorial() {
 
+    const miCarga = ++cargaHistorialId;
+
     try {
 
         const area = document.getElementById("selectArea").value.trim();
 
         const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
         const resultado = await respuesta.json();
-        const data      = resultado.presupuestos || [];
+
+        if (miCarga !== cargaHistorialId) return;
+
+        const data = resultado.presupuestos || [];
 
         // Ordenar por año DESC, luego por mes DESC
         data.sort((a, b) => {
@@ -386,13 +434,18 @@ async function cargarHistorial() {
 
 async function cargarGastos() {
 
+    const miCarga = ++cargaGastosId;
+
     try {
 
         const area = document.getElementById("selectArea").value.trim();
 
         const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
         const resultado = await respuesta.json();
-        const gastos    = resultado.gastos || [];
+
+        if (miCarga !== cargaGastosId) return;
+
+        const gastos = resultado.gastos || [];
 
         tbodyGastos.innerHTML = "";
 
@@ -447,7 +500,7 @@ async function editarRegistro(id) {
 
         if (!registro) {
 
-            abrirModalMensaje("Error", "Registro no encontrado");
+            abrirModalMensaje("Error", "Registro no encontrado", "error");
             return;
         }
 
@@ -476,7 +529,7 @@ async function editarRegistro(id) {
     } catch (error) {
 
         console.error("Error al editar registro:", error);
-        abrirModalMensaje("Error", "Error cargando registro");
+        abrirModalMensaje("Error", "Error cargando registro", "error");
     }
 }
 
@@ -521,13 +574,13 @@ document.getElementById("btnActualizar").addEventListener("click", async () => {
 
         } else {
 
-            abrirModalMensaje("Error", data.msg || "Error actualizando");
+            abrirModalMensaje("Error", data.msg || "Error actualizando", "error");
         }
 
     } catch (error) {
 
         console.error("Error al actualizar registro:", error);
-        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado");
+        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado", "error");
     }
 });
 
@@ -565,13 +618,13 @@ async function eliminarRegistro(id) {
 
                 } else {
 
-                    abrirModalMensaje("Error", data.msg || "Error eliminando");
+                    abrirModalMensaje("Error", data.msg || "Error eliminando", "error");
                 }
 
             } catch (error) {
 
                 console.error("Error al eliminar registro:", error);
-                abrirModalMensaje("Error servidor", "Ocurrió un error inesperado");
+                abrirModalMensaje("Error servidor", "Ocurrió un error inesperado", "error");
             }
         }
     );

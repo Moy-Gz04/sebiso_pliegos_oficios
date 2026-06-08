@@ -4,7 +4,7 @@
 
 const API_OFICIO2 =
 
-"https://script.google.com/macros/s/AKfycbyIat6ZY_-OANmzObONC05-5mhbqQVympYcD4-XGr8wWtcJXCz5DEwOPKqTVicSm2LQ/exec";
+"https://script.google.com/macros/s/AKfycbzZopi_HdIgVTt_jXw-oWk-5EwDhrp_6_hQ0XxCUcyU7rvIPo5b4jwORp8t5rq3APB8/exec";
 
 /* =========================
    VALIDAR CAMPOS OFICIO 2
