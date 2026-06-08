@@ -1,6 +1,6 @@
-up 01
-USER: admin 
-PASSWORD: 1234
+up 01 DESPACHO
+USER: UP01
+PASSWORD: upDESgobmx
 
 up 01 CA
 USER: UPCA 
@@ -33,6 +33,18 @@ PASSWORD: up08gobmx
 up 13
 USER: UP13 
 PASSWORD: up13gobmx
+
+up 14
+USER: UP14 
+PASSWORD: up14gobmx
+
+up 15
+USER: UP15 
+PASSWORD: up15gobmx
+
+up 16
+USER: UP16 
+PASSWORD: up14gobmx
 
 UP-Administracion
 adminsebisogob

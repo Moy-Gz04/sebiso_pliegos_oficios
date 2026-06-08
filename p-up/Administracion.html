@@ -674,36 +674,32 @@ if(area !== 'Administracion'){
     </div>
 
     <!-- =========================
-     MODAL MENSAJES
-========================= -->
-<div class="modal" id="modalMensaje">
-    <div class="modal-contenido modal-confirm">
+         MODAL MENSAJES
+    ========================= -->
 
-        <div class="modal-confirm-icon">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
-                 stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="3 6 5 6 21 6"/>
-                <path d="M19 6l-1 14H6L5 6"/>
-                <path d="M10 11v6M14 11v6"/>
-                <path d="M9 6V4h6v2"/>
-            </svg>
+    <div class="modal" id="modalMensaje">
+        <div class="modal-contenido modal-confirm">
+
+            <!-- id="modalConfirmIcon" permite cambiar el ícono dinámicamente desde JS -->
+            <div class="modal-confirm-icon" id="modalConfirmIcon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                     stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="20 6 9 17 4 12"/>
+                </svg>
+            </div>
+
+            <h2 id="tituloModalMensaje">Mensaje</h2>
+
+            <p id="textoModalMensaje"></p>
+
+            <div class="modal-botones" id="botonesModalMensaje">
+                <button type="button" class="btn-principal" onclick="cerrarModalMensaje()">
+                    Aceptar
+                </button>
+            </div>
+
         </div>
-
-        <h2 id="tituloModalMensaje">Eliminar registro</h2>
-
-        <p id="textoModalMensaje">¿Deseas eliminar este registro? Esta acción no se puede deshacer.</p>
-
-        <div class="modal-botones" id="botonesModalMensaje">
-            <button type="button" class="btn-secundario" onclick="cerrarModalMensaje()">
-                Cancelar
-            </button>
-            <button type="button" class="btn-danger" onclick="cerrarModalMensaje()">
-                Eliminar
-            </button>
-        </div>
-
     </div>
-</div>
 
     <!-- OVERLAY -->
 
