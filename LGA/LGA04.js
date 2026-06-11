@@ -395,10 +395,17 @@ async function generarRecibo(){
                 ).value,
 
                 "<<DIAS>>":
+                desglosarDiasPDF(
 
-                document.getElementById(
-                    "reciboDias"
-                ).value,
+                    document.getElementById(
+                        "reciboDias"
+                    ).value.split(/,?\s+y\s+|,\s*/)[0],
+
+                    document.getElementById(
+                        "reciboDias"
+                    ).value.split(/,?\s+y\s+|,\s*/).pop()
+
+                ),
 
                 "<<MES>>":
 

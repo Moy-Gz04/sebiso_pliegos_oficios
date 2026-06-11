@@ -70,17 +70,25 @@ function formatearMoneda(valor) {
  * @param {number|string} fin
  * @returns {string}
  */
-function desglosarDias(inicio, fin) {
-  inicio = parseInt(inicio);
-  fin    = parseInt(fin);
-  if (isNaN(inicio) || isNaN(fin)) return "";
-  if (inicio === fin) return `${inicio}`;
-  const dias = [];
-  for (let i = inicio; i <= fin; i++) dias.push(i);
-  if (dias.length === 2) return `${dias[0]} y ${dias[1]}`;
-  return `${dias.slice(0, -1).join(", ")} y ${dias[dias.length - 1]}`;
-}
+  // Para mostrar en pantalla — sin cambios
+  function desglosarDias(inicio, fin) {
+    inicio = parseInt(inicio);
+    fin    = parseInt(fin);
+    if (isNaN(inicio) || isNaN(fin)) return "";
+    if (inicio === fin) return `${inicio}`;
+    const dias = [];
+    for (let i = inicio; i <= fin; i++) dias.push(i);
+    if (dias.length === 2) return `${dias[0]} y ${dias[1]}`;
+    return `${dias.slice(0, -1).join(", ")} y ${dias[dias.length - 1]}`;
+  }
 
+  // Para el PDF — con prefijo
+  function desglosarDiasPDF(inicio, fin) {
+    const texto = desglosarDias(inicio, fin);
+    if (!texto) return "";
+    const esSolo = parseInt(inicio) === parseInt(fin);
+    return esSolo ? `el día ${texto}` : `los días ${texto}`;
+  }
 /* ============================================================
    2B. CONVERSIÓN DE NÚMERO A LETRAS
    ============================================================ */

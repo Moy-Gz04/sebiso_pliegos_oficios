@@ -458,10 +458,17 @@ async function generarOficio2(){
                 ).value,
 
                 "<<DIAS>>":
+                desglosarDiasPDF(
 
-                document.getElementById(
-                    "oficio2Dias"
-                ).value,
+                    document.getElementById(
+                        "reciboDias"
+                    ).value.split(/,?\s+y\s+|,\s*/)[0],
+
+                    document.getElementById(
+                        "reciboDias"
+                    ).value.split(/,?\s+y\s+|,\s*/).pop()
+
+                ),
 
                 "<<MES>>":
 
