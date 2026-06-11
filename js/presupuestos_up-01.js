@@ -87,15 +87,17 @@ function transformarNombreArchivo(nombreArchivo) {
 
     if (!nombreArchivo) return "";
 
-    // Eliminar extensión del archivo (ej. ".pdf", ".docx")
-    const sinExtension = nombreArchivo.replace(/\.[^/.]+$/, "");
+    // Tomar solo el nombre del archivo, ignorar la subcarpeta
+    const soloNombre = nombreArchivo.split('/').pop();
 
-    // Reemplazar cada espacio por "/"
+    // Eliminar extensión
+    const sinExtension = soloNombre.replace(/\.[^/.]+$/, "");
+
+    // Reemplazar espacios por "/"
     const transformado = sinExtension.replace(/ /g, "/");
 
     return transformado;
 }
-
 
 /* ================================================
    VALIDAR ÁREA
