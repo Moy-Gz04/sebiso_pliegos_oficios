@@ -144,7 +144,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "PROGRAMA FOMENTO AL DESARROLLO DE LA PARTICIPACIÓN SOCIAL"
+    "Programa fomento al desarrollo de la participación social"
 
 ];
 
