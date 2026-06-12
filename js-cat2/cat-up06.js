@@ -1,30 +1,23 @@
 /* =========================
    CATÁLOGO DE PERSONAS
 ========================= */
+
+/* =========================
+   CATÁLOGO DE MESES
+========================= */
+
 const personas = [
 
     {
         nombre: "Mtro. Alejandro Salinas Ayotitla",
-        categoria: "Director General",
+        categoria: "Director General B",
         rfc: "SAAA860325S81"
-    },
-
-    {
-        nombre: "Ing. Ricardo Hernández Arrieta",
-        categoria: "Subdirector de área C",
-        rfc: "HEAR970816ND1"
     },
 
     {
         nombre: "Ing. Cesar Lozano López",
         categoria: "Subdirector de área C",
         rfc: "LOLC7304019L3"
-    },
-
-    {
-        nombre: "Lic. Idalit Bautista Hernandez",
-        categoria: "Subdirector de área C",
-        rfc: "BAHI930108695"
     },
 
     {
@@ -35,31 +28,31 @@ const personas = [
 
     {
         nombre: "Lic. Nestor Martin Castillo Ventura",
-        categoria: "Jefe de unidad de proyectos",
+        categoria: "Subdirector de área C",
         rfc: "CAVN9201107E8"
     },
 
     {
         nombre: "C. Juan Espinoza Islas",
-        categoria: "Subdirector A",
+        categoria: "Subdirector Adjunto",
         rfc: "EIIJ5911125P5"
     },
 
     {
         nombre: "C. Guillermo Ayala Parra",
-        categoria: "Subdirector A",
+        categoria: "Subdirector Adjunto",
         rfc: "AAPG681005N62"
     },
 
     {
         nombre: "M.C.C. Carlos Abundio Contreras González",
-        categoria: "Supervisor/Analista",
+        categoria: "Jefe de unidad de proyectos",
         rfc: "COGC7709151X2"
     },
 
     {
         nombre: "Ing. Javier Ortiz Nochebuena",
-        categoria: "Supervisor/Analista",
+        categoria: "Subdirector de area A",
         rfc: "OINJ950706952"
     },
 
@@ -101,7 +94,7 @@ const personas = [
 
     {
         nombre: "LIC. Ema Roza Roa Jiménez",
-        categoria: "Asesor Técnico/Gestor",
+        categoria: "Asesor Técnico/Gestor A",
         rfc: "ROJE680829M74"
     },
 
@@ -113,7 +106,7 @@ const personas = [
 
     {
         nombre: "Lic. Axel Armando Huerta Guarneros",
-        categoria: "Tecnico especializado",
+        categoria: "Supervisor/Analista",
         rfc: "HUGA040531CH3"
     },
 
@@ -128,26 +121,6 @@ const personas = [
         categoria: "Tecnico especializado",
         rfc: "FUOD010531Q28"
     }
-
-];
-/* =========================
-   CATÁLOGO DE MESES
-========================= */
-
-const meses = [
-
-    "enero",
-    "febrero",
-    "marzo",
-    "abril",
-    "mayo",
-    "junio",
-    "julio",
-    "agosto",
-    "septiembre",
-    "octubre",
-    "noviembre",
-    "diciembre"
 
 ];
 

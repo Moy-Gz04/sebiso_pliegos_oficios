@@ -86,7 +86,7 @@ function formatearMoneda(valor) {
     const texto = desglosarDias(inicio, fin);
     if (!texto) return "";
     const esSolo = parseInt(inicio) === parseInt(fin);
-    return esSolo ? `el día ${texto}` : `los días ${texto}`;
+    return esSolo ? `al día ${texto}` : `a los días ${texto}`;
   }
 /* ============================================================
    2B. CONVERSIÓN DE NÚMERO A LETRAS
