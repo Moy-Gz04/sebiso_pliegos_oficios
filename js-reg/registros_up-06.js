@@ -86,7 +86,7 @@ function formatearMoneda(valor) {
     const texto = desglosarDias(inicio, fin);
     if (!texto) return "";
     const esSolo = parseInt(inicio) === parseInt(fin);
-    return esSolo ? `al día ${texto}` : `a los días ${texto}`;
+    return esSolo ? `al día ${texto}` : `los días ${texto}`;
   }
 /* ============================================================
    2B. CONVERSIÓN DE NÚMERO A LETRAS
@@ -251,37 +251,35 @@ const CAMPOS_REQUERIDOS = {
   ],
 
   RECIBO: [
-    { id: "reciboFolio",        label: "Documento"   },
-    { id: "reciboPersona",      label: "Persona"     },
-    { id: "reciboMunicipio",    label: "Municipio"   },
-    { id: "reciboMotivo",       label: "Motivo"      },
-    { id: "reciboLocalidades",  label: "Localidades" },
-    { id: "reciboDias",         label: "Días"        },
-    { id: "reciboMes",          label: "Mes"         },
-    { id: "reciboAnio",         label: "Año"         },
-    { id: "reciboUnidad",       label: "Unidad"      },
-    { id: "reciboImporte",      label: "Importe"     },
-    { id: "reciboRetenciones",  label: "Retenciones" },
-    { id: "reciboTotal",        label: "Total"       },
+    { id: "reciboFolio",       label: "Documento"   },
+    { id: "reciboPersona",     label: "Persona"     },
+    { id: "reciboMunicipio",   label: "Municipio"   },
+    { id: "reciboMotivo",      label: "Motivo"      },
+    { id: "reciboDias",        label: "Días"        },
+    { id: "reciboMes",         label: "Mes"         },
+    { id: "reciboAnio",        label: "Año"         },
+    { id: "reciboUnidad",      label: "Unidad"      },
+    { id: "reciboImporte",     label: "Importe"     },
+    { id: "reciboRetenciones", label: "Retenciones" },
+    { id: "reciboTotal",       label: "Total"       },
   ],
 
   FACTURA: [
-    { id: "facturaFolio",          label: "Folio"           },
-    { id: "facturaPersona",        label: "Persona"         },
-    { id: "facturaMunicipio",      label: "Municipio"       },
-    { id: "facturaMotivo",         label: "Motivo"          },
-    { id: "facturaLocalidad",      label: "Localidad"       },
-    { id: "facturaDias",           label: "Días"            },
-    { id: "facturaMes",            label: "Mes"             },
-    { id: "facturaImporte",        label: "Importe",        tipo: "money" },
-    { id: "facturaRetenciones",    label: "Retenciones",    tipo: "money" },
-    { id: "facturaTotal",          label: "Total",          tipo: "money" },
-    { id: "facturaTotalLetra",     label: "Total en letra"  },
-    { id: "facturaProyecto",       label: "Proyecto"        },
-    { id: "facturaNombreProyecto", label: "Nombre proyecto" },
-    { id: "facturaOficio",         label: "Oficio"          },
-    { id: "facturaAdecuacion",     label: "Adecuación"      },
-    { id: "facturaFecha",          label: "Fecha"           },
+      { id: "facturaFolio",          label: "Folio"           },
+      { id: "facturaPersona",        label: "Persona"         },
+      { id: "facturaMunicipio",      label: "Municipio"       },
+      { id: "facturaMotivo",         label: "Motivo"          },
+      { id: "facturaDias",           label: "Días"            },
+      { id: "facturaMes",            label: "Mes"             },
+      { id: "facturaImporte",        label: "Importe",        tipo: "money" },
+      { id: "facturaRetenciones",    label: "Retenciones",    tipo: "money" },
+      { id: "facturaTotal",          label: "Total",          tipo: "money" },
+      { id: "facturaTotalLetra",     label: "Total en letra"  },
+      { id: "facturaProyecto",       label: "Proyecto"        },
+      { id: "facturaNombreProyecto", label: "Nombre proyecto" },
+      { id: "facturaOficio",         label: "Oficio"          },
+      { id: "facturaAdecuacion",     label: "Adecuación"      },
+      { id: "facturaFecha",          label: "Fecha"           },
   ],
 
   OFICIO2: [
@@ -301,6 +299,7 @@ const CAMPOS_REQUERIDOS = {
     { id: "oficio2Total",          label: "Total",        tipo: "money" },
     { id: "oficio2TotalLetra",     label: "Total en letra"     },
   ],
+
 };
 
 /**
