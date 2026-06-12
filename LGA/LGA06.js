@@ -74,27 +74,25 @@ function desglosarDias(inicio, fin){
 /* =========================
    VALIDAR CAMPOS
 ========================= */
-
 function validarCamposRecibo(){
 
     let error = false;
 
+    const opcionales = ["localidades"];
+
     document
     .querySelectorAll(
-
         "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
-
     )
     .forEach(campo=>{
 
         /* =========================
-           IGNORAR READONLY
+           IGNORAR READONLY Y OPCIONALES
         ========================= */
 
         if(
-
-            campo.hasAttribute("readonly")
-
+            campo.hasAttribute("readonly") ||
+            opcionales.includes(campo.id)
         ){
 
             campo.classList.remove(
@@ -110,9 +108,7 @@ function validarCamposRecibo(){
         ========================= */
 
         if(
-
             !campo.value.trim()
-
         ){
 
             campo.classList.add(
@@ -136,7 +132,6 @@ function validarCamposRecibo(){
     return !error;
 
 }
-
 /* =========================
    ABRIR MODAL RECIBO
 ========================= */

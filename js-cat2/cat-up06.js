@@ -159,7 +159,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "ACTIVIDAES EN EL PROCESO ADMINISTRATIVO EN LAS ACCIONES DE OPERACIÓN Y LOGÍSTICA DE PROGRAMAS"
+    "Actividades en el proceso administrativo en las acciones de operación y logiística de programas"
 ];
 
 
