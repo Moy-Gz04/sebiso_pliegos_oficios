@@ -1,9 +1,6 @@
 const personas = [
-
     "Mtro. Alejandro Salinas Ayotitla",
-    "Ing. Ricardo Hernández Arrieta",
     "Ing. Cesar Lozano López",
-    "Lic. Idalit Bautista Hernandez",
     "Lic. Agustin Misael Velazquez Monroy",
     "Lic. Nestor Martin Castillo Ventura",
     "C. Juan Espinoza Islas",
@@ -21,9 +18,7 @@ const personas = [
     "Lic. Axel Armando Huerta Guarneros",
     "Tec. Ana Maria Martinez Rubio",
     "Lic.Danna Odemaris Fuentes Olguin"
-
 ];
-
 
 /* ============================================================
    CATÁLOGO : MESES
