@@ -137,16 +137,6 @@ boton.addEventListener(
 
         }
 
-        if(!localidades){
-
-            mostrarAdvertencia(
-                "El campo LOCALIDADES VISITADAS es obligatorio."
-            );
-
-            return;
-
-        }
-
         /* --- Todo válido: abrir confirmación --- */
 
         abrirModal("modalConfirmacion");

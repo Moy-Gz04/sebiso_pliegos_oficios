@@ -27,6 +27,12 @@ const personas = [
     },
 
     {
+        nombre: "Lic. Idalit Bautista Hernandez",
+        categoria: "Subdirector de área C",
+        rfc: "BAHI930108695"
+    },
+
+    {
         nombre: "Lic. Nestor Martin Castillo Ventura",
         categoria: "Subdirector de área C",
         rfc: "CAVN9201107E8"
@@ -159,7 +165,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "Actividades en el proceso administrativo en las acciones de operación y logiística de programas"
+    "Actividades en el proceso administrativo en las acciones de operación y logística de programas"
 ];
 
 

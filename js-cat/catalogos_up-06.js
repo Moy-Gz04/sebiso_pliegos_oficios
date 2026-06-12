@@ -2,6 +2,7 @@ const personas = [
     "Mtro. Alejandro Salinas Ayotitla",
     "Ing. Cesar Lozano López",
     "Lic. Agustin Misael Velazquez Monroy",
+    "Lic. Idalit Bautista Hernandez",
     "Lic. Nestor Martin Castillo Ventura",
     "C. Juan Espinoza Islas",
     "C. Guillermo Ayala Parra",
