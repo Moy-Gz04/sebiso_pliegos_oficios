@@ -78,7 +78,7 @@ function validarCamposRecibo(){
 
     let error = false;
 
-    const opcionales = ["localidades"];
+    const opcionales = ["reciboLocalidades", "reciboNota"];
 
     document
     .querySelectorAll(
