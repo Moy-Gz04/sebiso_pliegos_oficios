@@ -150,7 +150,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "Evaluación a los programas sociales"
+    "Evaluaciones a los Programas Sociales"
 
 ];
 

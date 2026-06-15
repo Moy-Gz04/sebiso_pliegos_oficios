@@ -158,10 +158,10 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "ASESORIA A PERSONAS MIGRANTES HIDALGUENSE Y SUS FAMILIAS, REALIZADAS",
-    "REPRESENTACIONES DEL GOBIERNO DEL ESTADO CON ORGANIZACIONES MIGRANTES DE HIDALGUENSES EN EL EXTERIOR Y SUS FAMILIAS, ASISTIDAS",
-    "APOYOS DE INVERSIÓN A PERSONAS MIGRANTES HIDALGUENSES EN EL EXTERIOR, EN RETORNO Y SUS FAMILIAS ENTREGADOS",
-    "DOCUMENTACIÓN QUE COMPRUEBA LA IDENTIDD JURÍDICA A PERSONAS MIGRANTES HIDALGUENSES Y SUS FAMILIAS ENTREGADA"
+    "Asesoría a Personas Migrantes Hidalguenses y sus Familias, Realizadas",
+    "Representaciones del Gobierno del Estado con Organizaciones Migrantes de Hidalguenses en el Exterior y sus Familias, Asistidas",
+    "Apoyos de Inversión a Personas Migrantes Hidalguenses en el Exterior, en Retorno y sus Familias Entregados",
+    "Documentación que Comprueba la Identidad Jurídica a Personas Migrantes Hidalguenses y sus Familias Entregada"
 ];
 
 

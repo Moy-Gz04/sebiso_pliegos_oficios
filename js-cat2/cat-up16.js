@@ -107,7 +107,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "GASTOS OPERATIVOS DE SERVIDORES DEL PUEBLO"
+    "Gastos Operativos de Servidores del Pueblo"
 
 ];
 

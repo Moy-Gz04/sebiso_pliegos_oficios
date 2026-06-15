@@ -109,8 +109,8 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "ASIGNACIÓN DE ESPACIOS PARA COMERCIALIZACIÓN DE ARTESANIAS",
-    "ASIGNACIÓN DE ESPACIOS"
+    "Asignación de Espacios para Comercialización de Artesanias",
+    "Asignación de Espacios"
 ];
 
 /* =========================

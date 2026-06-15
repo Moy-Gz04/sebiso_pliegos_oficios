@@ -2,7 +2,8 @@ const personas = [
 
     "Mtra. Mariela Benitez Barrera",
     "Juan Carlos Roque Ramirez",
-    "Uziel de Jesús Zenil Salinas"
+    "Uziel de Jesús Zenil Salinas",
+    "Yareli Barrera Fernández"
 
 ];
 
