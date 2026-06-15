@@ -101,7 +101,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "DESARROLLO INCLUSIVO"
+    "Desarrollo Inclusivo"
 
 ];
 

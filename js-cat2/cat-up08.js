@@ -19,6 +19,12 @@ const personas = [
         nombre: "Uziel de Jesús Zenil Salinas",
         categoria: "Director de Área",
         rfc: "ZESU9001237X0"
+    },
+
+    {
+        nombre: "Yareli Barrera Fernández",
+        categoria: "Supervisor/Analista",
+        rfc: "BAFY030901FS5"
     }
 
 ];
@@ -78,7 +84,7 @@ const catalogoObjetoGasto = [
 
 const catalogoNombreProyecto = [
 
-    "ACCIONES PARA EL FOMENTO A LA SEGURIDAD ALIMENTARIA"
+    "Acciones Para el Fomento a la Seguridad Alimentaria"
 ];
 
 
