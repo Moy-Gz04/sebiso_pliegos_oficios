@@ -30,30 +30,37 @@ router.get('/', async (req, res) => {
         }
 
         /* =========================
+           EXTRAER CLAVE CORTA
+           "UP-16" de "UP-16"
+           "UP-15" de "UP-15-SSDSyH"
+        ========================= */
+
+        const clave = area
+            .split('-')
+            .slice(0, 2)
+            .join('-')
+            .trim();
+
+        /* =========================
            QUERY BASE
         ========================= */
 
         let query = `
             SELECT
-                g.id,
-                g.persona,
-                g.cantidad,
-                g.fecha,
-                pm.mes,
-                pm.anio
-            FROM gastos g
-
-            INNER JOIN presupuestos_mensuales pm
-            ON pm.id = g.presupuesto_id
-
-            INNER JOIN areas_presupuestales ap
-            ON ap.id = pm.area_id
-
-            WHERE ap.clave_area = $1
-            AND pm.anio = $2
+                id,
+                codigo,
+                persona,
+                mes,
+                anio,
+                spg_total  AS cantidad,
+                fecha
+            FROM registros
+            WHERE TRIM(area) LIKE $1
+            AND anio = $2
+            AND LOWER(estatus) = 'pagado'
         `;
 
-        const params = [area, anio];
+        const params = [`${clave}%`, anio];
 
         /* =========================
            FILTRO MES (OPCIONAL)
@@ -61,13 +68,13 @@ router.get('/', async (req, res) => {
 
         if (mes) {
 
-            query += ` AND pm.mes = $3`;
+            query += ` AND UPPER(mes) = $3`;
 
-            params.push(mes);
+            params.push(mes.toUpperCase());
 
         }
 
-        query += ` ORDER BY g.fecha DESC NULLS LAST`;
+        query += ` ORDER BY fecha DESC NULLS LAST`;
 
         const data = await pool.query(query, params);
 
