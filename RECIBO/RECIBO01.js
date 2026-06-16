@@ -10,15 +10,11 @@
      - abrirModalFactura(codigo)     → Carga datos y abre el modal
      - generarFactura()              → Envía payload a Apps Script
 ============================================================= */
-
 /* =============================================================
    CONFIGURACIÓN — URL del Apps Script de generación de PDF
-============================================================= */
-
+============================================================ */
 const API_FACTURA =
     "https://script.google.com/macros/s/AKfycbzQgaTKRcjb5czQ2hecPl-YA6MF3hCEMqB9Nvv7VcjvjfXR2J9qEqBEJcArK63ZpMIJ/exec";
-
-
 /* =============================================================
    NUMERO A LETRAS
    Convierte un número a su representación como importe
@@ -95,8 +91,6 @@ function validarCamposFactura() {
 
     return valido;
 }
-
-
 /* =============================================================
    ABRIR MODAL FACTURA
    Consulta el registro y el último oficio por código,
