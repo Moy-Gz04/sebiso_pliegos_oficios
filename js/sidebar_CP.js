@@ -16,6 +16,9 @@ const PAGINA_REGISTROS =
 const PAGINA_PAGOS =
 'G.html';
 
+const PAGINA_REPORTES =
+'Reportes.html';
+
 /* =========================
    SIDEBAR
 ========================= */
@@ -94,6 +97,24 @@ document.getElementById(
                 ">
 
                 Pagos Realizados
+
+            </button>
+
+            <!-- REPORTES -->
+
+            <button
+                type="button"
+                class="menu-btn ${
+                    paginaActual === PAGINA_REPORTES
+                    ? "activo"
+                    : ""
+                }"
+
+                onclick="
+                    window.location.href='${PAGINA_REPORTES}'
+                ">
+
+                Reportes
 
             </button>
 
@@ -181,9 +202,6 @@ function logout(){
 
 /* =========================
    CONFIRMAR LOGOUT
-   Se usa setTimeout para esperar a que
-   el sidebar termine de inyectarse en el DOM
-   antes de buscar el botón confirmarLogout
 ========================= */
 
 setTimeout(() => {

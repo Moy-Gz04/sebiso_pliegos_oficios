@@ -29,7 +29,7 @@ const personas = [
 
     {
         nombre: "Adan Missael Hernandez Garrido",
-        categoria: "Asesor Tècnico",
+        categoria: "Subdirector Adjunto A ",
         rfc: "HEGA891105RA0"
     },
 
@@ -86,12 +86,10 @@ const personas = [
         categoria: "Asesor Tecnico/Gestor A",
         rfc: "VAMG600520DE1"
     }
-
 ];
 /* =========================
    CATÁLOGO DE MESES
 ========================= */
-
 const meses = [
 
     "enero",
@@ -108,50 +106,40 @@ const meses = [
     "diciembre"
 
 ];
-
 /* =========================
    CATÁLOGOS SPG
 ========================= */
-
 const catalogoUP = [
 
     "13"
 
 ];
-
 const catalogoRubro = [
 
     "8402050"
 ];
-
-
 const catalogoProyecto = [
 
     "AI013",
     "AI014"
 ];
 
-
 const catalogoObjetoGasto = [
 
     "375001"
 
 ];
-
-/* =========================
+/* ========================
    CATÁLOGO NOMBRE PROYECTO
 ========================= */
-
 const catalogoNombreProyecto = [
 
     "Programa fomento al desarrollo de la participación social"
 
 ];
-
 /* =========================
    CATÁLOGO ADECUACIÓN
 ========================= */
-
 const catalogoAdecuacion = [
 
     "ADEC-001"
@@ -160,7 +148,6 @@ const catalogoAdecuacion = [
 /* =========================
    PERSONAS
 ========================= */
-
 function cargarPersonas(){
 
     const tbody =
@@ -208,11 +195,9 @@ function cargarPersonas(){
     });
 
 }
-
 /* =========================
    DÍAS
 ========================= */
-
 function llenarDias(idSelect){
 
     const select =
@@ -242,11 +227,9 @@ function llenarDias(idSelect){
     }
 
 }
-
 /* =========================
    MESES
 ========================= */
-
 function llenarMeses(idSelect){
 
     const select =
@@ -276,11 +259,9 @@ function llenarMeses(idSelect){
     });
 
 }
-
 /* =========================
    AÑOS
 ========================= */
-
 function llenarAnios(idSelect){
 
     const select =

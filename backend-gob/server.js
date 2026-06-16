@@ -33,6 +33,9 @@ require('./routes/presupuestos');
 const gastosRoutes =
 require('./routes/gastos.routes');
 
+const reportesRoutes =
+require('./routes/reportes.routes');
+
 /* =========================
    RUTA SPG
 ========================= */
@@ -146,6 +149,18 @@ app.use(
     '/api/gastos',
 
     gastosRoutes
+
+);
+
+/* =========================
+   REPORTES
+========================= */
+
+app.use(
+
+    '/api/reportes',
+
+    reportesRoutes
 
 );
 
