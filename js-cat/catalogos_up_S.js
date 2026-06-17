@@ -1,16 +1,15 @@
 const personas = [
 
-    "VICTOR HUGO PEREZ GUATI ROJO",
-    "CARLOS RODRIGO ROJAS RUIZ",
-    "CRISTHIAN OMAR CORDERO ESTRADA",
-    "CHRISTIAN FERNANDO VALDERRAMA URIBE",
-    "PERLA ALELI BARRERA GONZALEZ",
-    "ANA LUISA BAÑOS CASTRO",
-    "MAYTHE MONSERRAT ESCARELA PÉREZ",
-    "ALFONSO GUDIÑO ZAMORA"
+    "Víctor Hugo Pérez Guati Rojo",
+    "Carlos Rodrigo Rojas Ruiz",
+    "Cristhian Omar Cordero Estrada",
+    "Christian Fernando Valderrama Uribe",
+    "Perla Aleli Barrera González",
+    "Ana Luisa Baños Castro",
+    "Maythe Monserrat Escarela Pérez",
+    "Alfonso Gudiño Zamora"
 
 ];
-
 
 /* ============================================================
    CATÁLOGO : MESES

@@ -1,53 +1,52 @@
 /* =========================
    CATÁLOGO DE PERSONAS
 ========================= */
-
 const personas = [
 
     {
-        nombre: "VÍCTOR HUGO PÉREZ GUATI ROJO",
-        categoria: "Director de Area-B",
+        nombre: "Víctor Hugo Pérez Guati Rojo",
+        categoria: "Director de Área-B",
         rfc: "PEGV700506FW2"
     },
 
     {
-        nombre: "CARLOS RODRIGO ROJAS RUIZ",
-        categoria: "Subdirector de Area-C",
+        nombre: "Carlos Rodrigo Rojas Ruiz",
+        categoria: "Subdirector de Área-C",
         rfc: "RORC760312AP4"
     },
 
     {
-        nombre: "CRISTHIAN OMAR CORDERO ESTRADA",
-        categoria: "Jefe de Area-A",
+        nombre: "Cristhian Omar Cordero Estrada",
+        categoria: "Jefe de Área-A",
         rfc: "COEC8508235PO"
     },
 
     {
-        nombre: "CHRISTIAN FERNANDO VALDERRAMA URIBE",
-        categoria: "Tecnico Especializado",
+        nombre: "Christian Fernando Valderrama Uribe",
+        categoria: "Técnico Especializado",
         rfc: "VAUC891106T32"
     },
 
     {
-        nombre: "PERLA ALELÍ BARRERA GONZÁLEZ",
+        nombre: "Perla Aleli Barrera González",
         categoria: "Subdirector Adjunto-A",
         rfc: "BAGP020901LK4"
     },
 
     {
-        nombre: "ANA LUISA BAÑOS CASTRO",
-        categoria: "Jefe de Area-B",
+        nombre: "Ana Luisa Baños Castro",
+        categoria: "Jefe de Área-B",
         rfc: "BACA800120KH5"
     },
 
     {
-        nombre: "MAYTHE MONSERRAT ESCARELA PÉREZ",
-        categoria: "Jefe de Area-A",
+        nombre: "Maythe Monserrat Escarela Pérez",
+        categoria: "Jefe de Área-A",
         rfc: "EAPM880624I23"
     },
 
     {
-        nombre: "ALFONSO GUDIÑO ZAMORA",
+        nombre: "Alfonso Gudiño Zamora",
         categoria: "Supervisor/Analista",
         rfc: "GUZA860818PX3"
     }
