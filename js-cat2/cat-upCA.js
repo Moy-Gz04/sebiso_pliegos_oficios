@@ -4,217 +4,217 @@
 const personas = [
 
     {
-        nombre: "ROSA LETICIA MUÑOZ CHÁVEZ",
+        nombre: "Rosa Leticia Muñoz Chávez",
         categoria: "Director General A",
         rfc: "MUCR720830BM9"
     },
 
     {
-        nombre: "ELIZABETH MARGARITA NOGUEZ ROMERO",
+        nombre: "Elizabeth Margarita Noguez Romero",
         categoria: "Supervisor/Analista",
         rfc: "NORE790713JT6"
     },
 
     {
-        nombre: "MARÍA SARA ORTIZ GONZÁLEZ",
+        nombre: "María Sara Ortiz González",
         categoria: "Jefe de Departamento-C",
         rfc: "OIGS600128258"
     },
 
     {
-        nombre: "ROBERTO CARLOS LÓPEZ ESTRADA",
+        nombre: "Roberto Carlos López Estrada",
         categoria: "Asesor Técnico/Gestor",
         rfc: "LOER7505134G9"
     },
 
     {
-        nombre: "ARIANA SALAS LUGO",
+        nombre: "Ariana Salas Lugo",
         categoria: "Director de Area-B",
         rfc: "SALA921114UX2"
     },
 
     {
-        nombre: "ANA BRISNA CERVANTES HIDALGO",
+        nombre: "Ana Brisna Cervantes Hidalgo",
         categoria: "Subdirector de Area-C",
         rfc: "CEHA8501139K1"
     },
 
     {
-        nombre: "MARTHA PATRICIA BARRAGÁN GARCÍA",
+        nombre: "Martha Patricia Barragán García",
         categoria: "Jefe de Departamento-C",
         rfc: "BAGM691116L87"
     },
 
     {
-        nombre: "LAURA TRINIDAD HERNÁNDEZ DÍAZ",
+        nombre: "Laura Trinidad Hernández Díaz",
         categoria: "Jefe de Departamento-C",
         rfc: "HEDL700330SR9"
     },
 
     {
-        nombre: "ERICK ACOSTA TÉLLEZ",
+        nombre: "Erick Acosta Téllez",
         categoria: "Jefe de Area-A",
         rfc: "AOTE900304Q71"
     },
 
     {
-        nombre: "GABRIELA HERNÁNDEZ BUSTOS",
+        nombre: "Gabriela Hernández Bustos",
         categoria: "Técnico Especializado",
         rfc: "HEBG9307035YA"
     },
 
     {
-        nombre: "MARÍA FERNANDA GUZMÁN ESCAMILLA",
+        nombre: "María Fernanda Guzmán Escamilla",
         categoria: "Supervisor/Analista",
         rfc: "GUEF940712KV1"
     },
 
     {
-        nombre: "OSCAR ADRIÁN ESCORZA ARROYO",
+        nombre: "Oscar Adrián Escorza Arroyo",
         categoria: "Supervisor/Analista",
         rfc: "EOAO660305AN9"
     },
 
     {
-        nombre: "MARÍA DEL PILAR VEGA REYES",
+        nombre: "María del Pilar Vega Reyes",
         categoria: "Supervisor/Analista",
         rfc: "VERP781012VC0"
     },
 
     {
-        nombre: "ALEJANDRO OSWALDO VILLEGAS ORTIZ",
+        nombre: "Alejandro Oswaldo Villegas Ortiz",
         categoria: "Asesor Técnico/Gestor",
         rfc: "VIOA811022FM9"
     },
 
     {
-        nombre: "VÍCTOR HUGO PÉREZ GUATI ROJO",
+        nombre: "Víctor Hugo Pérez Guati Rojo",
         categoria: "Director de Area-B",
         rfc: "PEGV700506FW2"
     },
 
     {
-        nombre: "CARLOS RODRIGO ROJAS RUIZ",
+        nombre: "Carlos Rodrigo Rojas Ruiz",
         categoria: "Subdirector de Area-C",
         rfc: "RORC760312AP4"
     },
 
     {
-        nombre: "PERLA ALELÍ BARRERA GODÍNEZ",
+        nombre: "Perla Aleli Barrera Godínez",
         categoria: "Subdirector Adjunto-A",
         rfc: "BAGP020901LK4"
     },
 
     {
-        nombre: "ANA LUISA BAÑOS CASTRO",
+        nombre: "Ana Luisa Baños Castro",
         categoria: "Jefe de Area-B",
         rfc: "BACA800120KH5"
     },
 
     {
-        nombre: "MAYTHE MONSERRAT ESCARELA PÉREZ",
+        nombre: "Maythe Monserrat Escarela Pérez",
         categoria: "Jefe de Area-A",
         rfc: "EAPM880624I23"
     },
 
     {
-        nombre: "CRISTHIAN OMAR CORDERO ESTRADA",
+        nombre: "Cristhian Omar Cordero Estrada",
         categoria: "Jefe de Area-A",
         rfc: "COEC8508235P0"
     },
 
     {
-        nombre: "JUAN ÁNGEL AGUILAR MENDOZA",
+        nombre: "Juan Ángel Aguilar Mendoza",
         categoria: "Jefe de Area-A",
         rfc: "AUMJ030607NS6"
     },
 
     {
-        nombre: "CHRISTIAN FERNANDO VALDERRAMA URIBE",
+        nombre: "Christian Fernando Valderrama Uribe",
         categoria: "Técnico Especializado",
         rfc: "VAUC891106T32"
     },
 
     {
-        nombre: "ARELY LÓPEZ VARGAS",
+        nombre: "Arely López Vargas",
         categoria: "Técnico Especializado",
         rfc: "LOVA7610057P7"
     },
 
     {
-        nombre: "ALFONSO GUDIÑO ZAMORA",
+        nombre: "Alfonso Gudiño Zamora",
         categoria: "Supervisor/Analista",
         rfc: "GUZA860818PX3"
     },
 
     {
-        nombre: "RUBÉN SERRANO MORALES",
+        nombre: "Rubén Serrano Morales",
         categoria: "Subdirector de Area-C",
         rfc: "SEMR850327PT2"
     },
 
     {
-        nombre: "MARY CARMEN LÓPEZ HERNÁNDEZ",
+        nombre: "Mary Carmen López Hernández",
         categoria: "Supervisor/Analista",
         rfc: "LOHM7606046P8"
     },
 
     {
-        nombre: "DIANA MUNGUÍA ALARCÓN",
+        nombre: "Diana Munguía Alarcón",
         categoria: "Técnico Especializado",
         rfc: "MUAD9709051S7"
     },
 
     {
-        nombre: "LIZETH VIDAL CANO",
+        nombre: "Lizeth Vidal Cano",
         categoria: "Director de Area-B",
         rfc: "VICL870529LE7"
     },
 
     {
-        nombre: "CARLOS CHARGOY RODRÍGUEZ",
+        nombre: "Carlos Chargoy Rodríguez",
         categoria: "Subdirector Adjunto-A",
         rfc: "CARC841225753"
     },
 
     {
-        nombre: "VIANEY CRISTINA SOLARES MORENO",
+        nombre: "Vianey Cristina Solares Moreno",
         categoria: "Subdirector Adjunto-A",
         rfc: "SOMV750723GA0"
     },
 
     {
-        nombre: "FRANCISCO REYES VÁZQUEZ",
+        nombre: "Francisco Reyes Vázquez",
         categoria: "Jefe de Departamento-C",
         rfc: "REVF770125UQ6"
     },
 
     {
-        nombre: "SUSANA JIMÉNEZ HERNÁNDEZ",
+        nombre: "Susana Jiménez Hernández",
         categoria: "Jefe de Area-B",
         rfc: "JIHS8508113Z9"
     },
 
     {
-        nombre: "LUZ MARÍA LUQUE GÓMEZ",
+        nombre: "Luz María Luque Gómez",
         categoria: "Subdirector de Area-C",
         rfc: "LUGL621129UL3"
     },
 
     {
-        nombre: "MARÍA ELENA TELLO SÁNCHEZ",
+        nombre: "María Elena Tello Sánchez",
         categoria: "Subdirector Adjunto-A",
         rfc: "TESE640423BY2"
     },
 
     {
-        nombre: "ERNESTO MARTÍNEZ AGUILAR",
+        nombre: "Ernesto Martínez Aguilar",
         categoria: "Jefe de Departamento-C",
         rfc: "MAAE811216MQ9"
     },
 
     {
-        nombre: "ANA MARÍA RODRÍGUEZ ROSALES",
+        nombre: "Ana María Rodríguez Rosales",
         categoria: "Supervisor/Analista",
         rfc: "RORA991223R70"
     }
