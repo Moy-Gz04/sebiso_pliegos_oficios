@@ -14,7 +14,7 @@ const personas = [
     "Oscar Adrián Escorza Arroyo",
     "María del Pilar Vega Reyes",
     "Alejandro Oswaldo Villegas Ortiz",
-    "Víctor Hugo Pérez Guati Rojo",
+    "Víctor Hugo Pérez Guatirojo",
     "Carlos Rodrigo Rojas Ruiz",
     "Perla Aleli Barrera Godínez",
     "Ana Luisa Baños Castro",
