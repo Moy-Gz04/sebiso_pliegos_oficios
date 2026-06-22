@@ -17,7 +17,10 @@ const APPS_SCRIPT_URL =
 
 router.post("/generar-pdf", async (req, res) => {
 
-  try {
+    console.log("=== ENTRE A /generar-pdf ===");
+    console.log(req.body);
+
+    try {
 
     const { area, anio, meses } = req.body;
     // meses: número único (6) o array ([1,2,3,4,5,6])
@@ -93,6 +96,9 @@ router.post("/generar-pdf", async (req, res) => {
       montoTotal,
       fileName
     };
+
+    console.log("=== ANTES DE LLAMAR APPS SCRIPT ===");
+    console.log(payload);
 
     const respAS = await fetch(APPS_SCRIPT_URL, {
     method: "POST",
