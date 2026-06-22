@@ -47,6 +47,12 @@ router.post("/generar-pdf", async (req, res) => {
     const params = [area, anio, ...mesesArray];
     const { rows } = await pool.query(sql, params);
 
+    console.log("SQL:");
+    console.log(sql);
+
+    console.log("PARAMS:");
+    console.log(params);
+
     /* --- Construir periodo legible --- */
 
     const MESES_ES = [
@@ -98,7 +104,8 @@ router.post("/generar-pdf", async (req, res) => {
 
     const texto = await respAS.text();
 
-    console.log("Respuesta Apps Script:");
+    console.log("STATUS:", respAS.status);
+    console.log("RESPUESTA:");
     console.log(texto);
 
     const resultAS = JSON.parse(texto);
@@ -108,6 +115,11 @@ router.post("/generar-pdf", async (req, res) => {
     }
 
     /* --- Guardar en historial --- */
+    console.log("SQL:");
+console.log(sql);
+
+console.log("PARAMS:");
+console.log(params);
 
     await pool.query(
       `INSERT INTO reportes_generados
