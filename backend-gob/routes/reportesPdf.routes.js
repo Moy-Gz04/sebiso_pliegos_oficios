@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwh1FT-ruulBM_sblKcZgr05sbp3rAMmib7iL56MGwENZCToP-GDXkbBRF107brP_-3FQ/exec";
+"https://script.google.com/macros/s/AKfycbwz3LPnrKRvigVL6daG0qGvxDPai99ovhIqzIQeNPqJyhNm1kRyyh7ecrjlnTBdRqdyBA/exec";
 
 /* =========================
    POST /api/reportes/generar-pdf
@@ -89,13 +89,19 @@ router.post("/generar-pdf", async (req, res) => {
     };
 
     const respAS = await fetch(APPS_SCRIPT_URL, {
-      method:  "POST",
-      headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify(payload),
-      redirect: "follow"
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify(payload)
     });
 
-    const resultAS = await respAS.json();
+    const texto = await respAS.text();
+
+    console.log("Respuesta Apps Script:");
+    console.log(texto);
+
+    const resultAS = JSON.parse(texto);
 
     if (!resultAS.ok) {
       return res.status(500).json({ ok: false, error: resultAS.error });
