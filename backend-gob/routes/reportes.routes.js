@@ -4,7 +4,7 @@ const pool = require('../database/db');
 const fetch = require('node-fetch');
 
 const APPS_SCRIPT_URL =
-  "https://script.google.com/macros/s/AKfycbwh1FT-ruulBM_sblKcZgr05sbp3rAMmib7iL56MGwENZCToP-GDXkbBRF107brP_-3FQ/exec";
+  "https://script.google.com/macros/s/AKfycbzrAv0RwSGT_cJdzdFa1cAovyefwiVA_EVfj7soY1yiv9PMTnN6RplF3NQ84lkoqm98RQ/exec";
 
 /* =========================
    GET /api/reportes
