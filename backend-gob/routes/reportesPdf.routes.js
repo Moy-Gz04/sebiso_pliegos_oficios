@@ -9,7 +9,7 @@ const pool = new Pool({
 });
 
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbwz3LPnrKRvigVL6daG0qGvxDPai99ovhIqzIQeNPqJyhNm1kRyyh7ecrjlnTBdRqdyBA/exec";
+"https://script.google.com/macros/s/AKfycbzI48HUnb8JQdR8eSj15lXlI63lPMajFomPU-oqdWJbzvVc_aO31o9Bw8QZqa3oRQYVjg/exec";
 
 /* =========================
    POST /api/reportes/generar-pdf
