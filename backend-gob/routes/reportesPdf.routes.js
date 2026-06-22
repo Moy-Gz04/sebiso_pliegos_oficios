@@ -4,7 +4,7 @@ const pool    = require('../database/db');
 const fetch   = require("node-fetch");
 
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbySpfcdRU5TweY4v3Az5tZ2hTFJkFlMB63DKfz2osTYiNEmFsrD0mWUUG7AiUW0kS6i/exec";
+"https://script.google.com/macros/s/AKfycbwr2jiiuD2Qn0Sr4saE2G7LRBanSR2i6VrDR2qVytuQeGRw3gkrkrUDuh04YNybebhO/exec";
 
 const CARPETA_REPORTES_ID = "1FedukQX9YavoRev7BgTfJU-9qqQArDQc";  // ← agregado aquí
 
