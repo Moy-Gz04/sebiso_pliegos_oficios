@@ -1,3 +1,5 @@
+console.log("REPORTES.JS CARGADO");
+console.log(typeof generarReporte);
 'use strict';
 
 const API = 'https://sebiso-pliegos-oficios-1.onrender.com';
@@ -21,17 +23,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function generarReporte() {
 
-    const area       = document.getElementById('selectArea').value;
-    const mesInicio  = document.getElementById('selectMesInicio').value;
-    const mesFin     = document.getElementById('selectMesFin').value;
-    const anio       = document.getElementById('selectAnio').value;
+    const area      = document.getElementById('selectArea').value;
+    const mesInicio = document.getElementById('selectMesInicio').value;
+    const mesFin    = document.getElementById('selectMesFin').value;
+    const anio      = document.getElementById('selectAnio').value;
 
     if (!area) {
         alert('Por favor selecciona un área presupuestal.');
         return;
     }
 
-    // Ocultar botón PDF de una consulta anterior
     document.getElementById('btnExportarPDF').style.display = 'none';
     document.getElementById('msgPDF').style.display = 'none';
 
@@ -75,7 +76,6 @@ async function exportarPDF() {
         return;
     }
 
-    // Construir array de meses
     const inicio = parseInt(mesInicio);
     const fin    = mesFin ? parseInt(mesFin) : inicio;
 
@@ -90,13 +90,13 @@ async function exportarPDF() {
     const btn = document.getElementById('btnExportarPDF');
     const msg = document.getElementById('msgPDF');
 
-    btn.disabled    = true;
-    btn.textContent = 'GENERANDO PDF...';
+    btn.disabled      = true;
+    btn.textContent   = 'GENERANDO PDF...';
     msg.style.display = 'none';
 
     try {
 
-        const res = await fetch(`${API}/api/reportes/generar-pdf`, {
+        const res = await fetch(`${API}/api/reportes-pdf/generar-pdf`, {  // ← cambiado
             method:  'POST',
             headers: { 'Content-Type': 'application/json' },
             body:    JSON.stringify({ area, anio: parseInt(anio), meses })
@@ -106,7 +106,7 @@ async function exportarPDF() {
 
         if (!data.ok) throw new Error(data.error || 'Error al generar PDF');
 
-        msg.innerHTML  = `✅ PDF generado: <a href="${data.url}" target="_blank" style="color:#691C32;font-weight:700;">Abrir PDF</a>`;
+        msg.innerHTML     = `✅ PDF generado: <a href="${data.url}" target="_blank" style="color:#691C32;font-weight:700;">Abrir PDF</a>`;
         msg.style.display = 'block';
 
         cargarHistorial();
@@ -131,7 +131,7 @@ async function cargarHistorial() {
 
     try {
 
-        const res  = await fetch(`${API}/api/reportes/historial`);
+        const res  = await fetch(`${API}/api/reportes-pdf/historial`);  // ← cambiado
         const data = await res.json();
 
         if (!data.ok || !data.data.length) {
