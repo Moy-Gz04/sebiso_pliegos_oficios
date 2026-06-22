@@ -1,10 +1,12 @@
 const express = require("express");
-const router  = express.Router();
-const pool    = require('../database/db');  // ← cambiado
+const router  = require("express").Router();
+const pool    = require('../database/db');
 const fetch   = require("node-fetch");
 
 const APPS_SCRIPT_URL =
-"https://script.google.com/macros/s/AKfycbyqwvc7G5zL9MENLv_ihqYiyrm24GiifDlg6qtOWREydGGcQJ1AGgmccBDMFn_Zqijk/exec";
+"https://script.google.com/macros/s/AKfycbySpfcdRU5TweY4v3Az5tZ2hTFJkFlMB63DKfz2osTYiNEmFsrD0mWUUG7AiUW0kS6i/exec";
+
+const CARPETA_REPORTES_ID = "1FedukQX9YavoRev7BgTfJU-9qqQArDQc";  // ← agregado aquí
 
 /* =========================
    POST /api/reportes-pdf/generar-pdf
@@ -70,7 +72,8 @@ router.post("/generar-pdf", async (req, res) => {
         const fileName = `Reporte_${area.replace(/\s+/g, "_")}_${periodo.replace(/\s+/g, "_")}`;
 
         const payload = {
-            tipo: "REPORTE",
+            tipo:             "REPORTE",
+            folderId:         CARPETA_REPORTES_ID,  // ← agregado
             area,
             periodo,
             fechaGeneracion,
