@@ -10,57 +10,33 @@ if(area !== 'Administracion'){ window.location.href = 'index.html'; }
 <html lang="es">
 
 <head>
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Reportes Presupuestales</title>
-
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/ssidebar.css">
     <link rel="stylesheet" href="../css/modales.css">
-
 </head>
 
 <body>
 
-    <!-- SIDEBAR -->
-
     <div id="sidebar-container"></div>
-
-    <!-- CONTENIDO -->
 
     <div class="contenido">
 
-        <!-- TOPBAR -->
-
         <div class="topbar">
-
-            <div class="titulo-principal">
-
-                SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL
-
-            </div>
-
-            <div class="subtitulo">
-
-                REPORTES DE PAGOS PRESUPUESTALES
-
-            </div>
-
+            <div class="titulo-principal">SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL</div>
+            <div class="subtitulo">REPORTES DE PAGOS PRESUPUESTALES</div>
         </div>
 
         <br>
 
         <!-- FILTROS -->
-
         <div style="width:90%;margin:0 auto 16px;">
-
             <div class="panel-derecho">
 
                 <div class="fila">
-
                     <label>ÁREA PRESUPUESTAL</label>
-
                     <select id="selectArea">
                         <option value="">— Selecciona un área —</option>
                         <option value="UP-01-DESPACHO">UP-01-DESPACHO</option>
@@ -76,135 +52,138 @@ if(area !== 'Administracion'){ window.location.href = 'index.html'; }
                         <option value="UP-15-SSDSyH">UP-15-SSDSyH</option>
                         <option value="UP-16">UP-16</option>
                     </select>
-
                 </div>
 
                 <div class="fila">
-
-                    <label>MES</label>
-
-                    <select id="selectMes">
-                        <option value="">— Todos los meses —</option>
-                        <option value="ENERO">ENERO</option>
-                        <option value="FEBRERO">FEBRERO</option>
-                        <option value="MARZO">MARZO</option>
-                        <option value="ABRIL">ABRIL</option>
-                        <option value="MAYO">MAYO</option>
-                        <option value="JUNIO">JUNIO</option>
-                        <option value="JULIO">JULIO</option>
-                        <option value="AGOSTO">AGOSTO</option>
-                        <option value="SEPTIEMBRE">SEPTIEMBRE</option>
-                        <option value="OCTUBRE">OCTUBRE</option>
-                        <option value="NOVIEMBRE">NOVIEMBRE</option>
-                        <option value="DICIEMBRE">DICIEMBRE</option>
+                    <label>MES INICIAL</label>
+                    <select id="selectMesInicio">
+                        <option value="">— Todos —</option>
+                        <option value="1">ENERO</option>
+                        <option value="2">FEBRERO</option>
+                        <option value="3">MARZO</option>
+                        <option value="4">ABRIL</option>
+                        <option value="5">MAYO</option>
+                        <option value="6">JUNIO</option>
+                        <option value="7">JULIO</option>
+                        <option value="8">AGOSTO</option>
+                        <option value="9">SEPTIEMBRE</option>
+                        <option value="10">OCTUBRE</option>
+                        <option value="11">NOVIEMBRE</option>
+                        <option value="12">DICIEMBRE</option>
                     </select>
-
                 </div>
 
                 <div class="fila">
+                    <label>MES FINAL</label>
+                    <select id="selectMesFin">
+                        <option value="">— Mismo mes —</option>
+                        <option value="1">ENERO</option>
+                        <option value="2">FEBRERO</option>
+                        <option value="3">MARZO</option>
+                        <option value="4">ABRIL</option>
+                        <option value="5">MAYO</option>
+                        <option value="6">JUNIO</option>
+                        <option value="7">JULIO</option>
+                        <option value="8">AGOSTO</option>
+                        <option value="9">SEPTIEMBRE</option>
+                        <option value="10">OCTUBRE</option>
+                        <option value="11">NOVIEMBRE</option>
+                        <option value="12">DICIEMBRE</option>
+                    </select>
+                </div>
 
+                <div class="fila">
                     <label>AÑO</label>
-
                     <select id="selectAnio">
                         <option value="2026">2026</option>
                         <option value="2027">2027</option>
                         <option value="2028">2028</option>
                     </select>
-
                 </div>
 
-                <button
-                    type="button"
-                    id="btnGenerar"
-                    onclick="generarReporte()">
+                <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px;">
+                    <button type="button" id="btnGenerar" onclick="generarReporte()">
+                        GENERAR REPORTE
+                    </button>
+                    <button type="button" id="btnExportarPDF" onclick="exportarPDF()" style="display:none;">
+                        EXPORTAR PDF
+                    </button>
+                </div>
 
-                    GENERAR REPORTE
-
-                </button>
+                <div id="msgPDF" style="display:none;margin-top:10px;"></div>
 
             </div>
-
         </div>
 
-        <!-- TABLA -->
-
+        <!-- TABLA RESULTADOS -->
         <table id="tablaResultados">
-
             <thead>
-
                 <tr>
                     <th>#</th>
                     <th>MES</th>
                     <th>PERSONA</th>
                     <th>CANTIDAD</th>
                 </tr>
-
             </thead>
-
             <tbody id="tbodyReporte">
-
                 <tr>
                     <td colspan="4" style="text-align:center;padding:24px;color:#999;">
                         Selecciona un área y genera el reporte para ver los datos.
                     </td>
                 </tr>
-
             </tbody>
-
             <tfoot id="tfootReporte" style="display:none;">
-
                 <tr>
-                    <td colspan="3" style="text-align:right;font-weight:700;padding:10px;">
-                        TOTAL
-                    </td>
-                    <td id="totalMonto" style="font-weight:700;text-align:center;padding:10px;">
-                        $0.00
-                    </td>
+                    <td colspan="3" style="text-align:right;font-weight:700;padding:10px;">TOTAL</td>
+                    <td id="totalMonto" style="font-weight:700;text-align:center;padding:10px;">$0.00</td>
                 </tr>
-
             </tfoot>
-
         </table>
 
         <div id="loader">Cargando...</div>
 
+        <!-- HISTORIAL -->
+        <div style="width:90%;margin:32px auto 0;">
+            <h3 style="color:#691C32;margin-bottom:10px;">HISTORIAL DE REPORTES GENERADOS</h3>
+            <table id="tablaHistorial">
+                <thead>
+                    <tr>
+                        <th>FECHA</th>
+                        <th>ÁREA</th>
+                        <th>PERIODO</th>
+                        <th>PAGOS</th>
+                        <th>MONTO TOTAL</th>
+                        <th>PDF</th>
+                    </tr>
+                </thead>
+                <tbody id="tbodyHistorial">
+                    <tr>
+                        <td colspan="6" style="text-align:center;padding:16px;color:#999;">
+                            Cargando historial...
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <!-- MODAL LOGOUT -->
-
     <div class="modal" id="modalLogout">
         <div class="modal-contenido">
-
             <h2>Cerrar Sesión</h2>
             <p>¿Estás seguro que deseas cerrar sesión?</p>
-
             <div class="modal-botones">
-                <button
-                    type="button"
-                    class="btn-secundario"
-                    onclick="cerrarModal('modalLogout')">
-                    Cancelar
-                </button>
-                <button
-                    type="button"
-                    class="btn-principal"
-                    id="confirmarLogout">
-                    Cerrar Sesión
-                </button>
+                <button type="button" class="btn-secundario" onclick="cerrarModal('modalLogout')">Cancelar</button>
+                <button type="button" class="btn-principal" id="confirmarLogout">Cerrar Sesión</button>
             </div>
-
         </div>
     </div>
 
-    <!-- OVERLAY -->
-
     <div id="overlay"></div>
-
-    <!-- SCRIPTS -->
 
     <script src="../js/sidebar_CP.js"></script>
     <script src="../js/reportes.js"></script>
 
 </body>
-
 </html>

@@ -65,6 +65,12 @@ const oficio2Routes =
 require('./routes/oficio2');
 
 /* =========================
+   RUTA REPORTES
+========================= */
+const reportesPdfRoutes = 
+require("./routes/reportesPdf.routes");
+
+/* =========================
    MIDDLEWARES
 ========================= */
 
@@ -211,6 +217,14 @@ app.use(
     oficio2Routes
 
 );
+
+app.use(
+
+    "/api/reportes", 
+
+    reportesPdfRoutes)
+
+;
 
 /* =========================
    ROOT
