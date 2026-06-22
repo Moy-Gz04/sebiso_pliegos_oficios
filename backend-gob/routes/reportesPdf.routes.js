@@ -28,7 +28,7 @@ router.post("/generar-pdf", async (req, res) => {
         const sql = `
             SELECT
                 TO_CHAR(g.fecha, 'Month') AS mes,
-                r.persona_nombre           AS persona,
+                r.persona AS persona,
                 g.cantidad
             FROM gastos g
             JOIN registros r ON r.id = g.registro_id
