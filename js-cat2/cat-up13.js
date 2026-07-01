@@ -41,7 +41,7 @@ const personas = [
 
     {
         nombre: "Maria Elena Arellano Màrquez",
-        categoria: "Jefe De Departamento",
+        categoria: "Subdirectora Adjunta A",
         rfc: "AEME740402GE8"
     },
 
