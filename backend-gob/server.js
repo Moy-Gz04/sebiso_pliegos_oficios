@@ -40,13 +40,10 @@ app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
 /* =========================
    CARPETA PÚBLICA PDFs
 ========================= */
-
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
 /* =========================
    ENDPOINTS
 ========================= */
-
 app.use('/api/auth',         authRoutes);
 app.use('/api/registros',    registrosRoutes);
 app.use('/api/presupuestos', presupuestosRoutes);

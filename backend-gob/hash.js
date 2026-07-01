@@ -1,4 +1,4 @@
 const bcrypt = require('bcryptjs');
 
-bcrypt.hash('adminsebisogob', 10)
+bcrypt.hash('up16gob', 10)
 .then(console.log);
