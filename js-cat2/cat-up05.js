@@ -47,7 +47,7 @@ const personas = [
 
     {
         nombre: "Ing. Marlene Jiménez Ramírez",
-        categoria: "Jefe de Departamento C",
+        categoria: "Subdirector de Área A",
         rfc: "JIRM840919DX1"
     },
 
@@ -59,7 +59,7 @@ const personas = [
 
     {
         nombre: "Lic. Daena Gaudalupe Acosta Hernández",
-        categoria: "Jefe de Área A",
+        categoria: "Jefe de Departamento C",
         rfc: "AOHD011206GZ6"
     },
 
@@ -121,7 +121,8 @@ const catalogoUP = [
 
 const catalogoRubro = [
 
-    "8402050"
+    "8402050",
+    "6114190"
 ];
 
 
