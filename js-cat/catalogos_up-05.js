@@ -96,6 +96,7 @@ const zona1 = [
     "Mixquiahuala de Juárez, Hidalgo",
     "Omitlán de Juárez, Hidalgo",
     "Progreso de Obregón, Hidalgo",
+    "Pachuca de Soto, Hidalgo",
     "San Agustín Tlaxiaca, Hidalgo",
     "San Salvador, Hidalgo",
     "Santiago de Anaya, Hidalgo",
