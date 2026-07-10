@@ -26,6 +26,8 @@ const reciboRoutes       = require('./routes/recibo');
 const facturaRoutes      = require('./routes/factura');
 const oficio2Routes      = require('./routes/oficio2');
 const reportesPdfRoutes  = require('./routes/reportesPdf.routes');
+const viaticosRoutes = require("./routes/viaticos");
+
 
 /* =========================
    MIDDLEWARES
@@ -54,6 +56,7 @@ app.use('/api/recibo',       reciboRoutes);
 app.use('/api/factura',      facturaRoutes);
 app.use('/api/oficio2',      oficio2Routes);
 app.use('/api/reportes-pdf', reportesPdfRoutes);  // ← cambiado para evitar conflicto
+app.use("/api/viaticos", viaticosRoutes);
 
 /* =========================
    ROOT
