@@ -16,6 +16,12 @@
 
 <div class="contenedor">
 
+    <h2 id="unidadActual">
+
+        Seleccione un Área Presupuestal
+
+    </h2>
+
     <div class="panel-filtros">
 
         <div class="fila">
@@ -203,6 +209,136 @@
             </tbody>
 
         </table>
+
+    </div>
+
+</div>
+
+<div class="modal" id="modalRegistro">
+
+    <div class="modal-contenido">
+
+        <div class="modal-header">
+
+            <h2>Nuevo Registro</h2>
+
+            <span id="cerrarModal">✖</span>
+
+        </div>
+
+        <div class="tabs">
+
+            <button
+                class="tab activa"
+                data-tab="manual">
+
+                Captura Manual
+
+            </button>
+
+            <button
+                class="tab"
+                data-tab="excel">
+
+                Importar Excel
+
+            </button>
+
+        </div>
+
+        <div id="manual" class="tab-content activo">
+
+            <div class="grupo">
+
+                <label>Nombre del Servidor Público</label>
+
+                <input
+                    id="nombreRegistro"
+                    type="text">
+
+            </div>
+
+            <div class="grupo">
+
+                <label>RFC</label>
+
+                <input
+                    id="rfcRegistro"
+                    maxlength="13">
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Mes</label>
+
+                <select id="mesRegistro">
+
+                    <option>ENERO</option>
+                    <option>FEBRERO</option>
+                    <option>MARZO</option>
+                    <option>ABRIL</option>
+                    <option>MAYO</option>
+                    <option>JUNIO</option>
+                    <option>JULIO</option>
+                    <option>AGOSTO</option>
+                    <option>SEPTIEMBRE</option>
+                    <option>OCTUBRE</option>
+                    <option>NOVIEMBRE</option>
+                    <option>DICIEMBRE</option>
+
+                </select>
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Municipio</label>
+
+                <input id="municipioRegistro">
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Importe</label>
+
+                <input
+                    id="importeRegistro"
+                    type="number">
+
+            </div>
+
+            <button id="guardarRegistro">
+
+                Guardar Registro
+
+            </button>
+
+        </div>
+
+        <div id="excel" class="tab-content">
+
+            <h3>
+
+                Importar desde Excel
+
+            </h3>
+
+            <input
+                type="file"
+                id="archivoExcel"
+                accept=".xlsx,.xls">
+
+            <br><br>
+
+            <button id="importarExcel">
+
+                Importar Archivo
+
+            </button>
+
+        </div>
 
     </div>
 
