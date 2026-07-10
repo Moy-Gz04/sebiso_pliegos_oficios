@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Control de Viáticos</title>
+
+    <link rel="stylesheet" href="../css/viaticos.css">
+
+</head>
+
+<body>
+
+    <div class="contenedor">
+
+        <h1>Control de Viáticos</h1>
+
+        <div class="card">
+
+            <div class="grupo">
+
+                <label>Unidad Presupuestal</label>
+
+                <select id="unidad"></select>
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Nombre del Servidor Público</label>
+
+                <input
+                    type="text"
+                    id="nombre"
+                    placeholder="Nombre completo">
+
+            </div>
+
+            <div class="grupo">
+
+                <label>RFC</label>
+
+                <input
+                    type="text"
+                    id="rfc"
+                    maxlength="13">
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Mes</label>
+
+                <select id="mes">
+
+                    <option>ENERO</option>
+                    <option>FEBRERO</option>
+                    <option>MARZO</option>
+                    <option>ABRIL</option>
+                    <option>MAYO</option>
+                    <option>JUNIO</option>
+                    <option>JULIO</option>
+                    <option>AGOSTO</option>
+                    <option>SEPTIEMBRE</option>
+                    <option>OCTUBRE</option>
+                    <option>NOVIEMBRE</option>
+                    <option>DICIEMBRE</option>
+
+                </select>
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Municipio Visitado</label>
+
+                <input
+                    type="text"
+                    id="municipio">
+
+            </div>
+
+            <div class="grupo">
+
+                <label>Importe</label>
+
+                <input
+                    type="number"
+                    id="importe"
+                    step="0.01">
+
+            </div>
+
+            <button id="guardar">
+
+                Guardar Registro
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="../js-viaticos/viaticos.js"></script>
+
+</body>
+
+</html>
