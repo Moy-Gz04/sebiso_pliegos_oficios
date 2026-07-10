@@ -8,6 +8,7 @@
 
     <title>Control de Viáticos</title>
 
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
     <link rel="stylesheet" href="../css/viaticos.css">
 
 </head>
@@ -187,26 +188,31 @@
 
     <div class="tabla">
 
-        <table id="tablaViaticos">
+        <table id="tablaViaticos" class="display" style="width:100%">
 
-            <thead>
+        <thead>
 
-            <tr>
+        <tr>
 
-                <th>Nombre</th>
-                <th>RFC</th>
-                <th>Mes</th>
-                <th>Municipio</th>
-                <th>Importe</th>
-                <th>Acciones</th>
+        <th>Nombre</th>
 
-            </tr>
+        <th>RFC</th>
 
-            </thead>
+        <th>Mes</th>
 
-            <tbody>
+        <th>Municipio</th>
 
-            </tbody>
+        <th>Importe</th>
+
+        <th>Acciones</th>
+
+        </tr>
+
+        </thead>
+
+        <tbody>
+
+        </tbody>
 
         </table>
 
@@ -344,6 +350,9 @@
 
 </div>
 
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
 <script src="../js-viaticos/config.js"></script>
 <script src="../js-viaticos/viaticos.js"></script>
 

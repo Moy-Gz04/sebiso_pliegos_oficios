@@ -1,10 +1,25 @@
 const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
 let modal;
+let tabla;
 
 document.addEventListener("DOMContentLoaded", () => {
 
     modal = document.getElementById("modalRegistro");
+
+    tabla = new DataTable("#tablaViaticos",{
+
+    language:{
+
+        url:"https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-MX.json"
+
+    },
+
+    pageLength:10,
+
+    responsive:true
+
+});
 
     cargarUnidades();
 
@@ -170,6 +185,7 @@ function cambiarUnidad(e) {
     //
     // cargarTabla();
     // cargarDashboard();
+    cargarViaticos();
 
 }
 
@@ -299,6 +315,8 @@ async function guardarRegistro() {
 
             cerrarModal();
 
+            cargarViaticos();
+
             // Más adelante
             //
             // cargarTabla();
@@ -317,5 +335,23 @@ async function guardarRegistro() {
         alert("Error al guardar el registro.");
 
     }
+
+}
+
+async function cargarViaticos() {
+
+    const unidad = sessionStorage.getItem("unidad_id");
+
+    if (!unidad) return;
+
+    const respuesta = await fetch(
+
+        `${API}/api/viaticos?unidad_id=${unidad}`
+
+    );
+
+    const datos = await respuesta.json();
+
+    console.log(datos);
 
 }
