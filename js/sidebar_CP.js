@@ -17,7 +17,7 @@ const PAGINA_PAGOS =
 'G.html';
 
 const PAGINA_REPORTES =
-'Reportes.html';
+'viaticos.html';
 
 /* =========================
    SIDEBAR
