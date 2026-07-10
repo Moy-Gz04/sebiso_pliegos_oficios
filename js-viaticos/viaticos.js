@@ -1,142 +1,162 @@
+/**********************************************************************
+ *
+ * CONTROL DE VIÁTICOS
+ * Secretaría de Bienestar e Inclusión Social
+ *
+ **********************************************************************/
+
 const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
 let modal;
 let tabla;
 
-document.addEventListener("DOMContentLoaded", () => {
+let registrosExcel = [];
+
+/**********************************************************************
+ *
+ * INICIO
+ *
+ **********************************************************************/
+
+document.addEventListener("DOMContentLoaded", iniciar);
+
+async function iniciar(){
 
     modal = document.getElementById("modalRegistro");
 
+    iniciarTabla();
+
+    iniciarEventos();
+
+    await cargarUnidades();
+
+}
+
+/**********************************************************************
+ *
+ * TABLA
+ *
+ **********************************************************************/
+
+function iniciarTabla(){
+
     tabla = new DataTable("#tablaViaticos",{
 
-    language:{
+        responsive:true,
 
-        url:"https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-MX.json"
+        pageLength:10,
 
-    },
+        language:{
 
-    pageLength:10,
-
-    responsive:true
-
-});
-
-    cargarUnidades();
-
-    // =============================
-    // CAMBIO DE ÁREA PRESUPUESTAL
-    // =============================
-
-    document
-        .getElementById("unidad")
-        .addEventListener("change", cambiarUnidad);
-
-    // =============================
-    // ABRIR MODAL
-    // =============================
-
-    document
-        .getElementById("nuevo")
-        .addEventListener("click", () => {
-
-            const unidad = document.getElementById("unidad").value;
-
-            if (!unidad) {
-
-                alert("Primero seleccione un Área Presupuestal.");
-
-                return;
-
-            }
-
-            modal.style.display = "flex";
-
-        });
-
-    // =============================
-    // CERRAR MODAL
-    // =============================
-
-    document
-        .getElementById("cerrarModal")
-        .addEventListener("click", cerrarModal);
-
-    window.addEventListener("click", (e) => {
-
-        if (e.target === modal) {
-
-            cerrarModal();
+            url:"https://cdn.datatables.net/plug-ins/2.3.2/i18n/es-MX.json"
 
         }
 
     });
 
-    // =============================
-    // CAMBIO DE PESTAÑAS
-    // =============================
+}
+
+/**********************************************************************
+ *
+ * EVENTOS
+ *
+ **********************************************************************/
+
+function iniciarEventos(){
 
     document
-        .querySelectorAll(".tab")
-        .forEach(tab => {
-
-            tab.addEventListener("click", () => {
-
-                document
-                    .querySelectorAll(".tab")
-                    .forEach(t => t.classList.remove("activa"));
-
-                document
-                    .querySelectorAll(".tab-content")
-                    .forEach(c => c.classList.remove("activo"));
-
-                tab.classList.add("activa");
-
-                document
-                    .getElementById(tab.dataset.tab)
-                    .classList.add("activo");
-
-            });
-
-        });
-
-    // =============================
-    // GUARDAR REGISTRO
-    // =============================
+    .getElementById("unidad")
+    .addEventListener("change",cambiarUnidad);
 
     document
-        .getElementById("guardarRegistro")
-        .addEventListener("click", guardarRegistro);
+    .getElementById("nuevo")
+    .addEventListener("click",abrirModal);
 
-});
+    document
+    .getElementById("cerrarModal")
+    .addEventListener("click",cerrarModal);
 
+    document
+    .getElementById("cancelarModal")
+    .addEventListener("click",cerrarModal);
 
-//====================================================
-// CARGAR UNIDADES
-//====================================================
+    document
+    .getElementById("guardarRegistro")
+    .addEventListener("click",guardarRegistro);
 
-async function cargarUnidades() {
+    document
+    .getElementById("importarExcel")
+    .addEventListener("click",importarExcel);
 
-    try {
+    window.onclick=(e)=>{
 
-        const respuesta = await fetch(`${API}/api/viaticos/unidades`);
+        if(e.target===modal){
 
-        const datos = await respuesta.json();
+            cerrarModal();
 
-        const select = document.getElementById("unidad");
+        }
 
-        select.innerHTML = `
+    };
+
+    document
+    .querySelectorAll(".tab")
+    .forEach(tab=>{
+
+        tab.onclick=()=>{
+
+            document
+            .querySelectorAll(".tab")
+            .forEach(t=>t.classList.remove("activa"));
+
+            document
+            .querySelectorAll(".tab-content")
+            .forEach(c=>c.classList.remove("activo"));
+
+            tab.classList.add("activa");
+
+            document
+            .getElementById(tab.dataset.tab)
+            .classList.add("activo");
+
+        };
+
+    });
+
+}
+
+/**********************************************************************
+ *
+ * ÁREAS PRESUPUESTALES
+ *
+ **********************************************************************/
+
+async function cargarUnidades(){
+
+    try{
+
+        const respuesta=await fetch(
+
+            `${API}/api/viaticos/unidades`
+
+        );
+
+        const datos=await respuesta.json();
+
+        const select=document.getElementById("unidad");
+
+        select.innerHTML=`
             <option value="">
-                Seleccione un área...
+                Seleccione un Área...
             </option>
         `;
 
-        datos.forEach(u => {
+        datos.forEach(area=>{
 
-            select.innerHTML += `
+            select.innerHTML+=`
 
-                <option value="${u.id}">
+                <option value="${area.id}">
 
-                    ${u.clave} - ${u.nombre}
+                    ${area.clave} - ${area.nombre}
 
                 </option>
 
@@ -144,24 +164,27 @@ async function cargarUnidades() {
 
         });
 
-    } catch (error) {
+    }
+
+    catch(error){
 
         console.error(error);
 
-        alert("No fue posible cargar las áreas.");
+        alert("No fue posible cargar las Áreas Presupuestales.");
 
     }
 
 }
 
+/**********************************************************************
+ *
+ * CAMBIO DE ÁREA
+ *
+ **********************************************************************/
 
-//====================================================
-// CAMBIAR ÁREA
-//====================================================
+function cambiarUnidad(e){
 
-function cambiarUnidad(e) {
-
-    const opcion = e.target.options[e.target.selectedIndex];
+    const opcion=e.target.options[e.target.selectedIndex];
 
     sessionStorage.setItem(
 
@@ -179,56 +202,297 @@ function cambiarUnidad(e) {
 
     );
 
-    document.getElementById("unidadActual").textContent = opcion.text;
+    document.getElementById(
 
-    // Más adelante aquí cargaremos:
-    //
-    // cargarTabla();
-    // cargarDashboard();
+        "unidadActual"
+
+    ).textContent=opcion.text;
+
     cargarViaticos();
 
 }
 
+/**********************************************************************
+ *
+ * CARGAR TABLA
+ *
+ **********************************************************************/
 
-//====================================================
-// CERRAR MODAL
-//====================================================
+async function cargarViaticos(){
 
-function cerrarModal() {
+    const unidad=sessionStorage.getItem("unidad_id");
 
-    modal.style.display = "none";
+    if(!unidad){
+
+        return;
+
+    }
+
+    try{
+
+        const respuesta=await fetch(
+
+            `${API}/api/viaticos?unidad_id=${unidad}`
+
+        );
+
+        const datos=await respuesta.json();
+
+        if(!datos.ok){
+
+            alert(datos.mensaje);
+
+            return;
+
+        }
+
+        tabla.clear();
+
+        let totalImporte=0;
+
+        const personas=new Set();
+
+        datos.registros.forEach(registro=>{
+
+            totalImporte+=Number(registro.importe);
+
+            personas.add(registro.rfc);
+
+            tabla.row.add([
+
+                registro.nombre_servidor,
+
+                registro.rfc,
+
+                registro.mes,
+
+                registro.municipio,
+
+                Number(registro.importe).toLocaleString(
+
+                    "es-MX",
+
+                    {
+
+                        style:"currency",
+
+                        currency:"MXN"
+
+                    }
+
+                ),
+
+                `
+
+                <button
+
+                    class="btnEditar"
+
+                    data-id="${registro.id}">
+
+                    <i class="bi bi-pencil-square"></i>
+
+                </button>
+
+                <button
+
+                    class="btnEliminar"
+
+                    data-id="${registro.id}">
+
+                    <i class="bi bi-trash"></i>
+
+                </button>
+
+                `
+
+            ]);
+
+        });
+
+        tabla.draw();
+
+        actualizarDashboard(
+
+            totalImporte,
+
+            datos.registros.length,
+
+            personas.size
+
+        );
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert("Error al consultar los registros.");
+
+    }
 
 }
 
+/**********************************************************************
+ *
+ * DASHBOARD
+ *
+ **********************************************************************/
 
-//====================================================
-// LIMPIAR FORMULARIO
-//====================================================
+function actualizarDashboard(
 
-function limpiarFormulario() {
+    total,
 
-    document.getElementById("nombreRegistro").value = "";
+    comisiones,
 
-    document.getElementById("rfcRegistro").value = "";
+    personas
 
-    document.getElementById("municipioRegistro").value = "";
+){
 
-    document.getElementById("importeRegistro").value = "";
+    document.getElementById(
 
-    document.getElementById("mesRegistro").selectedIndex = 0;
+        "totalPresupuesto"
+
+    ).textContent=
+
+        total.toLocaleString(
+
+            "es-MX",
+
+            {
+
+                style:"currency",
+
+                currency:"MXN"
+
+            }
+
+        );
+
+    document.getElementById(
+
+        "totalComisiones"
+
+    ).textContent=comisiones;
+
+    document.getElementById(
+
+        "totalPersonas"
+
+    ).textContent=personas;
+
+    let promedio=0;
+
+    if(comisiones>0){
+
+        promedio=total/comisiones;
+
+    }
+
+    document.getElementById(
+
+        "promedio"
+
+    ).textContent=
+
+        promedio.toLocaleString(
+
+            "es-MX",
+
+            {
+
+                style:"currency",
+
+                currency:"MXN"
+
+            }
+
+        );
 
 }
 
+/**********************************************************************
+ *
+ * MODAL
+ *
+ **********************************************************************/
 
-//====================================================
-// GUARDAR REGISTRO
-//====================================================
+function abrirModal(){
 
-async function guardarRegistro() {
+    const unidad=document.getElementById("unidad").value;
 
-    const unidad = sessionStorage.getItem("unidad_id");
+    if(!unidad){
 
-    if (!unidad) {
+        alert("Seleccione primero un Área Presupuestal.");
+
+        return;
+
+    }
+
+    limpiarFormulario();
+
+    modal.style.display="flex";
+
+}
+
+function cerrarModal(){
+
+    modal.style.display="none";
+
+}
+
+/**********************************************************************
+ *
+ * LIMPIAR FORMULARIO
+ *
+ **********************************************************************/
+
+function limpiarFormulario(){
+
+    document.getElementById(
+
+        "nombreRegistro"
+
+    ).value="";
+
+    document.getElementById(
+
+        "rfcRegistro"
+
+    ).value="";
+
+    document.getElementById(
+
+        "municipioRegistro"
+
+    ).value="";
+
+    document.getElementById(
+
+        "importeRegistro"
+
+    ).value="";
+
+    document.getElementById(
+
+        "mesRegistro"
+
+    ).selectedIndex=0;
+
+}
+
+/**********************************************************************
+ *
+ * REGISTRO MANUAL
+ *
+ **********************************************************************/
+
+async function guardarRegistro(){
+
+    const unidad=sessionStorage.getItem("unidad_id");
+
+    if(!unidad){
 
         alert("Seleccione un Área Presupuestal.");
 
@@ -236,36 +500,57 @@ async function guardarRegistro() {
 
     }
 
-    const body = {
+    const body={
 
-        unidad_id: unidad,
+        unidad_id:unidad,
 
-        nombre_servidor: document
-            .getElementById("nombreRegistro")
-            .value
-            .trim(),
+        nombre_servidor:
 
-        rfc: document
-            .getElementById("rfcRegistro")
-            .value
-            .trim(),
+            document.getElementById(
 
-        mes: document
-            .getElementById("mesRegistro")
-            .value,
+                "nombreRegistro"
 
-        municipio: document
-            .getElementById("municipioRegistro")
-            .value
-            .trim(),
+            ).value.trim(),
 
-        importe: document
-            .getElementById("importeRegistro")
-            .value
+        rfc:
+
+            document.getElementById(
+
+                "rfcRegistro"
+
+            ).value.trim().toUpperCase(),
+
+        mes:
+
+            document.getElementById(
+
+                "mesRegistro"
+
+            ).value,
+
+        municipio:
+
+            document.getElementById(
+
+                "municipioRegistro"
+
+            ).value.trim().toUpperCase(),
+
+        importe:
+
+            Number(
+
+                document.getElementById(
+
+                    "importeRegistro"
+
+                ).value
+
+            )
 
     };
 
-    if (
+    if(
 
         !body.nombre_servidor ||
 
@@ -275,7 +560,7 @@ async function guardarRegistro() {
 
         !body.importe
 
-    ) {
+    ){
 
         alert("Complete todos los campos.");
 
@@ -283,75 +568,526 @@ async function guardarRegistro() {
 
     }
 
-    try {
+    try{
 
-        const respuesta = await fetch(
+        const respuesta=await fetch(
 
             `${API}/api/viaticos`,
 
             {
 
-                method: "POST",
+                method:"POST",
 
-                headers: {
+                headers:{
 
-                    "Content-Type": "application/json"
+                    "Content-Type":"application/json"
 
                 },
 
-                body: JSON.stringify(body)
+                body:JSON.stringify(body)
 
             }
 
         );
 
-        const datos = await respuesta.json();
+        const datos=await respuesta.json();
 
-        if (datos.ok) {
-
-            alert("Registro guardado correctamente.");
-
-            limpiarFormulario();
-
-            cerrarModal();
-
-            cargarViaticos();
-
-            // Más adelante
-            //
-            // cargarTabla();
-            // cargarDashboard();
-
-        } else {
+        if(!datos.ok){
 
             alert(datos.mensaje);
 
+            return;
+
         }
 
-    } catch (error) {
+        cerrarModal();
+
+        cargarViaticos();
+
+    }
+
+    catch(error){
 
         console.error(error);
 
-        alert("Error al guardar el registro.");
+        alert("Error al guardar.");
 
     }
 
 }
 
-async function cargarViaticos() {
+/**********************************************************************
+ *
+ * IMPORTAR EXCEL
+ *
+ **********************************************************************/
 
-    const unidad = sessionStorage.getItem("unidad_id");
+async function importarExcel(){
 
-    if (!unidad) return;
+    const archivo=document.getElementById("archivoExcel").files[0];
 
-    const respuesta = await fetch(
+    if(!archivo){
 
-        `${API}/api/viaticos?unidad_id=${unidad}`
+        alert("Seleccione un archivo Excel.");
+
+        return;
+
+    }
+
+    const unidad=sessionStorage.getItem("unidad_id");
+
+    if(!unidad){
+
+        alert("Seleccione un Área Presupuestal.");
+
+        return;
+
+    }
+
+    const reader=new FileReader();
+
+    reader.onload=function(e){
+
+        leerExcel(e.target.result);
+
+    };
+
+    reader.readAsArrayBuffer(archivo);
+
+}
+
+/**********************************************************************
+ *
+ * LEER EXCEL
+ *
+ **********************************************************************/
+
+function leerExcel(buffer){
+
+    registrosExcel=[];
+
+    const workbook=XLSX.read(buffer,{
+
+        type:"array"
+
+    });
+
+    const hoja=workbook.Sheets[workbook.SheetNames[0]];
+
+    const datos=XLSX.utils.sheet_to_json(
+
+        hoja,
+
+        {
+
+            defval:""
+
+        }
 
     );
 
-    const datos = await respuesta.json();
+    if(datos.length===0){
 
-    console.log(datos);
+        alert("El archivo está vacío.");
+
+        return;
+
+    }
+
+    procesarExcel(datos);
 
 }
+
+/**********************************************************************
+ *
+ * PROCESAR EXCEL
+ *
+ **********************************************************************/
+
+function procesarExcel(datos){
+
+    datos.forEach(fila=>{
+
+        registrosExcel.push({
+
+            nombre_servidor:
+
+                obtenerCampo(
+
+                    fila,
+
+                    [
+
+                        "Nombre del Servidor Público",
+
+                        "NOMBRE DEL SERVIDOR PUBLICO",
+
+                        "SERVIDOR PUBLICO",
+
+                        "NOMBRE"
+
+                    ]
+
+                ),
+
+            rfc:
+
+                obtenerCampo(
+
+                    fila,
+
+                    [
+
+                        "RFC"
+
+                    ]
+
+                ),
+
+            mes:
+
+                obtenerCampo(
+
+                    fila,
+
+                    [
+
+                        "MES"
+
+                    ]
+
+                ).toUpperCase(),
+
+            municipio:
+
+                obtenerCampo(
+
+                    fila,
+
+                    [
+
+                        "MUNICIPIO VISITADO",
+
+                        "MUNICIPIO"
+
+                    ]
+
+                ).toUpperCase(),
+
+            importe:
+
+                limpiarImporte(
+
+                    obtenerCampo(
+
+                        fila,
+
+                        [
+
+                            "IMPORTE"
+
+                        ]
+
+                    )
+
+                )
+
+        });
+
+    });
+
+    validarExcel();
+
+}
+
+/**********************************************************************
+ *
+ * OBTENER CAMPO DEL EXCEL
+ *
+ **********************************************************************/
+
+function obtenerCampo(fila, posiblesCampos){
+
+    const llaves = Object.keys(fila);
+
+    for(const posible of posiblesCampos){
+
+        const encontrada = llaves.find(k =>
+            limpiarTexto(k) === limpiarTexto(posible)
+        );
+
+        if(encontrada){
+
+            return String(fila[encontrada]).trim();
+
+        }
+
+    }
+
+    return "";
+
+}
+
+/**********************************************************************
+ *
+ * LIMPIAR TEXTO
+ *
+ **********************************************************************/
+
+function limpiarTexto(texto){
+
+    return String(texto)
+
+        .normalize("NFD")
+
+        .replace(/[\u0300-\u036f]/g,"")
+
+        .replace(/\s+/g," ")
+
+        .trim()
+
+        .toUpperCase();
+
+}
+
+/**********************************************************************
+ *
+ * LIMPIAR IMPORTE
+ *
+ **********************************************************************/
+
+function limpiarImporte(valor){
+
+    if(valor===null || valor===undefined){
+
+        return 0;
+
+    }
+
+    if(typeof valor==="number"){
+
+        return Number(valor);
+
+    }
+
+    let limpio=String(valor);
+
+    limpio=limpio.replace(/\$/g,"");
+
+    limpio=limpio.replace(/,/g,"");
+
+    limpio=limpio.trim();
+
+    if(limpio===""){
+
+        return 0;
+
+    }
+
+    return Number(limpio);
+
+}
+
+/**********************************************************************
+ *
+ * RFC
+ *
+ **********************************************************************/
+
+function validarRFC(rfc){
+
+    if(!rfc){
+
+        return false;
+
+    }
+
+    rfc=rfc.trim().toUpperCase();
+
+    return /^[A-ZÑ&]{3,4}[0-9]{6}[A-Z0-9]{3}$/.test(rfc);
+
+}
+
+/**********************************************************************
+ *
+ * FORMATEAR DINERO
+ *
+ **********************************************************************/
+
+function formatoMoneda(numero){
+
+    return Number(numero).toLocaleString(
+
+        "es-MX",
+
+        {
+
+            style:"currency",
+
+            currency:"MXN"
+
+        }
+
+    );
+
+}
+
+/**********************************************************************
+ *
+ * LIMPIAR EXCEL
+ *
+ **********************************************************************/
+
+function limpiarImportacion(){
+
+    registrosExcel=[];
+
+    document.getElementById("archivoExcel").value="";
+
+}
+
+/**********************************************************************
+ *
+ * EDITAR REGISTRO
+ *
+ **********************************************************************/
+
+async function editarRegistro(id){
+
+    alert("Próximamente se habilitará la edición del registro.");
+
+}
+
+/**********************************************************************
+ *
+ * ELIMINAR REGISTRO
+ *
+ **********************************************************************/
+
+async function eliminarRegistro(id){
+
+    if(!confirm("¿Desea eliminar este registro?")){
+
+        return;
+
+    }
+
+    try{
+
+        const respuesta=await fetch(
+
+            `${API}/api/viaticos/${id}`,
+
+            {
+
+                method:"DELETE"
+
+            }
+
+        );
+
+        const datos=await respuesta.json();
+
+        if(!datos.ok){
+
+            alert(datos.mensaje);
+
+            return;
+
+        }
+
+        cargarViaticos();
+
+    }
+
+    catch(error){
+
+        console.error(error);
+
+        alert("Error al eliminar.");
+
+    }
+
+}
+
+/**********************************************************************
+ *
+ * EVENTOS DE LA TABLA
+ *
+ **********************************************************************/
+
+document.addEventListener("click",function(e){
+
+    const btnEditar=e.target.closest(".btnEditar");
+
+    if(btnEditar){
+
+        editarRegistro(
+
+            btnEditar.dataset.id
+
+        );
+
+    }
+
+    const btnEliminar=e.target.closest(".btnEliminar");
+
+    if(btnEliminar){
+
+        eliminarRegistro(
+
+            btnEliminar.dataset.id
+
+        );
+
+    }
+
+});
+
+/**********************************************************************
+ *
+ * BUSCAR
+ *
+ **********************************************************************/
+
+document.getElementById("buscar").addEventListener(
+
+    "click",
+
+    function(){
+
+        cargarViaticos();
+
+    }
+
+);
+
+/**********************************************************************
+ *
+ * LIMPIAR FILTROS
+ *
+ **********************************************************************/
+
+document.getElementById("limpiar").addEventListener(
+
+    "click",
+
+    ()=>{
+
+        document.getElementById("mes").selectedIndex=0;
+
+        document.getElementById("municipio").value="";
+
+        document.getElementById("servidor").value="";
+
+        cargarViaticos();
+
+    }
+
+);
+
+/**********************************************************************
+ *
+ * FIN DEL ARCHIVO
+ *
+ **********************************************************************/

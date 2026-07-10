@@ -8,8 +8,17 @@
 
     <title>Control de Viáticos</title>
 
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
-    <link rel="stylesheet" href="../css/viaticos.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet"
+    href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- DataTables -->
+    <link rel="stylesheet"
+    href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet"
+    href="../css/viaticos.css">
 
 </head>
 
@@ -17,11 +26,61 @@
 
 <div class="contenedor">
 
-    <h2 id="unidadActual">
+    <!--=========================
+        HEADER
+    ==========================-->
 
-        Seleccione un Área Presupuestal
+    <div class="encabezado">
 
-    </h2>
+        <div>
+
+            <h1>
+
+                <i class="bi bi-cash-stack"></i>
+
+                Control de Viáticos
+
+            </h1>
+
+            <p>
+
+                Administración de comisiones oficiales por Unidad Presupuestal
+
+            </p>
+
+        </div>
+
+        <button
+            id="nuevo"
+            class="btn-principal">
+
+            <i class="bi bi-plus-circle-fill"></i>
+
+            Nuevo Registro
+
+        </button>
+
+    </div>
+
+    <!--=========================
+        ÁREA ACTUAL
+    ==========================-->
+
+    <div class="unidad-actual">
+
+        <i class="bi bi-building"></i>
+
+        <span id="unidadActual">
+
+            Seleccione un Área Presupuestal
+
+        </span>
+
+    </div>
+
+    <!--=========================
+        FILTROS
+    ==========================-->
 
     <div class="panel-filtros">
 
@@ -29,9 +88,9 @@
 
             <div class="titulo">
 
-                ÁREA
-                <br>
-                PRESUPUESTAL
+                <i class="bi bi-building"></i>
+
+                Área Presupuestal
 
             </div>
 
@@ -43,15 +102,17 @@
 
         </div>
 
-        <div class="fila">
+        <div class="fila-grid">
 
-            <div class="titulo">
+            <div>
 
-                MES
+                <label>
 
-            </div>
+                    <i class="bi bi-calendar3"></i>
 
-            <div class="contenido">
+                    Mes
+
+                </label>
 
                 <select id="mes">
 
@@ -74,17 +135,15 @@
 
             </div>
 
-        </div>
+            <div>
 
-        <div class="fila">
+                <label>
 
-            <div class="titulo">
+                    <i class="bi bi-geo-alt"></i>
 
-                MUNICIPIO
+                    Municipio
 
-            </div>
-
-            <div class="contenido">
+                </label>
 
                 <input
                     id="municipio"
@@ -93,24 +152,20 @@
 
             </div>
 
-        </div>
+            <div>
 
-        <div class="fila">
+                <label>
 
-            <div class="titulo">
+                    <i class="bi bi-person"></i>
 
-                SERVIDOR
-                <br>
-                PÚBLICO
+                    Servidor Público
 
-            </div>
-
-            <div class="contenido">
+                </label>
 
                 <input
                     id="servidor"
                     type="text"
-                    placeholder="Nombre del servidor">
+                    placeholder="Nombre del Servidor Público">
 
             </div>
 
@@ -118,15 +173,23 @@
 
         <div class="acciones">
 
-            <button id="buscar">
+            <button
+                id="buscar"
+                class="btn-buscar">
+
+                <i class="bi bi-search"></i>
 
                 Buscar
 
             </button>
 
-            <button id="nuevo">
+            <button
+                id="limpiar"
+                class="btn-secundario">
 
-                Nuevo Registro
+                <i class="bi bi-arrow-clockwise"></i>
+
+                Limpiar
 
             </button>
 
@@ -134,91 +197,159 @@
 
     </div>
 
+    <!--=========================
+        TARJETAS
+    ==========================-->
+
     <div class="cards">
 
         <div class="card">
 
-            <h3>Presupuesto</h3>
+            <div class="icono-card verde">
 
-            <span id="totalPresupuesto">
+                <i class="bi bi-cash-stack"></i>
 
-                $0.00
+            </div>
 
-            </span>
+            <div>
 
-        </div>
+                <h3>Presupuesto</h3>
 
-        <div class="card">
+                <span id="totalPresupuesto">
 
-            <h3>Comisiones</h3>
+                    $0.00
 
-            <span id="totalComisiones">
+                </span>
 
-                0
-
-            </span>
+            </div>
 
         </div>
 
         <div class="card">
 
-            <h3>Personas</h3>
+            <div class="icono-card azul">
 
-            <span id="totalPersonas">
+                <i class="bi bi-people-fill"></i>
 
-                0
+            </div>
 
-            </span>
+            <div>
+
+                <h3>Personas</h3>
+
+                <span id="totalPersonas">
+
+                    0
+
+                </span>
+
+            </div>
 
         </div>
 
         <div class="card">
 
-            <h3>Promedio</h3>
+            <div class="icono-card vino">
 
-            <span id="promedio">
+                <i class="bi bi-journal-text"></i>
 
-                $0.00
+            </div>
 
-            </span>
+            <div>
+
+                <h3>Comisiones</h3>
+
+                <span id="totalComisiones">
+
+                    0
+
+                </span>
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <div class="icono-card naranja">
+
+                <i class="bi bi-graph-up-arrow"></i>
+
+            </div>
+
+            <div>
+
+                <h3>Promedio</h3>
+
+                <span id="promedio">
+
+                    $0.00
+
+                </span>
+
+            </div>
 
         </div>
 
     </div>
 
-    <div class="tabla">
+    <!--=========================
+        TABLA
+    ==========================-->
 
-        <table id="tablaViaticos" class="display" style="width:100%">
+    <div class="tabla-card">
 
-        <thead>
+        <div class="tabla-header">
+
+            <h2>
+
+                <i class="bi bi-table"></i>
+
+                Registros de Viáticos
+
+            </h2>
+
+        </div>
+
+        <div class="tabla">
+        
+            <table id="tablaViaticos" class="display stripe hover" style="width:100%">
+
+    <thead>
 
         <tr>
 
-        <th>Nombre</th>
+            <th>Servidor Público</th>
 
-        <th>RFC</th>
+            <th>RFC</th>
 
-        <th>Mes</th>
+            <th>Mes</th>
 
-        <th>Municipio</th>
+            <th>Municipio</th>
 
-        <th>Importe</th>
+            <th>Importe</th>
 
-        <th>Acciones</th>
+            <th style="width:120px">Acciones</th>
 
         </tr>
 
-        </thead>
+    </thead>
 
-        <tbody>
+    <tbody>
 
-        </tbody>
+    </tbody>
 
-        </table>
+</table>
+
+        </div>
 
     </div>
 
 </div>
+
+<!--======================================
+        MODAL
+=======================================-->
 
 <div class="modal" id="modalRegistro">
 
@@ -226,9 +357,29 @@
 
         <div class="modal-header">
 
-            <h2>Nuevo Registro</h2>
+            <div>
 
-            <span id="cerrarModal">✖</span>
+                <h2>
+
+                    <i class="bi bi-journal-plus"></i>
+
+                    Nuevo Registro
+
+                </h2>
+
+                <small>
+
+                    Capture un registro manualmente o importe un archivo Excel.
+
+                </small>
+
+            </div>
+
+            <button id="cerrarModal" class="cerrar">
+
+                <i class="bi bi-x-lg"></i>
+
+            </button>
 
         </div>
 
@@ -238,6 +389,8 @@
                 class="tab activa"
                 data-tab="manual">
 
+                <i class="bi bi-pencil-square"></i>
+
                 Captura Manual
 
             </button>
@@ -246,103 +399,171 @@
                 class="tab"
                 data-tab="excel">
 
+                <i class="bi bi-file-earmark-excel-fill"></i>
+
                 Importar Excel
 
             </button>
 
         </div>
 
+        <!--======================================
+                MANUAL
+        =======================================-->
+
         <div id="manual" class="tab-content activo">
 
-            <div class="grupo">
+            <div class="grid-form">
 
-                <label>Nombre del Servidor Público</label>
+                <div class="grupo">
 
-                <input
-                    id="nombreRegistro"
-                    type="text">
+                    <label>
+
+                        Servidor Público
+
+                    </label>
+
+                    <input
+                        id="nombreRegistro"
+                        type="text">
+
+                </div>
+
+                <div class="grupo">
+
+                    <label>
+
+                        RFC
+
+                    </label>
+
+                    <input
+                        id="rfcRegistro"
+                        maxlength="13">
+
+                </div>
+
+                <div class="grupo">
+
+                    <label>
+
+                        Mes
+
+                    </label>
+
+                    <select id="mesRegistro">
+
+                        <option>ENERO</option>
+                        <option>FEBRERO</option>
+                        <option>MARZO</option>
+                        <option>ABRIL</option>
+                        <option>MAYO</option>
+                        <option>JUNIO</option>
+                        <option>JULIO</option>
+                        <option>AGOSTO</option>
+                        <option>SEPTIEMBRE</option>
+                        <option>OCTUBRE</option>
+                        <option>NOVIEMBRE</option>
+                        <option>DICIEMBRE</option>
+
+                    </select>
+
+                </div>
+
+                <div class="grupo">
+
+                    <label>
+
+                        Municipio
+
+                    </label>
+
+                    <input id="municipioRegistro">
+
+                </div>
+
+                <div class="grupo">
+
+                    <label>
+
+                        Importe
+
+                    </label>
+
+                    <input
+                        id="importeRegistro"
+                        type="number">
+
+                </div>
 
             </div>
 
-            <div class="grupo">
+            <div class="footer-modal">
 
-                <label>RFC</label>
+                <button
+                    class="btn-cancelar"
+                    id="cancelarModal">
 
-                <input
-                    id="rfcRegistro"
-                    maxlength="13">
+                    <i class="bi bi-x-circle"></i>
 
-            </div>
+                    Cancelar
 
-            <div class="grupo">
+                </button>
 
-                <label>Mes</label>
+                <button
+                    id="guardarRegistro"
+                    class="btn-guardar">
 
-                <select id="mesRegistro">
+                    <i class="bi bi-check-circle-fill"></i>
 
-                    <option>ENERO</option>
-                    <option>FEBRERO</option>
-                    <option>MARZO</option>
-                    <option>ABRIL</option>
-                    <option>MAYO</option>
-                    <option>JUNIO</option>
-                    <option>JULIO</option>
-                    <option>AGOSTO</option>
-                    <option>SEPTIEMBRE</option>
-                    <option>OCTUBRE</option>
-                    <option>NOVIEMBRE</option>
-                    <option>DICIEMBRE</option>
+                    Guardar Registro
 
-                </select>
+                </button>
 
             </div>
-
-            <div class="grupo">
-
-                <label>Municipio</label>
-
-                <input id="municipioRegistro">
-
-            </div>
-
-            <div class="grupo">
-
-                <label>Importe</label>
-
-                <input
-                    id="importeRegistro"
-                    type="number">
-
-            </div>
-
-            <button id="guardarRegistro">
-
-                Guardar Registro
-
-            </button>
 
         </div>
 
+        <!--======================================
+                EXCEL
+        =======================================-->
+
         <div id="excel" class="tab-content">
 
-            <h3>
+            <div class="excel-box">
 
-                Importar desde Excel
+                <i class="bi bi-file-earmark-excel-fill excel-icono"></i>
 
-            </h3>
+                <h3>
 
-            <input
-                type="file"
-                id="archivoExcel"
-                accept=".xlsx,.xls">
+                    Importar archivo Excel
 
-            <br><br>
+                </h3>
 
-            <button id="importarExcel">
+                <p>
 
-                Importar Archivo
+                    Seleccione un archivo con el formato oficial del sistema.
 
-            </button>
+                </p>
+
+                <input
+                    type="file"
+                    id="archivoExcel"
+                    accept=".xlsx,.xls">
+
+                <br><br>
+
+                <button
+                    id="importarExcel"
+                    class="btn-importar">
+
+                    <i class="bi bi-upload"></i>
+
+                    Importar Archivo
+
+                </button>
+
+            </div>
 
         </div>
 
@@ -350,12 +571,23 @@
 
 </div>
 
+<!--======================================
+        LIBRERÍAS
+=======================================-->
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
 <script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
+
+<!-- Librería para leer Excel -->
+
+<script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
+
 <script src="../js-viaticos/config.js"></script>
+
 <script src="../js-viaticos/viaticos.js"></script>
 
 </body>
 
 </html>
+
