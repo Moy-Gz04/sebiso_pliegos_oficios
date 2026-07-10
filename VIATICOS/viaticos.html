@@ -4,7 +4,7 @@
 <head>
 
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
 
     <title>Control de Viáticos</title>
 
@@ -14,47 +14,41 @@
 
 <body>
 
-    <div class="contenedor">
+<div class="contenedor">
 
-        <h1>Control de Viáticos</h1>
+    <div class="panel-filtros">
 
-        <div class="card">
+        <div class="fila">
 
-            <div class="grupo">
+            <div class="titulo">
 
-                <label>Unidad Presupuestal</label>
+                ÁREA
+                <br>
+                PRESUPUESTAL
+
+            </div>
+
+            <div class="contenido">
 
                 <select id="unidad"></select>
 
             </div>
 
-            <div class="grupo">
+        </div>
 
-                <label>Nombre del Servidor Público</label>
+        <div class="fila">
 
-                <input
-                    type="text"
-                    id="nombre"
-                    placeholder="Nombre completo">
+            <div class="titulo">
 
-            </div>
-
-            <div class="grupo">
-
-                <label>RFC</label>
-
-                <input
-                    type="text"
-                    id="rfc"
-                    maxlength="13">
+                MES
 
             </div>
 
-            <div class="grupo">
-
-                <label>Mes</label>
+            <div class="contenido">
 
                 <select id="mes">
+
+                    <option value="">Todos</option>
 
                     <option>ENERO</option>
                     <option>FEBRERO</option>
@@ -73,30 +67,59 @@
 
             </div>
 
-            <div class="grupo">
+        </div>
 
-                <label>Municipio Visitado</label>
+        <div class="fila">
+
+            <div class="titulo">
+
+                MUNICIPIO
+
+            </div>
+
+            <div class="contenido">
 
                 <input
+                    id="municipio"
                     type="text"
-                    id="municipio">
+                    placeholder="Todos">
 
             </div>
 
-            <div class="grupo">
+        </div>
 
-                <label>Importe</label>
+        <div class="fila">
+
+            <div class="titulo">
+
+                SERVIDOR
+                <br>
+                PÚBLICO
+
+            </div>
+
+            <div class="contenido">
 
                 <input
-                    type="number"
-                    id="importe"
-                    step="0.01">
+                    id="servidor"
+                    type="text"
+                    placeholder="Nombre del servidor">
 
             </div>
 
-            <button id="guardar">
+        </div>
 
-                Guardar Registro
+        <div class="acciones">
+
+            <button id="buscar">
+
+                Buscar
+
+            </button>
+
+            <button id="nuevo">
+
+                Nuevo Registro
 
             </button>
 
@@ -104,7 +127,89 @@
 
     </div>
 
-    <script src="../js-viaticos/viaticos.js"></script>
+    <div class="cards">
+
+        <div class="card">
+
+            <h3>Presupuesto</h3>
+
+            <span id="totalPresupuesto">
+
+                $0.00
+
+            </span>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Comisiones</h3>
+
+            <span id="totalComisiones">
+
+                0
+
+            </span>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Personas</h3>
+
+            <span id="totalPersonas">
+
+                0
+
+            </span>
+
+        </div>
+
+        <div class="card">
+
+            <h3>Promedio</h3>
+
+            <span id="promedio">
+
+                $0.00
+
+            </span>
+
+        </div>
+
+    </div>
+
+    <div class="tabla">
+
+        <table id="tablaViaticos">
+
+            <thead>
+
+            <tr>
+
+                <th>Nombre</th>
+                <th>RFC</th>
+                <th>Mes</th>
+                <th>Municipio</th>
+                <th>Importe</th>
+                <th>Acciones</th>
+
+            </tr>
+
+            </thead>
+
+            <tbody>
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+<script src="../js-viaticos/config.js"></script>
+<script src="../js-viaticos/viaticos.js"></script>
 
 </body>
 
