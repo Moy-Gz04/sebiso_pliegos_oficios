@@ -9,7 +9,7 @@ const personas = [
     "Lic. Tania Yeraldin Lara Hernández",
     "Ing. Marlene Jiménez Ramírez",
     "Lic. Ariadna Ramírez Hernández",
-    "Lic. Daena Gaudalupe Acosta Hernández",
+    "Lic. Daena Guadalupe Acosta Hernández",
     "Lic. Reyna Bautista Granados",
     "L.A.S.C. Julio Cesar Granados Colmenares",
     "C. Viridiana Barraza Cortez",
