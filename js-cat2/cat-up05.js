@@ -58,7 +58,7 @@ const personas = [
     },
 
     {
-        nombre: "Lic. Daena Gaudalupe Acosta Hernández",
+        nombre: "Lic. Daena Guadalupe Acosta Hernández",
         categoria: "Jefe de Departamento C",
         rfc: "AOHD011206GZ6"
     },

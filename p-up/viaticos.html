@@ -17,12 +17,26 @@
     href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
 
     <!-- CSS -->
+    <link rel="stylesheet" href="../css/ssidebar.css">
     <link rel="stylesheet"
     href="../css/viaticos.css">
 
 </head>
 
 <body>
+
+<div id="sidebar-container"></div>
+
+<!--
+    .contenido  -> clase que ya usa ssidebar.css para correr el
+                   contenido a la derecha del menú fijo.
+    .viaticos   -> namespace propio: todas las reglas de viaticos.css
+                   quedan dentro de .viaticos ... por lo que nunca
+                   pisan botones/inputs/tablas del sidebar u otras
+                   páginas que carguen este mismo archivo.
+-->
+<div class="contenido">
+<div class="viaticos">
 
 <div class="contenedor">
 
@@ -94,7 +108,7 @@
 
             </div>
 
-            <div class="contenido">
+            <div class="campo-select">
 
                 <select id="unidad"></select>
 
@@ -571,9 +585,13 @@
 
 </div>
 
+</div>
+</div>
+
 <!--======================================
         LIBRERÍAS
 =======================================-->
+<script src="../js/sidebar_CP.js"></script>
 
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 
@@ -586,9 +604,7 @@
 <script src="../js-viaticos/config.js"></script>
 
 <script src="../js-viaticos/viaticos.js"></script>
-<script src="../js/sidebar_CP.js"></script>
 
 </body>
 
 </html>
-

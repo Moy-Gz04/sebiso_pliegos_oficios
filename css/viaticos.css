@@ -1,78 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap');
+
 /* ==========================================================
    VARIABLES
 ========================================================== */
 
 :root{
 
-    --vino:#6d1831;
-    --vino-dark:#521224;
+    --vt-vino:#691C32;
+    --vt-vino-dark:#541326;
+    --vt-oro:#BC955C;
 
-    --verde:#198754;
-    --azul:#0d6efd;
-    --naranja:#fd7e14;
-    --rojo:#dc3545;
+    --vt-verde:#1F8B2C;
+    --vt-azul:#0D6EFD;
+    --vt-naranja:#fd7e14;
+    --vt-rojo:#B71C1C;
 
-    --gris:#f4f6f9;
-    --gris2:#e9ecef;
+    --vt-gris:#f3f1ec;
+    --vt-gris2:#efe7d4;
 
-    --texto:#2d3436;
+    --vt-texto:#111827;
 
-    --sombra:0 10px 25px rgba(0,0,0,.08);
+    --vt-sombra:0 4px 14px rgba(0,0,0,.04);
 
-    --radio:18px;
+    --vt-radio:18px;
 
-}
-
-/* ==========================================================
+}/* ==========================================================
    GENERAL
 ========================================================== */
+.viaticos,
+.viaticos *{
 
-*{
-
-    margin:0;
-    padding:0;
+    font-family:'Montserrat',sans-serif;
     box-sizing:border-box;
 
 }
 
-body{
-
-    background:var(--gris);
-
-    font-family:
-    "Segoe UI",
-    Tahoma,
-    Geneva,
-    Verdana,
-    sans-serif;
-
-    color:var(--texto);
-
-}
-
-.contenedor{
+.viaticos .contenedor{
 
     width:95%;
 
-    max-width:1600px;
+    max-width:1700px;
 
-    margin:35px auto;
+    margin:20px auto;
 
-}
+    color:var(--vt-texto);
+    font-size:12px;
 
-/* ==========================================================
+}/* ==========================================================
    HEADER
 ========================================================== */
-
-.encabezado{
+.viaticos .encabezado{
 
     background:white;
 
-    border-radius:20px;
+    border-radius:28px;
 
-    padding:25px 35px;
+    padding:24px 28px;
 
-    box-shadow:var(--sombra);
+    box-shadow:var(--vt-sombra);
+
+    border:1px solid #ececec;
 
     display:flex;
 
@@ -80,99 +67,103 @@ body{
 
     align-items:center;
 
-    margin-bottom:25px;
+    margin-bottom:20px;
 
-}
+}.viaticos .encabezado h1{
 
-.encabezado h1{
+    color:var(--vt-vino);
 
-    color:var(--vino);
+    font-size:22px;
 
-    font-size:34px;
+    font-weight:800;
 
     display:flex;
 
     align-items:center;
 
-    gap:12px;
+    gap:10px;
 
-}
+    letter-spacing:.3px;
 
-.encabezado p{
+}.viaticos .encabezado p{
 
-    color:#777;
+    color:#6b7280;
 
-    margin-top:8px;
+    margin-top:6px;
 
-}
+    font-size:11px;
 
-/* ==========================================================
+    font-weight:500;
+
+}/* ==========================================================
    ÁREA ACTUAL
 ========================================================== */
+.viaticos .unidad-actual{
 
-.unidad-actual{
-
-    background:var(--vino);
+    background:var(--vt-vino);
 
     color:white;
 
-    padding:18px 25px;
+    padding:14px 22px;
 
-    border-radius:15px;
+    border-radius:18px;
 
-    margin-bottom:25px;
+    margin-bottom:20px;
 
     display:flex;
 
     align-items:center;
 
-    gap:12px;
+    gap:10px;
 
-    font-size:18px;
+    font-size:12px;
 
-    font-weight:600;
+    font-weight:700;
 
-    box-shadow:var(--sombra);
+    letter-spacing:.4px;
 
-}
+    box-shadow:0 4px 18px rgba(105,28,50,.18);
 
-/* ==========================================================
+}/* ==========================================================
    PANEL
 ========================================================== */
-
-.panel-filtros{
+.viaticos .panel-filtros{
 
     background:white;
 
-    border-radius:20px;
+    border-radius:28px;
 
-    padding:30px;
+    padding:24px;
 
-    box-shadow:var(--sombra);
+    box-shadow:var(--vt-sombra);
 
-    margin-bottom:30px;
+    border:1px solid #ececec;
 
-}
+    margin-bottom:20px;
 
-.fila{
+}.viaticos .fila{
 
-    display:grid;
+    display:flex;
 
-    grid-template-columns:250px 1fr;
+    align-items:center;
 
-    gap:20px;
+    width:100%;
 
-    margin-bottom:25px;
+    margin-bottom:18px;
 
-}
+}.viaticos .titulo{
 
-.titulo{
+    width:220px;
 
-    background:var(--vino);
+    height:44px;
+
+    flex-shrink:0;
+
+    background:var(--vt-vino);
 
     color:white;
 
-    border-radius:15px;
+    border-radius:14px 0 0 14px;
 
     display:flex;
 
@@ -180,185 +171,225 @@ body{
 
     justify-content:center;
 
-    gap:10px;
+    gap:8px;
 
-    font-size:17px;
+    font-size:11px;
 
-    font-weight:bold;
+    font-weight:700;
 
-}
+    letter-spacing:.4px;
 
-.fila-grid{
+    text-transform:uppercase;
+
+}.viaticos .fila .campo-select{
+
+    flex:1;
+
+}.viaticos .fila .campo-select select{
+
+    border-radius:0 14px 14px 0;
+
+    box-shadow:none;
+
+}.viaticos .fila-grid{
 
     display:grid;
 
     grid-template-columns:repeat(3,1fr);
 
-    gap:20px;
+    gap:16px;
 
-}
-
-.fila-grid label{
-
-    display:block;
-
-    margin-bottom:10px;
-
-    font-weight:600;
-
-    color:#555;
-
-}
-
-.fila-grid label i{
-
-    color:var(--vino);
-
-}
-
-select,
-input{
-
-    width:100%;
-
-    height:52px;
-
-    border:1px solid #ddd;
-
-    border-radius:12px;
-
-    padding:0 15px;
-
-    font-size:15px;
-
-    transition:.3s;
-
-}
-
-select:focus,
-input:focus{
-
-    outline:none;
-
-    border-color:var(--vino);
-
-    box-shadow:0 0 0 4px rgba(109,24,49,.12);
-
-}
-
-/* ==========================================================
-   BOTONES
-========================================================== */
-
-.acciones{
+}.viaticos .fila-grid > div{
 
     display:flex;
 
-    justify-content:flex-end;
+    flex-direction:column;
 
-    gap:15px;
+    gap:6px;
 
-    margin-top:30px;
-
-}
-
-button{
-
-    cursor:pointer;
-
-    border:none;
-
-    transition:.25s;
-
-    font-size:15px;
-
-    font-weight:600;
-
-}
-
-.btn-principal{
-
-    background:var(--verde);
-
-    color:white;
-
-    padding:14px 24px;
-
-    border-radius:12px;
-
-}
-
-.btn-principal:hover{
-
-    transform:translateY(-2px);
-
-}
-
-.btn-buscar{
-
-    background:var(--vino);
-
-    color:white;
-
-    padding:13px 22px;
-
-    border-radius:12px;
-
-}
-
-.btn-secundario{
-
-    background:#dee2e6;
-
-    color:#444;
-
-    padding:13px 22px;
-
-    border-radius:12px;
-
-}
-
-/* ==========================================================
-   TARJETAS
-========================================================== */
-
-.cards{
-
-    display:grid;
-
-    grid-template-columns:repeat(4,1fr);
-
-    gap:20px;
-
-    margin-bottom:30px;
-
-}
-
-.card{
-
-    background:white;
-
-    border-radius:20px;
-
-    padding:25px;
-
-    box-shadow:var(--sombra);
+}.viaticos .fila-grid label{
 
     display:flex;
 
     align-items:center;
 
-    gap:18px;
+    gap:6px;
 
-}
+    font-size:10px;
 
-.icono-card{
+    font-weight:700;
 
-    width:65px;
+    text-transform:uppercase;
 
-    height:65px;
+    letter-spacing:.5px;
 
-    border-radius:18px;
+    color:#6b7280;
+
+}.viaticos .fila-grid label i{
+
+    color:var(--vt-vino);
+
+}.viaticos select, .viaticos input{
+
+    width:100%;
+
+    height:44px;
+
+    border:none;
+
+    border-radius:999px;
+
+    padding:0 16px;
+
+    font-size:12px;
+
+    color:var(--vt-texto);
+
+    background:#f5efe3;
+
+    outline:none;
+
+    transition:.2s;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.05);
+
+}.viaticos select{
+
+    appearance:none;
+
+    -webkit-appearance:none;
+
+    background-color:white;
+
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23691C32' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+
+    background-repeat:no-repeat;
+
+    background-position:right 16px center;
+
+    background-size:10px;
+
+    padding-right:36px;
+
+    cursor:pointer;
+
+}.viaticos select:focus, .viaticos input:focus{
+
+    box-shadow:0 0 0 4px rgba(105,28,50,.12);
+
+}/* ==========================================================
+   BOTONES
+========================================================== */
+.viaticos .acciones{
+
+    display:flex;
+
+    justify-content:flex-end;
+
+    gap:12px;
+
+    margin-top:20px;
+
+}.viaticos button{
+
+    cursor:pointer;
+
+    border:none;
+
+    transition:.2s;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+    border-radius:999px;
+
+}.viaticos .btn-principal{
+
+    background:var(--vt-vino);
+
+    color:white;
+
+    padding:13px 22px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}.viaticos .btn-principal:hover{
+
+    background:var(--vt-vino-dark);
+
+    transform:translateY(-1px);
+
+}.viaticos .btn-buscar{
+
+    background:var(--vt-vino);
+
+    color:white;
+
+    padding:13px 24px;
+
+}.viaticos .btn-buscar:hover{
+
+    background:var(--vt-vino-dark);
+
+    transform:translateY(-1px);
+
+}.viaticos .btn-secundario{
+
+    background:#e0e0e0;
+
+    color:#444;
+
+    padding:13px 24px;
+
+}.viaticos .btn-secundario:hover{
+
+    background:#cfcfcf;
+
+}/* ==========================================================
+   TARJETAS
+========================================================== */
+.viaticos .cards{
+
+    display:grid;
+
+    grid-template-columns:repeat(4,1fr);
+
+    gap:16px;
+
+    margin-bottom:20px;
+
+}.viaticos .card{
+
+    background:white;
+
+    border-radius:22px;
+
+    padding:20px;
+
+    box-shadow:var(--vt-sombra);
+
+    border:1px solid #ececec;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:16px;
+
+}.viaticos .icono-card{
+
+    width:54px;
+
+    height:54px;
+
+    border-radius:16px;
 
     display:flex;
 
@@ -368,79 +399,74 @@ button{
 
     color:white;
 
-    font-size:28px;
+    font-size:22px;
 
-}
+    flex-shrink:0;
 
-.icono-card.verde{
+}.viaticos .icono-card.verde{
 
-    background:var(--verde);
+    background:var(--vt-verde);
 
-}
+}.viaticos .icono-card.azul{
 
-.icono-card.azul{
+    background:var(--vt-azul);
 
-    background:var(--azul);
+}.viaticos .icono-card.vino{
 
-}
+    background:var(--vt-vino);
 
-.icono-card.vino{
+}.viaticos .icono-card.naranja{
 
-    background:var(--vino);
+    background:var(--vt-naranja);
 
-}
+}.viaticos .card h3{
 
-.icono-card.naranja{
+    color:#6b7280;
 
-    background:var(--naranja);
+    margin-bottom:6px;
 
-}
+    font-size:10px;
 
-.card h3{
+    font-weight:700;
 
-    color:#666;
+    text-transform:uppercase;
 
-    margin-bottom:8px;
+    letter-spacing:.5px;
 
-}
+}.viaticos .card span{
 
-.card span{
+    font-size:20px;
 
-    font-size:28px;
+    font-weight:800;
 
-    font-weight:bold;
+    color:var(--vt-texto);
 
-    color:var(--texto);
+}/* ==========================================================
+   TABLA
+========================================================== */
+.viaticos .tabla-card{
 
-}
+    background:white;
 
-/*==========================================================
-TABLA
-==========================================================*/
+    border-radius:28px;
 
-.tabla-card{
+    box-shadow:var(--vt-sombra);
 
-    background:#fff;
-
-    border-radius:20px;
-
-    box-shadow:var(--sombra);
+    border:1px solid #ececec;
 
     overflow:hidden;
 
-}
+}.viaticos .tabla-header{
 
-.tabla-header{
+    background:var(--vt-vino);
 
-    background:var(--vino);
+    color:white;
 
-    color:#fff;
+    padding:18px 26px;
 
-    padding:20px 30px;
+    border-bottom:3px solid var(--vt-oro);
 
-}
-
-.tabla-header h2{
+}.viaticos .tabla-header h2{
 
     display:flex;
 
@@ -448,245 +474,225 @@ TABLA
 
     gap:10px;
 
-    font-size:24px;
-
-}
-
-.tabla{
-
-    padding:25px;
-
-}
-
-/*==========================================================
-DATATABLE
-==========================================================*/
-
-.dataTables_wrapper{
-
     font-size:15px;
 
-}
+    font-weight:800;
 
-.dataTables_length,
-.dataTables_filter{
+    letter-spacing:.3px;
 
-    margin-bottom:20px;
+}.viaticos .tabla{
 
-}
+    padding:22px;
 
-.dataTables_filter input{
+}/* ==========================================================
+   DATATABLE
+========================================================== */
+.viaticos .dataTables_wrapper{
 
-    border:1px solid #ddd !important;
+    font-size:12px;
 
-    border-radius:10px !important;
+}.viaticos .dataTables_length, .viaticos .dataTables_filter{
 
-    padding:8px 12px !important;
+    margin-bottom:16px;
 
-}
-
-.dataTables_length select{
-
-    border-radius:10px;
-
-    padding:6px;
-
-}
-
-table.dataTable{
-
-    border-collapse:collapse !important;
-
-}
-
-table.dataTable thead{
-
-    background:var(--vino);
-
-}
-
-table.dataTable thead th{
-
-    color:#fff !important;
+}.viaticos .dataTables_filter input{
 
     border:none !important;
 
-    font-weight:600;
+    border-radius:999px !important;
 
-    padding:16px !important;
+    padding:8px 16px !important;
 
-}
+    background:#f5efe3 !important;
 
-table.dataTable tbody td{
+    box-shadow:none !important;
 
-    padding:16px !important;
+}.viaticos .dataTables_length select{
 
-    border-bottom:1px solid #eee !important;
+    border-radius:999px;
+
+    padding:6px 28px 6px 12px !important;
+
+    height:auto !important;
+
+}.viaticos table.dataTable{
+
+    border-collapse:separate !important;
+
+    border-spacing:0;
+
+}.viaticos table.dataTable thead{
+
+    background:var(--vt-vino);
+
+}.viaticos table.dataTable thead th{
+
+    color:white !important;
+
+    border:none !important;
+
+    font-weight:700;
+
+    font-size:11px;
+
+    text-transform:uppercase;
+
+    letter-spacing:.4px;
+
+    padding:14px !important;
+
+}.viaticos table.dataTable tbody td{
+
+    padding:12px 14px !important;
+
+    border-bottom:1px solid #ececec !important;
 
     vertical-align:middle;
 
-}
+    font-size:11px;
 
-table.dataTable tbody tr{
+}.viaticos table.dataTable tbody tr:nth-child(odd){
 
-    transition:.20s;
+    background:var(--vt-gris2);
 
-}
+}.viaticos table.dataTable tbody tr{
 
-table.dataTable tbody tr:hover{
+    transition:.2s;
 
-    background:#fff8ef !important;
+}.viaticos table.dataTable tbody tr:hover{
 
-}
+    background:#e6dcc4 !important;
 
-.dataTables_info{
+}.viaticos .dataTables_info{
 
-    margin-top:20px;
+    margin-top:16px;
 
-}
+    font-size:11px;
 
-.dataTables_paginate{
+    color:#6b7280;
 
-    margin-top:20px !important;
+}.viaticos .dataTables_paginate{
 
-}
+    margin-top:16px !important;
 
-.dataTables_paginate .paginate_button{
+}.viaticos .dataTables_paginate .paginate_button{
 
-    border-radius:8px !important;
+    border-radius:999px !important;
 
     margin:0 3px !important;
 
-}
+    font-size:11px !important;
 
-.dataTables_paginate .current{
+}.viaticos .dataTables_paginate .current{
 
-    background:var(--vino)!important;
+    background:var(--vt-vino) !important;
 
-    color:#fff!important;
+    color:white !important;
 
-    border:none!important;
+    border:none !important;
 
-}
+}/* ==========================================================
+   BOTONES TABLA
+========================================================== */
+.viaticos .btnEditar{
 
-/*==========================================================
-BOTONES TABLA
-==========================================================*/
+    width:34px;
 
-.btnEditar{
-
-    width:40px;
-
-    height:40px;
+    height:34px;
 
     border:none;
 
     border-radius:10px;
 
-    background:#ffc107;
+    background:var(--vt-oro);
 
-    color:#fff;
+    color:white;
 
     cursor:pointer;
 
-    margin-right:8px;
+    margin-right:6px;
 
-    transition:.20s;
+    transition:.2s;
 
-}
+}.viaticos .btnEditar:hover{
 
-.btnEditar:hover{
+    background:#a8804a;
 
-    transform:scale(1.08);
+    transform:scale(1.06);
 
-}
+}.viaticos .btnEliminar{
 
-.btnEliminar{
+    width:34px;
 
-    width:40px;
-
-    height:40px;
+    height:34px;
 
     border:none;
 
     border-radius:10px;
 
-    background:#dc3545;
+    background:var(--vt-rojo);
 
-    color:#fff;
+    color:white;
 
     cursor:pointer;
 
-    transition:.20s;
+    transition:.2s;
 
-}
+}.viaticos .btnEliminar:hover{
 
-.btnEliminar:hover{
+    background:#941616;
 
-    transform:scale(1.08);
+    transform:scale(1.06);
 
-}
-
-/*==================================================
-MODAL
-==================================================*/
-
-.modal{
+}/* ==========================================================
+   MODAL
+========================================================== */
+.viaticos .modal{
 
     display:none;
 
     position:fixed;
 
-    top:0;
-    left:0;
+    inset:0;
 
-    width:100%;
-    height:100%;
-
-    background:rgba(0,0,0,.55);
+    background:rgba(0,0,0,.5);
 
     justify-content:center;
+
     align-items:center;
 
     z-index:9999;
 
-    backdrop-filter:blur(4px);
+    backdrop-filter:blur(3px);
 
-}
-
-/* Se mostrará cuando JS haga:
-modal.style.display="flex";
-*/
-
-.modal-contenido{
+}.viaticos .modal-contenido{
 
     width:900px;
+
     max-width:95%;
 
     max-height:92vh;
 
     overflow-y:auto;
 
-    background:#fff;
+    background:white;
 
-    border-radius:18px;
+    border-radius:24px;
 
-    box-shadow:0 20px 60px rgba(0,0,0,.35);
+    box-shadow:0 20px 60px rgba(0,0,0,.3);
 
     animation:modalEntrada .25s ease;
 
-}
+    border-top:4px solid var(--vt-oro);
 
-/*==================================================
-ANIMACIÓN
-==================================================*/
+}
 
 @keyframes modalEntrada{
 
     from{
 
         opacity:0;
-        transform:translateY(-25px) scale(.95);
+        transform:translateY(-20px) scale(.96);
 
     }
 
@@ -697,13 +703,10 @@ ANIMACIÓN
 
     }
 
-}
-
-/*==================================================
-HEADER
-==================================================*/
-
-.modal-header{
+}/* ==========================================================
+   MODAL HEADER
+========================================================== */
+.viaticos .modal-header{
 
     display:flex;
 
@@ -711,340 +714,321 @@ HEADER
 
     align-items:center;
 
-    padding:22px 30px;
+    padding:20px 28px;
 
     border-bottom:1px solid #ececec;
 
-}
+}.viaticos .modal-header h2{
 
-.modal-header h2{
+    color:var(--vt-vino);
 
-    color:#6d1831;
+    font-size:18px;
 
-    font-size:30px;
+    font-weight:800;
 
-    margin:0;
+    display:flex;
 
-}
+    align-items:center;
 
-.modal-header small{
+    gap:8px;
 
-    color:#777;
+}.viaticos .modal-header small{
 
-}
+    color:#6b7280;
 
-.cerrar{
+    font-size:11px;
 
-    width:42px;
-    height:42px;
+}.viaticos .cerrar{
+
+    width:38px;
+
+    height:38px;
 
     border:none;
 
     background:#f3f3f3;
 
-    border-radius:10px;
+    border-radius:999px;
 
     cursor:pointer;
 
-    transition:.20s;
+    transition:.2s;
 
-}
+}.viaticos .cerrar:hover{
 
-.cerrar:hover{
-
-    background:#dc3545;
+    background:var(--vt-rojo);
 
     color:white;
 
-}
-
-/*==================================================
-PESTAÑAS
-==================================================*/
-
-.tabs{
+}/* ==========================================================
+   PESTAÑAS
+========================================================== */
+.viaticos .tabs{
 
     display:flex;
 
-    gap:12px;
+    gap:10px;
 
-    padding:20px 30px 0;
+    padding:18px 28px 0;
 
-}
-
-.tab{
+}.viaticos .tab{
 
     flex:1;
 
     border:none;
 
-    background:#ececec;
+    background:#efe7d4;
 
-    padding:16px;
+    color:#5f4a1d;
 
-    border-radius:12px;
+    padding:13px;
+
+    border-radius:999px;
 
     cursor:pointer;
 
-    font-size:16px;
+    font-size:11px;
 
-    font-weight:600;
+    font-weight:700;
 
-    transition:.25s;
+    display:flex;
 
-}
+    align-items:center;
 
-.tab:hover{
+    justify-content:center;
 
-    background:#dcdcdc;
+    gap:8px;
 
-}
+    transition:.2s;
 
-.tab.activa{
+}.viaticos .tab:hover{
 
-    background:#6d1831;
+    background:#e6dcc4;
+
+}.viaticos .tab.activa{
+
+    background:var(--vt-vino);
 
     color:white;
 
-}
-
-/*==================================================
-CONTENIDO
-==================================================*/
-
-.tab-content{
+}/* ==========================================================
+   CONTENIDO
+========================================================== */
+.viaticos .tab-content{
 
     display:none;
 
-    padding:30px;
+    padding:26px 28px;
 
-}
-
-.tab-content.activo{
+}.viaticos .tab-content.activo{
 
     display:block;
 
-}
-
-/*==================================================
-GRID
-==================================================*/
-
-.grid-form{
+}/* ==========================================================
+   GRID FORM
+========================================================== */
+.viaticos .grid-form{
 
     display:grid;
 
     grid-template-columns:repeat(2,1fr);
 
-    gap:22px;
+    gap:16px;
 
-}
-
-.grupo{
+}.viaticos .grupo{
 
     display:flex;
 
     flex-direction:column;
 
-}
+    gap:6px;
 
-.grupo label{
+}.viaticos .grupo label{
 
-    margin-bottom:8px;
+    font-size:10px;
 
-    font-weight:600;
+    font-weight:700;
 
-    color:#444;
+    text-transform:uppercase;
 
-}
+    letter-spacing:.4px;
 
-.grupo input,
-.grupo select{
+    color:#6b7280;
 
-    height:50px;
+}.viaticos .grupo input, .viaticos .grupo select{
 
-    border:1px solid #d6d6d6;
+    height:44px;
 
-    border-radius:10px;
-
-    padding:0 14px;
-
-    font-size:15px;
-
-    transition:.20s;
-
-}
-
-.grupo input:focus,
-.grupo select:focus{
-
-    outline:none;
-
-    border-color:#6d1831;
-
-    box-shadow:0 0 0 4px rgba(109,24,49,.12);
-
-}
-
-/*==================================================
-FOOTER
-==================================================*/
-
-.footer-modal{
+}/* ==========================================================
+   FOOTER MODAL
+========================================================== */
+.viaticos .footer-modal{
 
     display:flex;
 
     justify-content:flex-end;
 
-    gap:15px;
+    gap:12px;
 
-    margin-top:35px;
+    margin-top:28px;
 
-}
+}.viaticos .btn-cancelar{
 
-.btn-cancelar{
-
-    background:#6c757d;
-
-    color:white;
-
-    padding:14px 24px;
-
-    border:none;
-
-    border-radius:12px;
-
-    cursor:pointer;
-
-}
-
-.btn-cancelar:hover{
-
-    background:#545b62;
-
-}
-
-.btn-guardar{
-
-    background:#198754;
-
-    color:white;
-
-    padding:14px 24px;
-
-    border:none;
-
-    border-radius:12px;
-
-    cursor:pointer;
-
-}
-
-.btn-guardar:hover{
-
-    background:#157347;
-
-}
-
-/*==================================================
-EXCEL
-==================================================*/
-
-.excel-box{
-
-    text-align:center;
-
-    padding:50px 30px;
-
-}
-
-.excel-icono{
-
-    font-size:80px;
-
-    color:#198754;
-
-    margin-bottom:20px;
-
-}
-
-.excel-box h3{
-
-    margin-bottom:10px;
+    background:#e0e0e0;
 
     color:#444;
 
-}
+    padding:13px 22px;
 
-.excel-box p{
+}.viaticos .btn-cancelar:hover{
 
-    color:#777;
+    background:#cfcfcf;
 
-    margin-bottom:30px;
+}.viaticos .btn-guardar{
 
-}
-
-.btn-importar{
-
-    background:#198754;
+    background:var(--vt-verde);
 
     color:white;
 
-    border:none;
+    padding:13px 22px;
 
-    padding:14px 25px;
+    display:flex;
 
-    border-radius:12px;
+    align-items:center;
 
-    cursor:pointer;
+    gap:8px;
 
-}
+}.viaticos .btn-guardar:hover{
 
-.btn-importar:hover{
+    background:#176B21;
 
-    background:#157347;
+}/* ==========================================================
+   EXCEL
+========================================================== */
+.viaticos .excel-box{
 
-}
+    text-align:center;
 
-/*==================================================
-SCROLL
-==================================================*/
+    padding:40px 24px;
 
-.modal-contenido::-webkit-scrollbar{
+}.viaticos .excel-icono{
 
-    width:10px;
+    font-size:64px;
 
-}
+    color:var(--vt-verde);
 
-.modal-contenido::-webkit-scrollbar-thumb{
+    margin-bottom:16px;
 
-    background:#6d1831;
+}.viaticos .excel-box h3{
+
+    margin-bottom:8px;
+
+    color:var(--vt-texto);
+
+    font-size:15px;
+
+    font-weight:700;
+
+}.viaticos .excel-box p{
+
+    color:#6b7280;
+
+    margin-bottom:24px;
+
+    font-size:11px;
+
+}.viaticos .btn-importar{
+
+    background:var(--vt-verde);
+
+    color:white;
+
+    padding:13px 24px;
+
+    display:inline-flex;
+
+    align-items:center;
+
+    gap:8px;
+
+}.viaticos .btn-importar:hover{
+
+    background:#176B21;
+
+}/* ==========================================================
+   SCROLL
+========================================================== */
+.viaticos .modal-contenido::-webkit-scrollbar{
+
+    width:8px;
+
+}.viaticos .modal-contenido::-webkit-scrollbar-thumb{
+
+    background:var(--vt-vino);
 
     border-radius:20px;
 
 }
 
-/*==================================================
-RESPONSIVE
-==================================================*/
+/* ==========================================================
+   RESPONSIVE
+========================================================== */
 
-@media(max-width:900px){
-
-    .modal-contenido{
+@media(max-width:900px){.viaticos .modal-contenido{
 
         width:96%;
 
-    }
-
-    .grid-form{
+    }.viaticos .grid-form{
 
         grid-template-columns:1fr;
 
-    }
-
-    .tabs{
+    }.viaticos .tabs{
 
         flex-direction:column;
+
+    }
+
+}
+
+@media(max-width:768px){.viaticos .fila{
+
+        flex-direction:column;
+
+        align-items:stretch;
+
+    }.viaticos .titulo{
+
+        width:100%;
+
+        border-radius:14px 14px 0 0;
+
+    }.viaticos .fila .campo-select select{
+
+        border-radius:0 0 14px 14px;
+
+    }.viaticos .fila-grid{
+
+        grid-template-columns:1fr;
+
+    }.viaticos .cards{
+
+        grid-template-columns:repeat(2,1fr);
+
+    }.viaticos .encabezado{
+
+        flex-direction:column;
+
+        align-items:flex-start;
+
+        gap:14px;
+
+    }
+
+}
+
+@media(max-width:480px){.viaticos .cards{
+
+        grid-template-columns:1fr;
 
     }
 
