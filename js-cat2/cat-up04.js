@@ -3,7 +3,7 @@
 ========================= */
 const personas = [
   {
-    nombre: "Aidhe Luciano Martínez Norpa",
+    nombre: "Aidhe Luciano Martínez Nora",
     categoria: "Directora General B",
     rfc: "LUMN851122JA5"
   },
