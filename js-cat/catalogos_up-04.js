@@ -1,16 +1,18 @@
 const personas = [
-
-    "Nora Aidhe Luciano Martinez",				
-"Flor Nochebuena Manuel Gutierrez",				
-"Pedro Fernando Martinez Chong",				
-"Adriana Labra Gomez",				
-"Arturo Aguilar Martinez",				
-"Itzia Hernández Ureña",				
-"Rosa Hernández Rodriguez",				
-"Iván Cruz Segura"				
-
+  "Aidhe Luciano Martínez Norpa",
+  "Flor Nochebuena Manuel Gutiérrez",
+  "Pedro Fernando Martínez Chong",
+  "Adriana Labra Gómez",
+  "Arturo Aguilar Martínez",
+  "Itzia Hernández Urrea",
+  "Rosa Hernández Rodríguez",
+  "Daniel Austria Zenil",
+  "Iván Cruz Segura",
+  "Esther Gayosso Joaquín",
+  "Karla Lucero Vázquez Lara",
+  "Maribel Orta Mejía",
+  "Esmeralda Vargas Lechuga"
 ];
-
 /* ============================================================
    CATÁLOGO : MESES
    Nombres de los meses en español para los selects de fecha.
