@@ -16,7 +16,7 @@ const personas = [
     },
 
     {
-        nombre: "Cesar Alonso Angeles Trejo",
+        nombre: "César Alonso Ángeles Trejo",
         categoria: "Director De Àrea B",
         rfc: "AETC881113HN1"
     },
@@ -28,61 +28,61 @@ const personas = [
     },
 
     {
-        nombre: "Adan Missael Hernandez Garrido",
+        nombre: "Adán Missael Hernández Garrido",
         categoria: "Subdirector Adjunto A ",
         rfc: "HEGA891105RA0"
     },
 
     {
-        nombre: "Raùl Lozano Sànchez",
+        nombre: "Raúl Lozano Sánchez",
         categoria: "Director De Àrea B",
         rfc: "LOSR9309207L4"
     },
 
     {
-        nombre: "Maria Elena Arellano Màrquez",
+        nombre: "María Elena Arellano Márquez",
         categoria: "Subdirectora Adjunta A",
         rfc: "AEME740402GE8"
     },
 
     {
-        nombre: "Marìn Àngeles Zamora",
+        nombre: "Marín Ángeles Zamora",
         categoria: "Jefe De Departamento",
         rfc: "AEZM8705319Q5"
     },
 
     {
-        nombre: "Laura Esther Ruiz Galvez",
+        nombre: "Laura Esther Ruiz Gálvez",
         categoria: "Facilitador/Analista",
         rfc: "RUGL991019JG7"
     },
 
     {
-        nombre: "Erick Acosta Tellez",
+        nombre: "Erick Acosta Téllez",
         categoria: "Jefe De Area A",
         rfc: "AOTE900304Q71"
     },
 
     {
-        nombre: "Aradi Badillo Cuellar",
+        nombre: "Aradi Badillo Cuéllar",
         categoria: "Directora De Àrea B",
         rfc: "BACA840524JYA"
     },
 
     {
-        nombre: "Laura Ramirez Cruz",
+        nombre: "Laura Ramírez Cruz",
         categoria: "Asesor Tècnico/Gestor",
         rfc: "RACL770807Q25"
     },
 
     {
-        nombre: "Kevin Martin Leòn Palacios",
+        nombre: "Kevin Martín León Palacios",
         categoria: "Subdirector Adjunto A",
         rfc: "LEPK920611971"
     },
 
     {
-        nombre: "Graciela Vazquez Molina",
+        nombre: "Graciela Vázquez Molina",
         categoria: "Asesor Tecnico/Gestor A",
         rfc: "VAMG600520DE1"
     }
