@@ -10,7 +10,7 @@ const MAPA_PERSONAS = {
     "Lic. Tania Yeraldin Lara Hernández": 7,
     "Ing. Marlene Jiménez Ramírez": 8,
     "Lic. Ariadna Ramírez Hernández": 9,
-    "Lic. Daena Gaudalupe Acosta Hernández": 10,
+    "Lic. Daena Guadalupe Acosta Hernández": 10,
     "Lic. Reyna Bautista Granados": 11,
     "L.A.S.C. Julio Cesar Granados Colmenares": 12,
     "C. Viridiana Barraza Cortez": 13,

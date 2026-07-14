@@ -2,55 +2,71 @@
    CATÁLOGO DE PERSONAS
 ========================= */
 const personas = [
-
-    {
-        nombre: "Nora Aidhe Luciano Martinez",
-        categoria: "Directora General B",
-        rfc: "LUMN851122JA5"
-    },
-
-    {
-        nombre: "Flor Nochebuena Manuel Gutierrez",
-        categoria: "Directora De Área B",
-        rfc: "MAGF791205QU7"
-    },
-
-    {
-        nombre: "Pedro Fernando Martinez Chong",
-        categoria: "Subdirector De Area C",
-        rfc: "MACP630824G38"
-    },
-
-    {
-        nombre: "Adriana Labra Gomez",
-        categoria: "Subdirectora Adjunto A",
-        rfc: "LAGA681026Q71"
-    },
-
-    {
-        nombre: "Arturo Aguilar Martinez",
-        categoria: "Subdirector Adjunto A",
-        rfc: "AUMA710725QWA"
-    },
-
-    {
-        nombre: "Itzia Hernández Ureña",
-        categoria: "Subdirectora Adjunto A",
-        rfc: "HEUI6908205X0"
-    },
-
-    {
-        nombre: "Rosa Hernández Rodriguez",
-        categoria: "Subdirectora Adjunto A",
-        rfc: "HERR840304AP2"
-    },
-
-    {
-        nombre: "Iván Cruz Segura",
-        categoria: "Jefe De Departamento C",
-        rfc: "CUSI950421819"
-    }
-
+  {
+    nombre: "Aidhe Luciano Martínez Norpa",
+    categoria: "Directora General B",
+    rfc: "LUMN851122JA5"
+  },
+  {
+    nombre: "Flor Nochebuena Manuel Gutiérrez",
+    categoria: "Directora de Área B",
+    rfc: "MAGF791205QU7"
+  },
+  {
+    nombre: "Pedro Fernando Martínez Chong",
+    categoria: "Subdirector de Área",
+    rfc: "MACP850824C58"
+  },
+  {
+    nombre: "Adriana Labra Gómez",
+    categoria: "Subdirectora Adjunta A",
+    rfc: "LAGA681026Q71"
+  },
+  {
+    nombre: "Arturo Aguilar Martínez",
+    categoria: "Subdirector Adjunto A",
+    rfc: "AUMA710725QWA"
+  },
+  {
+    nombre: "Itzia Hernández Urrea",
+    categoria: "Subdirectora Adjunta A",
+    rfc: "HEUI6908205X0"
+  },
+  {
+    nombre: "Rosa Hernández Rodríguez",
+    categoria: "Subdirectora Adjunta A",
+    rfc: "HERR840304AP2"
+  },
+  {
+    nombre: "Daniel Austria Zenil",
+    categoria: "Subdirector Adjunto A",
+    rfc: "AUZD9608239F3"
+  },
+  {
+    nombre: "Iván Cruz Segura",
+    categoria: "Jefe de Departamento C",
+    rfc: "CUSI950421819"
+  },
+  {
+    nombre: "Esther Gayosso Joaquín",
+    categoria: "Jefe de Área",
+    rfc: "GAJE8006202C0"
+  },
+  {
+    nombre: "Karla Lucero Vázquez Lara",
+    categoria: "Asesor Técnico/Gestor (A)",
+    rfc: "VALK910405G99"
+  },
+  {
+    nombre: "Maribel Orta Mejía",
+    categoria: "Supervisor/Analista",
+    rfc: "OAMM890202KT8"
+  },
+  {
+    nombre: "Esmeralda Vargas Lechuga",
+    categoria: "Asistente General",
+    rfc: "VALE020926BE4"
+  }
 ];
 /* =========================
    CATÁLOGO DE MESES
