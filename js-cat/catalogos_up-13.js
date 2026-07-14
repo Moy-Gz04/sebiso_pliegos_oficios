@@ -1,20 +1,18 @@
 const personas = [
-
-    "Areli Maya Monzalvo",
-    "Fernando Estrada Cruz",
-    "Cesar Alonso Angeles Trejo",
-    "Karla Maritza Huerta Guarneros",
-    "Adan Missael Hernandez Garrido",
-    "Raùl Lozano Sànchez",
-    "Maria Elena Arellano Màrquez",
-    "Marìn Àngeles Zamora",
-    "Laura Esther Ruiz Galvez",
-    "Erick Acosta Tellez",
-    "Aradi Badillo Cuellar",
-    "Laura Ramirez Cruz",
-    "Kevin Martin Leòn Palacios",
-    "Graciela Vazquez Molina"
-
+  "Areli Maya Monzalvo",
+  "Fernando Estrada Cruz",
+  "César Alonso Ángeles Trejo",
+  "Karla Maritza Huerta Guarneros",
+  "Adán Missael Hernández Garrido",
+  "Raúl Lozano Sánchez",
+  "María Elena Arellano Márquez",
+  "Marín Ángeles Zamora",
+  "Laura Esther Ruiz Gálvez",
+  "Erick Acosta Téllez",
+  "Aradi Badillo Cuéllar",
+  "Laura Ramírez Cruz",
+  "Kevin Martín León Palacios",
+  "Graciela Vázquez Molina"
 ];
 
 
