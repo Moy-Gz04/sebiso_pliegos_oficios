@@ -13,8 +13,8 @@ const personas = [
     "Lic. Reyna Bautista Granados",
     "L.A.S.C. Julio Cesar Granados Colmenares",
     "C. Viridiana Barraza Cortez",
-    "Ing. Ana Gabriela Gutiérrez Gamero"
-
+    "Ing. Ana Gabriela Gutiérrez Gamero",
+    "Lic. Paola Guerrero Enciso"
 ];
 
 

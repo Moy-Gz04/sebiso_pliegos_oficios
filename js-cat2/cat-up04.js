@@ -3,7 +3,7 @@
 ========================= */
 const personas = [
   {
-    nombre: "Aidhe Luciano Martínez Nora",
+    nombre: "Nora Aidhé Luciano Martínez",
     categoria: "Directora General B",
     rfc: "LUMN851122JA5"
   },
@@ -65,7 +65,7 @@ const personas = [
   {
     nombre: "Esmeralda Vargas Lechuga",
     categoria: "Asistente General",
-    rfc: "VALE020926BE4"
+    rfc: "VALE0209268E4"
   }
 ];
 /* =========================

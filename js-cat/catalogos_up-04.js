@@ -1,5 +1,5 @@
 const personas = [
-  "Aidhe Luciano Martínez Nora",
+  "Nora Aidhé Luciano Martínez",
   "Flor Nochebuena Manuel Gutiérrez",
   "Pedro Fernando Martínez Chong",
   "Adriana Labra Gómez",
