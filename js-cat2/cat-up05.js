@@ -85,6 +85,12 @@ const personas = [
         nombre: "Ing. Ana Gabriela Gutiérrez Gamero",
         categoria: "Asesor Técnico/Gestor",
         rfc: "GUGA980227471"
+    },
+
+    {
+        nombre: "Lic. Paola Guerrero Enciso",
+        categoria: "Jefe de Área A",
+        rfc: "Jefe de Área A"
     }
 
 ];
