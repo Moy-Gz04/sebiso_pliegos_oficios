@@ -1,5 +1,5 @@
 const personas = [
-    "Ricardo Gomez Moreno",
+    "Mtro. Ricardo Gómez Moreno",
     "Marlen Elva Arista Amador",
     "Dariana Olvera Mendoza",
     "Juan Alexis Garcia Garcia",
