@@ -4,7 +4,7 @@
 const personas = [
 
     {
-        nombre: "Rosa Leticia Muñoz Chávez",
+        nombre: "Mtra. Rosa Leticia Muñoz Chávez",
         categoria: "Director General A",
         rfc: "MUCR720830BM9"
     },

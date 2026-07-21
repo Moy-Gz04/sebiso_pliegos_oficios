@@ -1,6 +1,6 @@
 const personas = [
 
-    "Rosa Leticia Muñoz Chávez",
+    "Mtra. Rosa Leticia Muñoz Chávez",
     "Elizabeth Margarita Noguez Romero",
     "María Sara Ortiz González",
     "Roberto Carlos López Estrada",

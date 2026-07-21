@@ -144,11 +144,13 @@ const zona2 = [
 
 const zona3 = [
     "Atlapexco, Hidalgo",
+    "Atlapexco y Xochiatipan, Hidalgo",
     "Calnali, Hidalgo",
     "Chapulhuacán, Hidalgo",
     "Huautla, Hidalgo",
     "Huazalingo, Hidalgo",
     "Huejutla de Reyes, Hidalgo",
+    "Huejutla de Reyes, y Jaltocán, Hidalgo",
     "Huehuetla, Hidalgo",
     "Huichapan, Hidalgo",
     "Jacala de Ledezma, Hidalgo",

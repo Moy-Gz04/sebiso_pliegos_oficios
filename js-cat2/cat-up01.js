@@ -5,7 +5,7 @@
 const personas = [
 
     {
-        nombre: "Ricardo Gomez Moreno",
+        nombre: "Mtro. Ricardo Gómez Moreno",
         categoria: "Secretario-B",
         rfc: "GOMR7604251I9"
     },
