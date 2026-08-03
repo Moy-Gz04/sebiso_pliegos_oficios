@@ -23,7 +23,7 @@ const personas = [
 
     {
         nombre: "Karla Maritza Huerta Guarneros",
-        categoria: "Subdirectora Adjunta A",
+        categoria: "Subdirectora C",
         rfc: "HUGK940408T8A"
     },
 
@@ -85,6 +85,12 @@ const personas = [
         nombre: "Graciela Vázquez Molina",
         categoria: "Asesor Tecnico/Gestor A",
         rfc: "VAMG600520DE1"
+    },
+
+    {
+        nombre: "Cesar Reyes León",
+        categoria: "Asesor Tecnico/Gestor A",
+        rfc: "RELC980404K21"
     }
 ];
 /* =========================

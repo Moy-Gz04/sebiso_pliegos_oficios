@@ -190,7 +190,6 @@ function numeroALetras(valor) {
   if (decimales > 0) {
     texto += " CON " + convertirGrupo(decimales) + " CENTAVOS";
   }
-
   return texto.trim().toLowerCase();
 }
 

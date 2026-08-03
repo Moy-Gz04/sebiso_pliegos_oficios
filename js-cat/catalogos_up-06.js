@@ -18,7 +18,10 @@ const personas = [
     "Ing. Antonio de Jesus Cruz Romero",
     "Lic. Axel Armando Huerta Guarneros",
     "Tec. Ana Maria Martinez Rubio",
-    "Lic.Danna Odemaris Fuentes Olguin"
+    "Lic.Danna Odemaris Fuentes Olguin",
+    "Ing. Alejandra Camacho Coronado",
+    "C. Carlos Alberto Hernández",
+    "C. Ángel Velasco Rocha"
 ];
 
 /* ============================================================

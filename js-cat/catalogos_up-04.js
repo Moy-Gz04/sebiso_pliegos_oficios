@@ -4,7 +4,7 @@ const personas = [
   "Pedro Fernando Martínez Chong",
   "Adriana Labra Gómez",
   "Arturo Aguilar Martínez",
-  "Itzia Hernández Urrea",
+  "Itzia Hernandez Ureña",
   "Rosa Hernández Rodríguez",
   "Daniel Austria Zenil",
   "Iván Cruz Segura",

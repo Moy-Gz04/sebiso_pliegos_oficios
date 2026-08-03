@@ -122,10 +122,28 @@ const personas = [
         rfc: "MARA8305208R4"
     },
 
-    {
+        {
         nombre: "Lic.Danna Odemaris Fuentes Olguin",
         categoria: "Tecnico especializado",
         rfc: "FUOD010531Q28"
+    },
+
+    {
+        nombre: "Ing. Alejandra Camacho Coronado",
+        categoria: "Directora de Área",
+        rfc: "CACX900311EM4"
+    },
+
+    {
+        nombre: "C. Carlos Alberto Hernández",
+        categoria: "Técnico Especializado",
+        rfc: "HEAC920228UQ7"
+    },
+
+    {
+        nombre: "C. Ángel Velasco Rocha",
+        categoria: "Técnico Especializado",
+        rfc: "VERA960521S45"
     }
 
 ];
