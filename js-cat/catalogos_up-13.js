@@ -12,7 +12,8 @@ const personas = [
   "Aradi Badillo Cuéllar",
   "Laura Ramírez Cruz",
   "Kevin Martín León Palacios",
-  "Graciela Vázquez Molina"
+  "Graciela Vázquez Molina",
+  "Cesar Reyes León"
 ];
 
 

@@ -28,7 +28,7 @@ const personas = [
     rfc: "AUMA710725QWA"
   },
   {
-    nombre: "Itzia Hernández Urrea",
+    nombre: "Itzia Hernandez Ureña",
     categoria: "Subdirectora Adjunta A",
     rfc: "HEUI6908205X0"
   },

@@ -12,7 +12,8 @@ const personas = [
     "Misael Lopez Macario",
     "Josue Raymundo Sanchez Avalos",
     "Diana Laura Fernández Monroy",
-    "Esperanza Quezada Xaxni"
+    "Esperanza Quezada Xaxni",
+    "Karina Anaí Hernández Soto"
 ];
 
 

@@ -86,6 +86,12 @@ const personas = [
         nombre: "Esperanza Quezada Xaxni",
         categoria: "Subdirector A",
         rfc: "QUXE810801FV7"
+    },
+
+    {
+        nombre: "Karina Anaí Hernández Soto",
+        categoria: "Jefatura de Área B",
+        rfc: "HESK861006423 "
     }
 
 ];
