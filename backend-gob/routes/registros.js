@@ -259,6 +259,46 @@ router.put("/observaciones/:codigo", async (req, res) => {
 });
 
 /* =========================
+   IMPORTE VIÁTICOS
+   Guarda el monto que el área escribe manualmente
+   junto al checkbox de selección para viáticos.
+   Es requisito tenerlo guardado (y mayor a 0) antes
+   de poder generar el PDF de viáticos.
+========================= */
+
+router.put("/importe-viaticos/:codigo", async (req, res) => {
+  try {
+    const codigo = req.params.codigo.trim();
+    const { importe_viaticos } = req.body;
+
+    const validar = await pool.query(
+      `SELECT estatus FROM registros WHERE codigo = $1`,
+      [codigo]
+    );
+
+    if (validar.rows.length === 0) {
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
+    }
+
+    const estatus = validar.rows[0].estatus;
+
+    if (estatus === "Enviado" || estatus === "Pagado") {
+      return res.status(400).json({ ok: false, error: "No se puede editar este registro" });
+    }
+
+    await pool.query(
+      `UPDATE registros SET importe_viaticos = $1 WHERE codigo = $2`,
+      [importe_viaticos || null, codigo]
+    );
+
+    res.json({ ok: true, msg: "Importe de viáticos guardado" });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ ok: false, error: "Error guardando importe de viáticos" });
+  }
+});
+
+/* =========================
    OBSERVACIONES ADMIN
 ========================= */
 
