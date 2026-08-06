@@ -132,6 +132,7 @@ const zona2 = [
     "Tepeji del Río de Ocampo, Hidalgo",
     "Tepetitlán, Hidalgo",
     "Tianguistengo, Hidalgo",
+    "Tianguistengo y Zacualtipán de Ángeles, Hidalgo",
     "Zacualtipán de Ángeles, Hidalgo"
 ];
 
@@ -158,6 +159,7 @@ const zona3 = [
     "Lolotla, Hidalgo",
     "La Misión, Hidalgo",
     "Molango de Escamilla, Hidalgo",
+    "Molango de Escamilla y Xochicoatlán, Hidalgo",
     "Nicolás Flores, Hidalgo",
     "Nopala de Villagrán, Hidalgo",
     "San Felipe Orizatlán, Hidalgo",

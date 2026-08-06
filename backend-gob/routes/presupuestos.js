@@ -1,1101 +1,679 @@
-const express = require('express');
+/* ================================================
+   CONFIGURACIÓN GLOBAL
+   URL base del servidor API
+================================================ */
 
-const router = express.Router();
+const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 
-const pool = require('../database/db');
 
-const multer = require('multer');
+/* ================================================
+   MAPA DE ÁREAS
+   Relaciona el nombre del área con su ID numérico
+   en la base de datos
+================================================ */
 
-const path = require('path');
+const mapaAreas = {
+    "UP-01-DESPACHO"    : 1,
+    "UP-CA"             : 2,
+    "UP-01-S-DRM"       : 3,
+    "UP-04-DGFA"        : 4,
+    "UP-05-Subse_I_D"   : 5,
+    "UP-06-DGOLP"       : 6,
+    "UP-07-MIGRANTES"   : 7,
+    "UP-08-ASISTENCIA"  : 8,
+    "UP-13-SSPSyFA"     : 9,
+    "UP-14-DISCAPACIDAD": 10,
+    "UP-15-SSDSyH"      : 11,
+    "UP-16"             : 12
+};
 
-const fs = require('fs');
 
-/* =========================
-   CARPETA BASE
-========================= */
+/* ================================================
+   ORDEN DE MESES
+   Se usa para ordenar el historial cronológicamente
+================================================ */
 
-const uploadBase =
-path.join(__dirname, '..', 'uploads', 'oficios');
+const ordenMeses = {
+    "ENERO"     : 1,
+    "FEBRERO"   : 2,
+    "MARZO"     : 3,
+    "ABRIL"     : 4,
+    "MAYO"      : 5,
+    "JUNIO"     : 6,
+    "JULIO"     : 7,
+    "AGOSTO"    : 8,
+    "SEPTIEMBRE": 9,
+    "OCTUBRE"   : 10,
+    "NOVIEMBRE" : 11,
+    "DICIEMBRE" : 12
+};
 
-if (!fs.existsSync(uploadBase)) {
 
-    fs.mkdirSync(uploadBase, {
+/* ================================================
+   REFERENCIAS A ELEMENTOS DEL DOM
+================================================ */
 
-        recursive: true
+const btnGuardar      = document.getElementById("btnGuardarPresupuesto");
+const tbodyIngresos   = document.getElementById("tbodyIngresos");
+const tbodyGastos     = document.getElementById("tbodyGastos");
+const saldoDisponible = document.getElementById("saldoDisponible");
 
-    });
 
+/* ================================================
+   CONTROL DE CARGA ACTIVA
+   Evita que peticiones antiguas sobreescriban
+   resultados de peticiones más recientes
+================================================ */
+
+let cargaHistorialId = 0;
+let cargaGastosId = 0;
+
+
+/* ================================================
+   TRANSFORMAR NOMBRE DE ARCHIVO
+   Reemplaza los espacios del nombre del archivo
+   por "/" para estandarizar su visualización.
+
+   Ejemplos:
+     "SH 3033 2025.pdf"    → "SH/3033/2025"
+     "SH-CPF-518 2025.pdf" → "SH-CPF-518/2025"
+
+   - Los guiones "-" se conservan tal cual.
+   - La extensión (.pdf, .docx, etc.) se elimina.
+   - Los espacios se convierten en "/".
+================================================ */
+
+function transformarNombreArchivo(nombreArchivo) {
+
+    if (!nombreArchivo) return "";
+
+    // Tomar solo el nombre del archivo, ignorar la subcarpeta
+    const soloNombre = nombreArchivo.split('/').pop();
+
+    // Eliminar extensión
+    const sinExtension = soloNombre.replace(/\.[^/.]+$/, "");
+
+    // Reemplazar espacios por "/"
+    const transformado = sinExtension.replace(/ /g, "/");
+
+    return transformado;
 }
 
-/* =========================
-   CONFIG PDF
-   Guarda en subcarpeta por area_id
-   para evitar que archivos con el mismo
-   nombre se sobreescriban entre áreas
-========================= */
+/* ================================================
+   VALIDAR ÁREA
+   Verifica que el área seleccionada exista
+   en el mapa de áreas definido
+================================================ */
 
-const storage = multer.diskStorage({
+function validarArea(area) {
 
-    destination: (req, file, cb) => {
+    console.log("AREA recibida:", area);
+    console.log("MAPA de áreas:", mapaAreas);
 
-        const area_id = req.body.area_id || 'sin-area';
+    return Object.prototype.hasOwnProperty.call(mapaAreas, area);
+}
 
-        const carpeta =
-        path.join(uploadBase, String(area_id));
 
-        if (!fs.existsSync(carpeta)) {
+/* ================================================
+   FORMATEAR FECHA
+   Convierte una fecha ISO a formato legible
+   en español México
+================================================ */
 
-            fs.mkdirSync(carpeta, {
+function formatearFecha(fecha) {
 
-                recursive: true
+    return new Date(fecha).toLocaleString("es-MX");
+}
 
-            });
 
-        }
+/* ================================================
+   MODAL MENSAJES
+   Muestra un modal reutilizable para:
+     - Mensajes informativos (tipo "ok")
+     - Confirmaciones con callback (tipo "confirmar")
+================================================ */
 
-        cb(null, carpeta);
+function abrirModalMensaje(titulo, mensaje, tipo = "ok", callback = null) {
 
-    },
+    const modal       = document.getElementById("modalMensaje");
+    const overlay     = document.getElementById("overlay");
+    const tituloModal = document.getElementById("tituloModalMensaje");
+    const textoModal  = document.getElementById("textoModalMensaje");
+    const botones     = document.getElementById("botonesModalMensaje");
 
-    filename: (req, file, cb) => {
+    // Cambiar ícono según el tipo de modal
+    const icono = document.getElementById("modalConfirmIcon");
 
-        const extension =
-        path.extname(file.originalname);
+    if (tipo === "confirmar") {
 
-        const nombreBase =
-        path.basename(file.originalname, extension);
+        icono.style.background = "#e53e3e";
+        icono.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="3 6 5 6 21 6"/>
+            <path d="M19 6l-1 14H6L5 6"/>
+            <path d="M10 11v6M14 11v6"/>
+            <path d="M9 6V4h6v2"/>
+        </svg>`;
 
-        const nombreLimpio =
+    } else if (tipo === "error") {
 
-            nombreBase
+        icono.style.background = "#e53e3e";
+        icono.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="15" y1="9" x2="9" y2="15"/>
+            <line x1="9" y1="9" x2="15" y2="15"/>
+        </svg>`;
 
-            .normalize('NFD')
+    } else {
 
-            .replace(/[\u0300-\u036f]/g, '')
-
-            .replace(/\s+/g, '-')
-
-            .replace(/[^a-zA-Z0-9-_]/g, '');
-
-        const nombreFinal =
-
-            `${nombreLimpio}${extension}`;
-
-        cb(null, nombreFinal);
-
+        icono.style.background = "#38a169";
+        icono.innerHTML = `<svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+            stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="20 6 9 17 4 12"/>
+        </svg>`;
     }
 
+    tituloModal.innerText = titulo;
+    textoModal.innerText  = mensaje;
+
+    // Botones según el tipo de modal
+    if (tipo === "confirmar") {
+
+        botones.innerHTML = `
+            <button type="button" class="btn-secundario" onclick="cerrarModalMensaje()">
+                Cancelar
+            </button>
+            <button type="button" class="btn-principal" id="btnConfirmarModal">
+                Aceptar
+            </button>
+        `;
+
+    } else {
+
+        botones.innerHTML = `
+            <button type="button" class="btn-principal" onclick="cerrarModalMensaje()">
+                Aceptar
+            </button>
+        `;
+    }
+
+    modal.style.display   = "flex";
+    overlay.style.display = "block";
+
+    // Asignar callback al botón confirmar si aplica
+    if (tipo === "confirmar") {
+
+        document.getElementById("btnConfirmarModal").onclick = () => {
+
+            cerrarModalMensaje();
+
+            if (callback) callback();
+        };
+    }
+}
+
+
+/* ================================================
+   CERRAR MODAL MENSAJES
+================================================ */
+
+function cerrarModalMensaje() {
+
+    document.getElementById("modalMensaje").style.display = "none";
+    document.getElementById("overlay").style.display      = "none";
+}
+
+
+/* ================================================
+   CERRAR MODAL EDITAR
+================================================ */
+
+function cerrarModalEditar() {
+
+    document.getElementById("modalEditar").style.display = "none";
+    document.getElementById("overlay").style.display     = "none";
+}
+
+
+/* ================================================
+   GUARDAR PRESUPUESTO
+   Lee los campos del formulario principal,
+   valida los datos, arma el FormData y envía
+   la petición POST al servidor.
+   Los archivos PDF se adjuntan si fueron seleccionados.
+================================================ */
+
+btnGuardar.addEventListener("click", async () => {
+
+    try {
+
+        const area             = document.getElementById("selectArea").value.trim();
+        const mes              = document.getElementById("mesPresupuesto").value;
+        const anio             = document.getElementById("anioPresupuesto").value;
+        const saldoAutorizado  = document.getElementById("saldoAutorizado").value;
+        const saldoModificado  = document.getElementById("saldoModificado").value || 0;
+        const oficioAutorizacion = document.getElementById("oficioAutorizacionPDF").files[0];
+        const oficioAdecuacion   = document.getElementById("oficioAdecuacionPDF").files[0];
+
+        // Validar saldo autorizado
+        if (!saldoAutorizado) {
+
+            abrirModalMensaje("Campos incompletos", "Ingrese saldo autorizado", "error");
+            return;
+        }
+
+        // Validar que el área exista en el mapa
+        if (!validarArea(area)) {
+
+            abrirModalMensaje("Área inválida", `Área recibida: ${area}`, "error");
+            return;
+        }
+
+        const formData = new FormData();
+
+        formData.append("area_id",         mapaAreas[area]);
+        formData.append("mes",             mes);
+        formData.append("anio",            anio);
+        formData.append("saldo_autorizado", saldoAutorizado);
+        formData.append("saldo_modificado", saldoModificado);
+
+        // Adjuntar PDFs solo si fueron seleccionados
+        if (oficioAutorizacion) formData.append("oficio_autorizacion", oficioAutorizacion);
+        if (oficioAdecuacion)   formData.append("oficio_adecuacion",   oficioAdecuacion);
+
+        const respuesta = await fetch(`${API}/api/presupuestos/crear`, {
+            method: "POST",
+            body:   formData
+        });
+
+        const data = await respuesta.json();
+
+        if (!data.ok) {
+
+            abrirModalMensaje("Error", data.msg || "Error al guardar", "error");
+            return;
+        }
+
+        abrirModalMensaje("Registro guardado", "El registro fue guardado correctamente.");
+
+        // Limpiar campos del formulario
+        document.getElementById("saldoAutorizado").value      = "";
+        document.getElementById("saldoModificado").value      = "";
+        document.getElementById("oficioAutorizacionPDF").value = "";
+        document.getElementById("oficioAdecuacionPDF").value   = "";
+
+        // Recargar tablas
+        cargarHistorial();
+        cargarGastos();
+
+    } catch (error) {
+
+        console.error("Error al guardar presupuesto:", error);
+        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado", "error");
+    }
 });
 
-/* =========================
-   MULTER
-========================= */
 
-const upload = multer({
+/* ================================================
+   CARGAR HISTORIAL
+   Obtiene los presupuestos del área seleccionada,
+   los ordena por año y mes descendente,
+   y los pinta en la tabla de ingresos.
+   También muestra el saldo disponible más reciente.
+================================================ */
 
-    storage,
+async function cargarHistorial() {
 
-    limits: {
+    const miCarga = ++cargaHistorialId;
 
-        fileSize: 10 * 1024 * 1024
+    try {
 
-    },
+        const area = document.getElementById("selectArea").value.trim();
 
-    fileFilter: (req, file, cb) => {
+        const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
+        const resultado = await respuesta.json();
 
-        if (file.mimetype !== 'application/pdf') {
+        if (miCarga !== cargaHistorialId) return;
 
-            return cb(
+        const data = resultado.presupuestos || [];
 
-                new Error('Solo se permiten PDFs')
+        // Ordenar por año DESC, luego por mes DESC
+        data.sort((a, b) => {
 
-            );
+            if (b.anio !== a.anio) return b.anio - a.anio;
 
+            return ordenMeses[b.mes] - ordenMeses[a.mes];
+        });
+
+        tbodyIngresos.innerHTML = "";
+
+        if (data.length === 0) {
+
+            tbodyIngresos.innerHTML = `
+                <tr>
+                    <td colspan="7">No hay registros</td>
+                </tr>
+            `;
+
+            saldoDisponible.innerHTML = "$0.00";
+            return;
         }
 
-        cb(null, true);
+        // El saldo disponible es el del registro más reciente
+        const ultimoSaldo = data[0].saldo_restante || 0;
 
+        data.forEach((registro) => {
+
+            // Transformar nombres de archivos: espacios → "/"
+            const nombreAutorizacion = transformarNombreArchivo(registro.oficio_autorizacion_nombre);
+            const nombreAdecuacion   = transformarNombreArchivo(registro.oficio_adecuacion_nombre);
+
+            tbodyIngresos.innerHTML += `
+                <tr>
+                    <td>${registro.mes} ${registro.anio}</td>
+
+                    <td>$${parseFloat(registro.saldo_autorizado || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+
+                    <td>$${parseFloat(registro.saldo_modificado || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+
+                    <td>$${parseFloat(registro.saldo_restante || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+
+                    <td>
+                        ${registro.oficio_autorizacion_nombre
+                            ? `<a
+                                href="${API}/api/presupuestos/archivo/${registro.id}/autorizacion"
+                                target="_blank"
+                                class="btn-pdf"
+                                title="${registro.oficio_autorizacion_nombre}"
+                               >
+                                   ${nombreAutorizacion}
+                               </a>`
+                            : "Sin PDF"
+                        }
+                    </td>
+
+                    <td>
+                        ${registro.oficio_adecuacion_nombre
+                            ? `<a
+                                href="${API}/api/presupuestos/archivo/${registro.id}/adecuacion"
+                                target="_blank"
+                                class="btn-pdf"
+                                title="${registro.oficio_adecuacion_nombre}"
+                               >
+                                   ${nombreAdecuacion}
+                               </a>`
+                            : "Sin PDF"
+                        }
+                    </td>
+
+                    <td class="acciones">
+                        <button class="btn-editar"   onclick="editarRegistro(${registro.id})">Editar</button>
+                        <button class="btn-eliminar" onclick="eliminarRegistro(${registro.id})">Eliminar</button>
+                    </td>
+                </tr>
+            `;
+        });
+
+        saldoDisponible.innerHTML =
+            `$${parseFloat(ultimoSaldo).toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
+
+    } catch (error) {
+
+        console.error("Error al cargar historial:", error);
     }
+}
 
+
+/* ================================================
+   CARGAR GASTOS
+   Obtiene los gastos del área seleccionada
+   y los pinta en la tabla de gastos
+================================================ */
+
+async function cargarGastos() {
+
+    const miCarga = ++cargaGastosId;
+
+    try {
+
+        const area = document.getElementById("selectArea").value.trim();
+
+        const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
+        const resultado = await respuesta.json();
+
+        if (miCarga !== cargaGastosId) return;
+
+        const gastos = resultado.gastos || [];
+
+        tbodyGastos.innerHTML = "";
+
+        if (gastos.length === 0) {
+
+            tbodyGastos.innerHTML = `
+                <tr>
+                    <td colspan="4">No hay gastos registrados</td>
+                </tr>
+            `;
+
+            return;
+        }
+
+        gastos.forEach((gasto) => {
+
+            tbodyGastos.innerHTML += `
+                <tr>
+                    <td>${formatearFecha(gasto.fecha)}</td>
+                    <td>${gasto.persona      || "-"}</td>
+                    <td>$${parseFloat(gasto.cantidad || 0)
+                        .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
+                    <td>${gasto.observacion  || "-"}</td>
+                </tr>
+            `;
+        });
+
+    } catch (error) {
+
+        console.error("Error al cargar gastos:", error);
+    }
+}
+
+
+/* ================================================
+   EDITAR REGISTRO
+   Busca el registro por ID en el historial
+   y rellena el modal de edición con sus datos
+================================================ */
+
+async function editarRegistro(id) {
+
+    try {
+
+        const area = document.getElementById("selectArea").value.trim();
+
+        const respuesta = await fetch(`${API}/api/presupuestos/${area}`);
+        const resultado = await respuesta.json();
+        const data      = resultado.presupuestos || [];
+
+        const registro = data.find((item) => item.id === id);
+
+        if (!registro) {
+
+            abrirModalMensaje("Error", "Registro no encontrado", "error");
+            return;
+        }
+
+        // Rellenar campos del modal
+        document.getElementById("editId").value             = registro.id;
+        document.getElementById("editMes").value            = registro.mes;
+        document.getElementById("editAnio").value           = registro.anio;
+        document.getElementById("editSaldoAutorizado").value = registro.saldo_autorizado;
+        document.getElementById("editSaldoModificado").value = registro.saldo_modificado;
+
+        document.getElementById("editDisponible").innerHTML =
+            `$${parseFloat(registro.saldo_disponible || 0)
+                .toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
+
+        document.getElementById("editGastado").innerHTML =
+            `$${parseFloat(registro.gastado_mes || 0)
+                .toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
+
+        document.getElementById("editRestante").innerHTML =
+            `$${parseFloat(registro.saldo_restante || 0)
+                .toLocaleString("es-MX", { minimumFractionDigits: 2 })}`;
+
+        document.getElementById("modalEditar").style.display = "flex";
+        document.getElementById("overlay").style.display     = "block";
+
+    } catch (error) {
+
+        console.error("Error al editar registro:", error);
+        abrirModalMensaje("Error", "Error cargando registro", "error");
+    }
+}
+
+
+/* ================================================
+   ACTUALIZAR REGISTRO
+   Lee los campos del modal de edición
+   y envía la petición PUT al servidor
+================================================ */
+
+document.getElementById("btnActualizar").addEventListener("click", async () => {
+
+    try {
+
+        const id              = document.getElementById("editId").value;
+        const saldoAutorizado = document.getElementById("editSaldoAutorizado").value;
+        const saldoModificado = document.getElementById("editSaldoModificado").value;
+        const mes             = document.getElementById("editMes").value;
+        const anio            = document.getElementById("editAnio").value;
+
+        const formData = new FormData();
+
+        formData.append("saldo_autorizado", saldoAutorizado);
+        formData.append("saldo_modificado", saldoModificado);
+        formData.append("mes",              mes);
+        formData.append("anio",             anio);
+
+        const respuesta = await fetch(`${API}/api/presupuestos/editar/${id}`, {
+            method: "PUT",
+            body:   formData
+        });
+
+        const data = await respuesta.json();
+
+        if (data.ok) {
+
+            abrirModalMensaje("Registro actualizado", "Los cambios fueron guardados correctamente.");
+
+            cerrarModalEditar();
+            cargarHistorial();
+            cargarGastos();
+
+        } else {
+
+            abrirModalMensaje("Error", data.msg || "Error actualizando", "error");
+        }
+
+    } catch (error) {
+
+        console.error("Error al actualizar registro:", error);
+        abrirModalMensaje("Error servidor", "Ocurrió un error inesperado", "error");
+    }
 });
 
-/* =========================
-   ÚLTIMO OFICIO POR ÁREA
-========================= */
 
-router.get(
+/* ================================================
+   ELIMINAR REGISTRO
+   Muestra confirmación y, si se acepta,
+   envía la petición DELETE al servidor
+================================================ */
 
-    '/ultimo-oficio/:area_id',
+async function eliminarRegistro(id) {
 
-    async(req, res) => {
+    abrirModalMensaje(
 
-        try{
+        "Eliminar registro",
+        "¿Desea eliminar este registro?",
+        "confirmar",
 
-            const { area_id } =
-            req.params;
+        async () => {
 
-            console.log(
-                'AREA ID:',
-                area_id
-            );
+            try {
 
-            const consulta =
-            await pool.query(
-
-                `
-                SELECT
-
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre
-
-                FROM ultimos_oficios_por_up
-
-                WHERE area_id = $1
-
-                LIMIT 1
-                `,
-                [area_id]
-
-            );
-
-            console.log(
-                'CONSULTA OFICIO:',
-                consulta.rows
-            );
-
-            if(
-                consulta.rows.length === 0
-            ){
-
-                return res.json({
-
-                    ok:false,
-
-                    oficio_autorizacion:'',
-                    oficio_autorizacion_nombre:'',
-
-                    oficio_adecuacion:'',
-                    oficio_adecuacion_nombre:''
-
+                const respuesta = await fetch(`${API}/api/presupuestos/${id}`, {
+                    method: "DELETE"
                 });
 
-            }
+                const data = await respuesta.json();
 
-            res.json({
+                if (data.ok) {
 
-                ok:true,
+                    abrirModalMensaje("Registro eliminado", "El registro fue eliminado correctamente.");
 
-                oficio_autorizacion:
+                    cargarHistorial();
+                    cargarGastos();
 
-                consulta.rows[0]
-                .oficio_autorizacion || '',
+                } else {
 
-                oficio_autorizacion_nombre:
-
-                consulta.rows[0]
-                .oficio_autorizacion_nombre || '',
-
-                oficio_adecuacion:
-
-                consulta.rows[0]
-                .oficio_adecuacion || '',
-
-                oficio_adecuacion_nombre:
-
-                consulta.rows[0]
-                .oficio_adecuacion_nombre || ''
-
-            });
-
-        }
-
-        catch(error){
-
-            console.log(
-                'ERROR ÚLTIMO OFICIO:',
-                error
-            );
-
-            res.status(500).json({
-
-                ok:false,
-
-                msg:'Error obteniendo oficio',
-
-                error:error.message
-
-            });
-
-        }
-
-    }
-
-);
-
-/* =========================
-   CREAR PRESUPUESTO
-========================= */
-
-router.post(
-
-    '/crear',
-
-    upload.fields([
-
-        {
-
-            name: 'oficio_autorizacion',
-
-            maxCount: 1
-
-        },
-
-        {
-
-            name: 'oficio_adecuacion',
-
-            maxCount: 1
-
-        }
-
-    ]),
-
-    async (req, res) => {
-
-        try {
-
-            console.log('BODY:', req.body);
-
-            console.log('FILES:', req.files);
-
-            const {
-
-                area_id,
-                anio,
-                mes,
-
-                saldo_autorizado,
-                saldo_modificado
-
-            } = req.body;
-
-            if (
-
-                !area_id ||
-                !anio ||
-                !mes ||
-                saldo_autorizado === undefined
-
-            ) {
-
-                return res.status(400).json({
-
-                    ok: false,
-
-                    msg: 'Campos incompletos'
-
-                });
-
-            }
-
-            const existe =
-            await pool.query(
-
-                `
-                SELECT id
-                FROM presupuestos_mensuales
-                WHERE
-                area_id = $1
-                AND anio = $2
-                AND mes = $3
-                `,
-                [
-
-                    area_id,
-                    anio,
-                    mes
-
-                ]
-
-            );
-
-            if (existe.rows.length > 0) {
-
-                return res.status(400).json({
-
-                    ok: false,
-
-                    msg: 'Ya existe registro para ese periodo'
-
-                });
-
-            }
-
-            const autorizado =
-            parseFloat(saldo_autorizado || 0);
-
-            const modificado =
-            parseFloat(saldo_modificado || 0);
-
-            const disponible =
-            autorizado + modificado;
-
-            let oficio_autorizacion = null;
-            let oficio_autorizacion_nombre = null;
-
-            let oficio_adecuacion = null;
-            let oficio_adecuacion_nombre = null;
-
-            if (
-
-                req.files &&
-                req.files.oficio_autorizacion &&
-                req.files.oficio_autorizacion[0]
-
-            ) {
-
-                // Guardar como "area_id/nombrearchivo.pdf"
-                oficio_autorizacion =
-
-                    `${area_id}/${req.files.oficio_autorizacion[0].filename}`;
-
-                oficio_autorizacion_nombre =
-
-                    req.files
-                    .oficio_autorizacion[0]
-                    .originalname;
-
-            }
-
-            if (
-
-                req.files &&
-                req.files.oficio_adecuacion &&
-                req.files.oficio_adecuacion[0]
-
-            ) {
-
-                // Guardar como "area_id/nombrearchivo.pdf"
-                oficio_adecuacion =
-
-                    `${area_id}/${req.files.oficio_adecuacion[0].filename}`;
-
-                oficio_adecuacion_nombre =
-
-                    req.files
-                    .oficio_adecuacion[0]
-                    .originalname;
-
-            }
-
-            const nuevo =
-            await pool.query(
-
-                `
-                INSERT INTO
-                presupuestos_mensuales(
-
-                    area_id,
-                    anio,
-                    mes,
-
-                    saldo_autorizado,
-                    saldo_modificado,
-
-                    saldo_disponible,
-
-                    gastado_mes,
-                    saldo_restante,
-
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre
-
-                )
-
-                VALUES(
-
-                    $1,
-                    $2,
-                    $3,
-
-                    $4,
-                    $5,
-
-                    $6,
-
-                    0,
-                    $6,
-
-                    $7,
-                    $8,
-
-                    $9,
-                    $10
-
-                )
-
-                RETURNING *
-                `,
-                [
-
-                    area_id,
-                    anio,
-                    mes,
-
-                    autorizado,
-                    modificado,
-
-                    disponible,
-
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre
-
-                ]
-
-            );
-
-            await pool.query(
-
-                `
-                INSERT INTO ultimos_oficios_por_up(
-
-                    area_id,
-
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre,
-
-                    fecha_actualizacion
-
-                )
-
-                VALUES(
-
-                    $1,
-                    $2,
-                    $3,
-                    $4,
-                    $5,
-                    NOW()
-
-                )
-
-                ON CONFLICT(area_id)
-
-                DO UPDATE SET
-
-                    oficio_autorizacion =
-                    CASE
-                        WHEN EXCLUDED.oficio_autorizacion IS NOT NULL
-                        THEN EXCLUDED.oficio_autorizacion
-                        ELSE ultimos_oficios_por_up.oficio_autorizacion
-                    END,
-
-                    oficio_autorizacion_nombre =
-                    CASE
-                        WHEN EXCLUDED.oficio_autorizacion_nombre IS NOT NULL
-                        THEN EXCLUDED.oficio_autorizacion_nombre
-                        ELSE ultimos_oficios_por_up.oficio_autorizacion_nombre
-                    END,
-
-                    oficio_adecuacion =
-                    CASE
-                        WHEN EXCLUDED.oficio_adecuacion IS NOT NULL
-                        THEN EXCLUDED.oficio_adecuacion
-                        ELSE ultimos_oficios_por_up.oficio_adecuacion
-                    END,
-
-                    oficio_adecuacion_nombre =
-                    CASE
-                        WHEN EXCLUDED.oficio_adecuacion_nombre IS NOT NULL
-                        THEN EXCLUDED.oficio_adecuacion_nombre
-                        ELSE ultimos_oficios_por_up.oficio_adecuacion_nombre
-                    END,
-
-                    fecha_actualizacion = NOW()
-                `,
-                [
-
-                    area_id,
-
-                    oficio_autorizacion,
-                    oficio_autorizacion_nombre,
-
-                    oficio_adecuacion,
-                    oficio_adecuacion_nombre
-
-                ]
-
-            );
-
-            res.json({
-
-                ok: true,
-
-                msg: 'Presupuesto registrado',
-
-                presupuesto:
-                nuevo.rows[0]
-
-            });
-
-        }
-
-        catch (error) {
-
-            console.log('ERROR CREAR PRESUPUESTO:');
-
-            console.log(error);
-
-            res.status(500).json({
-
-                ok: false,
-
-                msg: 'Error servidor',
-
-                error: error.message
-
-            });
-
-        }
-
-    }
-
-);
-
-/* =========================
-   HISTORIAL + GASTOS
-========================= */
-
-router.get(
-
-    '/:area',
-
-    async (req, res) => {
-
-        try {
-
-            const { area } =
-            req.params;
-
-            const presupuestos =
-            await pool.query(
-
-                `
-                SELECT
-
-                    pm.*,
-
-                    ap.clave_area
-
-                FROM
-                presupuestos_mensuales pm
-
-                INNER JOIN
-                areas_presupuestales ap
-
-                ON ap.id = pm.area_id
-
-                WHERE
-                ap.clave_area = $1
-
-                ORDER BY
-                pm.id DESC
-                `,
-                [area]
-
-            );
-
-            const gastos =
-            await pool.query(
-
-                `
-                SELECT g.*
-                FROM gastos g
-                INNER JOIN presupuestos_mensuales pm ON pm.id = g.presupuesto_id
-                INNER JOIN areas_presupuestales ap ON ap.id = pm.area_id
-                WHERE ap.clave_area = $1
-                ORDER BY g.fecha DESC
-                `,
-                [area]
-
-            );
-
-            res.json({
-
-                ok: true,
-
-                presupuestos:
-                presupuestos.rows,
-
-                gastos:
-                gastos.rows
-
-            });
-
-        }
-
-        catch (error) {
-
-            console.log(error);
-
-            res.status(500).json({
-
-                ok: false,
-
-                msg: 'Error obteniendo historial'
-
-            });
-
-        }
-
-    }
-
-);
-
-/* =========================
-   EDITAR PRESUPUESTO
-========================= */
-
-router.put(
-
-    '/editar/:id',
-
-    upload.fields([
-
-        {
-
-            name: 'oficio_autorizacion',
-
-            maxCount: 1
-
-        },
-
-        {
-
-            name: 'oficio_adecuacion',
-
-            maxCount: 1
-
-        }
-
-    ]),
-
-    async (req, res) => {
-
-        try {
-
-            const { id } =
-            req.params;
-
-            const {
-
-                saldo_autorizado,
-                saldo_modificado,
-
-                mes,
-                anio
-
-            } = req.body;
-
-            if (
-
-                saldo_autorizado === undefined ||
-                !mes ||
-                !anio
-
-            ) {
-
-                return res.status(400).json({
-
-                    ok: false,
-
-                    msg: 'Campos incompletos'
-
-                });
-
-            }
-
-            const existe =
-            await pool.query(
-
-                `
-                SELECT *
-                FROM presupuestos_mensuales
-                WHERE id = $1
-                `,
-                [id]
-
-            );
-
-            if (existe.rows.length === 0) {
-
-                return res.status(404).json({
-
-                    ok: false,
-
-                    msg: 'Registro no encontrado'
-
-                });
-
-            }
-
-            const registro =
-            existe.rows[0];
-
-            const duplicado =
-            await pool.query(
-
-                `
-                SELECT id
-                FROM presupuestos_mensuales
-                WHERE
-
-                area_id = $1
-
-                AND mes = $2
-
-                AND anio = $3
-
-                AND id != $4
-                `,
-                [
-
-                    registro.area_id,
-
-                    mes,
-
-                    anio,
-
-                    id
-
-                ]
-
-            );
-
-            if (duplicado.rows.length > 0) {
-
-                return res.status(400).json({
-
-                    ok: false,
-
-                    msg: 'Ya existe otro registro para ese periodo'
-
-                });
-
-            }
-
-            const disponible =
-
-                parseFloat(saldo_autorizado || 0)
-
-                +
-
-                parseFloat(saldo_modificado || 0);
-
-            const restante =
-
-                disponible
-
-                -
-
-                parseFloat(registro.gastado_mes || 0);
-
-            let nuevoPDFAutorizacion =
-            registro.oficio_autorizacion;
-
-            let nuevoNombreAutorizacion =
-            registro.oficio_autorizacion_nombre;
-
-            let nuevoPDFAdecuacion =
-            registro.oficio_adecuacion;
-
-            let nuevoNombreAdecuacion =
-            registro.oficio_adecuacion_nombre;
-
-            if (
-
-                req.files &&
-                req.files.oficio_autorizacion &&
-                req.files.oficio_autorizacion[0]
-
-            ) {
-
-                if (registro.oficio_autorizacion) {
-
-                    const rutaVieja =
-
-                        path.join(
-
-                            uploadBase,
-
-                            registro.oficio_autorizacion
-
-                        );
-
-                    if (fs.existsSync(rutaVieja)) {
-
-                        fs.unlinkSync(rutaVieja);
-
-                    }
-
+                    abrirModalMensaje("Error", data.msg || "Error eliminando", "error");
                 }
 
-                nuevoPDFAutorizacion =
+            } catch (error) {
 
-                    `${registro.area_id}/${req.files.oficio_autorizacion[0].filename}`;
-
-                nuevoNombreAutorizacion =
-
-                    req.files
-                    .oficio_autorizacion[0]
-                    .originalname;
-
+                console.error("Error al eliminar registro:", error);
+                abrirModalMensaje("Error servidor", "Ocurrió un error inesperado", "error");
             }
-
-            if (
-
-                req.files &&
-                req.files.oficio_adecuacion &&
-                req.files.oficio_adecuacion[0]
-
-            ) {
-
-                if (registro.oficio_adecuacion) {
-
-                    const rutaVieja =
-
-                        path.join(
-
-                            uploadBase,
-
-                            registro.oficio_adecuacion
-
-                        );
-
-                    if (fs.existsSync(rutaVieja)) {
-
-                        fs.unlinkSync(rutaVieja);
-
-                    }
-
-                }
-
-                nuevoPDFAdecuacion =
-
-                    `${registro.area_id}/${req.files.oficio_adecuacion[0].filename}`;
-
-                nuevoNombreAdecuacion =
-
-                    req.files
-                    .oficio_adecuacion[0]
-                    .originalname;
-
-            }
-
-            const actualizado =
-            await pool.query(
-
-                `
-                UPDATE presupuestos_mensuales
-
-                SET
-
-                    mes = $1,
-
-                    anio = $2,
-
-                    saldo_autorizado = $3,
-
-                    saldo_modificado = $4,
-
-                    saldo_disponible = $5,
-
-                    saldo_restante = $6,
-
-                    oficio_autorizacion = $7,
-
-                    oficio_autorizacion_nombre = $8,
-
-                    oficio_adecuacion = $9,
-
-                    oficio_adecuacion_nombre = $10
-
-                WHERE id = $11
-
-                RETURNING *
-                `,
-                [
-
-                    mes,
-                    anio,
-
-                    saldo_autorizado,
-                    saldo_modificado,
-
-                    disponible,
-                    restante,
-
-                    nuevoPDFAutorizacion,
-                    nuevoNombreAutorizacion,
-
-                    nuevoPDFAdecuacion,
-                    nuevoNombreAdecuacion,
-
-                    id
-
-                ]
-
-            );
-
-            res.json({
-
-                ok: true,
-
-                msg: 'Registro actualizado',
-
-                registro:
-                actualizado.rows[0]
-
-            });
-
         }
+    );
+}
 
-        catch (error) {
 
-            console.log(error);
+/* ================================================
+   TABS — INGRESOS / GASTOS
+   Alterna la visibilidad entre las dos tablas
+================================================ */
 
-            res.status(500).json({
+function mostrarIngresos() {
 
-                ok: false,
+    document.getElementById("contenedorIngresos").style.display = "block";
+    document.getElementById("contenedorGastos").style.display   = "none";
 
-                msg: 'Error editando',
+    document.getElementById("btnIngresos").classList.add("activo");
+    document.getElementById("btnGastos").classList.remove("activo");
+}
 
-                error: error.message
+function mostrarGastos() {
 
-            });
+    document.getElementById("contenedorIngresos").style.display = "none";
+    document.getElementById("contenedorGastos").style.display   = "block";
 
-        }
+    document.getElementById("btnGastos").classList.add("activo");
+    document.getElementById("btnIngresos").classList.remove("activo");
+}
 
-    }
 
-);
+/* ================================================
+   EVENTO — CAMBIO DE ÁREA
+   Al cambiar el área seleccionada se recargan
+   automáticamente el historial y los gastos
+================================================ */
 
-/* =========================
-   ELIMINAR PRESUPUESTO
-========================= */
+document.getElementById("selectArea").addEventListener("change", () => {
 
-router.delete(
+    cargarHistorial();
+    cargarGastos();
+});
 
-    '/:id',
 
-    async (req, res) => {
+/* ================================================
+   INICIALIZACIÓN
+   Carga los datos al abrir la página
+================================================ */
 
-        try {
-
-            const { id } =
-            req.params;
-
-            const existe =
-            await pool.query(
-
-                `
-                SELECT *
-                FROM presupuestos_mensuales
-                WHERE id = $1
-                `,
-                [id]
-
-            );
-
-            if (existe.rows.length === 0) {
-
-                return res.status(404).json({
-
-                    ok: false,
-
-                    msg: 'No encontrado'
-
-                });
-
-            }
-
-            const registro =
-            existe.rows[0];
-
-            const eliminarArchivo = (archivo) => {
-
-                if (!archivo) return;
-
-                const ruta =
-                path.join(uploadBase, archivo);
-
-                if (fs.existsSync(ruta)) {
-
-                    fs.unlinkSync(ruta);
-
-                }
-
-            };
-
-            eliminarArchivo(
-                registro.oficio_autorizacion
-            );
-
-            eliminarArchivo(
-                registro.oficio_adecuacion
-            );
-
-            await pool.query(
-
-                `
-                DELETE FROM
-                presupuestos_mensuales
-                WHERE id = $1
-                `,
-                [id]
-
-            );
-
-            res.json({
-
-                ok: true,
-
-                msg: 'Registro eliminado'
-
-            });
-
-        }
-
-        catch (error) {
-
-            console.log(error);
-
-            res.status(500).json({
-
-                ok: false,
-
-                msg: 'Error eliminando',
-
-                error: error.message
-
-            });
-
-        }
-
-    }
-
-);
-
-module.exports = router;
+cargarHistorial();
+cargarGastos();
