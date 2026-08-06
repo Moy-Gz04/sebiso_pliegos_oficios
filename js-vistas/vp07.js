@@ -307,30 +307,36 @@ function renderizarIngresos(){
                 <td>
 
                     ${
-    registro.oficio_autorizacion_nombre
-    ?
-    `
-        href="${API}/api/presupuestos/archivo/${registro.id}/autorizacion"
-        target="_blank"
-        class="btn-pdf"
-    >
-        VER PDF
-    </a>`
-    :
-    'Sin PDF'
-}
+                        registro.oficio_autorizacion_nombre
+
+                        ?
+
+                        `<a
+                            href="${API}/api/presupuestos/archivo/${registro.id}/autorizacion"
+                            target="_blank"
+                            class="btn-pdf"
+                        >
+
+                            VER PDF
+
+                        </a>`
+
+                        :
+
+                        'Sin PDF'
+                    }
 
                 </td>
 
                 <td>
 
                     ${
-                        registro.oficio_adecuacion
+                        registro.oficio_adecuacion_nombre
 
                         ?
 
                         `<a
-                            href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
+                            href="${API}/api/presupuestos/archivo/${registro.id}/adecuacion"
                             target="_blank"
                             class="btn-pdf"
                         >
