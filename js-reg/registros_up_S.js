@@ -35,7 +35,7 @@ const ADSCRIPCION_AREA = "01 DIRECCIÓN";
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
 const API_VIATICOS =
-"https://script.google.com/macros/s/AKfycbx6NHlxkdZL6OdCfzL3EXm6YMAj9LrPIkmjmFmPII9NU0q8QNCih7Ni1D7Bh9ezakizcA/exec";
+"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";
 
 /* ============================================================
    2. UTILIDADES GENERALES
