@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/ssidebar.css">
     <link rel="stylesheet" href="../css/presupuestos.css">
+    <link rel="stylesheet" href="../css/viaticos-listado.css">
 
 </head>
 
@@ -44,7 +45,9 @@
 
             <div class="subtitulo">
 
-                VIÁTICOS GENERADOS — UP-01-S-DRM
+                VIÁTICOS GENERADOS
+                <br>
+                UP 01 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL S-DRM
 
             </div>
 
@@ -54,37 +57,99 @@
 
         <!-- CONTENEDOR -->
 
-        <div class="contenedor-presupuesto">
+        <div class="historial-container" style="width:90%;">
 
-            <table>
+            <h2>
 
-                <thead>
+                Historial de Viáticos Generados
 
-                    <tr>
+            </h2>
 
-                        <th>Fecha</th>
-                        <th>Personas incluidas</th>
-                        <th>Total personas</th>
-                        <th>PDF</th>
+            <div class="tabla-responsive">
 
-                    </tr>
+                <table>
 
-                </thead>
+                    <thead>
 
-                <tbody id="tbodyViaticos">
+                        <tr>
 
-                    <tr>
+                            <th style="width:16%;">Fecha</th>
+                            <th style="width:44%;">Personas incluidas</th>
+                            <th style="width:14%;">Total</th>
+                            <th style="width:13%;">PDF</th>
+                            <th style="width:13%;">Eliminar</th>
 
-                        <td colspan="4">Cargando...</td>
+                        </tr>
 
-                    </tr>
+                    </thead>
 
-                </tbody>
+                    <tbody id="tbodyViaticos">
 
-            </table>
+                        <tr>
+
+                            <td colspan="5" style="padding:30px;">
+
+                                Cargando...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
 
         </div>
 
+    </div>
+
+    <!-- OVERLAY -->
+    <div id="overlay"></div>
+
+    <!-- ===== MODAL CONFIRMAR ELIMINAR ===== -->
+    <div class="modal" id="modalEliminarViatico">
+        <div class="modal-contenido modal-confirm">
+
+            <div class="modal-confirm-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                    stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v6M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                </svg>
+            </div>
+
+            <h2>¿Eliminar este registro?</h2>
+
+            <p>
+                Se eliminará el registro del listado. El PDF seguirá
+                disponible en Drive, pero ya no aparecerá aquí.
+            </p>
+
+            <div class="modal-botones">
+
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="cerrarModal('modalEliminarViatico')"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-danger"
+                    id="confirmarEliminarViatico"
+                >
+                    Sí, eliminar
+                </button>
+
+            </div>
+
+        </div>
     </div>
 
     <script src="../js-sid/sidebar_up_S.js"></script>

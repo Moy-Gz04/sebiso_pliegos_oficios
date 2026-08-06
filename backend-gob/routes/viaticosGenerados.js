@@ -163,4 +163,84 @@ router.get(
 
 );
 
+/* =========================
+   ELIMINAR VIÁTICOS GENERADOS
+   Solo borra el registro de la base de datos
+   (el PDF permanece en Drive por si se necesita
+   consultar después).
+========================= */
+
+router.delete(
+
+    '/:id',
+
+    async (req, res) => {
+
+        try {
+
+            const { id } = req.params;
+
+            const existe = await pool.query(
+
+                `
+                SELECT id
+                FROM viaticos_generados
+                WHERE id = $1
+                `,
+                [id]
+
+            );
+
+            if (existe.rows.length === 0) {
+
+                return res.status(404).json({
+
+                    ok: false,
+
+                    msg: 'No encontrado'
+
+                });
+
+            }
+
+            await pool.query(
+
+                `
+                DELETE FROM viaticos_generados
+                WHERE id = $1
+                `,
+                [id]
+
+            );
+
+            res.json({
+
+                ok: true,
+
+                msg: 'Registro eliminado'
+
+            });
+
+        }
+
+        catch (error) {
+
+            console.error('ERROR ELIMINANDO VIÁTICOS:', error);
+
+            res.status(500).json({
+
+                ok: false,
+
+                msg: 'Error eliminando registro',
+
+                error: error.message
+
+            });
+
+        }
+
+    }
+
+);
+
 module.exports = router;
