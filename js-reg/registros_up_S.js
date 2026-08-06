@@ -20,6 +20,23 @@ let codigoRecibo   = null;
 let codigoFactura  = null;
 let codigoOficio2  = null;
 
+/* =========================
+   VIÁTICOS — CONFIGURACIÓN
+========================= */
+
+/** Guarda el último arreglo de registros cargado, para poder
+ *  leer sus datos completos cuando se generan los viáticos
+ *  sin tener que volver a pedirlos al servidor. */
+let ultimosRegistros = [];
+
+/** Valor fijo de adscripción para esta área */
+const ADSCRIPCION_AREA = "01 DIRECCIÓN";
+
+/** URL de la Aplicación Web (Apps Script) que llena la hoja
+ *  y genera el PDF de viáticos */
+const API_VIATICOS =
+"https://script.google.com/macros/s/AKfycbxXaJu37RPOa2mhmpAV7oUJuQ3__5Wrt6eg6LpQSrtaLHRIG4exdRErMEq8IG9d71iEbQ/exec";
+
 /* ============================================================
    2. UTILIDADES GENERALES
    ============================================================ */
@@ -975,6 +992,7 @@ async function cargarRegistros() {
     if (!response.ok) throw new Error("Error obteniendo registros");
 
     const registros = await response.json();
+    ultimosRegistros = registros;
     tbody.innerHTML = "";
 
     if (registros.length === 0) {
@@ -1074,6 +1092,14 @@ function construirTarjeta(registro) {
             <div class="info-item">
               <span class="info-label">Eliminar</span>
               ${btnEliminar}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Viáticos</span>
+              <input
+                type="checkbox"
+                class="chk-viaticos"
+                value="${codigo}"
+              >
             </div>
           </div>
 
@@ -1290,7 +1316,151 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.id === "modalAlerta") cerrarAlerta();
   });
 
+  /* ── 13.10  Botón "Generar Viáticos de seleccionados" ────── */
+  document.getElementById("btnGenerarViaticos")?.addEventListener("click", () => {
+    const seleccionados = document.querySelectorAll(".chk-viaticos:checked");
+
+    if (seleccionados.length === 0) {
+      mostrarAlerta("Selecciona al menos un registro", "Marca la casilla de Viáticos en al menos una tarjeta.");
+      return;
+    }
+
+    document.getElementById("textoConfirmarViaticos").innerText =
+      `Se generará un PDF de viáticos con ${seleccionados.length} persona(s) seleccionada(s).`;
+
+    abrirModal("modalConfirmarViaticos");
+  });
+
+  /* ── 13.11  Confirmar generación de viáticos ─────────────── */
+  document.getElementById("confirmarViaticos")?.addEventListener("click", async () => {
+    cerrarModal("modalConfirmarViaticos");
+    abrirModal("modalCargandoViaticos");
+    await generarViaticos();
+  });
+
   /* ── 13.9  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
   setInterval(cargarRegistros, 30_000);
 });
+
+/* ============================================================
+   14. VIÁTICOS — GENERACIÓN DE PDF EN LOTE
+   ============================================================ */
+
+/**
+ * Arma el texto legal de viáticos para una persona/registro.
+ * @param {Object} registro
+ * @returns {string}
+ */
+function construirDescripcionViaticos(registro) {
+  const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
+
+  return (
+    `VIÁTICOS EN EL PAÍS DERIVADOS DE LA COMISIÓN DE ${registro.persona || ""} ` +
+    `CON LA FINALIDAD DE ${registro.motivo_comision || ""} ` +
+    `LOS DÍAS ${diasTexto} DE ${registro.mes || ""} DEL ${registro.anio || ""} ` +
+    `EN CURSO EN EL MUNICIPIO DE ${registro.municipio || ""}, HGO.`
+  );
+}
+
+/**
+ * Busca el RFC de una persona en el catálogo local (cat-upS.js)
+ * comparando por nombre exacto.
+ * @param {string} nombre
+ * @returns {string}
+ */
+function buscarRFC(nombre) {
+  const encontrada = personas.find((p) => p.nombre === nombre);
+  return encontrada ? encontrada.rfc : "";
+}
+
+/**
+ * Toma los registros marcados con el checkbox de Viáticos,
+ * arma el detalle de cada fila, lo envía al Apps Script para
+ * generar el PDF, y guarda el resultado en el backend.
+ */
+async function generarViaticos() {
+  const btn = document.getElementById("btnGenerarViaticos");
+
+  try {
+    if (btn) btn.disabled = true;
+
+    /* --- 1. Reunir códigos seleccionados --- */
+    const codigosSeleccionados = Array.from(
+      document.querySelectorAll(".chk-viaticos:checked")
+    ).map((chk) => chk.value);
+
+    const registrosSeleccionados = ultimosRegistros.filter((r) =>
+      codigosSeleccionados.includes(r.codigo)
+    );
+
+    if (registrosSeleccionados.length === 0) {
+      throw new Error("No se encontraron los registros seleccionados.");
+    }
+
+    /* --- 2. Armar detalle (una fila por persona) --- */
+    const detalle = registrosSeleccionados.map((registro) => ({
+      id: registro.codigo,
+      persona: registro.persona,
+      adscripcion: ADSCRIPCION_AREA,
+      rfc: buscarRFC(registro.persona),
+      folio: "000000",
+      importe: formatearMoneda(registro.spg_total || 0),
+      descripcion: construirDescripcionViaticos(registro),
+    }));
+
+    /* --- 3. Enviar al Apps Script --- */
+    const respuestaScript = await fetch(API_VIATICOS, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        fileName: `VIATICOS_UP-01-S-DRM_${Date.now()}`,
+        filas: detalle,
+      }),
+    });
+
+    const textoRespuesta = await respuestaScript.text();
+
+    let dataScript;
+    try {
+      dataScript = JSON.parse(textoRespuesta);
+    } catch (error) {
+      throw new Error("El Apps Script no devolvió una respuesta válida.");
+    }
+
+    if (!dataScript.ok || !dataScript.url) {
+      throw new Error(dataScript.error || "No se pudo generar el PDF de viáticos.");
+    }
+
+    /* --- 4. Guardar en el backend --- */
+    const respuestaGuardar = await fetch(`${API}/api/viaticos-generados`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        area: "UP-01-S-DRM",
+        pdf_url: dataScript.url,
+        detalle,
+      }),
+    });
+
+    const dataGuardar = await respuestaGuardar.json();
+
+    if (!respuestaGuardar.ok || !dataGuardar.ok) {
+      throw new Error(dataGuardar.msg || "Error guardando el registro de viáticos.");
+    }
+
+    /* --- 5. UI de éxito --- */
+    cerrarModal("modalCargandoViaticos");
+    abrirModal("modalExitoViaticos");
+
+    document.querySelectorAll(".chk-viaticos:checked").forEach((chk) => {
+      chk.checked = false;
+    });
+  } catch (error) {
+    console.error("ERROR GENERANDO VIÁTICOS:", error);
+    cerrarModal("modalCargandoViaticos");
+    mostrarAlerta("❌ Error al generar viáticos", error.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}
