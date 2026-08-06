@@ -35,7 +35,7 @@ const ADSCRIPCION_AREA = "01 DIRECCIÓN";
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
 const API_VIATICOS =
-"https://script.google.com/macros/s/AKfycbx6NHlxkdZL6OdCfzL3EXm6YMAj9LrPIkmjmFmPII9NU0q8QNCih7Ni1D7Bh9ezakizcA/exec";
+"https://script.google.com/macros/s/AKfycbxXaJu37RPOa2mhmpAV7oUJuQ3__5Wrt6eg6LpQSrtaLHRIG4exdRErMEq8IG9d71iEbQ/exec";
 
 /* ============================================================
    2. UTILIDADES GENERALES
@@ -1094,11 +1094,26 @@ function construirTarjeta(registro) {
               ${btnEliminar}
             </div>
             <div class="info-item">
+              <span class="info-label">Importe Viáticos</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                class="input-importe-viaticos"
+                id="importe-${codigo}"
+                value="${registro.importe_viaticos ?? ''}"
+                placeholder="$ 0.00"
+                onchange="guardarImporteViaticos('${codigo}', this.value)"
+                ${bloqueado ? "readonly" : ""}
+              >
+            </div>
+            <div class="info-item">
               <span class="info-label">Viáticos</span>
               <input
                 type="checkbox"
                 class="chk-viaticos"
                 value="${codigo}"
+                onclick="if(!validarImporteAntesDeMarcar(this, '${codigo}')){ this.checked = false; }"
               >
             </div>
           </div>
@@ -1223,6 +1238,63 @@ async function guardarObservaciones(codigo, observaciones) {
     if (!response.ok) throw new Error(data.error || "Error guardando observaciones");
   } catch (error) {
     console.error("ERROR OBSERVACIONES:", error);
+    mostrarAlerta("❌ Error al guardar", error.message);
+  }
+}
+
+/**
+ * Valida que exista un importe de viáticos (> 0) antes de
+ * permitir marcar el checkbox de selección de una tarjeta.
+ * Se ejecuta DESPUÉS de que el navegador ya cambió el estado
+ * del checkbox, por lo que si no es válido lo revertimos
+ * desde el onclick (this.checked = false).
+ * @param {HTMLInputElement} checkbox
+ * @param {string} codigo
+ * @returns {boolean}
+ */
+function validarImporteAntesDeMarcar(checkbox, codigo) {
+  // Si se está desmarcando, no hay nada que validar
+  if (!checkbox.checked) return true;
+
+  const input = document.getElementById(`importe-${codigo}`);
+  const valor = parseFloat(input?.value);
+
+  if (isNaN(valor) || valor <= 0) {
+    mostrarAlerta(
+      "Importe requerido",
+      "Debes capturar el Importe Total del Viático (mayor a $0.00) antes de poder seleccionar este registro."
+    );
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Guarda en el backend el importe de viáticos capturado
+ * junto al checkbox, para que persista aunque se recargue
+ * la página o se cierre sesión.
+ * @param {string} codigo
+ * @param {string|number} importe
+ */
+async function guardarImporteViaticos(codigo, importe) {
+  try {
+    const response = await fetch(`${API}/api/registros/importe-viaticos/${codigo}`, {
+      method:  "PUT",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ importe_viaticos: importe || null }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Error guardando importe");
+
+    // Si se editó el importe y el checkbox ya estaba marcado,
+    // lo desmarcamos para forzar a revisar la selección de nuevo.
+    const checkbox = document.querySelector(`.chk-viaticos[value="${codigo}"]`);
+    if (checkbox && checkbox.checked && (!importe || parseFloat(importe) <= 0)) {
+      checkbox.checked = false;
+    }
+  } catch (error) {
+    console.error("ERROR GUARDANDO IMPORTE VIÁTICOS:", error);
     mostrarAlerta("❌ Error al guardar", error.message);
   }
 }
@@ -1398,6 +1470,18 @@ async function generarViaticos() {
       throw new Error("No se encontraron los registros seleccionados.");
     }
 
+    /* --- Validación defensiva: todos deben tener importe > 0 --- */
+    const sinImporte = registrosSeleccionados.filter(
+      (r) => !r.importe_viaticos || parseFloat(r.importe_viaticos) <= 0
+    );
+
+    if (sinImporte.length > 0) {
+      throw new Error(
+        "Falta capturar el Importe de Viáticos en: " +
+        sinImporte.map((r) => r.persona).join(", ")
+      );
+    }
+
     /* --- 2. Armar detalle (una fila por persona) --- */
     const detalle = registrosSeleccionados.map((registro) => ({
       id: registro.codigo,
@@ -1405,7 +1489,7 @@ async function generarViaticos() {
       adscripcion: ADSCRIPCION_AREA,
       rfc: buscarRFC(registro.persona),
       folio: "000000",
-      importe: formatearMoneda(registro.spg_total || 0),
+      importe: formatearMoneda(registro.importe_viaticos || 0),
       descripcion: construirDescripcionViaticos(registro),
     }));
 
