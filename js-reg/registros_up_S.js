@@ -1527,9 +1527,6 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById("filtroFechaHasta")
     ?.addEventListener("change", renderizarRegistrosFiltrados);
 
-  document.getElementById("btnLimpiarFiltros")
-    ?.addEventListener("click", limpiarFiltrosRegistros);
-
   /* ── 13.9  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
   setInterval(cargarRegistros, 30_000);
