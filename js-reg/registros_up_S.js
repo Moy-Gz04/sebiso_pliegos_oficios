@@ -29,13 +29,18 @@ let codigoOficio2  = null;
  *  sin tener que volver a pedirlos al servidor. */
 let ultimosRegistros = [];
 
+/** Códigos de registros marcados para Viáticos. Se mantiene
+ *  aparte de las casillas del DOM para que la selección no se
+ *  pierda al filtrar o al refrescar automáticamente. */
+let codigosSeleccionadosViaticos = new Set();
+
 /** Valor fijo de adscripción para esta área */
 const ADSCRIPCION_AREA = "01 DIRECCIÓN";
 
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
 const API_VIATICOS =
-"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";
+"https://script.google.com/macros/s/AKfycbxXaJu37RPOa2mhmpAV7oUJuQ3__5Wrt6eg6LpQSrtaLHRIG4exdRErMEq8IG9d71iEbQ/exec";
 
 /* ============================================================
    2. UTILIDADES GENERALES
@@ -993,29 +998,8 @@ async function cargarRegistros() {
 
     const registros = await response.json();
     ultimosRegistros = registros;
-    tbody.innerHTML = "";
 
-    if (registros.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="12" style="text-align:center; padding:20px;">
-            No hay registros
-          </td>
-        </tr>`;
-      return;
-    }
-
-    // Orden de visualización: CREADO → RECHAZADO → ENVIADO → PAGADO/ACEPTADO
-    const orden = { CREADO: 1, RECHAZADO: 2, ENVIADO: 3, PAGADO: 4, ACEPTADO: 4 };
-    registros.sort(
-      (a, b) =>
-        (orden[normalizarEstatus(a.estatus)] || 99) -
-        (orden[normalizarEstatus(b.estatus)] || 99)
-    );
-
-    for (const registro of registros) {
-      tbody.innerHTML += construirTarjeta(registro);
-    }
+    renderizarRegistrosFiltrados();
   } catch (error) {
     console.error("ERROR CARGANDO REGISTROS:", error);
     tbody.innerHTML = `
@@ -1025,6 +1009,118 @@ async function cargarRegistros() {
         </td>
       </tr>`;
   }
+}
+
+/**
+ * Aplica los filtros activos (texto + rango de fechas) sobre
+ * ultimosRegistros y pinta el resultado en la tabla.
+ * Se llama tanto al cargar como cada vez que el usuario cambia
+ * un filtro, sin volver a pedir nada al servidor.
+ */
+function renderizarRegistrosFiltrados() {
+  const registrosFiltrados = filtrarRegistros(ultimosRegistros);
+
+  tbody.innerHTML = "";
+
+  if (ultimosRegistros.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="12" style="text-align:center; padding:20px;">
+          No hay registros
+        </td>
+      </tr>`;
+    return;
+  }
+
+  if (registrosFiltrados.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="12" style="text-align:center; padding:20px;">
+          Ningún registro coincide con la búsqueda.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  // Orden de visualización: CREADO → RECHAZADO → ENVIADO → PAGADO/ACEPTADO
+  const orden = { CREADO: 1, RECHAZADO: 2, ENVIADO: 3, PAGADO: 4, ACEPTADO: 4 };
+  registrosFiltrados.sort(
+    (a, b) =>
+      (orden[normalizarEstatus(a.estatus)] || 99) -
+      (orden[normalizarEstatus(b.estatus)] || 99)
+  );
+
+  for (const registro of registrosFiltrados) {
+    tbody.innerHTML += construirTarjeta(registro);
+  }
+}
+
+/**
+ * Filtra un arreglo de registros según el texto de búsqueda
+ * (por ID o Persona) y el rango de fechas seleccionado.
+ * @param {Array} registros
+ * @returns {Array}
+ */
+function filtrarRegistros(registros) {
+  const texto = (document.getElementById("buscadorTexto")?.value || "")
+    .trim()
+    .toLowerCase();
+
+  const desde = document.getElementById("filtroFechaDesde")?.value || "";
+  const hasta = document.getElementById("filtroFechaHasta")?.value || "";
+
+  return registros.filter((registro) => {
+    // --- Filtro de texto: ID o Persona ---
+    if (texto) {
+      const coincideId = (registro.codigo || "").toLowerCase().includes(texto);
+      const coincidePersona = (registro.persona || "").toLowerCase().includes(texto);
+
+      if (!coincideId && !coincidePersona) return false;
+    }
+
+    // --- Filtro de rango de fechas ---
+    if (desde || hasta) {
+      if (!registro.fecha) return false;
+
+      // Se compara solo la parte de fecha (YYYY-MM-DD), sin hora
+      const fechaRegistro = new Date(registro.fecha);
+      const fechaSolo = new Date(
+        fechaRegistro.getFullYear(),
+        fechaRegistro.getMonth(),
+        fechaRegistro.getDate()
+      );
+
+      if (desde) {
+        const [y, m, d] = desde.split("-").map(Number);
+        const fechaDesde = new Date(y, m - 1, d);
+        if (fechaSolo < fechaDesde) return false;
+      }
+
+      if (hasta) {
+        const [y, m, d] = hasta.split("-").map(Number);
+        const fechaHasta = new Date(y, m - 1, d);
+        if (fechaSolo > fechaHasta) return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+/**
+ * Limpia todos los filtros de búsqueda y vuelve a mostrar
+ * todos los registros.
+ */
+function limpiarFiltrosRegistros() {
+  const texto = document.getElementById("buscadorTexto");
+  const desde = document.getElementById("filtroFechaDesde");
+  const hasta = document.getElementById("filtroFechaHasta");
+
+  if (texto) texto.value = "";
+  if (desde) desde.value = "";
+  if (hasta) hasta.value = "";
+
+  renderizarRegistrosFiltrados();
 }
 
 /**
@@ -1069,7 +1165,7 @@ function construirTarjeta(registro) {
   return `
     <tr>
       <td colspan="12">
-        <div class="card-registro">
+        <div class="card-registro card-estatus-${(estatus || "creado").toLowerCase()}">
 
           <!-- FILA SUPERIOR: identificación y estatus -->
           <div class="fila-superior">
@@ -1113,7 +1209,17 @@ function construirTarjeta(registro) {
                 type="checkbox"
                 class="chk-viaticos"
                 value="${codigo}"
-                onclick="if(!validarImporteAntesDeMarcar(this, '${codigo}')){ this.checked = false; }"
+                ${codigosSeleccionadosViaticos.has(codigo) ? "checked" : ""}
+                onclick="
+                  if(!validarImporteAntesDeMarcar(this, '${codigo}')){
+                    this.checked = false;
+                  }
+                  if(this.checked){
+                    codigosSeleccionadosViaticos.add('${codigo}');
+                  } else {
+                    codigosSeleccionadosViaticos.delete('${codigo}');
+                  }
+                "
               >
             </div>
           </div>
@@ -1292,6 +1398,7 @@ async function guardarImporteViaticos(codigo, importe) {
     const checkbox = document.querySelector(`.chk-viaticos[value="${codigo}"]`);
     if (checkbox && checkbox.checked && (!importe || parseFloat(importe) <= 0)) {
       checkbox.checked = false;
+      codigosSeleccionadosViaticos.delete(codigo);
     }
   } catch (error) {
     console.error("ERROR GUARDANDO IMPORTE VIÁTICOS:", error);
@@ -1390,15 +1497,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ── 13.10  Botón "Generar Viáticos de seleccionados" ────── */
   document.getElementById("btnGenerarViaticos")?.addEventListener("click", () => {
-    const seleccionados = document.querySelectorAll(".chk-viaticos:checked");
+    const total = codigosSeleccionadosViaticos.size;
 
-    if (seleccionados.length === 0) {
+    if (total === 0) {
       mostrarAlerta("Selecciona al menos un registro", "Marca la casilla de Viáticos en al menos una tarjeta.");
       return;
     }
 
     document.getElementById("textoConfirmarViaticos").innerText =
-      `Se generará un PDF de viáticos con ${seleccionados.length} persona(s) seleccionada(s).`;
+      `Se generará un PDF de viáticos con ${total} persona(s) seleccionada(s).`;
 
     abrirModal("modalConfirmarViaticos");
   });
@@ -1409,6 +1516,19 @@ document.addEventListener("DOMContentLoaded", () => {
     abrirModal("modalCargandoViaticos");
     await generarViaticos();
   });
+
+  /* ── 13.12  Filtros de búsqueda (texto + rango de fechas) ── */
+  document.getElementById("buscadorTexto")
+    ?.addEventListener("input", renderizarRegistrosFiltrados);
+
+  document.getElementById("filtroFechaDesde")
+    ?.addEventListener("change", renderizarRegistrosFiltrados);
+
+  document.getElementById("filtroFechaHasta")
+    ?.addEventListener("change", renderizarRegistrosFiltrados);
+
+  document.getElementById("btnLimpiarFiltros")
+    ?.addEventListener("click", limpiarFiltrosRegistros);
 
   /* ── 13.9  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
@@ -1458,9 +1578,7 @@ async function generarViaticos() {
     if (btn) btn.disabled = true;
 
     /* --- 1. Reunir códigos seleccionados --- */
-    const codigosSeleccionados = Array.from(
-      document.querySelectorAll(".chk-viaticos:checked")
-    ).map((chk) => chk.value);
+    const codigosSeleccionados = Array.from(codigosSeleccionadosViaticos);
 
     const registrosSeleccionados = ultimosRegistros.filter((r) =>
       codigosSeleccionados.includes(r.codigo)
@@ -1540,6 +1658,8 @@ async function generarViaticos() {
     document.querySelectorAll(".chk-viaticos:checked").forEach((chk) => {
       chk.checked = false;
     });
+
+    codigosSeleccionadosViaticos.clear();
   } catch (error) {
     console.error("ERROR GENERANDO VIÁTICOS:", error);
     cerrarModal("modalCargandoViaticos");

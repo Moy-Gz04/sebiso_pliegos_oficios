@@ -1,4 +1,224 @@
 /* =========================
+   BARRA DE BÚSQUEDA Y FILTROS
+========================= */
+
+.barra-busqueda{
+
+    width:90%;
+
+    margin:0 auto 26px auto;
+
+    background:#ffffff;
+
+    border-radius:999px;
+
+    padding:10px 14px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    flex-wrap:wrap;
+
+    box-shadow:0 6px 20px rgba(0,0,0,.06);
+
+    border:1px solid #ECECEC;
+}
+
+.campo-busqueda{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    height:42px;
+
+    background:#F8FAFC;
+
+    border:1px solid #E5E7EB;
+
+    border-radius:999px;
+
+    padding:0 16px;
+}
+
+.campo-busqueda-texto{
+
+    flex:1;
+
+    min-width:220px;
+}
+
+.campo-busqueda-texto input{
+
+    flex:1;
+
+    border:none;
+
+    background:transparent;
+
+    outline:none;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#111827;
+}
+
+.campo-busqueda-fecha{
+
+    gap:10px;
+}
+
+.label-fecha{
+
+    font-size:11px;
+
+    font-weight:800;
+
+    color:#691C32;
+
+    text-transform:uppercase;
+
+    letter-spacing:.4px;
+
+    white-space:nowrap;
+}
+
+.campo-busqueda-fecha input[type="date"]{
+
+    border:none;
+
+    background:transparent;
+
+    outline:none;
+
+    font-size:12px;
+
+    font-weight:600;
+
+    color:#111827;
+
+    cursor:pointer;
+}
+
+.btn-limpiar-filtros{
+
+    width:42px;
+
+    height:42px;
+
+    min-width:42px;
+
+    border:none;
+
+    border-radius:50%;
+
+    background:#F1F5F9;
+
+    color:#691C32;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    cursor:pointer;
+
+    transition:.2s;
+}
+
+.btn-limpiar-filtros:hover{
+
+    background:#691C32;
+
+    color:white;
+
+    transform:rotate(90deg);
+}
+
+.separador-barra{
+
+    width:1px;
+
+    height:30px;
+
+    background:#E5E7EB;
+
+    margin:0 2px;
+}
+
+.btn-generar-viaticos{
+
+    height:42px;
+
+    padding:0 24px;
+
+    border:none;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        135deg,
+        #691C32 0%,
+        #8B2E4B 100%
+    );
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:800;
+
+    cursor:pointer;
+
+    white-space:nowrap;
+
+    box-shadow:0 6px 16px rgba(105,28,50,.22);
+
+    transition:.2s;
+
+    margin-left:auto;
+}
+
+.btn-generar-viaticos:hover{
+
+    transform:translateY(-2px);
+}
+
+@media(max-width:900px){
+
+    .barra-busqueda{
+
+        width:96%;
+
+        border-radius:24px;
+
+        flex-direction:column;
+
+        align-items:stretch;
+    }
+
+    .separador-barra{
+
+        display:none;
+    }
+
+    .btn-generar-viaticos{
+
+        margin-left:0;
+
+        width:100%;
+    }
+}
+
+/* =========================
    INPUT IMPORTE VIÁTICOS
 ========================= */
 
