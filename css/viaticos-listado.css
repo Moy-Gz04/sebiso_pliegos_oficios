@@ -1,0 +1,68 @@
+/* =========================
+   LISTA DE PERSONAS (CHIPS)
+========================= */
+
+.lista-personas{
+
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:6px;
+}
+
+.chip-persona{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    padding:5px 12px;
+
+    border-radius:999px;
+
+    background:#F8FAFC;
+
+    border:1px solid #E5E7EB;
+
+    color:#374151;
+
+    font-size:11px;
+
+    font-weight:700;
+
+    white-space:nowrap;
+}
+
+/* =========================
+   BADGE TOTAL PERSONAS
+========================= */
+
+.badge-total{
+
+    display:inline-flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    min-width:32px;
+
+    height:32px;
+
+    padding:0 10px;
+
+    border-radius:999px;
+
+    background:linear-gradient(
+        135deg,
+        #BC955C,
+        #D6B98A
+    );
+
+    color:#111827;
+
+    font-size:12px;
+
+    font-weight:800;
+}
