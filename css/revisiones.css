@@ -28,7 +28,7 @@ body{
 
     border-collapse:separate !important;
 
-    border-spacing:0 34px !important;
+    border-spacing:0 22px !important;
 
     background:transparent !important;
 
@@ -81,16 +81,58 @@ body{
 
     background:#ffffff !important;
 
-    border-radius:24px;
+    border-radius:22px;
 
-    padding:24px;
+    padding:26px 28px;
 
     box-sizing:border-box;
 
-    box-shadow:
-        0 3px 10px rgba(0,0,0,.05);
+    position:relative;
 
+    overflow:hidden;
+
+    border:1px solid #F0EEE7;
+
+    box-shadow:
+        0 4px 14px rgba(17,24,39,.05);
+
+    transition:
+        box-shadow .25s ease,
+        transform .25s ease;
 }
+
+.card-registro:hover{
+
+    box-shadow:
+        0 14px 34px rgba(17,24,39,.09);
+
+    transform:translateY(-2px);
+}
+
+/* --- Acento lateral según estatus --- */
+
+.card-registro::before{
+
+    content:"";
+
+    position:absolute;
+
+    top:0;
+
+    left:0;
+
+    width:6px;
+
+    height:100%;
+
+    background:#f39c12;
+}
+
+.card-estatus-creado::before{      background:#f39c12; }
+.card-estatus-enviado::before{     background:#1976d2; }
+.card-estatus-pagado::before,
+.card-estatus-aceptado::before{    background:#2e7d32; }
+.card-estatus-rechazado::before{   background:#c62828; }
 
 /* =========================
    FILA SUPERIOR
@@ -107,7 +149,11 @@ body{
 
     align-items:start;
 
-    margin-bottom:24px;
+    margin-bottom:22px;
+
+    padding-bottom:22px;
+
+    border-bottom:1px dashed #ECE7DC;
 
 }
 
@@ -124,9 +170,13 @@ body{
 
     gap:18px;
 
-    margin-bottom:24px;
+    margin-bottom:22px;
+
+    padding-bottom:22px;
 
     align-items:start;
+
+    border-bottom:1px dashed #ECE7DC;
 
 }
 
@@ -380,40 +430,34 @@ body{
 
     border:1.5px solid !important;
 
-    background:white !important;
+    font-weight:800 !important;
+
+    letter-spacing:.3px;
 
 }
 
 .badge-creado{
-
     border-color:#f39c12 !important;
-
-    color:#f39c12 !important;
-
+    color:#b7690a !important;
+    background:#FEF6E7 !important;
 }
 
 .badge-enviado{
-
     border-color:#1976d2 !important;
-
-    color:#1976d2 !important;
-
+    color:#125a9c !important;
+    background:#EAF3FC !important;
 }
 
 .badge-aceptado{
-
     border-color:#2e7d32 !important;
-
-    color:#2e7d32 !important;
-
+    color:#1f5a24 !important;
+    background:#EAF6EB !important;
 }
 
 .badge-rechazado{
-
     border-color:#c62828 !important;
-
-    color:#c62828 !important;
-
+    color:#9c1f1f !important;
+    background:#FBEAEA !important;
 }
 
 /* =========================

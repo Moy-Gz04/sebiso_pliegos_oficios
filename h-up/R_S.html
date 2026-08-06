@@ -56,17 +56,57 @@
         </div>
     <!-- ====== END BARRA SUPERIOR (ENCABEZADO)================= -->
         <br><br>
-    <!-- ======== BARRA DE ACCIONES VIÁTICOS ==================== -->
-        <div style="display:flex; justify-content:flex-end; margin-bottom:10px;">
+    <!-- ======== BARRA DE BÚSQUEDA Y ACCIONES ==================== -->
+        <div class="barra-busqueda">
+
+            <div class="campo-busqueda campo-busqueda-texto">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="#691C32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input
+                    type="text"
+                    id="buscadorTexto"
+                    placeholder="Buscar por ID o Persona..."
+                >
+            </div>
+
+            <div class="campo-busqueda campo-busqueda-fecha">
+                <span class="label-fecha">Del</span>
+                <input type="date" id="filtroFechaDesde">
+            </div>
+
+            <div class="campo-busqueda campo-busqueda-fecha">
+                <span class="label-fecha">Al</span>
+                <input type="date" id="filtroFechaHasta">
+            </div>
+
+            <button
+                type="button"
+                id="btnLimpiarFiltros"
+                class="btn-limpiar-filtros"
+                title="Limpiar filtros"
+            >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"/>
+                    <line x1="6" y1="6" x2="18" y2="18"/>
+                </svg>
+            </button>
+
+            <div class="separador-barra"></div>
+
             <button
                 type="button"
                 id="btnGenerarViaticos"
-                class="btn-enviar"
+                class="btn-generar-viaticos"
             >
                 Generar Viáticos de seleccionados
             </button>
+
         </div>
-    <!-- ======== END BARRA DE ACCIONES VIÁTICOS ================ -->
+    <!-- ======== END BARRA DE BÚSQUEDA Y ACCIONES ================ -->
     <!-- ======== TABLA RESULTADOS ============================= -->
         <table id="tablaResultados">
             <tbody id="tbodyResultados">
