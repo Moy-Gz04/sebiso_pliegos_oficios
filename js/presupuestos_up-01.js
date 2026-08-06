@@ -366,8 +366,8 @@ async function cargarHistorial() {
         data.forEach((registro) => {
 
             // Transformar nombres de archivos: espacios → "/"
-            const nombreAutorizacion = transformarNombreArchivo(registro.oficio_autorizacion);
-            const nombreAdecuacion   = transformarNombreArchivo(registro.oficio_adecuacion);
+            const nombreAutorizacion = transformarNombreArchivo(registro.oficio_autorizacion_nombre);
+            const nombreAdecuacion   = transformarNombreArchivo(registro.oficio_adecuacion_nombre);
 
             tbodyIngresos.innerHTML += `
                 <tr>
@@ -383,12 +383,12 @@ async function cargarHistorial() {
                         .toLocaleString("es-MX", { minimumFractionDigits: 2 })}</td>
 
                     <td>
-                        ${registro.oficio_autorizacion
+                        ${registro.oficio_autorizacion_nombre
                             ? `<a
-                                href="${API}/uploads/oficios/${registro.oficio_autorizacion}"
+                                href="${API}/api/presupuestos/archivo/${registro.id}/autorizacion"
                                 target="_blank"
                                 class="btn-pdf"
-                                title="${registro.oficio_autorizacion}"
+                                title="${registro.oficio_autorizacion_nombre}"
                                >
                                    ${nombreAutorizacion}
                                </a>`
@@ -397,12 +397,12 @@ async function cargarHistorial() {
                     </td>
 
                     <td>
-                        ${registro.oficio_adecuacion
+                        ${registro.oficio_adecuacion_nombre
                             ? `<a
-                                href="${API}/uploads/oficios/${registro.oficio_adecuacion}"
+                                href="${API}/api/presupuestos/archivo/${registro.id}/adecuacion"
                                 target="_blank"
                                 class="btn-pdf"
-                                title="${registro.oficio_adecuacion}"
+                                title="${registro.oficio_adecuacion_nombre}"
                                >
                                    ${nombreAdecuacion}
                                </a>`
