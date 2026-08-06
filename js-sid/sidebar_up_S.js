@@ -23,6 +23,11 @@ const PAGINAS = [
         nombre:"Presupuesto",
         ruta:"../vistas-p/vista_upS.html"
     },
+
+    {
+        nombre:"Viáticos",
+        ruta:"../vistas-v/viaticos_upS.html"
+    },
 ];
 
 /* =========================
