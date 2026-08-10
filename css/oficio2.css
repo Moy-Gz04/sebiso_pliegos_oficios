@@ -509,7 +509,8 @@
    10. READONLY
    ============================================================ */
 
-#modalOficio2 input[readonly]{
+#modalOficio2 input[readonly],
+#modalOficio2 select[disabled]{
 
     background:
         linear-gradient(
@@ -527,6 +528,8 @@
     font-weight:700 !important;
 
     cursor:not-allowed !important;
+
+    opacity:1 !important;
 
     opacity:1 !important;
 
@@ -745,7 +748,8 @@
     border-color:#cbd5e1;
 }
 
-#modalOficio2 input[readonly]:hover{
+#modalOficio2 input[readonly]:hover,
+#modalOficio2 select[disabled]:hover{
 
     border-color:#7a1438 !important;
 }
