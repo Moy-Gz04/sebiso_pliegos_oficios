@@ -488,7 +488,7 @@ router.put("/spg/:codigo", async (req, res) => {
 router.put("/recibo/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-    const { recibo_pdf } = req.body;
+    const { recibo_pdf, folio } = req.body;
 
     if (!recibo_pdf) {
       return res.status(400).json({ ok: false, error: "URL recibo requerida" });
@@ -504,8 +504,8 @@ router.put("/recibo/:codigo", async (req, res) => {
     }
 
     await pool.query(
-      `UPDATE registros SET recibo_pdf = $1 WHERE codigo = $2`,
-      [recibo_pdf, codigo]
+      `UPDATE registros SET recibo_pdf = $1, folio = $2 WHERE codigo = $3`,
+      [recibo_pdf, folio || null, codigo]
     );
 
     res.json({ ok: true, msg: "Recibo guardado" });
