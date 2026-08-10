@@ -191,7 +191,12 @@ async function abrirModalFactura(codigo) {
         document.getElementById("facturaTotalLetra").value     = numeroALetras(total);
 
         /* ── Proyecto ───────────────────────────────────────── */
+        /* NOTA: "Proyecto" se bloquea porque ya se capturó en el
+           paso de SPG (solo se reutiliza aquí). "Nombre Proyecto"
+           se deja editable porque se captura aquí por primera vez. */
         document.getElementById("facturaProyecto").value       = registro.proyecto       || "AI005";
+        document.getElementById("facturaProyecto").disabled    = true;
+
         document.getElementById("facturaNombreProyecto").value = registro.nombre_proyecto || "Atención Integral 005";
 
         /* ── Oficios (ya transformados con espacios → "/") ───── */
