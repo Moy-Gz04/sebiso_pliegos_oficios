@@ -12,15 +12,17 @@
 
     border-radius:999px;
 
-    padding:10px 14px;
+    padding:8px 10px;
 
     display:flex;
 
     align-items:center;
 
-    gap:10px;
+    gap:8px;
 
     flex-wrap:nowrap;
+
+    overflow-x:auto;
 
     box-shadow:0 6px 20px rgba(0,0,0,.06);
 
@@ -35,7 +37,7 @@
 
     gap:8px;
 
-    height:42px;
+    height:40px;
 
     background:#F8FAFC;
 
@@ -43,16 +45,20 @@
 
     border-radius:999px;
 
-    padding:0 16px;
+    padding:0 14px;
+
+    box-sizing:border-box;
 
     flex-shrink:0;
 }
 
+/* El buscador es el único que crece y se puede encoger,
+   pero nunca menos de 120px. */
 .campo-busqueda-texto{
 
-    flex:1 1 auto;
+    flex:1 1 120px;
 
-    min-width:0;
+    min-width:120px;
 }
 
 .campo-busqueda-texto input{
@@ -72,9 +78,10 @@
     color:#111827;
 }
 
+/* Fechas: tamaño fijo, compacto, nunca cambian */
 .campo-busqueda-fecha{
 
-    gap:8px;
+    flex:0 0 auto;
 
     padding:0 12px;
 }
@@ -96,7 +103,7 @@
 
 .campo-busqueda-fecha input[type="date"]{
 
-    width:118px;
+    width:100px;
 
     border:none;
 
@@ -113,11 +120,19 @@
     cursor:pointer;
 }
 
+/* Botón: SIEMPRE tamaño fijo compacto, nunca crece,
+   nunca ocupa la línea completa. */
 .btn-generar-viaticos{
 
-    height:42px;
+    flex:0 0 auto;
 
-    padding:0 22px;
+    width:auto;
+
+    margin:0;
+
+    height:40px;
+
+    padding:0 18px;
 
     border:none;
 
@@ -131,15 +146,13 @@
 
     color:white;
 
-    font-size:12px;
+    font-size:11.5px;
 
     font-weight:800;
 
     cursor:pointer;
 
     white-space:nowrap;
-
-    flex-shrink:0;
 
     box-shadow:0 6px 16px rgba(105,28,50,.22);
 
@@ -149,41 +162,6 @@
 .btn-generar-viaticos:hover{
 
     transform:translateY(-2px);
-}
-
-@media(max-width:1000px){
-
-    .barra-busqueda{
-
-        width:96%;
-
-        border-radius:24px;
-
-        flex-wrap:wrap;
-    }
-
-    .campo-busqueda-texto{
-
-        flex-basis:100%;
-    }
-
-    .btn-generar-viaticos{
-
-        flex:1;
-    }
-}
-
-@media(max-width:520px){
-
-    .campo-busqueda-fecha{
-
-        flex:1;
-    }
-
-    .campo-busqueda-fecha input[type="date"]{
-
-        width:100%;
-    }
 }
 
 /* =========================

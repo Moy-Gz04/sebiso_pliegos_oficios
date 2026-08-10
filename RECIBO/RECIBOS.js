@@ -161,7 +161,10 @@ async function abrirModalFactura(codigo) {
         }
 
         /* ── Rellenar campos del modal ──────────────────────── */
-        document.getElementById("facturaNoRecibo").value       = "";
+        /* NOTA: facturaNoRecibo se prellena con el folio ya
+           capturado en el paso de LGA (registro.folio). El
+           usuario puede editarlo si lo necesita. */
+        document.getElementById("facturaNoRecibo").value       = registro.folio || "";
         document.getElementById("facturaPersona").value        = registro.persona || "";
 
         /* ── RFC y Cargo según la persona ───────────────────── */
@@ -298,10 +301,17 @@ async function generarFactura() {
         }
 
         /* ── Guardar URL del PDF en la base de datos ─────────── */
+        /* NOTA: también se envían proyecto y nombre_proyecto para
+           que el paso de Anexo C los reutilice automáticamente
+           (el backend ya los acepta en esta ruta). */
         const guardar = await fetch(`${API}/api/registros/factura/${codigoFactura}`, {
             method:  "PUT",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ factura_pdf: data.url })
+            body:    JSON.stringify({
+                factura_pdf:     data.url,
+                proyecto:        obtenerValorCampoFactura("facturaProyecto"),
+                nombre_proyecto: obtenerValorCampoFactura("facturaNombreProyecto")
+            })
         });
 
         if (!guardar.ok) throw new Error("Error guardando factura");

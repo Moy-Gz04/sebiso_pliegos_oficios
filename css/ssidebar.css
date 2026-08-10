@@ -96,7 +96,7 @@
 
     border-radius:999px;
 
-    padding:14px 18px;
+    padding:13px 18px;
 
     font-size:13px;
 
@@ -112,6 +112,45 @@
 
     box-shadow:
     0 4px 10px rgba(0,0,0,.10);
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+}
+
+.menu-btn-icono{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    flex-shrink:0;
+
+    width:24px;
+
+    height:24px;
+
+    color:#D6B98A;
+
+    transition:.2s;
+}
+
+.menu-btn.activo .menu-btn-icono{
+
+    color:#3E0918;
+}
+
+.menu-btn-texto{
+
+    white-space:nowrap;
+
+    overflow:hidden;
+
+    text-overflow:ellipsis;
 }
 
 .menu-btn:hover{
@@ -281,13 +320,23 @@
 
     .menu-btn{
 
-        font-size:9px;
+        padding:14px 0;
 
-        padding:12px 6px;
-
-        text-align:center;
+        justify-content:center;
 
         border-radius:18px;
+    }
+
+    .menu-btn-icono{
+
+        width:20px;
+
+        height:20px;
+    }
+
+    .menu-btn-texto{
+
+        display:none;
     }
 
     .logout-btn{
