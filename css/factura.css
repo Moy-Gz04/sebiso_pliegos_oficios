@@ -269,7 +269,8 @@
    ============================================================ */
 
 #modalFactura .campo-spg input[readonly],
-#modalFactura .campo-spg textarea[readonly]{
+#modalFactura .campo-spg textarea[readonly],
+#modalFactura .campo-spg select[disabled]{
 
     background:
         linear-gradient(
@@ -695,7 +696,8 @@
 }
 
 #modalFactura input[readonly]:hover,
-#modalFactura textarea[readonly]:hover{
+#modalFactura textarea[readonly]:hover,
+#modalFactura select[disabled]:hover{
 
     border-color:#7a1438 !important;
 }
