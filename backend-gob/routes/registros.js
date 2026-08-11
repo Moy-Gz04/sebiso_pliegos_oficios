@@ -574,16 +574,18 @@ router.put("/factura/:codigo", async (req, res) => {
 router.put("/oficio2/:codigo", async (req, res) => {
   try {
     const codigo = req.params.codigo.trim();
-    const { oficio2_pdf } = req.body;
+    const { oficio2_pdf, numero_oficio } = req.body;
 
     const result = await pool.query(
       `
       UPDATE registros
-      SET oficio2_pdf = $1
-      WHERE codigo = $2
+      SET
+          oficio2_pdf   = $1,
+          numero_oficio = COALESCE($2, numero_oficio)
+      WHERE codigo = $3
       RETURNING *
       `,
-      [oficio2_pdf, codigo]
+      [oficio2_pdf, numero_oficio || null, codigo]
     );
 
     if (result.rows.length === 0) {
@@ -593,6 +595,41 @@ router.put("/oficio2/:codigo", async (req, res) => {
     res.json({ ok: true, registro: result.rows[0] });
   } catch (error) {
     console.error("ERROR OFICIO2 PDF:", error);
+    res.status(500).json({ ok: false, error: error.message });
+  }
+});
+
+/* =========================
+   TABLA DE DATOS
+   Paso 5 del trámite, después de Anexo C.
+========================= */
+
+router.put("/tabla-datos/:codigo", async (req, res) => {
+  try {
+    const codigo = req.params.codigo.trim();
+    const { tabla_datos_pdf } = req.body;
+
+    if (!tabla_datos_pdf) {
+      return res.status(400).json({ ok: false, error: "URL de Tabla de Datos requerida" });
+    }
+
+    const result = await pool.query(
+      `
+      UPDATE registros
+      SET tabla_datos_pdf = $1
+      WHERE codigo = $2
+      RETURNING *
+      `,
+      [tabla_datos_pdf, codigo]
+    );
+
+    if (result.rows.length === 0) {
+      return res.status(404).json({ ok: false, error: "Registro no encontrado" });
+    }
+
+    res.json({ ok: true, registro: result.rows[0] });
+  } catch (error) {
+    console.error("ERROR TABLA DE DATOS PDF:", error);
     res.status(500).json({ ok: false, error: error.message });
   }
 });
