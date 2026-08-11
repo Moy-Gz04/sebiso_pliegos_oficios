@@ -20,6 +20,28 @@ let codigoRecibo   = null;
 let codigoFactura  = null;
 let codigoOficio2  = null;
 
+/* =========================
+   VIÁTICOS — CONFIGURACIÓN
+========================= */
+
+/** Guarda el último arreglo de registros cargado, para poder
+ *  leer sus datos completos cuando se generan los viáticos
+ *  sin tener que volver a pedirlos al servidor. */
+let ultimosRegistros = [];
+
+/** Códigos de registros marcados para Viáticos. Se mantiene
+ *  aparte de las casillas del DOM para que la selección no se
+ *  pierda al filtrar o al refrescar automáticamente. */
+let codigosSeleccionadosViaticos = new Set();
+
+/** Valor fijo de adscripción para esta área */
+const ADSCRIPCION_AREA = "UP-01 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL";
+
+/** URL de la Aplicación Web (Apps Script) que llena la hoja
+ *  y genera el PDF de viáticos */
+const API_VIATICOS =
+"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";
+
 /* ============================================================
    2. UTILIDADES GENERALES
    ============================================================ */
@@ -88,6 +110,7 @@ function formatearMoneda(valor) {
     const esSolo = parseInt(inicio) === parseInt(fin);
     return esSolo ? `al día ${texto}` : `a los días ${texto}`;
   }
+
 /* ============================================================
    2B. CONVERSIÓN DE NÚMERO A LETRAS
    ============================================================ */
@@ -190,7 +213,9 @@ function numeroALetras(valor) {
   if (decimales > 0) {
     texto += " CON " + convertirGrupo(decimales) + " CENTAVOS";
   }
+
   return texto.trim().toLowerCase();
+  
 }
 
 /* ============================================================
@@ -300,7 +325,6 @@ const CAMPOS_REQUERIDOS = {
   ],
 
 };
-
 /**
  * Valida que todos los campos requeridos de un formulario estén completos.
  * Marca en rojo los campos vacíos y muestra una alerta personalizada.
@@ -973,29 +997,9 @@ async function cargarRegistros() {
     if (!response.ok) throw new Error("Error obteniendo registros");
 
     const registros = await response.json();
-    tbody.innerHTML = "";
+    ultimosRegistros = registros;
 
-    if (registros.length === 0) {
-      tbody.innerHTML = `
-        <tr>
-          <td colspan="12" style="text-align:center; padding:20px;">
-            No hay registros
-          </td>
-        </tr>`;
-      return;
-    }
-
-    // Orden de visualización: CREADO → RECHAZADO → ENVIADO → PAGADO/ACEPTADO
-    const orden = { CREADO: 1, RECHAZADO: 2, ENVIADO: 3, PAGADO: 4, ACEPTADO: 4 };
-    registros.sort(
-      (a, b) =>
-        (orden[normalizarEstatus(a.estatus)] || 99) -
-        (orden[normalizarEstatus(b.estatus)] || 99)
-    );
-
-    for (const registro of registros) {
-      tbody.innerHTML += construirTarjeta(registro);
-    }
+    renderizarRegistrosFiltrados();
   } catch (error) {
     console.error("ERROR CARGANDO REGISTROS:", error);
     tbody.innerHTML = `
@@ -1005,6 +1009,118 @@ async function cargarRegistros() {
         </td>
       </tr>`;
   }
+}
+
+/**
+ * Aplica los filtros activos (texto + rango de fechas) sobre
+ * ultimosRegistros y pinta el resultado en la tabla.
+ * Se llama tanto al cargar como cada vez que el usuario cambia
+ * un filtro, sin volver a pedir nada al servidor.
+ */
+function renderizarRegistrosFiltrados() {
+  const registrosFiltrados = filtrarRegistros(ultimosRegistros);
+
+  tbody.innerHTML = "";
+
+  if (ultimosRegistros.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="12" style="text-align:center; padding:20px;">
+          No hay registros
+        </td>
+      </tr>`;
+    return;
+  }
+
+  if (registrosFiltrados.length === 0) {
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="12" style="text-align:center; padding:20px;">
+          Ningún registro coincide con la búsqueda.
+        </td>
+      </tr>`;
+    return;
+  }
+
+  // Orden de visualización: CREADO → RECHAZADO → ENVIADO → PAGADO/ACEPTADO
+  const orden = { CREADO: 1, RECHAZADO: 2, ENVIADO: 3, PAGADO: 4, ACEPTADO: 4 };
+  registrosFiltrados.sort(
+    (a, b) =>
+      (orden[normalizarEstatus(a.estatus)] || 99) -
+      (orden[normalizarEstatus(b.estatus)] || 99)
+  );
+
+  for (const registro of registrosFiltrados) {
+    tbody.innerHTML += construirTarjeta(registro);
+  }
+}
+
+/**
+ * Filtra un arreglo de registros según el texto de búsqueda
+ * (por ID o Persona) y el rango de fechas seleccionado.
+ * @param {Array} registros
+ * @returns {Array}
+ */
+function filtrarRegistros(registros) {
+  const texto = (document.getElementById("buscadorTexto")?.value || "")
+    .trim()
+    .toLowerCase();
+
+  const desde = document.getElementById("filtroFechaDesde")?.value || "";
+  const hasta = document.getElementById("filtroFechaHasta")?.value || "";
+
+  return registros.filter((registro) => {
+    // --- Filtro de texto: ID o Persona ---
+    if (texto) {
+      const coincideId = (registro.codigo || "").toLowerCase().includes(texto);
+      const coincidePersona = (registro.persona || "").toLowerCase().includes(texto);
+
+      if (!coincideId && !coincidePersona) return false;
+    }
+
+    // --- Filtro de rango de fechas ---
+    if (desde || hasta) {
+      if (!registro.fecha) return false;
+
+      // Se compara solo la parte de fecha (YYYY-MM-DD), sin hora
+      const fechaRegistro = new Date(registro.fecha);
+      const fechaSolo = new Date(
+        fechaRegistro.getFullYear(),
+        fechaRegistro.getMonth(),
+        fechaRegistro.getDate()
+      );
+
+      if (desde) {
+        const [y, m, d] = desde.split("-").map(Number);
+        const fechaDesde = new Date(y, m - 1, d);
+        if (fechaSolo < fechaDesde) return false;
+      }
+
+      if (hasta) {
+        const [y, m, d] = hasta.split("-").map(Number);
+        const fechaHasta = new Date(y, m - 1, d);
+        if (fechaSolo > fechaHasta) return false;
+      }
+    }
+
+    return true;
+  });
+}
+
+/**
+ * Limpia todos los filtros de búsqueda y vuelve a mostrar
+ * todos los registros.
+ */
+function limpiarFiltrosRegistros() {
+  const texto = document.getElementById("buscadorTexto");
+  const desde = document.getElementById("filtroFechaDesde");
+  const hasta = document.getElementById("filtroFechaHasta");
+
+  if (texto) texto.value = "";
+  if (desde) desde.value = "";
+  if (hasta) hasta.value = "";
+
+  renderizarRegistrosFiltrados();
 }
 
 /**
@@ -1049,7 +1165,7 @@ function construirTarjeta(registro) {
   return `
     <tr>
       <td colspan="12">
-        <div class="card-registro">
+        <div class="card-registro card-estatus-${(estatus || "creado").toLowerCase()}">
 
           <!-- FILA SUPERIOR: identificación y estatus -->
           <div class="fila-superior">
@@ -1072,6 +1188,39 @@ function construirTarjeta(registro) {
             <div class="info-item">
               <span class="info-label">Eliminar</span>
               ${btnEliminar}
+            </div>
+            <div class="info-item">
+              <span class="info-label">Importe Viáticos</span>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                class="input-importe-viaticos"
+                id="importe-${codigo}"
+                value="${registro.importe_viaticos ?? ''}"
+                placeholder="$ 0.00"
+                onchange="guardarImporteViaticos('${codigo}', this.value)"
+                ${bloqueado ? "readonly" : ""}
+              >
+            </div>
+            <div class="info-item">
+              <span class="info-label">Viáticos</span>
+              <input
+                type="checkbox"
+                class="chk-viaticos"
+                value="${codigo}"
+                ${codigosSeleccionadosViaticos.has(codigo) ? "checked" : ""}
+                onclick="
+                  if(!validarImporteAntesDeMarcar(this, '${codigo}')){
+                    this.checked = false;
+                  }
+                  if(this.checked){
+                    codigosSeleccionadosViaticos.add('${codigo}');
+                  } else {
+                    codigosSeleccionadosViaticos.delete('${codigo}');
+                  }
+                "
+              >
             </div>
           </div>
 
@@ -1199,6 +1348,64 @@ async function guardarObservaciones(codigo, observaciones) {
   }
 }
 
+/**
+ * Valida que exista un importe de viáticos (> 0) antes de
+ * permitir marcar el checkbox de selección de una tarjeta.
+ * Se ejecuta DESPUÉS de que el navegador ya cambió el estado
+ * del checkbox, por lo que si no es válido lo revertimos
+ * desde el onclick (this.checked = false).
+ * @param {HTMLInputElement} checkbox
+ * @param {string} codigo
+ * @returns {boolean}
+ */
+function validarImporteAntesDeMarcar(checkbox, codigo) {
+  // Si se está desmarcando, no hay nada que validar
+  if (!checkbox.checked) return true;
+
+  const input = document.getElementById(`importe-${codigo}`);
+  const valor = parseFloat(input?.value);
+
+  if (isNaN(valor) || valor <= 0) {
+    mostrarAlerta(
+      "Importe requerido",
+      "Debes capturar el Importe Total del Viático (mayor a $0.00) antes de poder seleccionar este registro."
+    );
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Guarda en el backend el importe de viáticos capturado
+ * junto al checkbox, para que persista aunque se recargue
+ * la página o se cierre sesión.
+ * @param {string} codigo
+ * @param {string|number} importe
+ */
+async function guardarImporteViaticos(codigo, importe) {
+  try {
+    const response = await fetch(`${API}/api/registros/importe-viaticos/${codigo}`, {
+      method:  "PUT",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ importe_viaticos: importe || null }),
+    });
+    const data = await response.json();
+    if (!response.ok) throw new Error(data.error || "Error guardando importe");
+
+    // Si se editó el importe y el checkbox ya estaba marcado,
+    // lo desmarcamos para forzar a revisar la selección de nuevo.
+    const checkbox = document.querySelector(`.chk-viaticos[value="${codigo}"]`);
+    if (checkbox && checkbox.checked && (!importe || parseFloat(importe) <= 0)) {
+      checkbox.checked = false;
+      codigosSeleccionadosViaticos.delete(codigo);
+    }
+  } catch (error) {
+    console.error("ERROR GUARDANDO IMPORTE VIÁTICOS:", error);
+    mostrarAlerta("❌ Error al guardar", error.message);
+  }
+}
+
 /* ============================================================
    13. INICIALIZACIÓN (DOMContentLoaded)
    ============================================================ */
@@ -1288,7 +1495,173 @@ document.addEventListener("DOMContentLoaded", () => {
     if (e.target.id === "modalAlerta") cerrarAlerta();
   });
 
+  /* ── 13.10  Botón "Generar Viáticos de seleccionados" ────── */
+  document.getElementById("btnGenerarViaticos")?.addEventListener("click", () => {
+    const total = codigosSeleccionadosViaticos.size;
+
+    if (total === 0) {
+      mostrarAlerta("Selecciona al menos un registro", "Marca la casilla de Viáticos en al menos una tarjeta.");
+      return;
+    }
+
+    document.getElementById("textoConfirmarViaticos").innerText =
+      `Se generará un PDF de viáticos con ${total} persona(s) seleccionada(s).`;
+
+    abrirModal("modalConfirmarViaticos");
+  });
+
+  /* ── 13.11  Confirmar generación de viáticos ─────────────── */
+  document.getElementById("confirmarViaticos")?.addEventListener("click", async () => {
+    cerrarModal("modalConfirmarViaticos");
+    abrirModal("modalCargandoViaticos");
+    await generarViaticos();
+  });
+
+  /* ── 13.12  Filtros de búsqueda (texto + rango de fechas) ── */
+  document.getElementById("buscadorTexto")
+    ?.addEventListener("input", renderizarRegistrosFiltrados);
+
+  document.getElementById("filtroFechaDesde")
+    ?.addEventListener("change", renderizarRegistrosFiltrados);
+
+  document.getElementById("filtroFechaHasta")
+    ?.addEventListener("change", renderizarRegistrosFiltrados);
+
   /* ── 13.9  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
   setInterval(cargarRegistros, 30_000);
 });
+
+/* ============================================================
+   14. VIÁTICOS — GENERACIÓN DE PDF EN LOTE
+   ============================================================ */
+
+/**
+ * Arma el texto legal de viáticos para una persona/registro.
+ * @param {Object} registro
+ * @returns {string}
+ */
+function construirDescripcionViaticos(registro) {
+  const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
+
+  return (
+    `VIÁTICOS EN EL PAÍS DERIVADOS DE LA COMISIÓN DE ${registro.persona || ""} ` +
+    `CON LA FINALIDAD DE ${registro.motivo_comision || ""} ` +
+    `LOS DÍAS ${diasTexto} DE ${registro.mes || ""} DEL ${registro.anio || ""} ` +
+    `EN EL MUNICIPIO DE ${registro.municipio || ""}.`
+  );
+}
+
+/**
+ * Busca el RFC de una persona en el catálogo local (cat-upS.js)
+ * comparando por nombre exacto.
+ * @param {string} nombre
+ * @returns {string}
+ */
+function buscarRFC(nombre) {
+  const encontrada = personas.find((p) => p.nombre === nombre);
+  return encontrada ? encontrada.rfc : "";
+}
+
+/**
+ * Toma los registros marcados con el checkbox de Viáticos,
+ * arma el detalle de cada fila, lo envía al Apps Script para
+ * generar el PDF, y guarda el resultado en el backend.
+ */
+async function generarViaticos() {
+  const btn = document.getElementById("btnGenerarViaticos");
+
+  try {
+    if (btn) btn.disabled = true;
+
+    /* --- 1. Reunir códigos seleccionados --- */
+    const codigosSeleccionados = Array.from(codigosSeleccionadosViaticos);
+
+    const registrosSeleccionados = ultimosRegistros.filter((r) =>
+      codigosSeleccionados.includes(r.codigo)
+    );
+
+    if (registrosSeleccionados.length === 0) {
+      throw new Error("No se encontraron los registros seleccionados.");
+    }
+
+    /* --- Validación defensiva: todos deben tener importe > 0 --- */
+    const sinImporte = registrosSeleccionados.filter(
+      (r) => !r.importe_viaticos || parseFloat(r.importe_viaticos) <= 0
+    );
+
+    if (sinImporte.length > 0) {
+      throw new Error(
+        "Falta capturar el Importe de Viáticos en: " +
+        sinImporte.map((r) => r.persona).join(", ")
+      );
+    }
+
+    /* --- 2. Armar detalle (una fila por persona) --- */
+    const detalle = registrosSeleccionados.map((registro) => ({
+      id: registro.codigo,
+      persona: registro.persona,
+      adscripcion: ADSCRIPCION_AREA,
+      rfc: buscarRFC(registro.persona),
+      folio: "000000",
+      importe: formatearMoneda(registro.importe_viaticos || 0),
+      descripcion: construirDescripcionViaticos(registro),
+    }));
+
+    /* --- 3. Enviar al Apps Script --- */
+    const respuestaScript = await fetch(API_VIATICOS, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify({
+        fileName: `VIATICOS_UP-01-CA_${Date.now()}`,
+        filas: detalle,
+      }),
+    });
+
+    const textoRespuesta = await respuestaScript.text();
+
+    let dataScript;
+    try {
+      dataScript = JSON.parse(textoRespuesta);
+    } catch (error) {
+      throw new Error("El Apps Script no devolvió una respuesta válida.");
+    }
+
+    if (!dataScript.ok || !dataScript.url) {
+      throw new Error(dataScript.error || "No se pudo generar el PDF de viáticos.");
+    }
+
+    /* --- 4. Guardar en el backend --- */
+    const respuestaGuardar = await fetch(`${API}/api/viaticos-generados`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        area: "UP-CA",
+        pdf_url: dataScript.url,
+        detalle,
+      }),
+    });
+
+    const dataGuardar = await respuestaGuardar.json();
+
+    if (!respuestaGuardar.ok || !dataGuardar.ok) {
+      throw new Error(dataGuardar.msg || "Error guardando el registro de viáticos.");
+    }
+
+    /* --- 5. UI de éxito --- */
+    cerrarModal("modalCargandoViaticos");
+    abrirModal("modalExitoViaticos");
+
+    document.querySelectorAll(".chk-viaticos:checked").forEach((chk) => {
+      chk.checked = false;
+    });
+
+    codigosSeleccionadosViaticos.clear();
+  } catch (error) {
+    console.error("ERROR GENERANDO VIÁTICOS:", error);
+    cerrarModal("modalCargandoViaticos");
+    mostrarAlerta("❌ Error al generar viáticos", error.message);
+  } finally {
+    if (btn) btn.disabled = false;
+  }
+}

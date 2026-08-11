@@ -16,7 +16,7 @@
 ============================================================= */
 
 const API_FACTURA =
-    "https://script.google.com/macros/s/AKfycbxUr2oRZ73971b6UvQ_Yzpmj18AJBlU9zE0khgI2QCzqBtBYP86mGABd-eEMpca_5uO9Q/exec";
+   "https://script.google.com/macros/s/AKfycbxUr2oRZ73971b6UvQ_Yzpmj18AJBlU9zE0khgI2QCzqBtBYP86mGABd-eEMpca_5uO9Q/exec";
 
 
 /* =============================================================
@@ -27,7 +27,6 @@ const API_FACTURA =
    @param {number|string} numero - Cantidad numérica
    @returns {string} Ej: "1250.00 PESOS 00/100 M.N."
 ============================================================= */
-
 /* =============================================================
    TRANSFORMAR NOMBRE DE ARCHIVO / FOLIO
    Elimina la extensión del archivo (si existe) y reemplaza
@@ -162,7 +161,10 @@ async function abrirModalFactura(codigo) {
         }
 
         /* ── Rellenar campos del modal ──────────────────────── */
-        document.getElementById("facturaNoRecibo").value       = "";
+        /* NOTA: facturaNoRecibo se prellena con el folio ya
+           capturado en el paso de LGA (registro.folio). El
+           usuario puede editarlo si lo necesita. */
+        document.getElementById("facturaNoRecibo").value       = registro.folio || "";
         document.getElementById("facturaPersona").value        = registro.persona || "";
 
         /* ── RFC y Cargo según la persona ───────────────────── */
@@ -189,7 +191,12 @@ async function abrirModalFactura(codigo) {
         document.getElementById("facturaTotalLetra").value     = numeroALetras(total);
 
         /* ── Proyecto ───────────────────────────────────────── */
+        /* NOTA: "Proyecto" se bloquea porque ya se capturó en el
+           paso de SPG (solo se reutiliza aquí). "Nombre Proyecto"
+           se deja editable porque se captura aquí por primera vez. */
         document.getElementById("facturaProyecto").value       = registro.proyecto       || "AI005";
+        document.getElementById("facturaProyecto").disabled    = true;
+
         document.getElementById("facturaNombreProyecto").value = registro.nombre_proyecto || "Atención Integral 005";
 
         /* ── Oficios (ya transformados con espacios → "/") ───── */
@@ -299,10 +306,17 @@ async function generarFactura() {
         }
 
         /* ── Guardar URL del PDF en la base de datos ─────────── */
+        /* NOTA: también se envían proyecto y nombre_proyecto para
+           que el paso de Anexo C los reutilice automáticamente
+           (el backend ya los acepta en esta ruta). */
         const guardar = await fetch(`${API}/api/registros/factura/${codigoFactura}`, {
             method:  "PUT",
             headers: { "Content-Type": "application/json" },
-            body:    JSON.stringify({ factura_pdf: data.url })
+            body:    JSON.stringify({
+                factura_pdf:     data.url,
+                proyecto:        obtenerValorCampoFactura("facturaProyecto"),
+                nombre_proyecto: obtenerValorCampoFactura("facturaNombreProyecto")
+            })
         });
 
         if (!guardar.ok) throw new Error("Error guardando factura");

@@ -29,10 +29,9 @@ body{
 
     color:white;
 
-    padding:26px 40px;
+    padding:14px 40px;
 
     border-bottom:4px solid #BC955C;
-    border-radius:0 0 32px 32px;
 
     display:flex;
     flex-direction:column;
@@ -40,48 +39,17 @@ body{
     align-items:center;
     text-align:center;
 
-    box-shadow:0 10px 26px rgba(78,11,29,.28);
+    box-sizing:border-box;
+
+    box-shadow:0 6px 16px rgba(78,11,29,.18);
 
     overflow:hidden;
-}
-
-/* --- Marca de agua del logo, integrada al fondo --- */
-.topbar::before{
-    content:"";
-    position:absolute;
-    top:50%;
-    right:-40px;
-    transform:translateY(-50%);
-    width:230px;
-    height:230px;
-    background-image:url("../img/logo.png");
-    background-repeat:no-repeat;
-    background-size:contain;
-    opacity:.10;
-    filter:brightness(0) invert(1);
-    pointer-events:none;
-}
-
-.topbar::after{
-    content:"";
-    position:absolute;
-    top:50%;
-    left:-60px;
-    transform:translateY(-50%);
-    width:230px;
-    height:230px;
-    background-image:url("../img/logo.png");
-    background-repeat:no-repeat;
-    background-size:contain;
-    opacity:.08;
-    filter:brightness(0) invert(1);
-    pointer-events:none;
 }
 
 .titulo-principal{
     position:relative;
     z-index:1;
-    font-size:32px;
+    font-size:24px;
     font-weight:800;
     letter-spacing:.4px;
     text-shadow:0 2px 10px rgba(0,0,0,.18);
@@ -90,10 +58,10 @@ body{
 .subtitulo{
     position:relative;
     z-index:1;
-    font-size:16px;
+    font-size:12.5px;
     font-weight:600;
-    margin-top:8px;
-    letter-spacing:.6px;
+    margin-top:5px;
+    letter-spacing:.5px;
     color:#F3D9AE;
     text-transform:uppercase;
 }
@@ -101,9 +69,9 @@ body{
 .subtitulo::before{
     content:"";
     display:block;
-    width:60px;
+    width:50px;
     height:2px;
-    margin:0 auto 10px auto;
+    margin:0 auto 7px auto;
     background:#BC955C;
     border-radius:2px;
 }
@@ -738,7 +706,6 @@ button:hover{
 
     .topbar{
         padding:18px 16px;
-        border-radius:0 0 20px 20px;
     }
 
     .titulo-principal{

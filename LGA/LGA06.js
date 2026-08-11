@@ -74,25 +74,27 @@ function desglosarDias(inicio, fin){
 /* =========================
    VALIDAR CAMPOS
 ========================= */
+
 function validarCamposRecibo(){
 
     let error = false;
 
-    const opcionales = ["reciboLocalidades", "reciboNota"];
-
     document
     .querySelectorAll(
+
         "#modalRecibo input, #modalRecibo select, #modalRecibo textarea"
+
     )
     .forEach(campo=>{
 
         /* =========================
-           IGNORAR READONLY Y OPCIONALES
+           IGNORAR READONLY
         ========================= */
 
         if(
-            campo.hasAttribute("readonly") ||
-            opcionales.includes(campo.id)
+
+            campo.hasAttribute("readonly")
+
         ){
 
             campo.classList.remove(
@@ -108,7 +110,9 @@ function validarCamposRecibo(){
         ========================= */
 
         if(
+
             !campo.value.trim()
+
         ){
 
             campo.classList.add(
@@ -132,6 +136,7 @@ function validarCamposRecibo(){
     return !error;
 
 }
+
 /* =========================
    ABRIR MODAL RECIBO
 ========================= */
@@ -533,7 +538,12 @@ async function generarRecibo(){
                 body:JSON.stringify({
 
                     recibo_pdf:
-                    data.url
+                    data.url,
+
+                    folio:
+                    document.getElementById(
+                        "reciboFolio"
+                    ).value
 
                 })
 

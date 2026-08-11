@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>
+
+        Viáticos Generados - UP-06 DIRECCIÓN GENERAL DE OPERACIÓN Y LOGÍSTICA DE PROGRAMAS
+
+    </title>
+
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/ssidebar.css">
+    <link rel="stylesheet" href="../css/presupuestos.css">
+    <link rel="stylesheet" href="../css/viaticos-listado.css">
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div id="sidebar-container"></div>
+
+    <!-- CONTENIDO -->
+
+    <div class="contenido">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div class="titulo-principal">
+
+                SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL
+
+            </div>
+
+            <div class="subtitulo">
+
+                VIÁTICOS GENERADOS
+                <br>
+                UP 06 DIRECCIÓN GENERAL DE OPERACIÓN Y LOGÍSTICA DE PROGRAMAS
+
+            </div>
+
+        </div>
+
+        <br><br>
+
+        <!-- CONTENEDOR -->
+
+        <div class="historial-container" style="width:90%;">
+
+            <h2>
+
+                Historial de Viáticos Generados
+
+            </h2>
+
+            <div class="tabla-responsive">
+
+                <table>
+
+                    <thead>
+
+                        <tr>
+
+                            <th style="width:16%;">Fecha</th>
+                            <th style="width:44%;">Personas incluidas</th>
+                            <th style="width:14%;">Total</th>
+                            <th style="width:13%;">PDF</th>
+                            <th style="width:13%;">Eliminar</th>
+
+                        </tr>
+
+                    </thead>
+
+                    <tbody id="tbodyViaticos">
+
+                        <tr>
+
+                            <td colspan="5" style="padding:30px;">
+
+                                Cargando...
+
+                            </td>
+
+                        </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- OVERLAY -->
+    <div id="overlay"></div>
+
+    <!-- ===== MODAL CONFIRMAR ELIMINAR ===== -->
+    <div class="modal" id="modalEliminarViatico">
+        <div class="modal-contenido modal-confirm">
+
+            <div class="modal-confirm-icon">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                    stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="3 6 5 6 21 6"/>
+                    <path d="M19 6l-1 14H6L5 6"/>
+                    <path d="M10 11v6M14 11v6"/>
+                    <path d="M9 6V4h6v2"/>
+                </svg>
+            </div>
+
+            <h2>¿Eliminar este registro?</h2>
+
+            <p>
+                Se eliminará el registro del listado. El PDF seguirá
+                disponible en Drive, pero ya no aparecerá aquí.
+            </p>
+
+            <div class="modal-botones">
+
+                <button
+                    type="button"
+                    class="btn-secundario"
+                    onclick="cerrarModal('modalEliminarViatico')"
+                >
+                    Cancelar
+                </button>
+
+                <button
+                    type="button"
+                    class="btn-danger"
+                    id="confirmarEliminarViatico"
+                >
+                    Sí, eliminar
+                </button>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="../js-sid/sidebar_up-06.js"></script>
+    <script src="../vistas-v/viaticos_up06.js"></script>
+
+</body>
+
+</html>

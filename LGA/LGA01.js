@@ -538,7 +538,12 @@ async function generarRecibo(){
                 body:JSON.stringify({
 
                     recibo_pdf:
-                    data.url
+                    data.url,
+
+                    folio:
+                    document.getElementById(
+                        "reciboFolio"
+                    ).value
 
                 })
 

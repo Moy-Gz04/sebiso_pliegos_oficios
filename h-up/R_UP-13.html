@@ -31,6 +31,7 @@
     <link rel="stylesheet" href="../css/factura.css">
     <link rel="stylesheet" href="../css/SPG.css">
     <link rel="stylesheet" href="../css/oficio2.css">
+    <link rel="stylesheet" href="../css/viaticos-listado.css">
 <!-- =============== END Archivos CSS ==================-->
 </head>
 
@@ -42,7 +43,7 @@
 <!-- ======== CONTENIDO ================ -->
 <div class="contenido">
 
-    <!-- ======== BARRA SUPERIOR (ENCABEZADO)=================== -->
+   <!-- ======== BARRA SUPERIOR (ENCABEZADO)=================== -->
         <div class="topbar">
             <div class="titulo-principal">
                 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL
@@ -55,6 +56,42 @@
         </div>
     <!-- ====== END BARRA SUPERIOR (ENCABEZADO)================= -->
         <br><br>
+    <!-- ======== BARRA DE BÚSQUEDA Y ACCIONES ==================== -->
+        <div class="barra-busqueda">
+
+            <div class="campo-busqueda campo-busqueda-texto">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                    stroke="#691C32" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="7"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+                <input
+                    type="text"
+                    id="buscadorTexto"
+                    placeholder="Buscar por ID o Persona..."
+                >
+            </div>
+
+            <div class="campo-busqueda campo-busqueda-fecha">
+                <span class="label-fecha">Del</span>
+                <input type="date" id="filtroFechaDesde">
+            </div>
+
+            <div class="campo-busqueda campo-busqueda-fecha">
+                <span class="label-fecha">Al</span>
+                <input type="date" id="filtroFechaHasta">
+            </div>
+
+            <button
+                type="button"
+                id="btnGenerarViaticos"
+                class="btn-generar-viaticos"
+            >
+                Generar Viáticos
+            </button>
+
+        </div>
+    <!-- ======== END BARRA DE BÚSQUEDA Y ACCIONES ================ -->
     <!-- ======== TABLA RESULTADOS ============================= -->
         <table id="tablaResultados">
             <tbody id="tbodyResultados">
@@ -558,6 +595,74 @@
 </div>
 <!-- ===== END MODAL CONFIRMAR RECIBO ======================================== -->
 
+<!-- ===== MODAL CONFIRMAR VIÁTICOS ========================================== -->
+<div class="modal" id="modalConfirmarViaticos">
+    <div class="modal-contenido">
+        <h2>
+            ¿Generar PDF de Viáticos?
+        </h2>
+        <p id="textoConfirmarViaticos">
+            Verifica que toda la información sea correcta antes de continuar.
+        </p>
+        <div class="modal-botones">
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarViaticos')"
+            >
+                No
+            </button>
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarViaticos"
+            >
+                Sí, generar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ===== END MODAL CONFIRMAR VIÁTICOS ====================================== -->
+
+<!-- ===== MODAL CARGANDO VIÁTICOS ============================================ -->
+<div class="modal" id="modalCargandoViaticos">
+    <div class="modal-contenido modal-cargando">
+        <div class="loader-spg"></div>
+        <h2>
+            Generando Viáticos...
+        </h2>
+        <p>
+            Espera un momento.
+        </p>
+    </div>
+</div>
+<!-- ===== END MODAL CARGANDO VIÁTICOS ======================================== -->
+
+<!-- ===== MODAL ÉXITO VIÁTICOS ================================================ -->
+<div class="modal" id="modalExitoViaticos">
+    <div class="modal-contenido modal-exito">
+        <h2>
+            Viáticos generados
+        </h2>
+        <p>
+            El PDF se generó correctamente. Puedes consultarlo en el apartado de Viáticos.
+        </p>
+        <div class="modal-botones">
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="
+                    cerrarModal('modalExitoViaticos');
+                    cargarRegistros();
+                "
+            >
+                Aceptar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ===== END MODAL ÉXITO VIÁTICOS ============================================ -->
+
 <!-- ===== MODAL CARGANDO RECIBO ============================================= -->
 <div class="modal" id="modalCargandoRecibo">
     <div class="modal-contenido modal-cargando">
@@ -620,6 +725,7 @@
                     type="text"
                     id="facturaNoRecibo"
                     placeholder="REC-001"
+                    readonly
                 >
             </div>
 
