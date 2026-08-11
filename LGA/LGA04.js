@@ -4,7 +4,6 @@
 
 const API_RECIBO =
 
-
 "https://script.google.com/macros/s/AKfycbzp5q_460lwS2q06iTN0oljyzEyodqm-8g7s36W_4U8M74ucPxR0tKaPRfhDIXLUsi6kQ/exec";
 
 /* =========================
@@ -539,7 +538,12 @@ async function generarRecibo(){
                 body:JSON.stringify({
 
                     recibo_pdf:
-                    data.url
+                    data.url,
+
+                    folio:
+                    document.getElementById(
+                        "reciboFolio"
+                    ).value
 
                 })
 

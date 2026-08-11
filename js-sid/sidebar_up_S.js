@@ -93,8 +93,6 @@ PAGINAS.map((pagina) => {
         <button
             type="button"
 
-            title="${pagina.nombre}"
-
             class="menu-btn ${
 
                 paginaActual === nombreArchivo
@@ -162,7 +160,7 @@ document.getElementById(
 
     </div>
 
-    <!-- FOOTER -->
+    <!-- LOGOUT -->
 
     <div class="sidebar-footer">
 

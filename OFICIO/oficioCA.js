@@ -336,6 +336,9 @@ async function abrirModalOficio2(codigo){
 
         /* =========================
            BLOQUEAR CAMPOS
+           NOTA: oficio2Proyecto y oficio2NombreProyecto son
+           <select>, no <input> — el atributo "readOnly" no
+           tiene efecto en ellos, hay que usar "disabled".
         ========================= */
 
         const camposBloqueados = [
@@ -363,6 +366,28 @@ async function abrirModalOficio2(codigo){
             if(campo){
 
                 campo.readOnly = true;
+
+            }
+
+        });
+
+        /* --- Selects: se bloquean con "disabled" --- */
+
+        const selectsBloqueados = [
+
+            "oficio2Proyecto",
+            "oficio2NombreProyecto"
+
+        ];
+
+        selectsBloqueados.forEach(id=>{
+
+            const campo =
+            document.getElementById(id);
+
+            if(campo){
+
+                campo.disabled = true;
 
             }
 

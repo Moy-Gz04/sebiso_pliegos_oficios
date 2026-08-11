@@ -35,12 +35,12 @@ let ultimosRegistros = [];
 let codigosSeleccionadosViaticos = new Set();
 
 /** Valor fijo de adscripción para esta área */
-const ADSCRIPCION_AREA = "01 DIRECCIÓN";
+const ADSCRIPCION_AREA = "UP-01 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL";
 
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
 const API_VIATICOS =
-"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";
+"https://script.google.com/macros/s/AKfycbxXaJu37RPOa2mhmpAV7oUJuQ3__5Wrt6eg6LpQSrtaLHRIG4exdRErMEq8IG9d71iEbQ/exec";
 
 /* ============================================================
    2. UTILIDADES GENERALES
@@ -983,13 +983,28 @@ function obtenerBotonEnviar(registro) {
  *   Reemplaza "UP-01" por el código correspondiente.
  * ─────────────────────────────────────────────────────────────
  */
-async function cargarRegistros() {
-  tbody.innerHTML = `
+/**
+ * Construye el HTML de una tarjeta de "cargando" con spinner
+ * animado, con el mismo estilo visual que el resto del sistema
+ * (en vez de un simple texto plano).
+ * @returns {string}
+ */
+function construirTarjetaCargando() {
+  return `
     <tr>
-      <td colspan="12" style="text-align:center; padding:20px;">
-        Cargando registros...
+      <td colspan="12">
+        <div class="card-registro" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:16px; padding:50px 24px;">
+          <div class="spinner-carga"></div>
+          <div style="font-size:13px; font-weight:700; color:#691C32; letter-spacing:.3px;">
+            Cargando registros...
+          </div>
+        </div>
       </td>
     </tr>`;
+}
+
+async function cargarRegistros() {
+  tbody.innerHTML = construirTarjetaCargando();
 
   try {
     // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
@@ -1548,7 +1563,7 @@ function construirDescripcionViaticos(registro) {
     `VIÁTICOS EN EL PAÍS DERIVADOS DE LA COMISIÓN DE ${registro.persona || ""} ` +
     `CON LA FINALIDAD DE ${registro.motivo_comision || ""} ` +
     `LOS DÍAS ${diasTexto} DE ${registro.mes || ""} DEL ${registro.anio || ""} ` +
-    `EN CURSO EN EL MUNICIPIO DE ${registro.municipio || ""}, HGO.`
+    `EN EL MUNICIPIO DE ${registro.municipio || ""}.`
   );
 }
 
