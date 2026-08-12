@@ -19,6 +19,17 @@ let codigoSPG      = null;
 let codigoRecibo   = null;
 let codigoFactura  = null;
 let codigoOficio2  = null;
+let codigoTablaDatos = null;
+
+/* =========================
+   TABLA DE DATOS — CONFIGURACIÓN
+   Paso 5 del trámite, después de Anexo C.
+========================= */
+
+/** URL de la Aplicación Web (Apps Script) que llena la hoja
+ *  de la Tabla de Datos y genera el PDF */
+const API_TABLA_DATOS =
+"https://script.google.com/macros/s/AKfycbxER8zTfiljZLEKhf0QN5Jsx4h2cJUJCF5GjNVi-at8Uj26PhJIeTiJnVAHgQcNxahwJg/exec";
 
 /* =========================
    VIÁTICOS — CONFIGURACIÓN
@@ -35,12 +46,12 @@ let ultimosRegistros = [];
 let codigosSeleccionadosViaticos = new Set();
 
 /** Valor fijo de adscripción para esta área */
-const ADSCRIPCION_AREA = "UP-14 DIRECCIÓN GENERAL DE INCLUSIÓN PARA LAS PERSONAS CON DISCAPACIDAD";
+const ADSCRIPCION_AREA = "UP-14 DIRECCIÓN GENERAL DE INCLUSIÓN PARA LAS PERSONAS CON DISCAPACIDAD";   // ⚠️ CAMBIAR
 
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
 const API_VIATICOS =
-"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";
+"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";   // ⚠️ CAMBIAR — cada área necesita su propio Apps Script
 
 /* ============================================================
    2. UTILIDADES GENERALES
@@ -110,7 +121,6 @@ function formatearMoneda(valor) {
     const esSolo = parseInt(inicio) === parseInt(fin);
     return esSolo ? `al día ${texto}` : `a los días ${texto}`;
   }
-
 /* ============================================================
    2B. CONVERSIÓN DE NÚMERO A LETRAS
    ============================================================ */
@@ -213,9 +223,7 @@ function numeroALetras(valor) {
   if (decimales > 0) {
     texto += " CON " + convertirGrupo(decimales) + " CENTAVOS";
   }
-
   return texto.trim().toLowerCase();
-  
 }
 
 /* ============================================================
@@ -325,6 +333,7 @@ const CAMPOS_REQUERIDOS = {
   ],
 
 };
+
 /**
  * Valida que todos los campos requeridos de un formulario estén completos.
  * Marca en rojo los campos vacíos y muestra una alerta personalizada.
@@ -905,7 +914,10 @@ async function generarOficio2() {
     const guardar = await fetch(`${API}/api/registros/oficio2/${codigoOficio2}`, {
       method:  "PUT",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ oficio2_pdf: data.url }),
+      body:    JSON.stringify({
+        oficio2_pdf:   data.url,
+        numero_oficio: document.getElementById("oficio2Numc").value,
+      }),
     });
     if (!guardar.ok) throw new Error("Error guardando Oficio 2 en el registro");
 
@@ -1154,6 +1166,8 @@ function construirTarjeta(registro) {
     ? `<button class="btn-enviar" onclick="abrirModalFactura('${codigo}')">Generar Recibo</button>`
     : !registro.oficio2_pdf
     ? `<button class="btn-enviar" onclick="abrirModalOficio2('${codigo}')">Generar Anexo C</button>`
+    : !registro.tabla_datos_pdf
+    ? `<button class="btn-enviar" onclick="confirmarTablaDatos('${codigo}')">Generar Tabla de Datos</button>`
     : `<button class="btn-aceptado" disabled>Finalizado</button>`;
 
   // Helper: enlace a PDF existente o botón deshabilitado
@@ -1191,17 +1205,20 @@ function construirTarjeta(registro) {
             </div>
             <div class="info-item">
               <span class="info-label">Importe Viáticos</span>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                class="input-importe-viaticos"
-                id="importe-${codigo}"
-                value="${registro.importe_viaticos ?? ''}"
-                placeholder="$ 0.00"
-                onchange="guardarImporteViaticos('${codigo}', this.value)"
-                ${bloqueado ? "readonly" : ""}
-              >
+              <div class="importe-wrapper">
+                <span class="importe-simbolo">$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  class="input-importe-viaticos"
+                  id="importe-${codigo}"
+                  value="${registro.importe_viaticos ?? ''}"
+                  placeholder="0.00"
+                  onchange="guardarImporteViaticos('${codigo}', this.value)"
+                  ${bloqueado ? "readonly" : ""}
+                >
+              </div>
             </div>
             <div class="info-item">
               <span class="info-label">Viáticos</span>
@@ -1221,6 +1238,10 @@ function construirTarjeta(registro) {
                   }
                 "
               >
+            </div>
+            <div class="info-item">
+              <span class="info-label">Tabla de Datos PDF</span>
+              ${linkPDF(registro.tabla_datos_pdf, "Ver Tabla de Datos", "Sin Tabla de Datos")}
             </div>
           </div>
 
@@ -1548,12 +1569,12 @@ function construirDescripcionViaticos(registro) {
     `VIÁTICOS EN EL PAÍS DERIVADOS DE LA COMISIÓN DE ${registro.persona || ""} ` +
     `CON LA FINALIDAD DE ${registro.motivo_comision || ""} ` +
     `LOS DÍAS ${diasTexto} DE ${registro.mes || ""} DEL ${registro.anio || ""} ` +
-    `EN EL MUNICIPIO DE ${registro.municipio || ""}.`
+    `EN CURSO EN EL MUNICIPIO DE ${registro.municipio || ""}, HGO.`
   );
 }
 
 /**
- * Busca el RFC de una persona en el catálogo local (cat-upS.js)
+ * Busca el RFC de una persona en el catálogo local (cat-upCA.js)
  * comparando por nombre exacto.
  * @param {string} nombre
  * @returns {string}
@@ -1613,7 +1634,7 @@ async function generarViaticos() {
       method: "POST",
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
-        fileName: `VIATICOS_UP-14_${Date.now()}`,
+        fileName: `VIATICOS_UP-CA_${Date.now()}`,
         filas: detalle,
       }),
     });
@@ -1636,7 +1657,7 @@ async function generarViaticos() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        area: "UP-14",
+        area: "UP-CA",
         pdf_url: dataScript.url,
         detalle,
       }),
@@ -1665,3 +1686,100 @@ async function generarViaticos() {
     if (btn) btn.disabled = false;
   }
 }
+
+/* ============================================================
+   15. TABLA DE DATOS (PASO 5, DESPUÉS DE ANEXO C)
+   ============================================================ */
+
+/**
+ * Abre el modal de confirmación para generar la Tabla de Datos.
+ * No requiere captura manual: todos los datos ya se obtuvieron
+ * en pasos anteriores (SPG, LGA, Anexo C).
+ * @param {string} codigo
+ */
+function confirmarTablaDatos(codigo) {
+  codigoTablaDatos = codigo;
+  abrirModal("modalConfirmarTablaDatos");
+}
+
+/**
+ * Arma el número de oficio completo con el formato institucional.
+ * @param {string} numeroOficio - el número capturado en Anexo C (ej. "339")
+ * @returns {string}
+ */
+function construirOficioTablaDatos(numeroOficio) {
+  return `SEBISO/SSDSyH/DGIPD/${numeroOficio || ""}/2026.`;
+}
+
+/**
+ * Obtiene el registro, arma el payload de celdas fijas, lo envía
+ * al Apps Script para generar el PDF, y guarda la URL resultante
+ * en el registro.
+ */
+async function generarTablaDatos() {
+  try {
+    const registro = await fetchRegistro(codigoTablaDatos);
+
+    const payload = {
+      fileName: `TABLA_DATOS_${codigoTablaDatos}`,
+      oficio:         construirOficioTablaDatos(registro.numero_oficio),
+      recibo:         registro.folio || "",
+      up:             "UP-14 DIRECCIÓN GENERAL DE INCLUSIÓN PARA LAS PERSONAS CON DISCAPACIDAD",
+      proyecto:       registro.proyecto || "",
+      rubro:          registro.rubro || "",
+      ofAutorizacion: "SH/0339/2026 y SH/2428/2026",
+      ofAdecuacion:   "SH-CPF-3659-2026",
+    };
+
+    console.log("PAYLOAD TABLA DE DATOS:", payload);
+
+    const respuestaScript = await fetch(API_TABLA_DATOS, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain" },
+      body: JSON.stringify(payload),
+    });
+
+    const textoRespuesta = await respuestaScript.text();
+
+    let dataScript;
+    try {
+      dataScript = JSON.parse(textoRespuesta);
+    } catch (error) {
+      throw new Error("El Apps Script no devolvió una respuesta válida.");
+    }
+
+    if (!dataScript.ok || !dataScript.url) {
+      throw new Error(dataScript.error || "No se pudo generar la Tabla de Datos.");
+    }
+
+    const guardar = await fetch(`${API}/api/registros/tabla-datos/${codigoTablaDatos}`, {
+      method:  "PUT",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ tabla_datos_pdf: dataScript.url }),
+    });
+
+    const dataGuardar = await guardar.json();
+
+    if (!guardar.ok || !dataGuardar.ok) {
+      throw new Error(dataGuardar.error || "Error guardando la Tabla de Datos en el registro.");
+    }
+
+    cerrarModal("modalCargandoTablaDatos");
+    abrirModal("modalExitoTablaDatos");
+    cargarRegistros();
+  } catch (error) {
+    console.error("ERROR TABLA DE DATOS:", error);
+    cerrarModal("modalCargandoTablaDatos");
+    mostrarAlerta("❌ Error al generar Tabla de Datos", error.message);
+  }
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+
+  document.getElementById("btnConfirmarTablaDatos")?.addEventListener("click", async () => {
+    cerrarModal("modalConfirmarTablaDatos");
+    abrirModal("modalCargandoTablaDatos");
+    await generarTablaDatos();
+  });
+
+});

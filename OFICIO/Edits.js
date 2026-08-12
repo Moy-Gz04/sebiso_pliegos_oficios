@@ -4,7 +4,7 @@
 
 const API_OFICIO2 =
 
-"https://script.google.com/macros/s/AKfycbwGa9ixM27XDKy6WFzEbQ9pCSenLCOBzLdjuToRVn8-t19KOZcNKD7SH2W6yw__idJx-w/exec";
+"https://script.google.com/macros/s/AKfycbwLI5CZGsLY0r51rRD6KvXgCTBMyA_2xrlvbVXUP7fXeYFhFZeSehEUXtrx3LIooixM1A/exec";
 
 /* =========================
    VALIDAR CAMPOS OFICIO 2
@@ -150,7 +150,7 @@ async function abrirModalOficio2(codigo){
             const responseOficio =
             await fetch(
 
-                `${API}/api/presupuestos/ultimo-oficio/12`
+                `${API}/api/presupuestos/ultimo-oficio/3`
 
             );
 
@@ -682,7 +682,12 @@ async function generarOficio2(){
                 body:JSON.stringify({
 
                     oficio2_pdf:
-                    data.url
+                    data.url,
+
+                    numero_oficio:
+                    document.getElementById(
+                        "oficio2Numc"
+                    ).value
 
                 })
 

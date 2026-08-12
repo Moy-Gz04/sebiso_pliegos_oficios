@@ -682,7 +682,12 @@ async function generarOficio2(){
                 body:JSON.stringify({
 
                     oficio2_pdf:
-                    data.url
+                    data.url,
+
+                    numero_oficio:
+                    document.getElementById(
+                        "oficio2Numc"
+                    ).value
 
                 })
 

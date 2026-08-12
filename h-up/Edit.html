@@ -6,7 +6,7 @@
         window.location.href = 'index.html';
     }
 
-    if (area !== 'UP-16') {
+    if (area !== 'UP-08') {
         window.location.href = 'index.html';
     }
 </script>
@@ -25,13 +25,13 @@
     <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/ssidebar.css">
     <link rel="stylesheet" href="../css/revisiones.css">
+    <link rel="stylesheet" href="../css/viaticos-listado.css">
 <!-- =============== PARA FORMATOS =====================-->
     <link rel="stylesheet" href="../css/RECIBO.css">
     <link rel="stylesheet" href="../css/modales.css">
     <link rel="stylesheet" href="../css/factura.css">
     <link rel="stylesheet" href="../css/SPG.css">
     <link rel="stylesheet" href="../css/oficio2.css">
-    <link rel="stylesheet" href="../css/viaticos-listado.css">
 <!-- =============== END Archivos CSS ==================-->
 </head>
 
@@ -43,7 +43,7 @@
 <!-- ======== CONTENIDO ================ -->
 <div class="contenido">
 
-    <!-- ======== BARRA SUPERIOR (ENCABEZADO)=================== -->
+      <!-- ======== BARRA SUPERIOR (ENCABEZADO)=================== -->
         <div class="topbar">
             <div class="titulo-principal">
                 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL
@@ -51,11 +51,12 @@
             <div class="subtitulo">
                 REVISIÓN DE REGISTROS
                 <br>
-                UP 16 DIRECCIÓN GENERAL DE SERVIDORES DEL PUEBLO
+                UP 08 DIRECCIÓN GENERAL DE ASISTENCIA, ATENCIÓN Y PROTECCIÓN
             </div>
         </div>
     <!-- ====== END BARRA SUPERIOR (ENCABEZADO)================= -->
         <br><br>
+
     <!-- ======== BARRA DE BÚSQUEDA Y ACCIONES ==================== -->
         <div class="barra-busqueda">
 
@@ -92,6 +93,7 @@
 
         </div>
     <!-- ======== END BARRA DE BÚSQUEDA Y ACCIONES ================ -->
+
     <!-- ======== TABLA RESULTADOS ============================= -->
         <table id="tablaResultados">
             <tbody id="tbodyResultados">
@@ -594,74 +596,6 @@
     </div>
 </div>
 <!-- ===== END MODAL CONFIRMAR RECIBO ======================================== -->
-
-<!-- ===== MODAL CONFIRMAR VIÁTICOS ========================================== -->
-<div class="modal" id="modalConfirmarViaticos">
-    <div class="modal-contenido">
-        <h2>
-            ¿Generar PDF de Viáticos?
-        </h2>
-        <p id="textoConfirmarViaticos">
-            Verifica que toda la información sea correcta antes de continuar.
-        </p>
-        <div class="modal-botones">
-            <button
-                type="button"
-                class="btn-secundario"
-                onclick="cerrarModal('modalConfirmarViaticos')"
-            >
-                No
-            </button>
-            <button
-                type="button"
-                class="btn-principal"
-                id="confirmarViaticos"
-            >
-                Sí, generar
-            </button>
-        </div>
-    </div>
-</div>
-<!-- ===== END MODAL CONFIRMAR VIÁTICOS ====================================== -->
-
-<!-- ===== MODAL CARGANDO VIÁTICOS ============================================ -->
-<div class="modal" id="modalCargandoViaticos">
-    <div class="modal-contenido modal-cargando">
-        <div class="loader-spg"></div>
-        <h2>
-            Generando Viáticos...
-        </h2>
-        <p>
-            Espera un momento.
-        </p>
-    </div>
-</div>
-<!-- ===== END MODAL CARGANDO VIÁTICOS ======================================== -->
-
-<!-- ===== MODAL ÉXITO VIÁTICOS ================================================ -->
-<div class="modal" id="modalExitoViaticos">
-    <div class="modal-contenido modal-exito">
-        <h2>
-            Viáticos generados
-        </h2>
-        <p>
-            El PDF se generó correctamente. Puedes consultarlo en el apartado de Viáticos.
-        </p>
-        <div class="modal-botones">
-            <button
-                type="button"
-                class="btn-principal"
-                onclick="
-                    cerrarModal('modalExitoViaticos');
-                    cargarRegistros();
-                "
-            >
-                Aceptar
-            </button>
-        </div>
-    </div>
-</div>
-<!-- ===== END MODAL ÉXITO VIÁTICOS ============================================ -->
 
 <!-- ===== MODAL CARGANDO RECIBO ============================================= -->
 <div class="modal" id="modalCargandoRecibo">
@@ -1335,6 +1269,166 @@
 </div>
 
 <!-- ====== END MODAL ÉXITO OFICIO 2 ============================== -->
+
+<!-- ====== MODAL CONFIRMAR VIÁTICOS ========================================== -->
+<div class="modal" id="modalConfirmarViaticos">
+    <div class="modal-contenido">
+        <h2>
+            ¿Generar PDF de Viáticos?
+        </h2>
+        <p id="textoConfirmarViaticos">
+            Verifica que toda la información sea correcta antes de continuar.
+        </p>
+        <div class="modal-botones">
+            <button
+                type="button"
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarViaticos')"
+            >
+                No
+            </button>
+            <button
+                type="button"
+                class="btn-principal"
+                id="confirmarViaticos"
+            >
+                Sí, generar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ====== END MODAL CONFIRMAR VIÁTICOS ====================================== -->
+
+<!-- ====== MODAL CARGANDO VIÁTICOS ============================================ -->
+<div class="modal" id="modalCargandoViaticos">
+    <div class="modal-contenido modal-cargando">
+        <div class="loader-spg"></div>
+        <h2>
+            Generando Viáticos...
+        </h2>
+        <p>
+            Espera un momento.
+        </p>
+    </div>
+</div>
+<!-- ====== END MODAL CARGANDO VIÁTICOS ======================================== -->
+
+<!-- ====== MODAL ÉXITO VIÁTICOS ================================================ -->
+<div class="modal" id="modalExitoViaticos">
+    <div class="modal-contenido modal-exito">
+        <h2>
+            Viáticos generados
+        </h2>
+        <p>
+            El PDF se generó correctamente. Puedes consultarlo en el apartado de Viáticos.
+        </p>
+        <div class="modal-botones">
+            <button
+                type="button"
+                class="btn-principal"
+                onclick="
+                    cerrarModal('modalExitoViaticos');
+                    cargarRegistros();
+                "
+            >
+                Aceptar
+            </button>
+        </div>
+    </div>
+</div>
+<!-- ====== END MODAL ÉXITO VIÁTICOS ============================================ -->
+
+<!-- ====== MODAL CONFIRMAR TABLA DE DATOS ======================== -->
+
+<div class="modal" id="modalConfirmarTablaDatos">
+
+    <div class="modal-contenido">
+
+        <h2>
+            ¿Generar Tabla de Datos?
+        </h2>
+
+        <p>
+            Se usarán los datos ya capturados (SPG, LGA y Anexo C)
+            para generar este documento automáticamente.
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                class="btn-secundario"
+                onclick="cerrarModal('modalConfirmarTablaDatos')"
+            >
+                Cancelar
+            </button>
+
+            <button
+                class="btn-principal"
+                id="btnConfirmarTablaDatos"
+            >
+                Sí, generar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ====== END MODAL CONFIRMAR TABLA DE DATOS ==================== -->
+
+<!-- ====== MODAL CARGANDO TABLA DE DATOS ========================= -->
+
+<div class="modal" id="modalCargandoTablaDatos">
+
+    <div class="modal-contenido modal-cargando">
+
+        <div class="loader-spg"></div>
+
+        <h2>
+            Generando Tabla de Datos...
+        </h2>
+
+        <p>
+            Espera un momento.
+        </p>
+
+    </div>
+
+</div>
+
+<!-- ====== END MODAL CARGANDO TABLA DE DATOS ====================== -->
+
+<!-- ====== MODAL ÉXITO TABLA DE DATOS ============================= -->
+
+<div class="modal" id="modalExitoTablaDatos">
+
+    <div class="modal-contenido modal-exito">
+
+        <h2>
+            Tabla de Datos generada correctamente
+        </h2>
+
+        <p>
+            El PDF fue generado exitosamente.
+        </p>
+
+        <div class="modal-botones">
+
+            <button
+                class="btn-principal"
+                onclick="cerrarModal('modalExitoTablaDatos')"
+            >
+                Aceptar
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<!-- ====== END MODAL ÉXITO TABLA DE DATOS ========================== -->
  <!-- =========================================================
      MODAL ALERTA PERSONALIZADA
 ========================================================= -->
@@ -1379,17 +1473,16 @@
 
 </div>
 <!-- ========================= JS GENERAL ========================= -->
-<script src="../js-sid/sidebar_up-16.js"></script>
-<script src="../js-cat2/cat-up16.js"></script>
-<script src="../js-reg/registros_up-16.js"></script>
+<script src="../js-sid/sidebar_up-13.js"></script>
+<script src="../js-cat2/cat-up13.js"></script>
+<script src="../js-reg/registros_up-13.js"></script>
 <!-- ========================= JS SPG ============================= -->
-<script src="../SPG/spg-16.js"></script>
+<script src="../SPG/spg-13.js"></script>
 <!-- ========================= JS LGA ========================== -->
-<script src="../LGA/LGA16.js"></script>
+<script src="../LGA/LGA13.js"></script>
 <!-- ========================= JS Recibo ========================= -->
-<script src="../RECIBO/RECIBO16.js"></script>
+<script src="../RECIBO/RECIBO13.js"></script>
 <!-- ========================= JS Oficio ========================= -->
-<script src="../OFICIO/oficio16.js"></script>
-
+<script src="../OFICIO/oficio13.js"></script>
 </body>
 </html>

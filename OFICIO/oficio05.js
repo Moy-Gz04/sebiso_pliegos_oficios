@@ -150,7 +150,7 @@ async function abrirModalOficio2(codigo){
             const responseOficio =
             await fetch(
 
-                `${API}/api/presupuestos/ultimo-oficio/6`
+                `${API}/api/presupuestos/ultimo-oficio/5`
 
             );
 
@@ -682,7 +682,12 @@ async function generarOficio2(){
                 body:JSON.stringify({
 
                     oficio2_pdf:
-                    data.url
+                    data.url,
+
+                    numero_oficio:
+                    document.getElementById(
+                        "oficio2Numc"
+                    ).value
 
                 })
 
