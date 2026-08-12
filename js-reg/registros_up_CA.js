@@ -29,7 +29,7 @@ let codigoTablaDatos = null;
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  de la Tabla de Datos y genera el PDF */
 const API_TABLA_DATOS =
-"https://script.google.com/macros/s/AKfycbxER8zTfiljZLEKhf0QN5Jsx4h2cJUJCF5GjNVi-at8Uj26PhJIeTiJnVAHgQcNxahwJg/exec";   // ⚠️ CAMBIAR cuando tengas la URL
+"https://script.google.com/macros/s/AKfycbxER8zTfiljZLEKhf0QN5Jsx4h2cJUJCF5GjNVi-at8Uj26PhJIeTiJnVAHgQcNxahwJg/exec";
 
 /* =========================
    VIÁTICOS — CONFIGURACIÓN
@@ -1708,7 +1708,7 @@ function confirmarTablaDatos(codigo) {
  * @returns {string}
  */
 function construirOficioTablaDatos(numeroOficio) {
-  return `SEBISO/CA/DRM/${numeroOficio || ""}/2026.`;
+  return `SEBISO/CA/${numeroOficio || ""}/2026.`;
 }
 
 /**
@@ -1727,7 +1727,7 @@ async function generarTablaDatos() {
       up:             "UP-01 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL",
       proyecto:       registro.proyecto || "",
       rubro:          registro.rubro || "",
-      ofAutorizacion: "SH/0339/2026 y SH-2428-2026",
+      ofAutorizacion: "SH/0339/2026 y SH/2428/2026",
       ofAdecuacion:   "SH-CPF-3659-2026",
     };
 

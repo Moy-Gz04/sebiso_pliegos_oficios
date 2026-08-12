@@ -29,7 +29,7 @@ let codigoTablaDatos = null;
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  de la Tabla de Datos y genera el PDF */
 const API_TABLA_DATOS =
-"https://script.google.com/macros/s/AKfycbxER8zTfiljZLEKhf0QN5Jsx4h2cJUJCF5GjNVi-at8Uj26PhJIeTiJnVAHgQcNxahwJg/exec";   // ⚠️ CAMBIAR cuando tengas la URL
+"https://script.google.com/macros/s/AKfycbxER8zTfiljZLEKhf0QN5Jsx4h2cJUJCF5GjNVi-at8Uj26PhJIeTiJnVAHgQcNxahwJg/exec";
 
 /* =========================
    VIÁTICOS — CONFIGURACIÓN
@@ -46,7 +46,7 @@ let ultimosRegistros = [];
 let codigosSeleccionadosViaticos = new Set();
 
 /** Valor fijo de adscripción para esta área */
-const ADSCRIPCION_AREA = "UP-01 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL";   // ⚠️ CAMBIAR
+const ADSCRIPCION_AREA = "UP-16 DIRECCIÓN GENERAL DE SERVIDORES DEL PUEBLO";   // ⚠️ CAMBIAR
 
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
@@ -564,7 +564,7 @@ async function abrirModalOficio2(codigo) {
     let oficioAdecuacion   = "";
 
     try {
-      const responseOficios = await fetch(`${API}/api/presupuestos/ultimo-oficio/2`);
+      const responseOficios = await fetch(`${API}/api/presupuestos/ultimo-oficio/12`);
 
       if (!responseOficios.ok) throw new Error("Error obteniendo oficios");
 
@@ -639,7 +639,7 @@ catalogoNombreProyecto[0] || "Atención Integral 005";
  */
 async function fetchRegistro(codigo) {
   // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
-  const response = await fetch(`${API}/api/registros/UP-CA`);
+  const response = await fetch(`${API}/api/registros/UP-16`);
   if (!response.ok) throw new Error("Error obteniendo registros");
 
   const registros = await response.json();
@@ -1005,7 +1005,7 @@ async function cargarRegistros() {
 
   try {
     // CAMBIO DE ACUERDO A AREA → cambiar "UP-01" por el código de la nueva área
-    const response = await fetch(`${API}/api/registros/UP-CA`);
+    const response = await fetch(`${API}/api/registros/UP-16`);
     if (!response.ok) throw new Error("Error obteniendo registros");
 
     const registros = await response.json();
@@ -1205,17 +1205,20 @@ function construirTarjeta(registro) {
             </div>
             <div class="info-item">
               <span class="info-label">Importe Viáticos</span>
-              <input
-                type="number"
-                step="0.01"
-                min="0"
-                class="input-importe-viaticos"
-                id="importe-${codigo}"
-                value="${registro.importe_viaticos ?? ''}"
-                placeholder="$ 0.00"
-                onchange="guardarImporteViaticos('${codigo}', this.value)"
-                ${bloqueado ? "readonly" : ""}
-              >
+              <div class="importe-wrapper">
+                <span class="importe-simbolo">$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  class="input-importe-viaticos"
+                  id="importe-${codigo}"
+                  value="${registro.importe_viaticos ?? ''}"
+                  placeholder="0.00"
+                  onchange="guardarImporteViaticos('${codigo}', this.value)"
+                  ${bloqueado ? "readonly" : ""}
+                >
+              </div>
             </div>
             <div class="info-item">
               <span class="info-label">Viáticos</span>
@@ -1235,6 +1238,10 @@ function construirTarjeta(registro) {
                   }
                 "
               >
+            </div>
+            <div class="info-item">
+              <span class="info-label">Tabla de Datos PDF</span>
+              ${linkPDF(registro.tabla_datos_pdf, "Ver Tabla de Datos", "Sin Tabla de Datos")}
             </div>
           </div>
 
@@ -1263,10 +1270,6 @@ function construirTarjeta(registro) {
             <div class="info-item">
               <span class="info-label">Anexo C PDF</span>
               ${linkPDF(registro.oficio2_pdf, "Ver Anexo C", "Sin Anexo C")}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Tabla de Datos PDF</span>
-              ${linkPDF(registro.tabla_datos_pdf, "Ver Tabla de Datos", "Sin Tabla de Datos")}
             </div>
           </div>
 
@@ -1705,7 +1708,7 @@ function confirmarTablaDatos(codigo) {
  * @returns {string}
  */
 function construirOficioTablaDatos(numeroOficio) {
-  return `SEBISO/CA/DRM/${numeroOficio || ""}/2026.`;
+  return `SEBISO/DGSP/${numeroOficio || ""}/2026.`;
 }
 
 /**
@@ -1721,10 +1724,10 @@ async function generarTablaDatos() {
       fileName: `TABLA_DATOS_${codigoTablaDatos}`,
       oficio:         construirOficioTablaDatos(registro.numero_oficio),
       recibo:         registro.folio || "",
-      up:             "UP-01 SECRETARÍA DE BIENESTAR E INCLUSIÓN SOCIAL",
+      up:             "UP-16 DIRECCIÓN GENERAL DE SERVIDORES DEL PUEBLO",
       proyecto:       registro.proyecto || "",
       rubro:          registro.rubro || "",
-      ofAutorizacion: "SH/0339/2026 y SH-2428-2026",
+      ofAutorizacion: "SH/0339/2026 y SH/2428/2026",
       ofAdecuacion:   "SH-CPF-3659-2026",
     };
 
@@ -1773,7 +1776,7 @@ async function generarTablaDatos() {
 
 document.addEventListener("DOMContentLoaded", () => {
 
-  document.getElementById("confirmarTablaDatos")?.addEventListener("click", async () => {
+  document.getElementById("btnConfirmarTablaDatos")?.addEventListener("click", async () => {
     cerrarModal("modalConfirmarTablaDatos");
     abrirModal("modalCargandoTablaDatos");
     await generarTablaDatos();
