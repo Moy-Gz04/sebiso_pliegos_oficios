@@ -30,6 +30,7 @@ const PAGINAS = [
     },
 ];
 
+
 /* =========================
    ÍCONOS DEL MENÚ
 ========================= */
@@ -92,8 +93,6 @@ PAGINAS.map((pagina) => {
 
         <button
             type="button"
-
-            title="${pagina.nombre}"
 
             class="menu-btn ${
 
@@ -162,7 +161,7 @@ document.getElementById(
 
     </div>
 
-    <!-- FOOTER -->
+    <!-- LOGOUT -->
 
     <div class="sidebar-footer">
 
@@ -226,15 +225,151 @@ function cerrarModal(id){
 
 /* =========================
    LOGOUT
+   Autosuficiente: funciona en CUALQUIER página, sin
+   depender de que exista el modal en el HTML ni de que
+   estén cargadas las funciones abrirModal/cerrarModal
+   (esas solo existen en registros_up_S.js, que no se
+   carga en Presupuesto ni en Viáticos).
 ========================= */
 
-function logout(){
+/* --- CSS de respaldo: garantiza que .modal.activo SIEMPRE
+   sea visible, sin importar si la página carga modales.css
+   o no (esa regla solo vive ahí, y páginas como Inicio no
+   la cargan). Usa !important para ganarle a cualquier estilo
+   base que oculte el modal por defecto. --- */
 
-    abrirModal(
-        'modalLogout'
+if (!document.getElementById('estiloRespaldoModalLogout')) {
+
+    document.head.insertAdjacentHTML(
+
+        'beforeend',
+
+        `
+        <style id="estiloRespaldoModalLogout">
+            #modalLogout.activo{
+                display:flex !important;
+                position:fixed !important;
+                top:0; left:0;
+                width:100%; height:100%;
+                background:rgba(0,0,0,.45);
+                z-index:5000;
+                align-items:center;
+                justify-content:center;
+            }
+        </style>
+        `
+
     );
 
 }
+
+/* --- Inyectar el modal (+ su propio CSS de contenido) solo
+   si la página no lo trae ya --- */
+
+if (!document.getElementById('modalLogout')) {
+
+    document.head.insertAdjacentHTML(
+
+        'beforeend',
+
+        `
+        <style>
+            #modalLogout .modal-contenido{
+                background:white;
+                border-radius:18px;
+                padding:28px 30px;
+                max-width:360px;
+                width:90%;
+                text-align:center;
+                box-shadow:0 20px 50px rgba(0,0,0,.25);
+            }
+            #modalLogout h2{
+                color:#691C32;
+                margin-bottom:8px;
+            }
+            #modalLogout p{
+                color:#555;
+                font-size:13px;
+                margin-bottom:18px;
+            }
+            #modalLogout .modal-botones{
+                display:flex;
+                gap:10px;
+                justify-content:center;
+            }
+            #modalLogout button{
+                width:auto;
+                margin:0;
+                padding:10px 20px;
+                border:none;
+                border-radius:999px;
+                font-size:12.5px;
+                font-weight:700;
+                cursor:pointer;
+            }
+            #modalLogout .btn-secundario{
+                background:#F1EFE9;
+                color:#691C32;
+            }
+            #modalLogout .btn-principal{
+                background:#691C32;
+                color:white;
+            }
+        </style>
+        `
+
+    );
+
+    document.body.insertAdjacentHTML(
+
+        'beforeend',
+
+        `
+        <div class="modal" id="modalLogout">
+            <div class="modal-contenido">
+                <h2>¿Cerrar sesión?</h2>
+                <p>Se cerrará tu sesión actual.</p>
+                <div class="modal-botones">
+                    <button
+                        type="button"
+                        class="btn-secundario"
+                        id="cancelarLogoutSidebar"
+                    >
+                        Cancelar
+                    </button>
+                    <button
+                        type="button"
+                        class="btn-principal"
+                        id="confirmarLogout"
+                    >
+                        Cerrar Sesión
+                    </button>
+                </div>
+            </div>
+        </div>
+        `
+
+    );
+
+}
+
+function logout(){
+
+    document
+    .getElementById('modalLogout')
+    ?.classList.add('activo');
+
+}
+
+document
+.getElementById('cancelarLogoutSidebar')
+?.addEventListener('click', () => {
+
+    document
+    .getElementById('modalLogout')
+    ?.classList.remove('activo');
+
+});
 
 /* =========================
    CONFIRMAR LOGOUT
