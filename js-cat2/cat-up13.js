@@ -29,7 +29,7 @@ const personas = [
 
     {
         nombre: "Adán Missael Hernández Garrido",
-        categoria: "Subdirector Adjunto A ",
+        categoria: "Subdirector Adjunto A",
         rfc: "HEGA891105RA0"
     },
 

@@ -1657,7 +1657,7 @@ async function generarViaticos() {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        area: "UP-CA",
+        area: "UP-13",
         pdf_url: dataScript.url,
         detalle,
       }),
