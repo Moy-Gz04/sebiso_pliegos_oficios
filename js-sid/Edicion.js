@@ -6,26 +6,27 @@ window.location.pathname
 /* =========================
    PAGINAS
 ========================= */
+
 const PAGINAS = [
 
     {
         nombre:"Inicio",
-        ruta:"../p-up/UP-16.html"
+        ruta:"../p-up/UP-06.html"
     },
 
     {
         nombre:"Registros",
-        ruta:"../h-up/R_UP-16.html"
+        ruta:"../h-up/R_UP-06.html"
     },
 
     {
         nombre:"Presupuesto",
-        ruta:"../vistas-p/vista_up16.html"
+        ruta:"../vistas-p/vista_up06.html"
     },
 
     {
         nombre:"Viáticos",
-        ruta:"../vistas-v/viaticos_up16.html"
+        ruta:"../vistas-v/viaticos_up06.html"
     },
 ];
 
@@ -230,7 +231,39 @@ function cerrarModal(id){
    carga en Presupuesto ni en Viáticos).
 ========================= */
 
-/* --- Inyectar el modal (+ su propio CSS) si la página no lo trae ya --- */
+/* --- CSS de respaldo: garantiza que .modal.activo SIEMPRE
+   sea visible, sin importar si la página carga modales.css
+   o no (esa regla solo vive ahí, y páginas como Inicio no
+   la cargan). Usa !important para ganarle a cualquier estilo
+   base que oculte el modal por defecto. --- */
+
+if (!document.getElementById('estiloRespaldoModalLogout')) {
+
+    document.head.insertAdjacentHTML(
+
+        'beforeend',
+
+        `
+        <style id="estiloRespaldoModalLogout">
+            #modalLogout.activo{
+                display:flex !important;
+                position:fixed !important;
+                top:0; left:0;
+                width:100%; height:100%;
+                background:rgba(0,0,0,.45);
+                z-index:5000;
+                align-items:center;
+                justify-content:center;
+            }
+        </style>
+        `
+
+    );
+
+}
+
+/* --- Inyectar el modal (+ su propio CSS de contenido) solo
+   si la página no lo trae ya --- */
 
 if (!document.getElementById('modalLogout')) {
 
@@ -240,19 +273,6 @@ if (!document.getElementById('modalLogout')) {
 
         `
         <style>
-            #modalLogout{
-                display:none;
-                position:fixed;
-                top:0; left:0;
-                width:100%; height:100%;
-                background:rgba(0,0,0,.45);
-                z-index:5000;
-                align-items:center;
-                justify-content:center;
-            }
-            #modalLogout.activo{
-                display:flex;
-            }
             #modalLogout .modal-contenido{
                 background:white;
                 border-radius:18px;
