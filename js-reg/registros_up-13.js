@@ -445,7 +445,7 @@ function abrirModalSPG(codigo) {
 
   // Valores fijos pre-cargados
   document.getElementById("spgUR").value     = "13";
-  document.getElementById("spgUP").value     = "01";
+  document.getElementById("spgUP").value     = "13";
   document.getElementById("spgCuenta").value = "------";
 
   // Bloquear edición de campos fijos
