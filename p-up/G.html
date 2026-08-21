@@ -258,6 +258,29 @@ if(area !== 'Administracion'){
 
     </div>
 
+    <!-- =========================
+         MODAL LOGOUT
+    ========================= -->
+
+    <div class="modal" id="modalLogout">
+        <div class="modal-contenido">
+            <h2>
+                Cerrar Sesión
+            </h2>
+            <p>
+                ¿Estás seguro que deseas cerrar sesión?
+            </p>
+            <div class="modal-botones">
+                <button type="button" class="btn-secundario" onclick="cerrarModal('modalLogout')">
+                    Cancelar
+                </button>
+                <button type="button" class="btn-principal" id="confirmarLogout">
+                    Cerrar Sesión
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- SCRIPTS -->
 
     <script src="../js/sidebar_CP.js"></script>

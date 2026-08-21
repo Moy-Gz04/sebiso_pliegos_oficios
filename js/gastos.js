@@ -27,17 +27,27 @@ document.getElementById(
 
 function abrirModal(id){
 
-    document.getElementById(
-        id
-    ).style.display = "flex";
+    const modal =
+    document.getElementById(id);
+
+    if(modal){
+
+        modal.style.display = "flex";
+
+    }
 
 }
 
 function cerrarModal(id){
 
-    document.getElementById(
-        id
-    ).style.display = "none";
+    const modal =
+    document.getElementById(id);
+
+    if(modal){
+
+        modal.style.display = "none";
+
+    }
 
 }
 
@@ -114,6 +124,44 @@ function normalizarEstatus(estatus){
     .trim()
 
     .toUpperCase();
+
+}
+
+/* =========================
+   LINK PDF
+   Devuelve el enlace "Ver X" si el archivo existe,
+   o un botón deshabilitado "Sin X" si no existe.
+========================= */
+
+function linkPDF(url, textoSi, textoNo){
+
+    if(url){
+
+        return `
+            <a
+                href="${url}"
+                target="_blank"
+                class="btn-link"
+            >
+
+                ${textoSi}
+
+            </a>
+        `;
+
+    }
+
+    return `
+        <button
+            type="button"
+            class="btn-link btn-link-vacio"
+            disabled
+        >
+
+            ${textoNo}
+
+        </button>
+    `;
 
 }
 
@@ -482,15 +530,7 @@ async function cargarRegistros(){
 
                     </span>
 
-                    <a
-                        href="${registro.oficio_pdf || '#'}"
-                        target="_blank"
-                        class="btn-link"
-                    >
-
-                        Ver Oficio
-
-                    </a>
+                    ${linkPDF(registro.oficio_pdf, "Ver Oficio", "Sin Oficio")}
 
                 </div>
 
@@ -504,15 +544,7 @@ async function cargarRegistros(){
 
                     </span>
 
-                    <a
-                        href="${registro.pliego_pdf || '#'}"
-                        target="_blank"
-                        class="btn-link"
-                    >
-
-                        Ver Pliego
-
-                    </a>
+                    ${linkPDF(registro.pliego_pdf, "Ver Pliego", "Sin Pliego")}
 
                 </div>
 
@@ -526,15 +558,21 @@ async function cargarRegistros(){
 
                     </span>
 
-                    <a
-                        href="${registro.spg_pdf || '#'}"
-                        target="_blank"
-                        class="btn-link"
-                    >
+                    ${linkPDF(registro.spg_pdf, "Ver SPG", "Sin SPG")}
 
-                        Ver SPG
+                </div>
 
-                    </a>
+                <!-- LEYENDA ALUSIVA AL GASTO PDF -->
+
+                <div class="campo-mini">
+
+                    <span>
+
+                        LEYENDA ALUSIVA AL GASTO PDF
+
+                    </span>
+
+                    ${linkPDF(registro.recibo_pdf, "Ver LAG", "Sin LAG")}
 
                 </div>
 
@@ -548,59 +586,21 @@ async function cargarRegistros(){
 
                     </span>
 
-                    <a
-                        href="${registro.recibo_pdf || '#'}"
-                        target="_blank"
-                        class="btn-link"
-                    >
-
-                        Ver Recibo
-
-                    </a>
+                    ${linkPDF(registro.factura_pdf, "Ver Recibo", "Sin Recibo")}
 
                 </div>
 
-                <!-- FACTURA PDF -->
+                <!-- ANEXO C PDF -->
 
                 <div class="campo-mini">
 
                     <span>
 
-                        FACTURA PDF
+                        ANEXO C PDF
 
                     </span>
 
-                    <a
-                        href="${registro.factura_pdf || '#'}"
-                        target="_blank"
-                        class="btn-link"
-                    >
-
-                        Ver Factura
-
-                    </a>
-
-                </div>
-
-                <!-- OFICIO 2 PDF -->
-
-                <div class="campo-mini">
-
-                    <span>
-
-                        OFICIO 2 PDF
-
-                    </span>
-
-                    <a
-                        href="${registro.oficio2_pdf || '#'}"
-                        target="_blank"
-                        class="btn-link"
-                    >
-
-                        Ver Oficio 2
-
-                    </a>
+                    ${linkPDF(registro.oficio2_pdf, "Ver Anexo C", "Sin Anexo C")}
 
                 </div>
 

@@ -11,22 +11,22 @@ const PAGINAS = [
 
     {
         nombre:"Inicio",
-        ruta:"../p-up/UP-01.html"
+        ruta:"../p-up/UP-04.html"
     },
 
     {
         nombre:"Registros",
-        ruta:"../h-up/R_UP-01.html"
+        ruta:"../h-up/R_UP-04.html"
     },
 
     {
         nombre:"Presupuesto",
-        ruta:"../vistas-p/vista_up01.html"
+        ruta:"../vistas-p/vista_up04.html"
     },
 
     {
         nombre:"Viáticos",
-        ruta:"../vistas-v/viaticos_up01.html"
+        ruta:"../vistas-v/viaticos_up04.html"
     },
 ];
 
