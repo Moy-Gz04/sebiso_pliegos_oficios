@@ -276,6 +276,8 @@
 
     width:100%;
 
+    align-items:stretch;
+
 }
 
 /* =========================
@@ -287,6 +289,44 @@
     flex:1;
 
     min-width:0;
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+}
+
+/* =========================
+   LABELS PDF — ALTURA FIJA Y CENTRADAS SOBRE EL BOTÓN
+========================= */
+
+.top-row2 .campo-mini span{
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    text-align:center;
+
+    width:100%;
+
+    min-height:26px;
+
+    line-height:1.3;
+
+}
+
+/* =========================
+   BOTÓN PDF SIEMPRE AL FONDO DE LA COLUMNA
+========================= */
+
+.top-row2 .campo-mini .btn-link{
+
+    margin-top:auto;
 
 }
 
@@ -444,6 +484,28 @@
     background:#541326;
 
     transform:translateY(-1px);
+
+}
+
+/* =========================
+   BOTÓN PDF — SIN ARCHIVO
+========================= */
+
+.btn-link.btn-link-vacio{
+
+    background:#e5e7eb;
+
+    color:#6b7280;
+
+    cursor:not-allowed;
+
+}
+
+.btn-link.btn-link-vacio:hover{
+
+    background:#e5e7eb;
+
+    transform:none;
 
 }
 
@@ -892,4 +954,3 @@
     }
 
 }
-
