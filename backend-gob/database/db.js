@@ -14,7 +14,20 @@ const pool = new Pool({
 
     ssl: {
         rejectUnauthorized: false
-    }
+    },
+
+    max: 15,
+
+    idleTimeoutMillis: 30000,
+
+    connectionTimeoutMillis: 5000
+
+});
+
+// CRÍTICO: sin esto, un error en una conexión idle tumba TODO el proceso
+pool.on('error', (err) => {
+
+    console.error('Error inesperado en cliente idle del pool:', err);
 
 });
 
