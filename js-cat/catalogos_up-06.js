@@ -20,7 +20,7 @@ const personas = [
     "Tec. Ana Maria Martinez Rubio",
     "Lic.Danna Odemaris Fuentes Olguin",
     "Ing. Alejandra Camacho Coronado",
-    "C. Carlos Alberto Hernández",
+    "C. Carlos Alberto Hernández Acosta",
     "C. Ángel Velasco Rocha"
 ];
 

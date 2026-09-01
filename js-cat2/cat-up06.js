@@ -135,7 +135,7 @@ const personas = [
     },
 
     {
-        nombre: "C. Carlos Alberto Hernández",
+        nombre: "C. Carlos Alberto Hernández Acosta",
         categoria: "Técnico Especializado",
         rfc: "HEAC920228UQ7"
     },
