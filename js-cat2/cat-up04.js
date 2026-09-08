@@ -66,6 +66,31 @@ const personas = [
     nombre: "Esmeralda Vargas Lechuga",
     categoria: "Asistente General",
     rfc: "VALE0209268E4"
+  },
+  {
+    nombre: "Cesar Reyes León",
+    categoria: "Asesor Tecnico/Gestor A",
+    rfc: "RELC980404K21"
+  },
+  {
+    nombre: "Adán Missael Hernández Garrido",
+    categoria: "Subdirector Adjunto A",
+    rfc: "HEGA891105RA0"
+  },
+  {
+    nombre: "Raúl Lozano Sánchez",
+    categoria: "Director De Área B",
+    rfc: "LOSR9309207L4"
+  },
+  {
+    nombre: "María Elena Arellano Márquez",
+    categoria: "Subdirectora Adjunta A",
+    rfc: "AEME740402GE8"
+  },
+  {
+    nombre: "Aradi Badillo Cuéllar",
+    categoria: "Directora De Área B",
+    rfc: "BACA840524JYA"
   }
 ];
 /* =========================

@@ -11,7 +11,12 @@ const personas = [
   "Esther Gayosso Joaquín",
   "Karla Lucero Vázquez Lara",
   "Maribel Orta Mejía",
-  "Esmeralda Vargas Lechuga"
+  "Esmeralda Vargas Lechuga",
+  "Cesar Reyes León",
+  "Adán Missael Hernández Garrido",
+  "Raúl Lozano Sánchez",
+  "María Elena Arellano Márquez",
+  "Aradi Badillo Cuéllar"
 ];
 /* ============================================================
    CATÁLOGO : MESES
