@@ -16,7 +16,8 @@ const personas = [
   "Adán Missael Hernández Garrido",
   "Raúl Lozano Sánchez",
   "María Elena Arellano Márquez",
-  "Aradi Badillo Cuéllar"
+  "Aradi Badillo Cuéllar",
+  "Marín Ángeles Zamora"
 ];
 /* ============================================================
    CATÁLOGO : MESES

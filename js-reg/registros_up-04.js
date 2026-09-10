@@ -51,7 +51,7 @@ const ADSCRIPCION_AREA = "UP-04 DIRECCIÓN GENERAL DE FOMENTO ARTESANAL";   // �
 /** URL de la Aplicación Web (Apps Script) que llena la hoja
  *  y genera el PDF de viáticos */
 const API_VIATICOS =
-"https://script.google.com/macros/s/AKfycbz8Rj7fK1jS75sKeCEl7toipi8UnlgWhCLMubRWM6usX9Y-iCpb1LENfs6LqKxlogn_YQ/exec";   // ⚠️ CAMBIAR — cada área necesita su propio Apps Script
+"https://script.google.com/macros/s/AKfycbyQ-uk5ws6odko5r0H4SfRXlFXMnjOjjirN7oMz4cpgXsHZqU2cpqguPXVrZ68MNSNr/exec";   // Apps Script propio de UP-04
 
 /* ============================================================
    2. UTILIDADES GENERALES

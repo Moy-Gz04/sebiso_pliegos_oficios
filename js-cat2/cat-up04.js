@@ -91,6 +91,11 @@ const personas = [
     nombre: "Aradi Badillo Cuéllar",
     categoria: "Directora De Área B",
     rfc: "BACA840524JYA"
+  },
+  {
+    nombre: "Marín Ángeles Zamora",
+    categoria: "Jefe De Departamento",
+    rfc: "AEZM8705319Q5"
   }
 ];
 /* =========================
