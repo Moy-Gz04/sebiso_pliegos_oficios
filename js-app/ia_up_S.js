@@ -156,7 +156,7 @@
             return "Revisa los días: el final no puede ser antes del inicio.";
 
         if(n === 4 && $("iaRelato").value.trim().length < 15)
-            return "Cuéntanos un poco más: qué hicieron y en qué localidades.";
+            return "Cuéntanos un poco más de lo que hicieron.";
 
         return "";
 

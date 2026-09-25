@@ -56,7 +56,7 @@ router.post("/redactar-up", limitador, async (req, res) => {
       relato:      limpiar(b.relato, 3000),
     };
     if (d.relato.length < 15) {
-      return res.status(400).json({ ok: false, msg: "Cuéntanos un poco más: qué hicieron y en qué localidades." });
+      return res.status(400).json({ ok: false, msg: "Cuéntanos un poco más de lo que hicieron." });
     }
 
     /* Gemini a veces responde 503 "alta demanda": hasta 4 intentos, rotando
@@ -118,9 +118,7 @@ router.post("/redactar-up", limitador, async (req, res) => {
       .map(l => l.trim()).filter(Boolean)
       .map(l => /^localidad\b/i.test(l) ? l : "Localidad " + l).join("\n");
 
-    if (!localidades) {
-      return res.status(422).json({ ok: false, msg: "No encontré ninguna localidad en tu relato. Menciona al menos una localidad visitada." });
-    }
+    /* Las localidades son opcionales: si el relato no menciona ninguna, queda vacío */
     if (!motivo || !actividades) throw new Error("Respuesta incompleta de Gemini");
     res.json({ ok: true, motivo, actividades, localidades });
   } catch (err) {
