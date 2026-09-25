@@ -39,7 +39,7 @@ Devuelve un JSON con exactamente tres campos de texto:
 
 "actividades": arreglo de 2 a 6 actividades (un elemento por actividad, SIN guion al inicio), redactadas como frases nominales uniformes y gramaticalmente correctas (ej. "Reunión con el delegado municipal.", "Entrega de apoyos alimentarios.", "Levantamiento de padrón."), cada una con mayúscula inicial y terminada en punto. Basadas solo en el relato.
 
-"localidades": arreglo con un elemento por localidad, con el formato "Localidad NOMBRE" (la palabra Localidad seguida del nombre, tal cual lo escribió la persona con ortografía corregida). Solo localidades que el relato mencione; si no menciona ninguna, devuelve un arreglo vacío.
+"localidades": arreglo con un elemento por localidad, con el formato "Localidad NOMBRE" (la palabra Localidad seguida del nombre, tal cual lo escribió la persona con ortografía corregida). Solo localidades que el relato mencione EXPRESAMENTE. El municipio de los datos de la comisión NO es una localidad: nunca lo uses como localidad ni lo deduzcas. Si el relato no nombra ninguna localidad, devuelve un arreglo vacío [].
 
 Devuelve SOLO el JSON.`;
 }
@@ -114,7 +114,12 @@ router.post("/redactar-up", limitador, async (req, res) => {
       .map(l => l.trim().replace(/^[-•*]\s*/, "")).filter(Boolean)
       .map(l => "- " + l).join("\n");
 
+    /* Red de seguridad: el municipio no cuenta como localidad aunque la IA lo devuelva */
+    const norm = s => String(s || "").normalize("NFD").replace(/[^\x00-\x7F]/g, "").toLowerCase()
+      .replace(/^localidad\s+/, "").replace(/,?\s*hgo\.?$/, "").replace(/[^a-z0-9]+/g, " ").trim();
+    const muni = norm(d.municipio);
     const localidades = lista(r.localidades).map(String)
+      .filter(l => norm(l) !== muni)
       .map(l => l.trim()).filter(Boolean)
       .map(l => /^localidad\b/i.test(l) ? l : "Localidad " + l).join("\n");
 
