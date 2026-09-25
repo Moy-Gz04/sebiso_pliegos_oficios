@@ -32,6 +32,151 @@ if(area !== 'UP-01-S-DRM'){
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/ssidebar.css">
 
+  <style>
+    /* Zona y Tarifa: campo calculado y bloqueado (solo esta pantalla) */
+    .fila .campo-bloqueado{
+      width:185px; min-height:36px; padding:8px 13px;
+      border:none; border-radius:999px;
+      background:#e7dcc3; color:#5f4a1d;
+      font-size:12px; font-weight:700;
+      cursor:not-allowed; box-shadow:inset 0 0 0 1px rgba(105,28,50,.18);
+      user-select:none;
+    }
+    .fila .campo-bloqueado:focus{ outline:none; }
+    /* Filtro por zona (tarjeta de municipio) */
+    .chips-zona{ display:flex; gap:6px; flex-wrap:wrap; }
+    .chip-zona{
+      width:auto; margin:0; flex:0 0 auto; letter-spacing:.2px; white-space:nowrap;
+      border:none; cursor:pointer; font-family:inherit;
+      min-height:36px; padding:6px 13px; border-radius:999px;
+      background:#fff; color:#691C32; font-size:11px; font-weight:700;
+      box-shadow:0 2px 8px rgba(0,0,0,.05), inset 0 0 0 1px rgba(105,28,50,.22);
+      transition:background-color .15s, color .15s;
+    }
+    .chip-zona:hover{ background:#f3e6ea; transform:none; }
+    .chip-zona.activo, .chip-zona.activo:hover{ background:#691C32; color:#fff; box-shadow:0 2px 8px rgba(105,28,50,.25); }
+    .chip-zona:focus-visible{ outline:2px solid #691C32; outline-offset:2px; }
+    /* Municipio elegido + zonas desplegables */
+    .municipio-elegido{
+      min-width:210px; min-height:36px; padding:8px 14px; display:flex; align-items:center;
+      border-radius:999px; background:#fff; color:#222; font-size:11.5px; font-weight:700;
+      box-shadow:0 2px 8px rgba(0,0,0,.05);
+    }
+    .chip-zona::after{ content:"▾"; margin-left:7px; font-size:10px; }
+    .chip-zona[aria-expanded="true"]::after{ content:"▴"; }
+    .panel-zona{
+      position:fixed; z-index:1000; min-width:260px; max-width:min(360px, 92vw);
+      max-height:min(320px, 60vh); overflow-y:auto;
+      background:#fff; border-radius:14px; padding:6px;
+      box-shadow:0 12px 32px rgba(0,0,0,.22), 0 0 0 1px rgba(105,28,50,.15);
+    }
+    .panel-zona[hidden]{ display:none; }
+    .panel-zona .cabecera-panel{
+      position:sticky; top:-6px; background:#fff; padding:6px 10px 8px;
+      font-size:10px; font-weight:700; letter-spacing:.4px; text-transform:uppercase; color:#5f4a1d;
+    }
+    .panel-zona .item-municipio{
+      display:flex; align-items:center; justify-content:space-between; gap:8px;
+      width:100%; margin:0; padding:8px 10px; border:none; border-radius:9px;
+      background:transparent; color:#222; text-align:left; font-family:inherit; font-size:11.5px; font-weight:500;
+      cursor:pointer; letter-spacing:0; transform:none;
+    }
+    .panel-zona .item-municipio:hover, .panel-zona .item-municipio:focus-visible{ background:#f3e6ea; transform:none; outline:none; }
+    .panel-zona .item-municipio.seleccionado{ background:#691C32; color:#fff; font-weight:700; }
+    .panel-zona .item-municipio.seleccionado::after{ content:"✓"; }
+
+    /* Calendarios de la comisión */
+    .fila .campo-fecha, .ia-fila .campo-fecha{
+      width:auto; min-width:168px; min-height:40px; padding:7px 14px; cursor:pointer;
+      border:none; border-radius:999px; color:#fff; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:.3px;
+      background:linear-gradient(135deg,#8a2843 0%,#691C32 60%,#4e1224 100%);
+      box-shadow:0 4px 12px rgba(105,28,50,.32), inset 0 1px 0 rgba(255,255,255,.18);
+      transition:transform .15s, box-shadow .15s, filter .15s;
+      color-scheme:dark;
+    }
+    .fila .campo-fecha:hover, .ia-fila .campo-fecha:hover{ transform:translateY(-1px); box-shadow:0 7px 16px rgba(105,28,50,.4), inset 0 1px 0 rgba(255,255,255,.22); filter:brightness(1.08); }
+    .fila .campo-fecha::-webkit-calendar-picker-indicator, .ia-fila .campo-fecha::-webkit-calendar-picker-indicator{
+      cursor:pointer; padding:4px; border-radius:50%; background-color:rgba(255,255,255,.2);
+      opacity:1;
+    }
+    .fila .campo-fecha::-webkit-calendar-picker-indicator:hover, .ia-fila .campo-fecha::-webkit-calendar-picker-indicator:hover{ background-color:rgba(255,255,255,.38); }
+    .fila .campo-fecha:focus-visible, .ia-fila .campo-fecha:focus-visible{ outline:2px solid #691C32; outline-offset:2px; }
+    /* Botón principal: centrado y con ancho propio (no a todo lo ancho) */
+    #btnEnviar{ grid-column:1 / -1; justify-self:center; display:block; width:auto; min-width:240px; max-width:100%; margin:18px auto 0; padding:12px 42px; }
+    /* Casillas de selección de personas */
+    .tabla-personas input[type="checkbox"]{
+      -webkit-appearance:none; appearance:none; width:22px; height:22px; margin:0; cursor:pointer;
+      display:inline-grid; place-content:center; vertical-align:middle;
+      border:2px solid #b98a97; border-radius:7px; background:#fff;
+      box-shadow:0 1px 3px rgba(0,0,0,.08);
+      transition:background-color .15s, border-color .15s, transform .12s, box-shadow .15s;
+    }
+    .tabla-personas input[type="checkbox"]::after{
+      content:""; width:11px; height:6px; margin-top:-2px;
+      border-left:3px solid #fff; border-bottom:3px solid #fff;
+      transform:rotate(-45deg) scale(0); transition:transform .15s;
+    }
+    .tabla-personas input[type="checkbox"]:hover{ border-color:#691C32; transform:scale(1.08); }
+    .tabla-personas input[type="checkbox"]:checked{
+      background:linear-gradient(135deg,#8a2843,#691C32); border-color:#691C32;
+      box-shadow:0 3px 8px rgba(105,28,50,.35);
+    }
+    .tabla-personas input[type="checkbox"]:checked::after{ transform:rotate(-45deg) scale(1); }
+    .tabla-personas input[type="checkbox"]:focus-visible{ outline:2px solid #691C32; outline-offset:2px; }
+    .tabla-personas tr:has(input:checked){ background:#f0dde3; font-weight:700; }
+    /* Llenado inteligente */
+    .barra-ia{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; padding:10px 14px; border-radius:16px;
+      background:linear-gradient(135deg,#f3e6ea,#f5efe3); box-shadow:inset 0 0 0 1px rgba(105,28,50,.18); }
+    .barra-ia span{ font-size:11px; color:#5f4a1d; line-height:1.35; flex:1 1 220px; }
+    #btnIA{ width:auto; margin:0; padding:9px 18px; border-radius:999px; font-size:12px; font-weight:700; letter-spacing:.3px; cursor:pointer;
+      background:linear-gradient(135deg,#8a2843,#691C32 60%,#4e1224); color:#fff; border:none;
+      box-shadow:0 4px 12px rgba(105,28,50,.32), inset 0 1px 0 rgba(255,255,255,.18); }
+    .aviso-ia{ margin:-4px 0 10px; padding:9px 14px; border-radius:12px; background:#f3e6ea; color:#691C32; font-size:11px; font-weight:600; }
+    .aviso-ia[hidden]{ display:none; }
+    .ia-relleno{ animation:iaRelleno 1.6s ease-out; }
+    @keyframes iaRelleno{ 0%{ box-shadow:0 0 0 3px #691C32; background:#f3e6ea; } 100%{ box-shadow:0 0 0 0 transparent; } }
+    .ia-fondo{ position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px; background:rgba(40,10,20,.55); backdrop-filter:blur(3px); }
+    .ia-fondo[hidden]{ display:none; }
+    .ia-modal{ position:relative; width:min(480px,100%); max-height:92vh; overflow-y:auto; padding:20px 24px 22px; border-radius:24px; background:#fff; box-shadow:0 24px 60px rgba(0,0,0,.4); }
+    .ia-cabecera{ display:flex; align-items:center; justify-content:space-between; }
+    .ia-marca{ font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#8a2843; }
+    .ia-modal .ia-cerrar{ width:32px; height:32px; margin:0; padding:0; border:none; border-radius:50%; background:#f3e6ea; color:#691C32; font-size:20px; line-height:1; cursor:pointer; transform:none; }
+    .ia-progreso{ display:flex; gap:6px; margin:12px 0 18px; }
+    .ia-progreso i{ flex:1; height:4px; border-radius:4px; background:#eadfe2; transition:background-color .25s; }
+    .ia-progreso i.hecho{ background:linear-gradient(90deg,#8a2843,#691C32); }
+    .ia-paso h2{ margin:0 0 4px; font-size:22px; color:#3a1620; }
+    .ia-paso > p{ margin:0 0 16px; font-size:13px; line-height:1.4; color:#6b5a5f; }
+    .ia-paso[hidden]{ display:none; }
+    .ia-personas{ display:flex; flex-wrap:wrap; gap:8px; }
+    .ia-personas button{ width:auto; margin:0; padding:9px 15px; border:none; border-radius:999px; background:#f5efe3; color:#4a3a3f; font-family:inherit; font-size:12.5px; font-weight:600; cursor:pointer;
+      box-shadow:inset 0 0 0 1px rgba(105,28,50,.16); transform:none; transition:background-color .15s,color .15s,box-shadow .15s; }
+    .ia-personas button:hover{ background:#f3e6ea; transform:none; }
+    .ia-personas button[aria-pressed="true"]{ background:linear-gradient(135deg,#8a2843,#691C32); color:#fff; box-shadow:0 4px 10px rgba(105,28,50,.3); }
+    .ia-personas button[aria-pressed="true"]::before{ content:"✓ "; }
+    .ia-zonas{ gap:10px; }
+    .ia-zonas .chip-zona{ min-height:46px; padding:10px 20px; font-size:14px; }
+    .ia-eleccion{ margin-top:14px; padding:12px 16px; border-radius:14px; background:#f5efe3; color:#3a1620; font-size:14px; font-weight:700; }
+    .ia-eleccion.vacio{ color:#8a7a6a; font-weight:500; }
+    .ia-fila{ display:flex; gap:14px; flex-wrap:wrap; align-items:flex-end; }
+    .ia-oficio{ margin-top:14px; }
+    .ia-modal textarea{ width:100%; box-sizing:border-box; padding:12px 14px; border:1px solid #d9c9b0; border-radius:14px; background:#faf6ee; font-family:inherit; font-size:14px; line-height:1.45; resize:vertical; }
+    .ia-modal textarea:focus{ outline:2px solid #691C32; outline-offset:1px; }
+    .ia-error{ margin:14px 0 0; padding:9px 13px; border-radius:12px; background:#fbe4e7; color:#a11d33; font-size:12.5px; font-weight:700; }
+    .ia-error[hidden]{ display:none; }
+    .ia-botones{ display:flex; justify-content:space-between; gap:10px; margin-top:20px; }
+    .ia-botones button{ width:auto; margin:0; padding:12px 26px; border-radius:999px; font-size:13px; font-weight:700; cursor:pointer; border:none;
+      background:linear-gradient(135deg,#8a2843,#691C32 60%,#4e1224); color:#fff; box-shadow:0 4px 12px rgba(105,28,50,.3); }
+    .ia-botones button:disabled{ opacity:.65; cursor:wait; }
+    .ia-botones .ia-sec{ background:#efe6d6; color:#691C32; box-shadow:none; }
+    .ia-botones .ia-sec[hidden]{ display:none; }
+    body.ia-abierto{ overflow:hidden; }
+    .panel-zona{ z-index:3000; }
+    .detalle-zona{
+      align-self:center; font-size:10.5px; color:#6b5a3a; line-height:1.3;
+    }
+    .detalle-zona.aviso{ color:#a11d33; font-weight:700; }
+  </style>
+
 </head>
 
 <body>
@@ -90,32 +235,43 @@ if(area !== 'UP-01-S-DRM'){
 
         <div class="panel-derecho">
 
-          <!-- ZONA -->
-
-          <div class="fila">
-
-            <label>ZONA Y TARIFA</label>
-
-            <div class="grupo-flex">
-
-              <select id="zona" name="zona">
-              </select>
-
-            </div>
-
+          <!-- LLENADO INTELIGENTE: alternativa a la captura manual de motivo, actividades y localidades -->
+          <div class="barra-ia">
+            <button type="button" id="btnIA">✦ Llenado inteligente</button>
+            <span>Contesta unas preguntas y el sistema redacta motivo, actividades y localidades. O captura a mano abajo.</span>
           </div>
 
-          <!-- MUNICIPIO -->
+          <!-- MUNICIPIO (1.º): de aquí sale la zona.
+               Cada zona es un botón que se despliega con SUS municipios; solo se
+               puede elegir uno. El <select> oculto conserva el valor que viaja en
+               el formulario (name="municipio"). -->
 
           <div class="fila">
               <label>MUNICIPIO</label>
               <div class="grupo-flex">
-                  <select id="municipio" name="municipio">
-                  </select>
+
+                  <div class="campo-mini">
+                      <span>Municipio elegido</span>
+                      <div class="municipio-elegido" id="municipioElegido" aria-live="polite">—</div>
+                  </div>
+
+                  <div class="campo-mini">
+                      <span>Elige por zona</span>
+                      <div class="chips-zona" role="group" aria-label="Elegir municipio por zona">
+                          <button type="button" class="chip-zona" data-zona="I"   aria-haspopup="listbox" aria-expanded="false">Zona I</button>
+                          <button type="button" class="chip-zona" data-zona="II"  aria-haspopup="listbox" aria-expanded="false">Zona II</button>
+                          <button type="button" class="chip-zona" data-zona="III" aria-haspopup="listbox" aria-expanded="false">Zona III</button>
+                      </div>
+                  </div>
+
+                  <select id="municipio" name="municipio" hidden></select>
+
               </div>
           </div>
 
-          <!-- DÍA -->
+          <!-- DÍA (2.º): de aquí sale la tarifa. Dos calendarios; los campos
+               diaInicio / diaFin (ocultos) llevan el número de día que espera el
+               Apps Script y el resto de la pantalla. -->
 
           <div class="fila">
 
@@ -127,8 +283,8 @@ if(area !== 'UP-01-S-DRM'){
 
                 <span>Día Inicio</span>
 
-                <select id="diaInicio" name="diaInicio">
-                </select>
+                <input type="date" id="fechaInicio" class="campo-fecha" aria-label="Día de inicio de la comisión">
+                <input type="hidden" id="diaInicio" name="diaInicio">
 
               </div>
 
@@ -136,29 +292,39 @@ if(area !== 'UP-01-S-DRM'){
 
                 <span>Día Fin</span>
 
-                <select id="diaFin" name="diaFin">
-                </select>
+                <input type="date" id="fechaFin" class="campo-fecha" aria-label="Día de fin de la comisión">
+                <input type="hidden" id="diaFin" name="diaFin">
 
               </div>
 
+              <span class="detalle-zona">La comisión debe ser dentro de un mismo mes.</span>
+
             </div>
 
           </div>
 
-          <!-- MES -->
+          <!-- ZONA Y TARIFA (3.º): se calcula sola y está bloqueada.
+               Es un input de solo lectura (no un select deshabilitado)
+               para que el valor SÍ viaje en el formulario con el nombre "zona". -->
 
           <div class="fila">
 
-            <label>MES</label>
+            <label>ZONA Y TARIFA</label>
 
             <div class="grupo-flex">
 
-              <select id="mes" name="mes">
-              </select>
+              <input type="text" id="zona" name="zona" class="campo-bloqueado"
+                     readonly tabindex="-1" aria-readonly="true"
+                     title="Se calcula automáticamente con el municipio y los días">
+
+              <span class="detalle-zona" id="detalleZona">Se calcula con el municipio y los días.</span>
 
             </div>
 
           </div>
+
+          <!-- MES: sin fila visible; se toma de la fecha de inicio -->
+          <input type="hidden" id="mes" name="mes">
 
           <!-- MOTIVO -->
 
@@ -198,6 +364,8 @@ if(area !== 'UP-01-S-DRM'){
 
           </div>
 
+          <div class="aviso-ia" id="iaAviso" hidden>✦ Redactado con IA a partir de tus respuestas. Revísalo y corrige lo que haga falta antes de generar los pliegos.</div>
+
           <!-- FECHA -->
 
           <div class="fila">
@@ -208,30 +376,14 @@ if(area !== 'UP-01-S-DRM'){
 
               <div class="campo-mini">
 
-                <span>Día</span>
-
-                <select id="diaF" name="diaF">
-                </select>
-
-              </div>
-
-              <div class="campo-mini">
-
-                <span>Mes</span>
-
-                <select id="mesF" name="mesF">
-                </select>
+                <input type="date" id="fechaOficio" class="campo-fecha" aria-label="Fecha del oficio">
+                <input type="hidden" id="diaF" name="diaF">
+                <input type="hidden" id="mesF" name="mesF">
+                <input type="hidden" id="anoF" name="anoF">
 
               </div>
 
-              <div class="campo-mini">
-
-                <span>Año</span>
-
-                <select id="anoF" name="anoF">
-                </select>
-
-              </div>
+            </div>
 
             </div>
 
@@ -442,9 +594,64 @@ if(area !== 'UP-01-S-DRM'){
 
 </div>
 
+  <div class="ia-fondo" id="iaFondo" hidden>
+    <div class="ia-modal" role="dialog" aria-modal="true" aria-labelledby="iaTitulo">
+
+      <div class="ia-cabecera">
+        <span class="ia-marca">✦ Llenado inteligente</span>
+        <button type="button" class="ia-cerrar" id="iaCerrar" aria-label="Cerrar">×</button>
+      </div>
+      <div class="ia-progreso" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
+
+      <section class="ia-paso" data-paso="1">
+        <h2 id="iaTitulo">¿Quiénes fueron?</h2>
+        <p>Toca a cada persona de la comisión.</p>
+        <div class="ia-personas" id="iaPersonas"></div>
+      </section>
+
+      <section class="ia-paso" data-paso="2" hidden>
+        <h2>¿A qué municipio?</h2>
+        <p>Elige la zona y luego el municipio. Solo uno.</p>
+        <div class="chips-zona ia-zonas" role="group" aria-label="Elegir municipio por zona">
+          <button type="button" class="chip-zona ia-zona" data-zona="I"   aria-haspopup="listbox" aria-expanded="false">Zona I</button>
+          <button type="button" class="chip-zona ia-zona" data-zona="II"  aria-haspopup="listbox" aria-expanded="false">Zona II</button>
+          <button type="button" class="chip-zona ia-zona" data-zona="III" aria-haspopup="listbox" aria-expanded="false">Zona III</button>
+        </div>
+        <div class="ia-eleccion" id="iaMunicipioElegido">Aún no eliges municipio</div>
+      </section>
+
+      <section class="ia-paso" data-paso="3" hidden>
+        <h2>¿Cuándo fue?</h2>
+        <p>La zona y la tarifa se calculan solas.</p>
+        <div class="ia-fila">
+          <div class="campo-mini"><span>Del</span><input type="date" id="iaFechaInicio" class="campo-fecha" aria-label="Día de inicio"></div>
+          <div class="campo-mini"><span>Al</span><input type="date" id="iaFechaFin" class="campo-fecha" aria-label="Día de fin"></div>
+        </div>
+        <div class="ia-eleccion" id="iaZonaTarifa"></div>
+        <div class="ia-fila ia-oficio">
+          <div class="campo-mini"><span>Fecha del oficio</span><input type="date" id="iaFechaOficio" class="campo-fecha" aria-label="Fecha del oficio"></div>
+        </div>
+      </section>
+
+      <section class="ia-paso" data-paso="4" hidden>
+        <h2>Cuéntanos qué hicieron</h2>
+        <p>Con tus palabras, como se lo contarías a alguien: a qué fueron, qué actividades hicieron y qué localidades visitaron. El sistema lo redacta.</p>
+        <textarea id="iaRelato" rows="6" placeholder="Ej. Fuimos a supervisar la entrega de apoyos a adultos mayores. Nos reunimos con el delegado, entregamos apoyos y levantamos padrón en El Mezquital y San Pedro."></textarea>
+      </section>
+
+      <p class="ia-error" id="iaError" hidden></p>
+
+      <div class="ia-botones">
+        <button type="button" id="iaAtras" class="ia-sec">Atrás</button>
+        <button type="button" id="iaSiguiente">Siguiente</button>
+      </div>
+    </div>
+  </div>
+
   <div id="overlay"></div>
   <script src="../js-cat/catalogos_up_S.js"></script>
   <script src="../js-app/app_up_S.js"></script>
+  <script src="../js-app/ia_up_S.js"></script>
   <script src="../js-sid/sidebar_up_S.js"></script>
 </body>
 

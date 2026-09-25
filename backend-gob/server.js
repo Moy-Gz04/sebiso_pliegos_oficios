@@ -28,6 +28,7 @@ const oficio2Routes      = require('./routes/oficio2');
 const reportesPdfRoutes  = require('./routes/reportesPdf.routes');
 const viaticosRoutes = require("./routes/viaticos");
 const viaticosGeneradosRoutes = require("./routes/viaticosGenerados");
+const iaRoutes = require("./routes/ia");
 
 
 /* =========================
@@ -59,6 +60,7 @@ app.use('/api/oficio2',      oficio2Routes);
 app.use('/api/reportes-pdf', reportesPdfRoutes);  // ← cambiado para evitar conflicto
 app.use("/api/viaticos", viaticosRoutes);
 app.use("/api/viaticos-generados", viaticosGeneradosRoutes);
+app.use("/api/ia", iaRoutes);
 
 /* =========================
    ROOT

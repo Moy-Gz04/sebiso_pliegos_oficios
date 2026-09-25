@@ -100,6 +100,24 @@ boton.addEventListener(
 
         }
 
+        /* --- Validación 1b: días coherentes ---
+           La tarifa de "Zona y Tarifa" depende de los días, así que
+           el día fin no puede ser menor que el día inicio. --- */
+
+        if(
+            !document.getElementById("zona").value ||
+            Number(document.getElementById("diaFin").value) <
+            Number(document.getElementById("diaInicio").value)
+        ){
+
+            mostrarAdvertencia(
+                "Revisa los días: el DÍA FIN no puede ser menor que el DÍA INICIO."
+            );
+
+            return;
+
+        }
+
         /* --- Validación 2: campos de texto obligatorios --- */
 
         const motivo =
