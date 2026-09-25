@@ -35,7 +35,7 @@ Del relato extrae el objetivo de la comisión, las actividades realizadas y las 
 
 Devuelve un JSON con exactamente tres campos de texto:
 
-"motivo": UNA sola oración que completa la idea "El motivo de la comisión es...", en infinitivo o sustantivo (ej. "realizar la supervisión de ...", "llevar a cabo la entrega de ..."). REGLAS ESTRICTAS: la primera letra va en MINÚSCULA y termina con un PUNTO final. No repitas el municipio ni las fechas.
+"motivo": UNA sola oración que completa la idea "El motivo de la comisión es...", en infinitivo o sustantivo (ej. "realizar la supervisión de ...", "llevar a cabo la entrega de ..."). REGLAS ESTRICTAS: la primera letra va en MAYÚSCULA y NO lleva punto final (el sistema le agrega después "los días..." y el punto). No repitas el municipio ni las fechas.
 
 "actividades": arreglo de 2 a 6 actividades (un elemento por actividad, SIN guion al inicio), redactadas como frases nominales uniformes y gramaticalmente correctas (ej. "Reunión con el delegado municipal.", "Entrega de apoyos alimentarios.", "Levantamiento de padrón."), cada una con mayúscula inicial y terminada en punto. Basadas solo en el relato.
 
@@ -106,8 +106,10 @@ router.post("/redactar-up", limitador, async (req, res) => {
 
     /* Reglas del formulario, garantizadas aunque la IA se equivoque */
     let motivo = String(r.motivo || "").trim();
-    motivo = motivo.charAt(0).toLowerCase() + motivo.slice(1);
-    if (!/[.]$/.test(motivo)) motivo = motivo.replace(/[,;:!?]+$/, "") + ".";
+    // El pliego agrega después "los días X y Y." por su cuenta: el motivo va con
+    // mayúscula inicial y SIN punto final.
+    motivo = motivo.replace(/[\s.,;:!?]+$/, "");
+    motivo = motivo.charAt(0).toUpperCase() + motivo.slice(1);
 
     const lista = v => (Array.isArray(v) ? v : String(v || "").split(/\r?\n/));
     const actividades = lista(r.actividades).map(String)
