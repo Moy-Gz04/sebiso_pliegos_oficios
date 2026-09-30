@@ -102,12 +102,12 @@ boton.addEventListener(
 
         /* --- Validación 1b: días coherentes ---
            La tarifa de "Zona y Tarifa" depende de los días, así que
-           el día fin no puede ser menor que el día inicio. --- */
+           la fecha fin no puede ser anterior a la de inicio. Se cuenta
+           de fecha a fecha para que funcione si cruza de mes. --- */
 
         if(
             !document.getElementById("zona").value ||
-            Number(document.getElementById("diaFin").value) <
-            Number(document.getElementById("diaInicio").value)
+            diasComision() < 1
         ){
 
             mostrarAdvertencia(
@@ -208,6 +208,7 @@ btnConfirmar.addEventListener(
                 dia_inicio:            formData.get('diaInicio'),
                 dia_fin:               formData.get('diaFin'),
                 mes:                   formData.get('mes'),
+                mes_fin:               formData.get('mesFin'),
                 motivo_comision:       formData.get('motivo'),
                 localidades_visitadas: formData.get('localidades')
             });
@@ -288,7 +289,10 @@ btnConfirmar.addEventListener(
                             municipio:             formData.get('municipio'),
                             dia_inicio:            formData.get('diaInicio'),
                             dia_fin:               formData.get('diaFin'),
-                            mes:                   formData.get('mes'),
+                            // Si cruza de mes se guarda "septiembre-octubre"
+                            mes:                   formData.get('mesFin')
+                                                     ? formData.get('mes') + '-' + formData.get('mesFin')
+                                                     : formData.get('mes'),
                             motivo_comision:       formData.get('motivo'),
                             localidades_visitadas: formData.get('localidades')
                         })

@@ -97,6 +97,8 @@ function formatearMoneda(valor) {
     fin    = parseInt(fin);
     if (isNaN(inicio) || isNaN(fin)) return "";
     if (inicio === fin) return `${inicio}`;
+    // Comisión que cruza de mes (ej. 30 al 2): se muestra como rango
+    if (fin < inicio) return `${inicio} al ${fin}`;
     const dias = [];
     for (let i = inicio; i <= fin; i++) dias.push(i);
     if (dias.length === 2) return `${dias[0]} y ${dias[1]}`;

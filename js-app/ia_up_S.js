@@ -202,7 +202,8 @@
     }
 
     function periodoTexto(){
-        const i = $("diaInicio").value, f = $("diaFin").value, m = $("mes").value;
+        const i = $("diaInicio").value, f = $("diaFin").value, m = $("mes").value, mf = $("mesFin").value;
+        if(mf) return "del " + i + " de " + m + " al " + f + " de " + mf;
         return i === f ? (i + " de " + m) : ("del " + i + " al " + f + " de " + m);
     }
 

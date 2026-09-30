@@ -297,7 +297,7 @@ if(area !== 'UP-01-S-DRM'){
 
               </div>
 
-              <span class="detalle-zona">La comisión debe ser dentro de un mismo mes.</span>
+              <span class="detalle-zona">Puede abarcar dos meses (ej. del 30 de septiembre al 2 de octubre).</span>
 
             </div>
 
@@ -325,6 +325,8 @@ if(area !== 'UP-01-S-DRM'){
 
           <!-- MES: sin fila visible; se toma de la fecha de inicio -->
           <input type="hidden" id="mes" name="mes">
+          <!-- MES FIN: solo lleva valor si la comisión cruza al mes siguiente -->
+          <input type="hidden" id="mesFin" name="mesFin">
 
           <!-- MOTIVO -->
 

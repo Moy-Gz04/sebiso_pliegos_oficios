@@ -502,7 +502,7 @@ function calcularZonaTarifa(){
 
     const inicio = Number(document.getElementById("diaInicio").value);
     const fin    = Number(document.getElementById("diaFin").value);
-    const dias   = fin - inicio + 1;
+    const dias   = diasComision();
 
     detalle.classList.remove("aviso");
 
@@ -552,13 +552,27 @@ function calcularZonaTarifa(){
      diaInicio / diaFin → número de día (1-31), como antes
      mes                → nombre del mes de la fecha de inicio
 
-   Una comisión es de un solo mes (el sistema maneja un solo "mes"),
-   así que el calendario de fin solo permite del inicio al último día
-   de ese mismo mes. Si el inicio se mueve y el fin queda fuera de
-   rango, el fin se iguala al inicio.
+   La comisión puede abarcar dos meses (ej. 30 de septiembre al 2 de
+   octubre): el calendario de fin permite del inicio al último día del
+   mes SIGUIENTE. Si cruza de mes, "mesFin" lleva el nombre del segundo
+   mes (si no, va vacío y todo funciona como antes). Si el inicio se
+   mueve y el fin queda fuera de rango, el fin se iguala al inicio.
    ============================================================ */
 
 function dosDigitos(n){ return String(n).padStart(2, "0"); }
+
+/* Número de días de la comisión, contando de fecha a fecha
+   (funciona igual si cruza de mes: 30 sep → 2 oct = 3 días) */
+function diasComision(){
+
+    const ini = document.getElementById("fechaInicio").value;
+    const fin = document.getElementById("fechaFin").value;
+    if(!ini || !fin) return 0;
+
+    const a = new Date(ini + "T12:00:00"), b = new Date(fin + "T12:00:00");
+    return Math.round((b - a) / 86400000) + 1;
+
+}
 
 function hoyISO(){
 
@@ -577,8 +591,9 @@ function actualizarFechasComision(){
     const partes = iniEl.value.split("-").map(Number);
     const anio = partes[0], mes = partes[1], dia = partes[2];
 
-    const ultimoDia = new Date(anio, mes, 0).getDate();
-    const maximo = anio + "-" + dosDigitos(mes) + "-" + dosDigitos(ultimoDia);
+    /* Último día del mes siguiente (new Date(año, mes+1, 0) ya brinca de año en diciembre) */
+    const finMax = new Date(anio, mes + 1, 0);
+    const maximo = finMax.getFullYear() + "-" + dosDigitos(finMax.getMonth() + 1) + "-" + dosDigitos(finMax.getDate());
 
     finEl.min = iniEl.value;
     finEl.max = maximo;
@@ -588,8 +603,11 @@ function actualizarFechasComision(){
     }
 
     document.getElementById("diaInicio").value = dia;
+    const mesFinNum = Number(finEl.value.split("-")[1]);
+
     document.getElementById("diaFin").value    = Number(finEl.value.split("-")[2]);
     document.getElementById("mes").value       = meses[mes - 1];
+    document.getElementById("mesFin").value    = (mesFinNum !== mes) ? meses[mesFinNum - 1] : "";
 
     calcularZonaTarifa();
 
