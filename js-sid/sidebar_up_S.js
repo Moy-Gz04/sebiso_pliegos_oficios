@@ -335,9 +335,13 @@ if (!document.getElementById('modalLogout')) {
 
 function logout(){
 
-    document
-    .getElementById('modalLogout')
-    ?.classList.add('activo');
+    const modal = document.getElementById('modalLogout');
+    if(!modal) return;
+
+    // El botón Cancelar la cierra con style.display = 'none'; se limpia
+    // para que la clase .activo la vuelva a mostrar las veces que sea.
+    modal.style.display = '';
+    modal.classList.add('activo');
 
 }
 

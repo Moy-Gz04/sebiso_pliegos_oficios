@@ -548,6 +548,14 @@ button:hover{
     z-index:9999;
 }
 
+/* El sidebar abre la ventana de "Cerrar sesión" con la clase .activo
+   (las demás ventanas usan style.display). Sin esta regla la ventana
+   nunca aparecía en las páginas de generación de pliegos. */
+.modal.activo{
+
+    display:flex;
+}
+
 .modal-contenido{
 
     background:white;
