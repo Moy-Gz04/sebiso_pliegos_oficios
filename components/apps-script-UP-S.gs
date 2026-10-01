@@ -164,7 +164,6 @@ function procesarPliego_(numero, nombre, data) {
 
   // ── Pintar hoja de formato y generar PDFs ─────────────────
   pintarDatosEnF_(numero);
-  SpreadsheetApp.flush();   // que la tabla de Días / Importe se recalcule antes de exportar
   return generarPDF_(numero, nuevoID, nombre);
 }
 
@@ -228,10 +227,7 @@ function pintarDatosEnF_(numero) {
   const fecha_f     = datosD[13];
   const localidad   = datosD[14];
   const mesFin      = datosD[16];
-  const numDias     = Number(datosD[17]);   // columna R: días reales (también si cruza de mes)
   const munilocal   = municipio + "-" + localidad;
-
-  const cruzaMes = !!mesFin && mesFin !== mes;
 
   // Si la comisión cruza de mes, en la celda del mes van los dos
   // (ej. "septiembre-octubre"); si no, queda igual que antes.
@@ -250,13 +246,8 @@ function pintarDatosEnF_(numero) {
   shF.getRange("C34").setValue(munilocal);
   shF.getRange("C26").setValue(motivo);
   shF.getRange("C42").setValue(actividades);
-  // La tabla de Días / Importe se calcula con M31 (día inicio) y O31 (día fin).
-  // Si la comisión cruza de mes (30 al 2) esa cuenta no cuadra, así que se le
-  // da del 1 al número real de días (1 al 3): reparte igual que una comisión
-  // normal de esos días (2 + 1 = 3). En el PDF esa fila se sustituye por la
-  // frase completa del periodo (ver redactarPeriodoPliego_).
-  shF.getRange("M31").setValue(cruzaMes ? 1 : diaInicio);
-  shF.getRange("O31").setValue(cruzaMes ? numDias : diaFin);
+  shF.getRange("M31").setValue(diaInicio);
+  shF.getRange("O31").setValue(diaFin);
   shF.getRange("S31").setValue(mesPliego);
   shF.getRange("D52").setValue(e_firma);
   shF.getRange("D53").setValue(e_puesto);
