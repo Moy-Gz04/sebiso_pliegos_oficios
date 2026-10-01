@@ -378,9 +378,7 @@ function generarPDF_(numero, id, nombre) {
   // Comisión que cruza de mes: la fila del periodo se redacta completa
   // en una sola celda (ver redactarPeriodoPliego_)
   if (cruzaMes) {
-    redactarPeriodoPliego_(tmpF,
-      "Periodo de comisión del " + diain + " de " + mes +
-      " al " + diafin + " de " + mesFin + " de " + anoF);
+    redactarPeriodoPliego_(tmpF, diain, mes, diafin, mesFin, anoF);
   }
 
   recortarHoja_(tmpF, "C1:V64");
@@ -606,49 +604,50 @@ function contarDias_(diaInicio, diaFin, mes, mesFin, anio) {
 /**
  * Cuando la comisión cruza de mes, la fila "Periodo de comisión del __ al __
  * del mes de __ de ____" del pliego no alcanza para dos meses. Esta función
- * la reescribe COMPLETA en una sola celda (combinando la fila desde la
- * etiqueta hasta la columna V) con la frase ya redactada, ej.:
- *   "Periodo de comisión del 30 de septiembre al 2 de octubre de 2026"
- * Solo se aplica a la copia temporal que se exporta a PDF; la hoja F_n
- * original no se toca.
+ * combina I31:V31 y escribe ahí el periodo ya redactado, ej.:
+ *   "30 de septiembre al 2 de octubre de 2026"
+ * Si a la izquierda (C31:H31) no está la etiqueta "Periodo de comisión",
+ * escribe la frase completa. Solo se aplica a la copia temporal que se
+ * exporta a PDF; la hoja F_n original no se toca.
  *
  * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Copia temporal del pliego.
- * @param {string} texto - Frase completa del periodo.
+ * @param {number} diaIni
+ * @param {string} mesIni
+ * @param {number} diaFin
+ * @param {string} mesFin
+ * @param {number|string} anio
  */
-function redactarPeriodoPliego_(sheet, texto) {
+function redactarPeriodoPliego_(sheet, diaIni, mesIni, diaFin, mesFin, anio) {
 
-  const FILA    = 31;   // fila del periodo (la misma de M31 / O31 / S31)
-  const COL_FIN = 22;   // columna V, último borde del pliego
+  const RANGO = "I31:V31";
 
-  // Celda con la etiqueta "Periodo de comisión"; si no aparece, desde la columna C
-  const etiqueta = sheet.getRange(FILA, 1, 1, COL_FIN)
-    .createTextFinder("Periodo de comisi").matchCase(false).findNext();
+  // Lo que dice la etiqueta a la izquierda, para no repetir palabras
+  const etiqueta = sheet.getRange("C31:H31").getDisplayValues()[0]
+    .join(" ").replace(/\s+/g, " ").trim().toLowerCase();
 
-  let colIni = 3;
-  let celdaFormato = sheet.getRange("M31");
+  const periodo = diaIni + " de " + mesIni + " al " + diaFin + " de " + mesFin + " de " + anio;
 
-  if (etiqueta) {
-    const combinadas = etiqueta.getMergedRanges();
-    colIni = combinadas.length ? combinadas[0].getColumn() : etiqueta.getColumn();
-    celdaFormato = etiqueta;
+  let texto;
+  if (/periodo de comisi/.test(etiqueta)) {
+    texto = /\bdel$/.test(etiqueta) ? periodo : "del " + periodo;
+  } else {
+    texto = "Periodo de comisión del " + periodo;
   }
 
-  // Mismo tipo y tamaño de letra que la etiqueta original
-  const fuente = celdaFormato.getFontFamily();
-  const tamano = celdaFormato.getFontSize();
-  const color  = celdaFormato.getFontColor();
+  // Mismo tipo y tamaño de letra que la celda del día (M31)
+  const base   = sheet.getRange("M31");
+  const fuente = base.getFontFamily();
+  const tamano = base.getFontSize();
+  const color  = base.getFontColor();
 
+  const celda = sheet.getRange(RANGO);
+  celda.breakApart();
+  celda.clearContent();
   // Quitar las rayitas de los huecos (día inicio, día fin y mes)
-  ["M31", "O31", "S31"].forEach(function (a1) {
-    sheet.getRange(a1).setBorder(null, null, false, null, null, null);
-  });
+  celda.setBorder(null, null, false, null, false, null);
+  celda.merge();
 
-  const fila = sheet.getRange(FILA, colIni, 1, COL_FIN - colIni + 1);
-  fila.breakApart();
-  fila.clearContent();
-  fila.merge();
-
-  fila.setValue(texto)
+  celda.setValue(texto)
     .setFontFamily(fuente)
     .setFontSize(tamano)
     .setFontColor(color)
