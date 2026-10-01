@@ -227,10 +227,7 @@ function pintarDatosEnF_(numero) {
   const fecha_f     = datosD[13];
   const localidad   = datosD[14];
   const mesFin      = datosD[16];
-  const numDias     = Number(datosD[17]);
   const munilocal   = municipio + "-" + localidad;
-
-  const cruzaMes = !!mesFin && mesFin !== mes;
 
   // Si la comisión cruza de mes, en la celda del mes van los dos
   // (ej. "septiembre-octubre"); si no, queda igual que antes.
@@ -249,12 +246,8 @@ function pintarDatosEnF_(numero) {
   shF.getRange("C34").setValue(munilocal);
   shF.getRange("C26").setValue(motivo);
   shF.getRange("C42").setValue(actividades);
-  // Las fórmulas de la tabla (Días / Importe) cuentan con O31 - M31 + 1.
-  // Si la comisión cruza de mes (30 al 2), esa resta no sirve; se les da
-  // 1 y el número real de días para que calculen igual que una comisión
-  // normal. La frase del periodo se escribe aparte en el PDF.
-  shF.getRange("M31").setValue(cruzaMes ? 1 : diaInicio);
-  shF.getRange("O31").setValue(cruzaMes ? numDias : diaFin);
+  shF.getRange("M31").setValue(diaInicio);
+  shF.getRange("O31").setValue(diaFin);
   shF.getRange("S31").setValue(mesPliego);
   shF.getRange("D52").setValue(e_firma);
   shF.getRange("D53").setValue(e_puesto);
@@ -382,20 +375,17 @@ function generarPDF_(numero, id, nombre) {
 
   tmpSS.deleteSheet(tmpSS.getSheets()[0]);
 
-  // Comisión que cruza de mes: la fila del periodo se redacta completa
-  // en una sola celda (ver redactarPeriodoPliego_)
-  if (cruzaMes) {
-    // Primero se congelan los resultados (Días, Importe, Total) para que
-    // borrar M31 / O31 al escribir la frase no los recalcule en blanco.
-    SpreadsheetApp.flush();
-    convertirAValores_(tmpF);
-    redactarPeriodoPliego_(tmpF, diain, mes, diafin, mesFin, anoF);
-  }
-
   recortarHoja_(tmpF, "C1:V64");
   normalizarNumerosEnFN_(tmpF);
   convertirAValores_(tmpF);
   quitarBotones_(tmpF);
+
+  // Comisión que cruza de mes: la fila del periodo se redacta completa en
+  // una sola celda. Va AL FINAL, cuando el pliego ya es solo valores, para
+  // no alterar los Días / Importe que calculan las fórmulas de la hoja.
+  if (cruzaMes) {
+    redactarPeriodoPliego_(tmpF, diain, mes, diafin, mesFin, anoF);
+  }
 
   SpreadsheetApp.flush();
   Utilities.sleep(500);
@@ -615,13 +605,15 @@ function contarDias_(diaInicio, diaFin, mes, mesFin, anio) {
 /**
  * Cuando la comisión cruza de mes, la fila "Periodo de comisión del __ al __
  * del mes de __ de ____" del pliego no alcanza para dos meses. Esta función
- * combina I31:V31 y escribe ahí el periodo ya redactado, ej.:
- *   "30 de septiembre al 2 de octubre de 2026"
- * Si a la izquierda (C31:H31) no está la etiqueta "Periodo de comisión",
- * escribe la frase completa. Solo se aplica a la copia temporal que se
- * exporta a PDF; la hoja F_n original no se toca.
+ * combina la fila del periodo (I31:V31 de la hoja original) y escribe ahí el
+ * periodo ya redactado, ej.: "30 de septiembre al 2 de octubre de 2026".
  *
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Copia temporal del pliego.
+ * IMPORTANTE: se llama AL FINAL, cuando la copia ya está recortada
+ * (C1:V64 → la columna C pasa a ser A) y convertida a valores, para no
+ * tocar ninguna fórmula de Días / Importe. Por eso las columnas se
+ * calculan restando las columnas eliminadas por recortarHoja_.
+ *
+ * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Copia temporal del pliego (ya recortada).
  * @param {number} diaIni
  * @param {string} mesIni
  * @param {number} diaFin
@@ -630,10 +622,12 @@ function contarDias_(diaInicio, diaFin, mes, mesFin, anio) {
  */
 function redactarPeriodoPliego_(sheet, diaIni, mesIni, diaFin, mesFin, anio) {
 
-  const RANGO = "I31:V31";
+  const FILA   = 31;
+  const QUITAS = 2;               // recortarHoja_ elimina las columnas A y B
+  const COL    = function (n) { return n - QUITAS; };   // columna original → columna en la copia
 
-  // Lo que dice la etiqueta a la izquierda, para no repetir palabras
-  const etiqueta = sheet.getRange("C31:H31").getDisplayValues()[0]
+  // Columnas originales: C=3, H=8, I=9, M=13, V=22
+  const etiqueta = sheet.getRange(FILA, COL(3), 1, COL(8) - COL(3) + 1).getDisplayValues()[0]
     .join(" ").replace(/\s+/g, " ").trim().toLowerCase();
 
   const periodo = diaIni + " de " + mesIni + " al " + diaFin + " de " + mesFin + " de " + anio;
@@ -645,13 +639,14 @@ function redactarPeriodoPliego_(sheet, diaIni, mesIni, diaFin, mesFin, anio) {
     texto = "Periodo de comisión del " + periodo;
   }
 
-  // Mismo tipo y tamaño de letra que la celda del día (M31)
-  const base   = sheet.getRange("M31");
+  // Mismo tipo y tamaño de letra que la celda del día (M31 original)
+  const base   = sheet.getRange(FILA, COL(13));
   const fuente = base.getFontFamily();
   const tamano = base.getFontSize();
   const color  = base.getFontColor();
 
-  const celda = sheet.getRange(RANGO);
+  // I31:V31 de la hoja original
+  const celda = sheet.getRange(FILA, COL(9), 1, COL(22) - COL(9) + 1);
   celda.breakApart();
   celda.clearContent();
   // Quitar las rayitas de los huecos (día inicio, día fin y mes)
