@@ -225,7 +225,10 @@ function pintarDatosEnF_(numero) {
   const fecha_f     = datosD[13];
   const localidad   = datosD[14];
   const mesFin      = datosD[16];
+  const numDias     = Number(datosD[17]);
   const munilocal   = municipio + "-" + localidad;
+
+  const cruzaMes = !!mesFin && mesFin !== mes;
 
   // Si la comisión cruza de mes, en la celda del mes van los dos
   // (ej. "septiembre-octubre"); si no, queda igual que antes.
@@ -244,8 +247,12 @@ function pintarDatosEnF_(numero) {
   shF.getRange("C34").setValue(munilocal);
   shF.getRange("C26").setValue(motivo);
   shF.getRange("C42").setValue(actividades);
-  shF.getRange("M31").setValue(diaInicio);
-  shF.getRange("O31").setValue(diaFin);
+  // Las fórmulas de la tabla (Días / Importe) cuentan con O31 - M31 + 1.
+  // Si la comisión cruza de mes (30 al 2), esa resta no sirve; se les da
+  // 1 y el número real de días para que calculen igual que una comisión
+  // normal. La frase del periodo se escribe aparte en el PDF.
+  shF.getRange("M31").setValue(cruzaMes ? 1 : diaInicio);
+  shF.getRange("O31").setValue(cruzaMes ? numDias : diaFin);
   shF.getRange("S31").setValue(mesPliego);
   shF.getRange("D52").setValue(e_firma);
   shF.getRange("D53").setValue(e_puesto);
@@ -377,6 +384,10 @@ function generarPDF_(numero, id, nombre) {
   // Comisión que cruza de mes: la fila del periodo se redacta completa
   // en una sola celda (ver redactarPeriodoPliego_)
   if (cruzaMes) {
+    // Primero se congelan los resultados (Días, Importe, Total) para que
+    // borrar M31 / O31 al escribir la frase no los recalcule en blanco.
+    SpreadsheetApp.flush();
+    convertirAValores_(tmpF);
     redactarPeriodoPliego_(tmpF, diain, mes, diafin, mesFin, anoF);
   }
 
