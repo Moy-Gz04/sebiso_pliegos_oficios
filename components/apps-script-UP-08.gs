@@ -222,6 +222,7 @@ function pintarDatosEnF_(numero) {
   const mes         = datosD[7];
   const motivo      = datosD[8];
   const actividades = datosD[9];
+  const anoF        = datosD[12];
   const fecha_f     = datosD[13];
   const localidad   = datosD[14];
   const mesFin      = datosD[16];
@@ -229,10 +230,6 @@ function pintarDatosEnF_(numero) {
   const munilocal   = municipio + "-" + localidad;
 
   const cruzaMes = !!mesFin && mesFin !== mes;
-
-  // Si la comisión cruza de mes, en la celda del mes van los dos
-  // (ej. "septiembre-octubre"); si no, queda igual que antes.
-  const mesPliego = (mesFin && mesFin !== mes) ? mes + "-" + mesFin : mes;
 
   // ── Escribir en F_n ───────────────────────────────────────
   shF.getRange("F10").setValue(nombre);
@@ -247,14 +244,27 @@ function pintarDatosEnF_(numero) {
   shF.getRange("C34").setValue(munilocal);
   shF.getRange("C26").setValue(motivo);
   shF.getRange("C42").setValue(actividades);
-  // La tabla calcula las noches como E60 = O31 - M31 (Días fila 1 = noches,
-  // Días fila 2 = 1 si hubo noche). Con 30 al 2 eso da -28, así que si la
-  // comisión cruza de mes se le da del 1 al número real de días (1 al 3):
-  // 2 noches -> 2 + 1 = 3 días, igual que una comisión normal. En el PDF
-  // esa fila se cambia por la frase del periodo (redactarPeriodoPliego_).
-  shF.getRange("M31").setValue(cruzaMes ? 1 : diaInicio);
-  shF.getRange("O31").setValue(cruzaMes ? numDias : diaFin);
-  shF.getRange("S31").setValue(mesPliego);
+  // ── Periodo de comisión ──────────────────────────────────
+  // I31:V31 es UNA celda combinada: ahí va la frase completa del periodo
+  // (M31 / O31 / S31 ya no existen como celdas sueltas). Si en alguna F_n
+  // no está combinada, se combina para que todas queden iguales.
+  const celdaPeriodo = shF.getRange("I31:V31");
+  if (!celdaPeriodo.isPartOfMerge() || celdaPeriodo.getMergedRanges()[0].getA1Notation() !== "I31:V31") {
+    celdaPeriodo.breakApart();
+    celdaPeriodo.merge();
+  }
+  celdaPeriodo.setValue(textoPeriodo_(diaInicio, diaFin, mes, cruzaMes ? mesFin : "", anoF))
+    .setHorizontalAlignment("left")
+    .setVerticalAlignment("middle");
+
+  // ── Noches para la tabla de Días / Importe ───────────────
+  // La tabla usa E60 (noches): Días fila 1 = noches (mínimo 1) y Días
+  // fila 2 = 1 si hubo al menos una noche. Antes E60 era =O31-M31, pero esas
+  // celdas quedaron dentro de I31:V31; ahora el script le escribe las
+  // noches reales (días - 1), también si la comisión cruza de mes.
+  //   1 día -> 0 noches -> 1 | (vacío) | total 1
+  //   3 días -> 2 noches -> 2 | 1      | total 3
+  shF.getRange("E60").setValue(Math.max(0, numDias - 1));
   shF.getRange("D52").setValue(e_firma);
   shF.getRange("D53").setValue(e_puesto);
 }
@@ -386,13 +396,6 @@ function generarPDF_(numero, id, nombre) {
   normalizarNumerosEnFN_(tmpF);
   convertirAValores_(tmpF);
   quitarBotones_(tmpF);
-
-  // Comisión que cruza de mes: la fila del periodo se redacta completa en
-  // una sola celda. Va AL FINAL, cuando el pliego ya es solo valores, para
-  // no alterar los Días / Importe que calculan las fórmulas de la hoja.
-  if (cruzaMes) {
-    redactarPeriodoPliego_(tmpF, diain, mes, diafin, mesFin, anoF);
-  }
 
   SpreadsheetApp.flush();
   Utilities.sleep(500);
@@ -610,64 +613,19 @@ function contarDias_(diaInicio, diaFin, mes, mesFin, anio) {
 }
 
 /**
- * Cuando la comisión cruza de mes, la fila "Periodo de comisión del __ al __
- * del mes de __ de ____" del pliego no alcanza para dos meses. Esta función
- * combina la fila del periodo (I31:V31 de la hoja original) y escribe ahí el
- * periodo ya redactado, ej.: "30 de septiembre al 2 de octubre de 2026".
- *
- * IMPORTANTE: se llama AL FINAL, cuando la copia ya está recortada
- * (C1:V64 → la columna C pasa a ser A) y convertida a valores, para no
- * tocar ninguna fórmula de Días / Importe. Por eso las columnas se
- * calculan restando las columnas eliminadas por recortarHoja_.
- *
- * @param {GoogleAppsScript.Spreadsheet.Sheet} sheet - Copia temporal del pliego (ya recortada).
- * @param {number} diaIni
- * @param {string} mesIni
- * @param {number} diaFin
- * @param {string} mesFin
- * @param {number|string} anio
+ * Texto del periodo de comisión para el pliego (va en I31, combinada I31:V31):
+ *   un día:        "Periodo de comisión: 5 de octubre de 2026"
+ *   un solo mes:   "Periodo de comisión del 3 al 5 de octubre de 2026"
+ *   cruza de mes:  "Periodo de comisión del 30 de septiembre al 2 de octubre de 2026"
  */
-function redactarPeriodoPliego_(sheet, diaIni, mesIni, diaFin, mesFin, anio) {
-
-  const FILA   = 31;
-  const QUITAS = 2;               // recortarHoja_ elimina las columnas A y B
-  const COL    = function (n) { return n - QUITAS; };   // columna original → columna en la copia
-
-  // Columnas originales: C=3, H=8, I=9, M=13, V=22
-  const etiqueta = sheet.getRange(FILA, COL(3), 1, COL(8) - COL(3) + 1).getDisplayValues()[0]
-    .join(" ").replace(/\s+/g, " ").trim().toLowerCase();
-
-  const periodo = diaIni + " de " + mesIni + " al " + diaFin + " de " + mesFin + " de " + anio;
-
-  let texto;
-  if (/periodo de comisi/.test(etiqueta)) {
-    texto = /\bdel$/.test(etiqueta) ? periodo : "del " + periodo;
-  } else {
-    texto = "Periodo de comisión del " + periodo;
+function textoPeriodo_(diaInicio, diaFin, mes, mesFin, anio) {
+  diaInicio = Number(diaInicio);
+  diaFin    = Number(diaFin);
+  if (mesFin && mesFin !== mes) {
+    return "Periodo de comisión del " + diaInicio + " de " + mes + " al " + diaFin + " de " + mesFin + " de " + anio;
   }
-
-  // Mismo tipo y tamaño de letra que la celda del día (M31 original)
-  const base   = sheet.getRange(FILA, COL(13));
-  const fuente = base.getFontFamily();
-  const tamano = base.getFontSize();
-  const color  = base.getFontColor();
-
-  // I31:V31 de la hoja original
-  const celda = sheet.getRange(FILA, COL(9), 1, COL(22) - COL(9) + 1);
-  celda.breakApart();
-  celda.clearContent();
-  // Quitar las rayitas de los huecos (día inicio, día fin y mes)
-  celda.setBorder(null, null, false, null, false, null);
-  celda.merge();
-
-  celda.setValue(texto)
-    .setFontFamily(fuente)
-    .setFontSize(tamano)
-    .setFontColor(color)
-    .setFontWeight("normal")
-    .setHorizontalAlignment("left")
-    .setVerticalAlignment("middle")
-    .setWrap(true);
+  if (diaInicio === diaFin) return "Periodo de comisión: " + diaInicio + " de " + mes + " de " + anio;
+  return "Periodo de comisión del " + diaInicio + " al " + diaFin + " de " + mes + " de " + anio;
 }
 
 /**
