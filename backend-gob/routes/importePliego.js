@@ -15,6 +15,7 @@ const router = express.Router();
 /* Apps Script que generó los pliegos de cada área (mismo que usa el formulario) */
 const SCRIPT_PLIEGOS = {
   "UP-08": "https://script.google.com/macros/s/AKfycbzkKPjRkiQOc1F_kfXQCP8smmCSQ3uk9v6UODmHj6g1dDvM150zBxuAT8CRSYUCP0qN/exec",
+  "UP-CA": "https://script.google.com/macros/s/AKfycbyx52z4-tZAecEGuEwWMTzwVDNhrnvhXM1MnoofJR7nGtGaX6wGKDHtcgVApafGqDRyDg/exec",
 };
 
 const MODELO = "gemini-3.1-flash-lite";
