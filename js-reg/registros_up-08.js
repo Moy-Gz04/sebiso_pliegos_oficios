@@ -1565,14 +1565,58 @@ document.addEventListener("DOMContentLoaded", () => {
  * @returns {string}
  */
 function construirDescripcionViaticos(registro) {
-  const diasTexto = desglosarDias(registro.dia_inicio, registro.dia_fin);
-
   return (
     `VIÁTICOS EN EL PAÍS DERIVADOS DE LA COMISIÓN DE ${registro.persona || ""} ` +
-    `CON LA FINALIDAD DE ${registro.motivo_comision || ""} ` +
-    `LOS DÍAS ${diasTexto} DE ${registro.mes || ""} DEL ${registro.anio || ""} ` +
-    `EN CURSO EN EL MUNICIPIO DE ${registro.municipio || ""}, HGO.`
+    `CON LA FINALIDAD DE ${String(registro.motivo_comision || "").trim()} ` +
+    `${periodoViaticos(registro)} ` +
+    `EN CURSO EN EL MUNICIPIO DE ${municipioSinEstado(registro.municipio)}, HGO.`
   );
+}
+
+/**
+ * Periodo de la comisión para el texto de viáticos, sin depender de
+ * desglosarDias (otros scripts de la página la redefinen).
+ *   3 al 5 de octubre        → "LOS DÍAS 3, 4 Y 5 DE OCTUBRE DEL 2026"
+ *   5 al 5                   → "EL DÍA 5 DE OCTUBRE DEL 2026"
+ *   30 sep al 2 oct          → "LOS DÍAS 30 DE SEPTIEMBRE, 1 Y 2 DE OCTUBRE DEL 2026"
+ * El año sale de registro.anio o, si está vacío, de la fecha del registro.
+ */
+function periodoViaticos(registro) {
+  const MESES = ["enero", "febrero", "marzo", "abril", "mayo", "junio", "julio",
+    "agosto", "septiembre", "octubre", "noviembre", "diciembre"];
+  const ini = parseInt(registro.dia_inicio, 10);
+  const fin = parseInt(registro.dia_fin, 10);
+  const anio = String(registro.anio || "").trim() ||
+    (registro.fecha ? String(new Date(registro.fecha).getFullYear()) : String(new Date().getFullYear()));
+  const meses = String(registro.mes || "").toLowerCase().split(/\s*[-–\/]\s*|\s+y\s+/).map(m => m.trim()).filter(Boolean);
+  const unir = (dias) => dias.length === 1 ? String(dias[0])
+    : dias.slice(0, -1).join(", ") + " y " + dias[dias.length - 1];
+  if (isNaN(ini) || isNaN(fin)) return `DE ${registro.mes || ""} DEL ${anio}`.toUpperCase();
+
+  let texto;
+  if (fin >= ini) {
+    const dias = [];
+    for (let d = ini; d <= fin; d++) dias.push(d);
+    const mes = meses[meses.length - 1] || "";
+    texto = (dias.length === 1 ? "el día " : "los días ") + unir(dias) + (mes ? " de " + mes : "");
+  } else {
+    // Cruza de mes: del día de inicio al último día del primer mes, y del 1 al día fin del segundo
+    const mes1 = meses[0] || "", mes2 = meses[1] || meses[0] || "";
+    const idx = MESES.indexOf(mes1);
+    const ultimo = idx >= 0 ? new Date(Number(anio) || new Date().getFullYear(), idx + 1, 0).getDate() : 31;
+    const dias1 = [], dias2 = [];
+    for (let d = ini; d <= ultimo; d++) dias1.push(d);
+    for (let d = 1; d <= fin; d++) dias2.push(d);
+    // Como en el pliego: "30 de septiembre, 1 y 2 de octubre" / "29 y 30 de septiembre y 1 de octubre"
+    texto = "los días " + unir(dias1) +
+      (mes1 ? " de " + mes1 : "") + (dias2.length === 1 ? " y " : ", ") + unir(dias2) + (mes2 ? " de " + mes2 : "");
+  }
+  return (texto + " del " + anio).toUpperCase();
+}
+
+/** Municipio sin el ", Hgo." final (el texto ya lo agrega). */
+function municipioSinEstado(municipio) {
+  return String(municipio || "").replace(/,?\s*(hgo\.?|hidalgo)\s*$/i, "").trim();
 }
 
 /**

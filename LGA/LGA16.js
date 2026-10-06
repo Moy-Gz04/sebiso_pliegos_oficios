@@ -44,6 +44,13 @@ function desglosarDias(inicio, fin){
 
     }
 
+    // Cruza de mes (ej. del 30 al 2): se muestra como rango
+    if(fin < inicio){
+
+        return `${inicio} al ${fin}`;
+
+    }
+
     const dias = [];
 
     for(let i = inicio; i <= fin; i++){
