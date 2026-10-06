@@ -1181,7 +1181,31 @@ function construirTarjeta(registro) {
   return `
     <tr>
       <td colspan="12">
-        <div class="card-registro card-estatus-${(estatus || "creado").toLowerCase()}">
+        <div class="card-registro card-estatus-${(estatus || "creado").toLowerCase()}" style="position:relative;">
+
+          <!-- Selección para el documento de viáticos (esquina superior derecha).
+               El importe ya no se captura: al generar se lee del PDF del pliego. -->
+          <label class="viaticos-esquina" title="Incluir en el documento de viáticos"
+                 style="position:absolute; top:8px; right:14px; display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:#5b6478; cursor:pointer;">
+            Viáticos
+            <input
+              type="checkbox"
+              class="chk-viaticos"
+              value="${codigo}"
+              style="width:16px; height:16px; cursor:pointer;"
+              ${codigosSeleccionadosViaticos.has(codigo) ? "checked" : ""}
+              onclick="
+                if(!validarImporteAntesDeMarcar(this, '${codigo}')){
+                  this.checked = false;
+                }
+                if(this.checked){
+                  codigosSeleccionadosViaticos.add('${codigo}');
+                } else {
+                  codigosSeleccionadosViaticos.delete('${codigo}');
+                }
+              "
+            >
+          </label>
 
           <!-- FILA SUPERIOR: identificación y estatus -->
           <div class="fila-superior">
@@ -1204,42 +1228,6 @@ function construirTarjeta(registro) {
             <div class="info-item">
               <span class="info-label">Eliminar</span>
               ${btnEliminar}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Importe Viáticos</span>
-              <div class="importe-wrapper">
-                <span class="importe-simbolo">$</span>
-                <input
-                  type="number"
-                  step="0.01"
-                  min="0"
-                  class="input-importe-viaticos"
-                  id="importe-${codigo}"
-                  value="${registro.importe_viaticos ?? ''}"
-                  placeholder="0.00"
-                  onchange="guardarImporteViaticos('${codigo}', this.value)"
-                  ${bloqueado ? "readonly" : ""}
-                >
-              </div>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Viáticos</span>
-              <input
-                type="checkbox"
-                class="chk-viaticos"
-                value="${codigo}"
-                ${codigosSeleccionadosViaticos.has(codigo) ? "checked" : ""}
-                onclick="
-                  if(!validarImporteAntesDeMarcar(this, '${codigo}')){
-                    this.checked = false;
-                  }
-                  if(this.checked){
-                    codigosSeleccionadosViaticos.add('${codigo}');
-                  } else {
-                    codigosSeleccionadosViaticos.delete('${codigo}');
-                  }
-                "
-              >
             </div>
             <div class="info-item">
               <span class="info-label">Tabla de Datos PDF</span>
@@ -1392,8 +1380,8 @@ function validarImporteAntesDeMarcar(checkbox, codigo) {
   const registro = (typeof ultimosRegistros !== "undefined" ? ultimosRegistros : []).find((r) => r.codigo === codigo);
   if ((isNaN(valor) || valor <= 0) && !(registro && registro.pliego_pdf)) {
     mostrarAlerta(
-      "Importe requerido",
-      "Este registro no tiene pliego: captura el Importe Total del Viático (mayor a $0.00) antes de seleccionarlo."
+      "Sin pliego",
+      "Este registro todavía no tiene pliego generado; el importe de viáticos se lee del pliego, así que aún no se puede seleccionar."
     );
     return false;
   }
@@ -1681,8 +1669,8 @@ async function generarViaticos() {
 
     if (sinImporte.length > 0) {
       throw new Error(
-        "Falta capturar el Importe de Viáticos en: " +
-        sinImporte.map((r) => r.persona).join(", ")
+        "No se pudo leer el importe del pliego de: " +
+        sinImporte.map((r) => r.persona).join(", ") + ". Intenta de nuevo en un momento."
       );
     }
 
