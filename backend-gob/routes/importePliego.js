@@ -34,6 +34,16 @@ const idDeDrive = (url) => {
 };
 
 async function pdfDelPliego(scriptUrl, fileId) {
+  // Google a veces responde con una página de error en lugar de JSON: hasta 3 intentos
+  let ultimo;
+  for (let intento = 0; intento < 3; intento++) {
+    try { return await pdfDelPliegoUnaVez(scriptUrl, fileId); }
+    catch (e) { ultimo = e; if (/No autorizado|no es un pliego/.test(e.message)) throw e; await new Promise(r => setTimeout(r, 1500 * (intento + 1))); }
+  }
+  throw ultimo;
+}
+
+async function pdfDelPliegoUnaVez(scriptUrl, fileId) {
   const r = await fetch(scriptUrl, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -77,7 +87,7 @@ async function leerImporteConGemini(base64) {
   let data = null;
   for (let intento = 0; intento < 4; intento++) {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 30000);
+    const timeout = setTimeout(() => controller.abort(), 45000);
     try {
       const resp = await fetch(
         `https://generativelanguage.googleapis.com/v1beta/models/${MODELO}:generateContent?key=${llaves[intento % llaves.length]}`,

@@ -124,6 +124,21 @@ if(area !== 'UP-CA'){
     .tabla-personas input[type="checkbox"]:checked::after{ transform:rotate(-45deg) scale(1); }
     .tabla-personas input[type="checkbox"]:focus-visible{ outline:2px solid #691C32; outline-offset:2px; }
     .tabla-personas tr:has(input:checked){ background:#f0dde3; font-weight:700; }
+    /* Lista de personas: mismo alto que el formulario, con su propio deslizante */
+    .marco-personas{ border-radius:16px; border:1px solid #d8d8d8; box-shadow:0 4px 14px rgba(0,0,0,.04); background:#fff; overflow-y:auto; overscroll-behavior:contain;
+      scrollbar-width:thin; scrollbar-color:#b98a96 #f3ece4; }
+    .marco-personas::-webkit-scrollbar{ width:8px; }
+    .marco-personas::-webkit-scrollbar-track{ background:#f3ece4; }
+    .marco-personas::-webkit-scrollbar-thumb{ background:#b98a96; border-radius:8px; border:2px solid #f3ece4; }
+    .marco-personas::-webkit-scrollbar-thumb:hover{ background:#691C32; }
+    .marco-personas .tabla-personas{ border:none; box-shadow:none; border-radius:0; overflow:visible; }
+    .marco-personas thead th{ position:sticky; top:0; z-index:2; }
+    @media (min-width:1101px){
+      .contenedor{ align-items:stretch; }
+      .panel-izquierdo{ position:relative; height:auto; min-height:320px; }
+      .marco-personas{ position:absolute; inset:0; }
+    }
+    @media (max-width:1100px){ .marco-personas{ max-height:360px; } }
     /* Llenado inteligente */
     .barra-ia{ display:flex; align-items:center; gap:12px; flex-wrap:wrap; margin-bottom:10px; padding:10px 14px; border-radius:16px;
       background:linear-gradient(135deg,#f3e6ea,#f5efe3); box-shadow:inset 0 0 0 1px rgba(105,28,50,.18); }
@@ -214,6 +229,8 @@ if(area !== 'UP-CA'){
 
         <div class="panel-izquierdo">
 
+          <div class="marco-personas">
+
           <table class="tabla-personas">
 
             <thead>
@@ -228,6 +245,8 @@ if(area !== 'UP-CA'){
             <tbody id="listaPersonas"></tbody>
 
           </table>
+
+          </div>
 
         </div>
 
