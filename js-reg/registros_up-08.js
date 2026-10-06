@@ -1150,14 +1150,23 @@ function construirTarjeta(registro) {
   const codigo   = escaparHTML(registro.codigo  || "-");
   const persona  = escaparHTML(registro.persona || "-");
   const fecha    = registro.fecha
-    ? escaparHTML(new Date(registro.fecha).toLocaleString("es-MX"))
+    ? escaparHTML(new Date(registro.fecha).toLocaleString("es-MX", { dateStyle: "short", timeStyle: "short" }))
     : "-";
   const obsArea  = escaparHTML(registro.observaciones       || "");
   const obsAdmin = escaparHTML(registro.observaciones_admin || "");
 
+  // Íconos (trazo 1.8, mismo estilo en toda la tarjeta)
+  const ico = {
+    doc:   '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>',
+    falta: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" stroke-dasharray="3 3"/></svg>',
+    check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+    borrar:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13M10 11v6M14 11v6"/></svg>',
+    candado:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>',
+  };
+
   const btnEliminar = permitirEliminar
-    ? `<button class="btn-eliminar" onclick="eliminarRegistro('${codigo}')">Eliminar</button>`
-    : `<button class="btn-bloqueado" disabled>Bloqueado</button>`;
+    ? `<button type="button" class="rc-icono rc-icono--peligro" onclick="eliminarRegistro('${codigo}')" title="Eliminar registro" aria-label="Eliminar registro ${codigo}">${ico.borrar}</button>`
+    : `<span class="rc-icono rc-icono--bloq" title="Registro bloqueado" aria-label="Registro bloqueado">${ico.candado}</span>`;
 
   // Botón de trámite: avanza secuencialmente por los documentos pendientes
   const btnTerminar = !registro.spg_pdf
@@ -1172,125 +1181,93 @@ function construirTarjeta(registro) {
     ? `<button class="btn-enviar" onclick="confirmarTablaDatos('${codigo}')">Generar Tabla de Datos</button>`
     : `<button class="btn-aceptado" disabled>Finalizado</button>`;
 
-  // Helper: enlace a PDF existente o botón deshabilitado
-  const linkPDF = (url, textoSi, textoNo) =>
-    url
-      ? `<a href="${escaparHTML(url)}" target="_blank" class="link-pdf">${textoSi}</a>`
-      : `<button class="btn-bloqueado" disabled>${textoNo}</button>`;
+  // Documentos del trámite, en orden: listo = enlace; pendiente = ficha punteada
+  const docs = [
+    ["Oficio",         registro.oficio_pdf,      "Oficio de comisión"],
+    ["Pliego",         registro.pliego_pdf,      "Pliego de comisión"],
+    ["SPG",            registro.spg_pdf,         "Solicitud Programática del Gasto"],
+    ["LAG",            registro.recibo_pdf,      "Leyenda Alusiva al Gasto"],
+    ["Recibo",         registro.factura_pdf,     "Recibo"],
+    ["Anexo C",        registro.oficio2_pdf,     "Anexo C"],
+    ["Tabla de datos", registro.tabla_datos_pdf, "Tabla de datos"],
+  ];
+  const listos = docs.filter((d) => d[1]).length;
+  const fichas = docs.map(([corto, url, largo]) => url
+    ? `<a class="rc-doc rc-doc--listo" href="${escaparHTML(url)}" target="_blank" rel="noopener" title="Abrir ${largo}">${ico.doc}<span>${corto}</span></a>`
+    : `<span class="rc-doc rc-doc--falta" title="${largo}: pendiente">${ico.falta}<span>${corto}</span></span>`
+  ).join("");
+
+  const seleccionado = codigosSeleccionadosViaticos.has(codigo);
 
   return `
     <tr>
       <td colspan="12">
-        <div class="card-registro card-estatus-${(estatus || "creado").toLowerCase()}" style="position:relative;">
+        <div class="card-registro rc card-estatus-${(estatus || "creado").toLowerCase()}${seleccionado ? " rc--sel" : ""}">
 
-          <!-- Selección para el documento de viáticos (esquina superior derecha).
-               El importe ya no se captura: al generar se lee del PDF del pliego. -->
-          <label class="viaticos-esquina" title="Incluir en el documento de viáticos"
-                 style="position:absolute; top:8px; right:14px; display:flex; align-items:center; gap:6px; font-size:11px; font-weight:600; letter-spacing:.5px; text-transform:uppercase; color:#5b6478; cursor:pointer;">
-            Viáticos
-            <input
-              type="checkbox"
-              class="chk-viaticos"
-              value="${codigo}"
-              style="width:16px; height:16px; cursor:pointer;"
-              ${codigosSeleccionadosViaticos.has(codigo) ? "checked" : ""}
-              onclick="
-                if(!validarImporteAntesDeMarcar(this, '${codigo}')){
-                  this.checked = false;
-                }
-                if(this.checked){
-                  codigosSeleccionadosViaticos.add('${codigo}');
-                } else {
-                  codigosSeleccionadosViaticos.delete('${codigo}');
-                }
-              "
-            >
-          </label>
-
-          <!-- FILA SUPERIOR: identificación y estatus -->
-          <div class="fila-superior">
-            <div class="info-item">
-              <span class="info-label">ID</span>
-              <span class="info-valor">${codigo}</span>
+          <!-- Cabecera: quién, cuándo, estatus y acciones rápidas -->
+          <div class="rc-cab">
+            <div class="rc-quien">
+              <span class="rc-persona">${persona}</span>
+              <span class="rc-meta"><span class="rc-codigo">${codigo}</span><span class="rc-punto" aria-hidden="true"></span>${fecha}</span>
             </div>
-            <div class="info-item">
-              <span class="info-label">Persona</span>
-              <span class="info-valor">${persona}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Fecha y Hora</span>
-              <span class="info-valor">${fecha}</span>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Estatus</span>
+            <div class="rc-der">
               ${obtenerBadgeEstatus(registro.estatus)}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Eliminar</span>
               ${btnEliminar}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Tabla de Datos PDF</span>
-              ${linkPDF(registro.tabla_datos_pdf, "Ver Tabla de Datos", "Sin Tabla de Datos")}
-            </div>
-          </div>
-
-          <!-- FILA PDFs: accesos a documentos generados -->
-          <div class="fila-pdfs">
-            <div class="info-item">
-              <span class="info-label">Oficio PDF</span>
-              ${linkPDF(registro.oficio_pdf,  "Ver Oficio",   "Sin Oficio")}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Pliego PDF</span>
-              ${linkPDF(registro.pliego_pdf,  "Ver Pliego",   "Sin Pliego")}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Solicitud Programática del Gasto PDF</span>
-              ${linkPDF(registro.spg_pdf,     "Ver SPG",      "Sin SPG")}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Leyenda Alusiva al Gasto PDF</span>
-              ${linkPDF(registro.recibo_pdf,  "Ver LAG",   "Sin LAG")}
-            </div>
-            <div class="info-item">
-              <span class="info-label"> Recibo PDF</span>
-              ${linkPDF(registro.factura_pdf, "Ver Recibo",  "Sin Recibo")}
-            </div>
-            <div class="info-item">
-              <span class="info-label">Anexo C PDF</span>
-              ${linkPDF(registro.oficio2_pdf, "Ver Anexo C", "Sin Anexo C")}
+              <!-- Incluir en el documento de viáticos (el importe se lee del pliego) -->
+              <label class="rc-sel" title="Incluir en el documento de viáticos">
+                <input
+                  type="checkbox"
+                  class="chk-viaticos"
+                  value="${codigo}"
+                  aria-label="Incluir ${persona} en el documento de viáticos"
+                  ${seleccionado ? "checked" : ""}
+                  onclick="
+                    if(!validarImporteAntesDeMarcar(this, '${codigo}')){
+                      this.checked = false;
+                    }
+                    if(this.checked){
+                      codigosSeleccionadosViaticos.add('${codigo}');
+                    } else {
+                      codigosSeleccionadosViaticos.delete('${codigo}');
+                    }
+                    this.closest('.rc').classList.toggle('rc--sel', this.checked);
+                  "
+                >
+                <span class="rc-sel-caja">${ico.check}</span>
+              </label>
             </div>
           </div>
 
-          <!-- FILA INFERIOR: observaciones y acciones -->
-          <div class="fila-inferior">
-            <div class="info-item">
-              <span class="info-label">Observaciones Área</span>
+          <!-- Documentos -->
+          <div class="rc-docs">
+            <span class="rc-docs-cuenta" title="Documentos generados"><b>${listos}</b>/${docs.length}</span>
+            ${fichas}
+          </div>
+
+          <!-- Observaciones y siguiente paso -->
+          <div class="rc-pie">
+            <label class="rc-obs">
+              <span>Observaciones del área</span>
               <textarea
                 class="textarea-observaciones"
-                placeholder="Observaciones del área..."
+                rows="2"
+                placeholder="Escribe una observación…"
                 onchange="guardarObservaciones('${codigo}', this.value)"
                 ${bloqueado ? "readonly" : ""}
               >${obsArea}</textarea>
-            </div>
-            <div class="info-item">
-              <span class="info-label">Observaciones Administración</span>
+            </label>
+            <label class="rc-obs rc-obs--admin">
+              <span>Observaciones de administración</span>
               <textarea
                 class="textarea-observaciones-admin"
+                rows="2"
                 readonly
-                placeholder="Observaciones administración..."
+                placeholder="Sin observaciones"
               >${obsAdmin}</textarea>
-            </div>
-            <div class="acciones-laterales">
-              <div class="info-item">
-                <span class="info-label">Terminar Trámite</span>
-                ${btnTerminar}
-              </div>
-              <div class="info-item">
-                <span class="info-label">Enviar</span>
-                ${obtenerBotonEnviar(registro)}
-              </div>
+            </label>
+            <div class="rc-acciones">
+              ${btnTerminar}
+              ${obtenerBotonEnviar(registro)}
             </div>
           </div>
 

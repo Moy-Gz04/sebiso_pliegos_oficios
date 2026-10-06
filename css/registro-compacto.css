@@ -1,0 +1,137 @@
+/* =============================================================
+   Tarjeta de registro compacta (R_UP-08)
+   Misma identidad (guinda #70122b, dorado, Montserrat) con menos
+   ruido: cabecera en una línea, documentos como fichas y la
+   casilla de viáticos como control grande en la esquina.
+   Todo va bajo .rc para no afectar a las demás UP.
+   ============================================================= */
+
+.rc {
+  --rc-guinda: #70122b;
+  --rc-guinda-2: #8d1c3a;
+  --rc-guinda-suave: #f7eef0;
+  --rc-dorado: #b8955a;
+  --rc-tinta: #241a1d;
+  --rc-tenue: #6e6266;
+  --rc-linea: #ece6e1;
+  --rc-fondo: #fbf9f6;
+
+  width: 92% !important;
+  padding: 16px 20px 16px 24px !important;
+  border-radius: 16px !important;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: box-shadow .2s ease, transform .2s ease, outline-color .2s ease !important;
+  outline: 2px solid transparent;
+  outline-offset: -2px;
+}
+.rc:hover { transform: none !important; box-shadow: 0 8px 24px rgba(36, 26, 29, .08) !important; }
+.rc::before { width: 4px !important; }
+.rc.rc--sel { outline-color: var(--rc-guinda); background: #fffdfb !important; }
+
+/* ---------- Cabecera ---------- */
+.rc-cab { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.rc-quien { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.rc-persona {
+  font-size: 16px; font-weight: 700; color: var(--rc-tinta); line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.rc-meta { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--rc-tenue); font-variant-numeric: tabular-nums; }
+.rc-codigo { font-weight: 600; color: var(--rc-guinda); letter-spacing: .2px; }
+.rc-punto { width: 3px; height: 3px; border-radius: 50%; background: currentColor; opacity: .6; }
+.rc-der { display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
+
+/* Estatus más discreto */
+.rc .badge-estatus {
+  padding: 0 12px !important; min-width: 0 !important; width: auto !important; height: 32px !important; display: inline-flex !important; align-items: center; margin: 0 !important;
+  border-radius: 999px !important; font-size: 12px !important; font-weight: 700 !important; border-width: 1px !important;
+}
+
+/* Botón de ícono (eliminar / bloqueado) */
+.rc-icono {
+  width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--rc-linea); background: #fff; color: var(--rc-tenue); padding: 0; cursor: pointer;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.rc-icono svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+.rc-icono--peligro:hover, .rc-icono--peligro:focus-visible { color: #b3122e; border-color: #f0c4cd; background: #fdf1f3; }
+.rc-icono--bloq { cursor: default; opacity: .6; }
+.rc-icono:focus-visible { outline: 2px solid var(--rc-guinda); outline-offset: 2px; }
+
+/* Casilla de viáticos: grande, sin texto */
+.rc-sel { position: relative; display: inline-flex; cursor: pointer; }
+.rc-sel input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.rc-sel-caja {
+  width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center;
+  border: 2px solid #d9c9cd; background: #fff; color: transparent;
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .2s cubic-bezier(.16, 1, .3, 1);
+}
+.rc-sel-caja svg { width: 20px; height: 20px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; stroke-linejoin: round; }
+.rc-sel:hover .rc-sel-caja { border-color: var(--rc-guinda); box-shadow: 0 0 0 4px var(--rc-guinda-suave); }
+.rc-sel input:focus-visible + .rc-sel-caja { box-shadow: 0 0 0 3px #fff, 0 0 0 5px var(--rc-guinda); }
+.rc-sel input:checked + .rc-sel-caja {
+  background: var(--rc-guinda); border-color: var(--rc-guinda); color: #fff;
+  box-shadow: 0 4px 10px rgba(112, 18, 43, .28); transform: scale(1.04);
+}
+.rc-sel input:checked + .rc-sel-caja svg { animation: rc-palomita .28s ease-out both; }
+@keyframes rc-palomita { from { opacity: 0; transform: scale(.6); } to { opacity: 1; transform: scale(1); } }
+
+/* ---------- Documentos ---------- */
+.rc-docs {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px;
+  padding: 10px 0; border-top: 1px solid var(--rc-linea); border-bottom: 1px solid var(--rc-linea);
+}
+.rc-docs-cuenta { font-size: 12px; color: var(--rc-tenue); margin-right: 4px; font-variant-numeric: tabular-nums; min-width: 32px; }
+.rc-docs-cuenta b { color: var(--rc-tinta); font-size: 14px; }
+.rc-doc {
+  display: inline-flex; align-items: center; gap: 6px; height: 30px; padding: 0 11px 0 9px; border-radius: 8px;
+  font-size: 12.5px; font-weight: 600; text-decoration: none !important; white-space: nowrap; line-height: 1;
+  transition: background .15s ease, color .15s ease, border-color .15s ease;
+}
+.rc-doc svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+.rc .rc-doc { font-size: 12.5px !important; font-weight: 600 !important; height: 30px !important; padding: 0 11px 0 9px !important; border-radius: 8px !important; margin: 0 !important; min-width: 0 !important; width: auto !important; box-shadow: none !important; }
+.rc .rc-doc--listo { background: var(--rc-guinda) !important; color: #fff !important; border: 1px solid var(--rc-guinda) !important; }
+.rc .rc-doc--listo:hover, .rc .rc-doc--listo:focus-visible { background: var(--rc-guinda-2) !important; box-shadow: 0 3px 8px rgba(112, 18, 43, .22) !important; }
+.rc-doc--listo:focus-visible { outline: 2px solid var(--rc-guinda); outline-offset: 2px; }
+.rc-doc--falta { color: #9a9094; border: 1px dashed #ddd5d1; background: transparent; cursor: default; }
+
+/* ---------- Observaciones y acciones ---------- */
+.rc-pie { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) auto; gap: 12px; align-items: end; }
+.rc-obs { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.rc-obs > span { font-size: 11.5px; font-weight: 600; color: var(--rc-tenue); }
+.rc .textarea-observaciones, .rc .textarea-observaciones-admin {
+  height: 56px !important; min-height: 56px !important; resize: vertical; padding: 8px 11px !important;
+  border-radius: 10px !important; font-size: 13px !important; line-height: 1.4 !important; margin: 0 !important;
+}
+.rc .textarea-observaciones { background: var(--rc-fondo) !important; border: 1px solid var(--rc-linea) !important; }
+.rc .textarea-observaciones:focus { border-color: var(--rc-guinda) !important; box-shadow: 0 0 0 3px var(--rc-guinda-suave) !important; outline: none; }
+.rc .textarea-observaciones-admin { background: #f5f4f2 !important; border: 1px solid transparent !important; color: var(--rc-tenue) !important; }
+.rc-acciones { display: flex; flex-direction: column; gap: 6px; min-width: 168px; }
+.rc-acciones > * {
+  height: 36px !important; min-height: 0 !important; width: 100% !important; margin: 0 !important;
+  border-radius: 10px !important; font-size: 13px !important; font-weight: 700 !important; padding: 0 16px !important;
+  display: inline-flex !important; align-items: center; justify-content: center;
+}
+.rc-acciones .btn-enviar:hover { background: var(--rc-guinda-2) !important; }
+/* El primero es el trámite; el segundo (Enviar) se ve secundario */
+.rc-acciones > *:last-child.btn-enviar { background: #fff !important; color: var(--rc-guinda) !important; border: 1.5px solid var(--rc-guinda) !important; }
+.rc-acciones > *:last-child.btn-enviar:hover { background: var(--rc-guinda-suave) !important; }
+
+/* ---------- Celular ---------- */
+@media (max-width: 760px) {
+  .rc { width: 100% !important; padding: 14px 14px 14px 18px !important; }
+  .rc-cab { align-items: flex-start; }
+  .rc-der { gap: 8px; }
+  .rc-cab { flex-wrap: nowrap; }
+  .rc-persona { font-size: 15px; }
+  .rc .badge-estatus { height: 28px !important; padding: 0 9px !important; font-size: 11px !important; }
+  .rc-icono, .rc-sel-caja { width: 34px; height: 34px; }
+  .rc-pie { grid-template-columns: 1fr; }
+  .rc-acciones { flex-direction: row; min-width: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rc, .rc-sel-caja, .rc-doc, .rc-icono { transition: none !important; }
+  .rc-sel input:checked + .rc-sel-caja svg { animation: none; }
+}
