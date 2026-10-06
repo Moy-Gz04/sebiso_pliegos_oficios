@@ -117,15 +117,16 @@ router.post("/:codigo", limitador, async (req, res) => {
     if (!scriptUrl) return res.status(400).json({ ok: false, msg: "Esta área todavía no tiene lectura automática del pliego." });
     const fileId = idDeDrive(reg.pliego_pdf);
     if (!fileId) return res.status(400).json({ ok: false, msg: "Este registro no tiene pliego generado." });
-    if (reg.estatus === "Enviado" || reg.estatus === "Pagado") {
+    const soloLeer = req.query.soloLeer === "1";   // prueba: lee el importe sin guardarlo
+    if (!soloLeer && (reg.estatus === "Enviado" || reg.estatus === "Pagado")) {
       return res.status(400).json({ ok: false, msg: "No se puede editar este registro" });
     }
 
     const base64 = await pdfDelPliego(scriptUrl, fileId);
     const { importe, evidencia } = await leerImporteConGemini(base64);
 
-    await pool.query(`UPDATE registros SET importe_viaticos = $1 WHERE codigo = $2`, [importe.toFixed(2), codigo]);
-    res.json({ ok: true, codigo, importe, evidencia });
+    if (!soloLeer) await pool.query(`UPDATE registros SET importe_viaticos = $1 WHERE codigo = $2`, [importe.toFixed(2), codigo]);
+    res.json({ ok: true, codigo, importe, evidencia, guardado: !soloLeer });
   } catch (err) {
     console.error("⚠️  importe-pliego", codigo, err.message);
     res.status(502).json({ ok: false, msg: "No se pudo leer el importe del pliego: " + err.message });
