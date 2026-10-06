@@ -472,6 +472,17 @@ function generarPDF_(numero, id, nombre) {
  */
 function doPost(e) {
 
+  // Petición del servidor (JSON): entregar el PDF de un pliego para leer su importe
+  if (e.postData && String(e.postData.type).indexOf("application/json") === 0) {
+    try {
+      const j = JSON.parse(e.postData.contents);
+      if (j.action === "pliegoBase64") return pliegoBase64_(j);
+      return respuestaJson_({ success: false, error: "Acción no válida." });
+    } catch (err) {
+      return respuestaJson_({ success: false, error: err.message });
+    }
+  }
+
   try {
 
     const data = e.parameter;
@@ -749,4 +760,48 @@ function normalizarNumerosEnFN_(sheet) {
       }
     }
   }
+}
+
+
+// ============================================================
+//  IMPORTE DESDE EL PLIEGO (para el documento de viáticos)
+// ============================================================
+
+/**
+ * Devuelve en base64 el PDF de un pliego para que el servidor lea
+ * su importe total. Solo entrega archivos de la carpeta de PDFs
+ * generados (FOLDER_ID) y solo si llega la contraseña correcta
+ * (SECRETO_SERVIDOR en Propiedades de la secuencia de comandos).
+ * No comparte ni mueve nada: solo lee.
+ */
+function pliegoBase64_(j) {
+  const secreto = PropertiesService.getScriptProperties().getProperty("SECRETO_SERVIDOR");
+  if (!secreto || j.secreto !== secreto) {
+    return respuestaJson_({ success: false, error: "No autorizado." });
+  }
+  const file = DriveApp.getFileById(String(j.fileId || ""));
+  let enCarpeta = false;
+  const padres = file.getParents();
+  while (padres.hasNext()) {
+    if (padres.next().getId() === FOLDER_ID) { enCarpeta = true; break; }
+  }
+  if (!enCarpeta) return respuestaJson_({ success: false, error: "El archivo no es un pliego generado." });
+  const blob = file.getBlob();
+  return respuestaJson_({
+    success: true,
+    nombre: file.getName(),
+    mime: blob.getContentType(),
+    base64: Utilities.base64Encode(blob.getBytes())
+  });
+}
+
+function respuestaJson_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+/* Ejecutar > probarContrasenaServidor: revisa que SECRETO_SERVIDOR esté guardada */
+function probarContrasenaServidor() {
+  const s = PropertiesService.getScriptProperties().getProperty("SECRETO_SERVIDOR");
+  Logger.log(s ? "OK - SECRETO_SERVIDOR guardada (" + s.length + " caracteres)" : "FALTA - no hay SECRETO_SERVIDOR");
 }

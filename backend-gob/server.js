@@ -29,6 +29,7 @@ const reportesPdfRoutes  = require('./routes/reportesPdf.routes');
 const viaticosRoutes = require("./routes/viaticos");
 const viaticosGeneradosRoutes = require("./routes/viaticosGenerados");
 const iaRoutes = require("./routes/ia");
+const importePliegoRoutes = require("./routes/importePliego");
 
 
 /* =========================
@@ -61,6 +62,7 @@ app.use('/api/reportes-pdf', reportesPdfRoutes);  // ← cambiado para evitar co
 app.use("/api/viaticos", viaticosRoutes);
 app.use("/api/viaticos-generados", viaticosGeneradosRoutes);
 app.use("/api/ia", iaRoutes);
+app.use("/api/importe-pliego", importePliegoRoutes);
 
 /* =========================
    ROOT
