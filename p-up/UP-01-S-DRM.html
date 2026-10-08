@@ -32,6 +32,7 @@ if(area !== 'UP-01-S-DRM'){
 
   <link rel="stylesheet" href="../css/style.css">
   <link rel="stylesheet" href="../css/ssidebar.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
 
   <style>
     /* Zona y Tarifa: campo calculado y bloqueado (solo esta pantalla) */
@@ -140,6 +141,8 @@ if(area !== 'UP-01-S-DRM'){
     .ia-fondo[hidden]{ display:none; }
     .ia-modal{ position:relative; width:min(480px,100%); max-height:92vh; overflow-y:auto; padding:20px 24px 22px; border-radius:24px; background:#fff; box-shadow:0 24px 60px rgba(0,0,0,.4); }
     .ia-cabecera{ display:flex; align-items:center; justify-content:space-between; }
+    .ia-marca{ display:inline-flex; align-items:center; gap:10px; }
+    .ia-marca .minisebiso.ia-mascota{ width:46px; margin:0; animation:none; cursor:default; }
     .ia-marca{ font-size:11px; font-weight:700; letter-spacing:.6px; text-transform:uppercase; color:#8a2843; }
     .ia-modal .ia-cerrar{ width:32px; height:32px; margin:0; padding:0; border:none; border-radius:50%; background:#f3e6ea; color:#691C32; font-size:20px; line-height:1; cursor:pointer; transform:none; }
     .ia-progreso{ display:flex; gap:6px; margin:12px 0 18px; }
@@ -236,11 +239,6 @@ if(area !== 'UP-01-S-DRM'){
 
         <div class="panel-derecho">
 
-          <!-- LLENADO INTELIGENTE: alternativa a la captura manual de motivo, actividades y localidades -->
-          <div class="barra-ia">
-            <button type="button" id="btnIA">✦ Llenado inteligente</button>
-            <span>Contesta unas preguntas y el sistema redacta motivo, actividades y localidades. O captura a mano abajo.</span>
-          </div>
 
           <!-- MUNICIPIO (1.º): de aquí sale la zona.
                Cada zona es un botón que se despliega con SUS municipios; solo se
@@ -367,7 +365,7 @@ if(area !== 'UP-01-S-DRM'){
 
           </div>
 
-          <div class="aviso-ia" id="iaAviso" hidden>✦ Redactado con IA a partir de tus respuestas. Revísalo y corrige lo que haga falta antes de generar los pliegos.</div>
+          <div class="aviso-ia" id="iaAviso" hidden>Llené motivo, actividades y localidades con lo que me contaste. Revísalo y corrige lo que haga falta antes de generar los pliegos.</div>
 
           <!-- FECHA -->
 
@@ -601,7 +599,7 @@ if(area !== 'UP-01-S-DRM'){
     <div class="ia-modal" role="dialog" aria-modal="true" aria-labelledby="iaTitulo">
 
       <div class="ia-cabecera">
-        <span class="ia-marca">✦ Llenado inteligente</span>
+        <span class="ia-marca"><span class="minisebiso ia-mascota" aria-hidden="true"><span class="ms-cuerpo"><span class="ms-ojo-mov izq"><span class="ms-ojo"></span></span><span class="ms-ojo-mov der"><span class="ms-ojo"></span></span></span><span class="ms-estrella"></span></span> Te ayudo a llenarlo</span>
         <button type="button" class="ia-cerrar" id="iaCerrar" aria-label="Cerrar">×</button>
       </div>
       <div class="ia-progreso" aria-hidden="true"><i></i><i></i><i></i><i></i></div>
@@ -656,6 +654,8 @@ if(area !== 'UP-01-S-DRM'){
   <script src="../js-app/app_up_S.js"></script>
   <script src="../js-app/ia_up_S.js"></script>
   <script src="../js-sid/sidebar_up_S.js"></script>
+  <script src="../js/minisebiso-flotante.js?v=1"></script>
+  <script src="../js/asistente-pliegos.js?v=1"></script>
 </body>
 
 </html>

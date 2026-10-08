@@ -130,7 +130,7 @@
         });
 
         $("iaAtras").hidden = (n === 1);
-        $("iaSiguiente").textContent = (n === TOTAL) ? "✦ Llenar formulario" : "Siguiente";
+        $("iaSiguiente").textContent = (n === TOTAL) ? "Llenar formulario" : "Siguiente";
         $("iaError").hidden = true;
 
         if(typeof cerrarPanelZona === "function") cerrarPanelZona();
@@ -261,11 +261,12 @@
         }finally{
             boton.disabled = false;
             $("iaAtras").disabled = false;
-            boton.textContent = (paso === TOTAL) ? "✦ Llenar formulario" : "Siguiente";
+            boton.textContent = (paso === TOTAL) ? "Llenar formulario" : "Siguiente";
         }
     }
 
-    $("btnIA").addEventListener("click", abrir);
+    /* Lo abre el asistente (js/asistente-pliegos.js) */
+    window.abrirLlenadoAsistido = abrir;
     $("iaCerrar").addEventListener("click", cerrar);
     $("iaAtras").addEventListener("click", () => { if(paso > 1) mostrarPaso(paso - 1); });
     $("iaSiguiente").addEventListener("click", siguiente);
