@@ -190,8 +190,6 @@ btnConfirmar.addEventListener(
         abrirModal("modalCarga");
 
         boton.disabled = true;
-        loader.style.display = "block";
-        estado.innerText = "Generando PDFs...";
         tbody.innerHTML = "";
 
         try{
@@ -344,7 +342,6 @@ btnConfirmar.addEventListener(
             cerrarModal("modalCarga");
             abrirModal("modalExito");
 
-            estado.innerText = "PDFs generados correctamente";
 
         }
 
