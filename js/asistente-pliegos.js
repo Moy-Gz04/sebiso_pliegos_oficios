@@ -79,9 +79,85 @@
     setTimeout(soltar, 12000);
   }
 
+  /* ─────────────── Guía de llenado completo ───────────────
+     Recorre el formulario campo por campo, en orden. En listas, fechas y
+     zonas avanza solo al elegir; en textos y personas, al tocar a la mascota. */
+  let guiando = 0;
+  function pasosGuia() {
+    const nuevo = !!document.querySelector('.chip-zona');
+    const q = (s) => document.querySelector(s);
+    const valor = (el) => () => el ? el.value : '';
+    const p = [
+      { el: q('.tabla-personas'), texto: 'Paso 1: marca a las personas de la comisión. Cuando termines, tócame para seguir.', modo: 'tocar' },
+    ];
+    if (nuevo) {
+      p.push(
+        { el: q('.chips-zona') || q('.chip-zona'), texto: 'Paso 2: toca la zona y elige el municipio.', modo: 'cambio', valor: valor($('municipio')) },
+        { el: $('fechaInicio'), texto: 'Paso 3: elige el día de inicio de la comisión.', modo: 'cambio', valor: valor($('fechaInicio')) },
+        { el: $('fechaFin'), texto: 'Paso 4: elige el día de fin. La zona y la tarifa se calculan solas.', modo: 'cambio', valor: valor($('fechaFin')) },
+      );
+    } else {
+      p.push(
+        { el: $('zona'), texto: 'Paso 2: elige la zona y tarifa.', modo: 'cambio', valor: valor($('zona')) },
+        { el: $('municipio'), texto: 'Paso 3: elige el municipio.', modo: 'cambio', valor: valor($('municipio')) },
+        { el: $('diaInicio'), texto: 'Paso 4: elige el día de inicio.', modo: 'cambio', valor: valor($('diaInicio')) },
+        { el: $('diaFin'), texto: 'Paso 5: elige el día de fin.', modo: 'cambio', valor: valor($('diaFin')) },
+        { el: $('mes'), texto: 'Paso 6: elige el mes de la comisión.', modo: 'cambio', valor: valor($('mes')) },
+      );
+    }
+    const n0 = p.length;
+    const regla = reglaMotivo().minuscula ? 'empieza con minúscula y termina con punto' : 'empieza con mayúscula y sin punto final';
+    p.push(
+      { el: campoTexto('motivo'), texto: `Paso ${n0 + 1}: escribe el motivo de la comisión (${regla}). Tócame al terminar.`, modo: 'tocar' },
+      { el: campoTexto('actividades'), texto: `Paso ${n0 + 2}: escribe las actividades, una por renglón con guion. Tócame al terminar.`, modo: 'tocar' },
+      { el: campoTexto('localidades'), texto: `Paso ${n0 + 3}: escribe «Localidad» y el nombre de cada localidad visitada. Tócame al terminar.`, modo: 'tocar' },
+      nuevo
+        ? { el: $('fechaOficio'), texto: `Paso ${n0 + 4}: revisa la fecha del oficio. Tócame para seguir.`, modo: 'tocar' }
+        : { el: $('diaF'), texto: `Paso ${n0 + 4}: elige la fecha del oficio (día, mes y año). Tócame para seguir.`, modo: 'tocar' },
+    );
+    return p.filter(x => x.el);
+  }
+
+  function esperarPaso(paso, turno) {
+    return new Promise(resolve => {
+      const inicial = paso.valor ? paso.valor() : null;
+      const t0 = Date.now();
+      const tic = setInterval(() => {
+        if (turno !== guiando) { clearInterval(tic); resolve(false); return; }
+        if (paso.modo === 'cambio' && paso.valor() !== inicial) { clearInterval(tic); setTimeout(() => { M.retirar(); resolve(true); }, 500); return; }
+        // Tocar a la mascota la retira: eso es «seguir»
+        if (Date.now() - t0 > 1600 && !M.presentando()) { clearInterval(tic); resolve(true); }
+      }, 300);
+    });
+  }
+
+  async function guiaCompleta() {
+    const turno = ++guiando;
+    const pasos = pasosGuia();
+    for (const paso of pasos) {
+      if (turno !== guiando) return;
+      await M.retirar();
+      M.presentar(paso.el, paso.texto);
+      if (!(await esperarPaso(paso, turno))) return;
+    }
+    if (turno !== guiando) return;
+    await M.retirar();
+    guiaFin();
+  }
+  function guiaFin() {
+    const boton = $('btnEnviar');
+    if (boton) M.presentar(boton, '¡Todo listo! Revisa que los datos estén bien y toca «Generar pliegos».');
+    guiando++;
+  }
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && guiando) { guiando++; M.retirar(); } });
+
   /* ─────────────── Preguntas del menú ─────────────── */
   function preguntas() {
-    const lista = [];
+    const lista = [{
+      pregunta: 'Guíame paso a paso', icono: 'ti-route',
+      texto: 'Te acompaño campo por campo, en orden, hasta generar los pliegos. En las listas y fechas avanzo solo cuando eliges; en los textos, tócame cuando termines. Puedes salir con Esc.',
+      acciones: [{ texto: 'Empezar la guía', icono: 'ti-player-play', hacer: guiaCompleta }],
+    }];
     if (puedeLlenar()) lista.push({
       pregunta: 'Llénalo por mí', icono: 'ti-wand',
       texto: 'Te hago 4 preguntas y yo lleno el formulario:',
