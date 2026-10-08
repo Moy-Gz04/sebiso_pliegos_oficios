@@ -88,7 +88,7 @@
     const q = (s) => document.querySelector(s);
     const valor = (el) => () => el ? el.value : '';
     const p = [
-      { el: q('.tabla-personas'), texto: 'Paso 1: marca a las personas de la comisión. Cuando termines, tócame para seguir.', modo: 'tocar' },
+      { el: q('.tabla-personas'), texto: 'Paso 1: marca a las personas de la comisión. Cuando termines, toca «Listo…».', modo: 'tocar' },
     ];
     if (nuevo) {
       p.push(
@@ -108,12 +108,12 @@
     const n0 = p.length;
     const regla = reglaMotivo().minuscula ? 'empieza con minúscula y termina con punto' : 'empieza con mayúscula y sin punto final';
     p.push(
-      { el: campoTexto('motivo'), texto: `Paso ${n0 + 1}: escribe el motivo de la comisión (${regla}). Tócame al terminar.`, modo: 'tocar' },
-      { el: campoTexto('actividades'), texto: `Paso ${n0 + 2}: escribe las actividades, una por renglón con guion. Tócame al terminar.`, modo: 'tocar' },
-      { el: campoTexto('localidades'), texto: `Paso ${n0 + 3}: escribe «Localidad» y el nombre de cada localidad visitada. Tócame al terminar.`, modo: 'tocar' },
+      { el: campoTexto('motivo'), texto: `Paso ${n0 + 1}: escribe el motivo de la comisión (${regla}). Toca «Listo…» al terminar.`, modo: 'tocar' },
+      { el: campoTexto('actividades'), texto: `Paso ${n0 + 2}: escribe las actividades, una por renglón con guion. Toca «Listo…» al terminar.`, modo: 'tocar' },
+      { el: campoTexto('localidades'), texto: `Paso ${n0 + 3}: escribe «Localidad» y el nombre de cada localidad visitada. Toca «Listo…» al terminar.`, modo: 'tocar' },
       nuevo
-        ? { el: $('fechaOficio'), texto: `Paso ${n0 + 4}: revisa la fecha del oficio. Tócame para seguir.`, modo: 'tocar' }
-        : { el: $('diaF'), texto: `Paso ${n0 + 4}: elige la fecha del oficio (día, mes y año). Tócame para seguir.`, modo: 'tocar' },
+        ? { el: $('fechaOficio'), texto: `Paso ${n0 + 4}: revisa la fecha del oficio. Toca «Listo…» para seguir.`, modo: 'tocar' }
+        : { el: $('diaF'), texto: `Paso ${n0 + 4}: elige la fecha del oficio (día, mes y año). Toca «Listo…» para seguir.`, modo: 'tocar' },
     );
     return p.filter(x => x.el);
   }
@@ -131,6 +131,26 @@
     });
   }
 
+  // Botón «Listo…» dentro del globo de la mascota para pasar al siguiente paso
+  async function ponerListo(turno, el) {
+    for (let i = 0; i < 40 && turno === guiando; i++) {
+      // Espera a que la mascota ya esté junto a ESTE campo (no la del paso anterior, que va saliendo)
+      const globo = M.presentando && M.presentando() === el ? [...document.querySelectorAll('.ms-presentador .ms-burbuja')].pop() : null;
+      if (globo) {
+        if (!globo.querySelector('.ms-burbuja-listo')) {
+          const b = document.createElement('button');
+          b.type = 'button'; b.className = 'ms-burbuja-listo';
+          b.textContent = 'Listo…';
+          b.addEventListener('click', (e) => { e.stopPropagation(); M.retirar(); });
+          globo.appendChild(b);
+          globo.closest('.ms-presentador').classList.add('ms-con-listo');
+        }
+        return;
+      }
+      await esperar(150);
+    }
+  }
+
   async function guiaCompleta() {
     const turno = ++guiando;
     const pasos = pasosGuia();
@@ -138,6 +158,7 @@
       if (turno !== guiando) return;
       await M.retirar();
       M.presentar(paso.el, paso.texto);
+      ponerListo(turno, paso.el);
       if (!(await esperarPaso(paso, turno))) return;
     }
     if (turno !== guiando) return;
@@ -155,7 +176,7 @@
   function preguntas() {
     const lista = [{
       pregunta: 'Guíame paso a paso', icono: 'ti-route',
-      texto: 'Te acompaño campo por campo, en orden, hasta generar los pliegos. En las listas y fechas avanzo solo cuando eliges; en los textos, tócame cuando termines. Puedes salir con Esc.',
+      texto: 'Te acompaño campo por campo, en orden, hasta generar los pliegos. En las listas y fechas avanzo solo cuando eliges; en lo demás, toca «Listo…» en mi globo para seguir. Puedes salir con Esc.',
       acciones: [{ texto: 'Empezar la guía', icono: 'ti-player-play', hacer: guiaCompleta }],
     }];
     if (puedeLlenar()) lista.push({
