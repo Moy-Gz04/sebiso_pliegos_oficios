@@ -88,7 +88,7 @@ const personas = [
     },
 
     {
-        nombre: "Víctor Hugo Pérez Guati Rojo",
+        nombre: "Victor Hugo Pérez Guati Rojo",
         categoria: "Director de Area-B",
         rfc: "PEGV700506FW2"
     },
