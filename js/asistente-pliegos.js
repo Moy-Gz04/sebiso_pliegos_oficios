@@ -303,6 +303,43 @@
     relato.focus();
   }
 
+  /* ─────────────── Avisos del formulario: los dice la mascota ───────────────
+     Reemplaza la ventana «Atención» (mostrarAdvertencia de js-app/app_*.js)
+     y, al cerrar el aviso, salta junto al campo que hay que corregir. */
+  function campoDelAviso(msg) {
+    const m = msg.toUpperCase();
+    if (m.includes('PERSONA')) return document.querySelector('.tabla-personas');
+    if (m.includes('MOTIVO')) return campoTexto('motivo');
+    if (m.includes('ACTIVIDADES')) return campoTexto('actividades');
+    if (m.includes('LOCALIDAD')) return campoTexto('localidades');
+    if (m.includes('DÍA') || m.includes('DIA')) return $('fechaFin') || $('diaFin');
+    return null;
+  }
+  const textoSenal = {
+    persona: 'Marca aquí al menos a una persona de la comisión.',
+    motivo: 'Escribe aquí el motivo de la comisión.',
+    actividades: 'Escribe aquí las actividades, una por renglón.',
+    localidades: 'Escribe aquí las localidades visitadas.',
+    dia: 'Revisa este día: no puede ser antes del día de inicio.',
+  };
+  function senalDelAviso(msg) {
+    const m = msg.toUpperCase();
+    return m.includes('PERSONA') ? textoSenal.persona : m.includes('MOTIVO') ? textoSenal.motivo
+      : m.includes('ACTIVIDADES') ? textoSenal.actividades : m.includes('LOCALIDAD') ? textoSenal.localidades : textoSenal.dia;
+  }
+  if (typeof window.mostrarAdvertencia === 'function' && M.preguntar) {
+    window.mostrarAdvertencia = async function (mensaje) {
+      const msg = String(mensaje || '');
+      await M.preguntar({
+        titulo: '¡Un detalle!', pregunta: esc(msg), soloOk: true,
+        btnOk: 'Entendido', iconoOk: 'ti-thumb-up', estiloOk: 'dorado', tono: 'aviso',
+        saludoOk: '¡Va!', textoOk: 'Te muestro dónde…',
+      });
+      const campo = campoDelAviso(msg);
+      if (campo && visible(campo)) guiar(campo, senalDelAviso(msg));
+    };
+  }
+
   M.alTocarEsquina = abrirAyuda;
 
   /* ─────────────── Al entrar: ofrece llenarlo ─────────────── */
