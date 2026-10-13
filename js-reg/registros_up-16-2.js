@@ -308,5 +308,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* ── 7.3  Carga inicial + refresco automático ───────────── */
   cargarRegistros();
-  setInterval(cargarRegistros, 30_000);
+  // Sin refresco automático: la lista se carga al abrir la página y después de cada cambio
+  // (recargarla cada 30 s movía la tabla mientras se trabajaba y gastaba peticiones al servidor)
 });
