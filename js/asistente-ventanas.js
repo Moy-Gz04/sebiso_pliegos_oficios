@@ -145,6 +145,25 @@
     });
   };
 
+  /* ---------- Ventanas «Generar …»: marcar en dorado lo que falta por llenar ---------- */
+  // Un campo falta si se puede editar y está vacío (o el select sigue en su opción vacía).
+  // Se revisa al escribir y cada poco mientras la ventana está abierta, porque la página
+  // también llena campos por su cuenta sin avisar.
+  function marcarFaltantes() {
+    document.querySelectorAll('.modal-spg-contenido').forEach(caja => {
+      if (!visible(caja)) return;
+      caja.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea').forEach(c => {
+        const editable = !c.readOnly && !c.disabled;
+        const vacio = c.tagName === 'SELECT' ? !c.value : !String(c.value || '').trim();
+        c.classList.toggle('vg-falta', editable && vacio);
+        c.closest('.campo-spg, .grupo-input-spg')?.classList.toggle('vg-falta-label', editable && vacio);
+      });
+    });
+  }
+  document.addEventListener('input', e => { if (e.target.closest && e.target.closest('.modal-spg-contenido')) marcarFaltantes(); }, true);
+  document.addEventListener('change', e => { if (e.target.closest && e.target.closest('.modal-spg-contenido')) marcarFaltantes(); }, true);
+  setInterval(() => { if (document.querySelector('.modal-spg-contenido') && [...document.querySelectorAll('.modal-spg-contenido')].some(visible)) marcarFaltantes(); }, 700);
+
   // Ventanas que ya estaban abiertas al cargar
   document.querySelectorAll('.modal, .modal-spg, [id^="modal"]').forEach(revisar);
 })();
