@@ -77,7 +77,7 @@
 
     // Confirmación o aviso: lo pregunta/dice la mascota y luego se aprieta el botón original
     const titulo = limpio(caja.querySelector('h1, h2, h3, h4')?.textContent);
-    const textos = [...caja.querySelectorAll('p')].filter(visible).map(p => limpio(p.textContent)).filter(Boolean);
+    const textos = [...caja.querySelectorAll('p, [id$="Mensaje"], [id$="mensaje"], .modal-mensaje')].filter(visible).map(p => limpio(p.textContent)).filter(Boolean);
     const cancelar = botones.find(esCancelar);
     const ok = [...botones].reverse().find(b => b !== cancelar) || botones[botones.length - 1];
     const textoOk = limpio(ok.textContent) || 'Aceptar';

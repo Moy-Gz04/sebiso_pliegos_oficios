@@ -1211,7 +1211,23 @@ function construirTarjeta(registro) {
             <div class="rc-der">
               ${obtenerBadgeEstatus(registro.estatus)}
               ${btnEliminar}
-              <!-- Incluir en el documento de viáticos (el importe se lee del pliego) -->
+              <!-- Importe de viáticos (esta área lo captura a mano; aún no se lee del pliego) -->
+              <label class="rc-importe" title="Importe total del viático">
+                <span>$</span>
+                <input
+                  type="number"
+                  step="0.01"
+                  min="0"
+                  class="input-importe-viaticos"
+                  id="importe-${codigo}"
+                  value="${registro.importe_viaticos ?? ''}"
+                  placeholder="Importe"
+                  aria-label="Importe de viáticos de ${persona}"
+                  onchange="guardarImporteViaticos('${codigo}', this.value)"
+                  ${bloqueado ? "readonly" : ""}
+                >
+              </label>
+              <!-- Incluir en el documento de viáticos -->
               <label class="rc-sel" title="Incluir en el documento de viáticos">
                 <input
                   type="checkbox"
@@ -1351,12 +1367,11 @@ function validarImporteAntesDeMarcar(checkbox, codigo) {
   const input = document.getElementById(`importe-${codigo}`);
   const valor = parseFloat(input?.value);
 
-  // Sin importe se permite si hay pliego: al generar, el importe se lee del PDF del pliego
-  const registro = (typeof ultimosRegistros !== "undefined" ? ultimosRegistros : []).find((r) => r.codigo === codigo);
-  if ((isNaN(valor) || valor <= 0) && !(registro && registro.pliego_pdf)) {
+  // Esta área aún no lee el importe del pliego: se captura en la tarjeta
+  if (isNaN(valor) || valor <= 0) {
     mostrarAlerta(
-      "Sin pliego",
-      "Este registro todavía no tiene pliego generado; el importe de viáticos se lee del pliego, así que aún no se puede seleccionar."
+      "Importe requerido",
+      "Debes capturar el Importe Total del Viático (mayor a $0.00) antes de poder seleccionar este registro."
     );
     return false;
   }
@@ -1603,6 +1618,7 @@ function buscarRFC(nombre) {
  */
 async function generarViaticos() {
   const btn = document.getElementById("btnGenerarViaticos");
+  const textoBoton = btn ? btn.innerHTML : "";
 
   try {
     if (btn) btn.disabled = true;
@@ -1617,6 +1633,25 @@ async function generarViaticos() {
     if (registrosSeleccionados.length === 0) {
       throw new Error("No se encontraron los registros seleccionados.");
     }
+
+    /* --- Importe automático: a los que no lo tienen se les lee del PDF del pliego --- */
+    const porLeer = registrosSeleccionados.filter(
+      (r) => (!r.importe_viaticos || parseFloat(r.importe_viaticos) <= 0) && r.pliego_pdf
+    );
+    for (let i = 0; i < porLeer.length; i++) {
+      const r = porLeer[i];
+      if (btn) btn.textContent = `Leyendo importe del pliego (${i + 1} de ${porLeer.length})…`;
+      try {
+        const resp = await fetch(`${API}/api/importe-pliego/${encodeURIComponent(r.codigo)}`, { method: "POST" });
+        const j = await resp.json();
+        if (j.ok) {
+          r.importe_viaticos = j.importe;
+          const original = ultimosRegistros.find((x) => x.codigo === r.codigo);
+          if (original) original.importe_viaticos = j.importe;
+        }
+      } catch (e) { /* si falla, se pide capturarlo a mano abajo */ }
+    }
+    if (btn && porLeer.length) btn.textContent = "Generando…";
 
     /* --- Validación defensiva: todos deben tener importe > 0 --- */
     const sinImporte = registrosSeleccionados.filter(
@@ -1695,7 +1730,7 @@ async function generarViaticos() {
     cerrarModal("modalCargandoViaticos");
     mostrarAlerta("❌ Error al generar viáticos", error.message);
   } finally {
-    if (btn) btn.disabled = false;
+    if (btn) { btn.disabled = false; btn.innerHTML = textoBoton; }
   }
 }
 

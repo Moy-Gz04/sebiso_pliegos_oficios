@@ -135,3 +135,9 @@
   .rc, .rc-sel-caja, .rc-doc, .rc-icono { transition: none !important; }
   .rc-sel input:checked + .rc-sel-caja svg { animation: none; }
 }
+
+/* Importe de viáticos en la cabecera (áreas que todavía lo capturan a mano) */
+.rc .rc-importe { display: inline-flex; align-items: center; gap: 4px; height: 38px; padding: 0 10px; border: 1px solid var(--rc-linea); border-radius: 10px; background: #fff; }
+.rc .rc-importe span { color: var(--rc-dorado); font-weight: 700; font-size: 13px; }
+.rc .rc-importe input { width: 96px !important; border: 0 !important; outline: 0 !important; background: transparent !important; box-shadow: none !important; margin: 0 !important; padding: 0 !important; font: 600 13px 'Montserrat', sans-serif !important; color: var(--rc-tinta) !important; }
+.rc .rc-importe:focus-within { border-color: var(--rc-dorado); box-shadow: 0 0 0 3px rgba(184, 149, 90, .2); }
