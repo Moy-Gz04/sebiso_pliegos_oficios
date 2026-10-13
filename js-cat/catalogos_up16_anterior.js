@@ -1,0 +1,413 @@
+/* =========================
+   CATÁLOGO DE PERSONAS
+========================= */
+
+const personas = [
+
+    "L.A.P. Jorge Miguel García Vázquez",
+    "Maribel Molina Hernández",
+    "José Luis González Martínez",
+    "Alelí Gutiérrez García",
+    "Francisca Hernández Monroy",
+    "Erick Espinosa Lorenzo",
+    "Luis Eumir Pérez Juárez",
+    "Rosa María Pérez García"
+
+];
+
+/* ============================================================
+   CATÁLOGO : MESES
+   Nombres de los meses en español para los selects de fecha.
+   ============================================================ */
+
+const meses = [
+    "enero",
+    "febrero",
+    "marzo",
+    "abril",
+    "mayo",
+    "junio",
+    "julio",
+    "agosto",
+    "septiembre",
+    "octubre",
+    "noviembre",
+    "diciembre"
+];
+
+
+/* ============================================================
+   CATÁLOGO : ZONAS Y TARIFAS
+   Claves de zona/tarifa que determina el viático correspondiente.
+   También controla qué catálogo de municipios se carga
+   (ver función llenarMunicipios más abajo).
+
+   Regla de municipios:
+     "I-I"              → zona1
+     "II-I","II-II",
+     "II-I y II"        → zona2
+     Cualquier otro     → zona3
+   ============================================================ */
+
+const zonasTarifa = [
+    "I-I",
+    "II-I",
+    "II-II",
+    "II-I y II",
+    "III-I",
+    "III-I y II",
+    "III-II"
+];
+
+
+/* ============================================================
+   CATÁLOGO : ZONA 1
+   Municipios de Hidalgo correspondientes a la zona tarifaria I.
+   Se despliegan cuando la zona seleccionada es "I-I".
+   ============================================================ */
+
+const zona1 = [
+    "Acatlán, Hgo.",
+    "Acaxochitlán, Hgo.",
+    "Actopan, Hgo.",
+    "Ajacuba, Hgo.",
+    "Almoloya, Hgo.",
+    "Apan, Hgo.",
+    "Arenal, Hgo.",
+    "Atitalaquia, Hgo.",
+    "Atotonilco de Tula, Hgo.",
+    "Atotonilco el Grande, Hgo.",
+    "Chapulhuacán, Hgo.",
+    "Chicavasco, Hgo.",
+    "Emiliano Zapata, Hgo.",
+    "Epazoyucan, Hgo.",
+    "Francisco I. Madero, Hgo.",
+    "Huasca de Ocampo, Hgo.",
+    "Ixmiquilpan, Hgo.",
+    "Metepec, Hgo.",
+    "Metzquititlán, Hgo.",
+    "Metztitlán, Hgo.",
+    "Mineral de la Reforma, Hgo.",
+    "Mineral del Chico, Hgo.",
+    "Mineral del Monte, Hgo.",
+    "Mixquiahuala de Juárez, Hgo.",
+    "Omitlán de Juárez, Hgo.",
+    "Progreso de Obregón, Hgo.",
+    "San Agustín Tlaxiaca, Hgo.",
+    "San Salvador, Hgo.",
+    "Santiago de Anaya, Hgo.",
+    "Santiago Tulantepec de Lugo Guerrero, Hgo.",
+    "Singuilucan, Hgo.",
+    "Tepeapulco, Hgo.",
+    "Tetepango, Hgo.",
+    "Tezontepec de Aldama, Hgo.",
+    "Tizayuca, Hgo.",
+    "Tlahuelilpan, Hgo.",
+    "Tlanalapa, Hgo.",
+    "Tlaxcoapan, Hgo.",
+    "Tolcayuca, Hgo.",
+    "Tula de Allende, Hgo.",
+    "Tulancingo de Bravo, Hgo.",
+    "Villa de Tezontepec, Hgo.",
+    "Zapotlán de Juárez, Hgo.",
+    "Zempoala, Hgo."
+];
+
+
+/* ============================================================
+   CATÁLOGO : ZONA 2
+   Municipios de Hidalgo correspondientes a la zona tarifaria II.
+   Se despliegan cuando la zona es "II-I", "II-II" o "II-I y II".
+   ============================================================ */
+
+const zona2 = [
+    "Agua Blanca de Iturbide, Hgo.",
+    "Alfajayucan, Hgo.",
+    "Cardonal, Hgo.",
+    "Chapantongo, Hgo.",
+    "Eloxochitlán, Hgo.",
+    "Juárez Hidalgo, Hgo.",
+    "Tasquillo, Hgo.",
+    "Tenango de Doria, Hgo.",
+    "Tepeji del Río de Ocampo, Hgo.",
+    "Tepetitlán, Hgo.",
+    "Tianguistengo, Hgo.",
+    "Zacualtipán de Ángeles, Hgo."
+];
+
+/* ============================================================
+   CATÁLOGO : ZONA 3
+   Municipios de Hidalgo correspondientes a la zona tarifaria III.
+   Se despliegan cuando la zona es "III-I", "III-I y II" o "III-II".
+   ============================================================ */
+
+const zona3 = [
+    "Atlapexco, Hgo.",
+    "Calnali, Hgo.",
+    "Chapulhuacán, Hgo.",
+    "Huautla, Hgo.",
+    "Huazalingo, Hgo.",
+    "Huejutla de Reyes, Hgo.",
+    "Huehuetla, Hgo.",
+    "Huichapan, Hgo.",
+    "Jacala de Ledezma, Hgo.",
+    "Jaltocán, Hgo.",
+    "Lolotla, Hgo.",
+    "La Misión, Hgo.",
+    "Molango de Escamilla, Hgo.",
+    "Nicolás Flores, Hgo.",
+    "Nopala de Villagrán, Hgo.",
+    "San Felipe Orizatlán, Hgo.",
+    "Pacula, Hgo.",
+    "Pisaflores, Hgo.",
+    "San Bartolo Tutotepec, Hgo.",
+    "Tecozautla, Hgo.",
+    "Tepehuacán de Guerrero, Hgo.",
+    "Tlahuiltepa, Hgo.",
+    "Tlanchinol, Hgo.",
+    "Xochiatipan, Hgo.",
+    "Xochicoatlán, Hgo.",
+    "Yahualica, Hgo.",
+    "Zimapán, Hgo."
+];
+
+
+/* ============================================================
+   FUNCIÓN : cargarPersonas
+   Renderiza la tabla de personas con un checkbox por fila.
+   Cada checkbox lleva el nombre completo como value para
+   que el FormData lo envíe correctamente al Apps Script.
+   ============================================================ */
+
+function cargarPersonas(){
+
+    const tbody =
+    document.getElementById("listaPersonas");
+
+    personas.forEach(persona => {
+
+        const tr =
+        document.createElement("tr");
+
+        tr.innerHTML = `
+            <td>${persona}</td>
+            <td style="text-align:center;">
+                <input
+                    type="checkbox"
+                    name="seleccionados"
+                    value="${persona}"
+                >
+            </td>
+        `;
+
+        tbody.appendChild(tr);
+
+    });
+
+}
+
+
+/* ============================================================
+   FUNCIÓN : llenarDias
+   Llena un <select> con los días del 1 al 31.
+   @param {string} idSelect - ID del elemento <select> a llenar.
+   ============================================================ */
+
+function llenarDias(idSelect){
+
+    const select =
+    document.getElementById(idSelect);
+
+    for(let i = 1; i <= 31; i++){
+
+        const option =
+        document.createElement("option");
+
+        option.value = i;
+        option.textContent = i;
+
+        select.appendChild(option);
+
+    }
+
+}
+
+
+/* ============================================================
+   FUNCIÓN : llenarMeses
+   Llena un <select> con los 12 meses en español.
+   @param {string} idSelect - ID del elemento <select> a llenar.
+   ============================================================ */
+
+function llenarMeses(idSelect){
+
+    const select =
+    document.getElementById(idSelect);
+
+    meses.forEach(mes => {
+
+        const option =
+        document.createElement("option");
+
+        option.value = mes;
+        option.textContent = mes;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* ============================================================
+   FUNCIÓN : llenarAnios
+   Llena un <select> con años del 2025 al 2035.
+   @param {string} idSelect - ID del elemento <select> a llenar.
+   ============================================================ */
+
+function llenarAnios(idSelect){
+
+    const select =
+    document.getElementById(idSelect);
+
+    for(let i = 2025; i <= 2035; i++){
+
+        const option =
+        document.createElement("option");
+
+        option.value = i;
+        option.textContent = i;
+
+        select.appendChild(option);
+
+    }
+
+}
+
+
+/* ============================================================
+   FUNCIÓN : llenarZonas
+   Llena el <select id="zona"> con las claves de zonasTarifa.
+   ============================================================ */
+
+function llenarZonas(){
+
+    const select =
+    document.getElementById("zona");
+
+    zonasTarifa.forEach(zona => {
+
+        const option =
+        document.createElement("option");
+
+        option.value = zona;
+        option.textContent = zona;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* ============================================================
+   FUNCIÓN : llenarMunicipios
+   Llena el <select id="municipio"> según la zona tarifaria
+   actualmente seleccionada, aplicando la siguiente regla:
+
+     "I-I"              → zona1 (44 municipios)
+     "II-I","II-II",
+     "II-I y II"        → zona2 (12 municipios)
+     Cualquier otro     → zona3 (27 municipios)
+
+   Limpia el select antes de cada llenado para evitar
+   duplicados al cambiar de zona.
+
+   @param {string} zonaSeleccionada - Value del select de zona.
+   ============================================================ */
+
+function llenarMunicipios(zonaSeleccionada){
+
+    const select =
+    document.getElementById("municipio");
+
+    /* Limpiar opciones previas */
+    select.innerHTML = "";
+
+    /* Seleccionar catálogo según zona */
+    let catalogo = [];
+
+    if(zonaSeleccionada === "I-I"){
+
+        catalogo = zona1;
+
+    } else if(
+        zonaSeleccionada === "II-I"    ||
+        zonaSeleccionada === "II-II"   ||
+        zonaSeleccionada === "II-I y II"
+    ){
+
+        catalogo = zona2;
+
+    } else {
+
+        /* III-I, III-I y II, III-II */
+        catalogo = zona3;
+
+    }
+
+    /* Renderizar opciones */
+    catalogo.forEach(municipio => {
+
+        const option =
+        document.createElement("option");
+
+        option.value = municipio;
+        option.textContent = municipio;
+
+        select.appendChild(option);
+
+    });
+
+}
+
+
+/* ============================================================
+   INICIALIZACIÓN
+   Se ejecuta al cargar el script. Llena todos los selects
+   del formulario con sus catálogos correspondientes.
+   El select de municipios se llena con la zona por defecto
+   y se suscribe al evento change del select de zona para
+   actualizarse automáticamente al cambiar de zona.
+   ============================================================ */
+
+/* Tabla de personas con checkboxes */
+cargarPersonas();
+
+/* Select de zona y tarifa */
+llenarZonas();
+
+/* Selects de días (comisión e inicio) */
+llenarDias("diaInicio");
+llenarDias("diaFin");
+llenarDias("diaF");
+
+/* Selects de meses (comisión y oficio) */
+llenarMeses("mes");
+llenarMeses("mesF");
+
+/* Select de año del oficio */
+llenarAnios("anoF");
+
+/* Select de municipio — carga inicial con zona por defecto */
+llenarMunicipios(
+    document.getElementById("zona").value
+);
+
+/* Actualizar municipios cada vez que cambie la zona */
+document.getElementById("zona")
+.addEventListener("change", function(){
+
+    llenarMunicipios(this.value);
+
+});
