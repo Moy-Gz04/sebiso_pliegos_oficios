@@ -117,3 +117,13 @@ body.con-encabezado-sistemas .contenido { margin-top: 0 !important; min-height: 
 .hs-menu-up span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 @media (max-width: 760px) { .hs-menu-up { max-width: 100%; margin: 0 0 8px; } .hs-menu { flex-wrap: wrap; } }
 body.con-encabezado-sistemas .contenido { padding-top: 14px; }
+
+/* Nombre de la UP: texto suelto (sin botón ni ícono), plateado con un brillo que lo recorre */
+.hs-menu-up { padding: 0; border: 0; border-radius: 0; background: none; font-size: .8rem; font-weight: 700; letter-spacing: .08em; }
+.hs-menu-up span {
+  background: linear-gradient(100deg, #9EA3AD 0%, #E9ECF1 22%, #FFFFFF 30%, #B9BEC7 42%, #8D929C 60%, #DDE1E7 80%, #A7ACB5 100%);
+  background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 1px 0 rgba(0, 0, 0, .35)); animation: hsPlata 4.5s linear infinite;
+}
+@keyframes hsPlata { from { background-position: 100% 0; } to { background-position: -150% 0; } }
+@media (prefers-reduced-motion: reduce) { .hs-menu-up span { animation: none; } }

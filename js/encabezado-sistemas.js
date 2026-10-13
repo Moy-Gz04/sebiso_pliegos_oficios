@@ -20,7 +20,7 @@
   document.head.appendChild(fuente);
   const css = document.createElement('link');
   css.rel = 'stylesheet';
-  css.href = BASE + 'css/encabezado-sistemas.css?v=3';
+  css.href = BASE + 'css/encabezado-sistemas.css?v=4';
   document.head.appendChild(css);
 
   const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -80,7 +80,7 @@
         const et = document.createElement('div');
         et.className = 'hs-menu-up';
         et.title = lineas.join(' · ');
-        et.innerHTML = `<i class="ti ti-building-community" aria-hidden="true"></i><span>${esc(up)}</span>`;
+        et.innerHTML = `<span>${esc(up)}</span>`;
         enc.querySelector('.hs-menu').appendChild(et);
       }
       franja.classList.add('hs-oculta');
