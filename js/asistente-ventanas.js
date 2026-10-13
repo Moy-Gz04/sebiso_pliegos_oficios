@@ -152,6 +152,8 @@
   function marcarFaltantes() {
     document.querySelectorAll('.modal-spg-contenido').forEach(caja => {
       if (!visible(caja)) return;
+      // Que el navegador no ofrezca tarjetas, direcciones ni contraseñas guardadas en estos formularios
+      caja.querySelectorAll('input:not([autocomplete])').forEach(c => { c.setAttribute('autocomplete', 'off'); c.setAttribute('data-lpignore', 'true'); });
       caja.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea').forEach(c => {
         // Los opcionales (su texto de ayuda dice «opcional») no se marcan como faltantes
         const editable = !c.readOnly && !c.disabled && !/opcional/i.test(c.placeholder || '') && !c.hasAttribute('data-opcional');
