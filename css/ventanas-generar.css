@@ -1,0 +1,151 @@
+/* =========================================================
+   Ventanas «Generar …» (SPG, Recibo, Anexo C, Factura…) con un solo diseño.
+   Todas comparten .modal-spg-contenido, pero cada una traía su propio
+   encabezado (.spg-header / .modal-header), rejilla (.contenedor-spg /
+   .spg-grid / .modal-body-grid), campo (.grupo-input-spg / .campo-spg) y
+   botones (.modal-spg-botones / .modal-footer). Aquí se igualan.
+   Va con !important porque factura.css y modales.css usan selectores por id.
+   La mascota la pone js/asistente-ventanas.js dentro del encabezado.
+   ========================================================= */
+
+/* Fondo de la ventana */
+body .modal-spg:has(> .modal-spg-contenido),
+body [id^="modal"]:has(> .modal-spg-contenido) {
+  background: rgba(42, 10, 21, .45) !important;
+  backdrop-filter: blur(3px);
+  align-items: center !important; justify-content: center !important; padding: 16px !important;
+}
+
+/* Tarjeta */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) {
+  display: flex !important; flex-direction: column !important;
+  width: min(1000px, 96vw) !important; max-width: 1000px !important; max-height: 90vh !important;
+  padding: 0 !important; margin: 0 auto !important; overflow: hidden !important;
+  background: #FFFDF9 !important; border: 1px solid #E4D6C8 !important; border-radius: 22px !important;
+  box-shadow: 0 24px 60px rgba(42, 10, 21, .35) !important;
+  font-family: 'Montserrat', sans-serif !important; color: #3D1420;
+  animation: vgEntra .26s cubic-bezier(.2, .9, .3, 1.1);
+}
+@keyframes vgEntra { from { opacity: 0; transform: translateY(14px) scale(.98); } to { opacity: 1; transform: none; } }
+
+/* Encabezado: claro, con el título en guinda, línea dorada y la mascota a la izquierda */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-header,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-header {
+  position: relative; flex-shrink: 0;
+  display: flex !important; flex-direction: column !important; justify-content: center !important; align-items: flex-start !important; gap: 4px;
+  min-height: 84px; padding: 18px 28px 16px 116px !important; margin: 0 !important;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FBF6EE 100%) !important;
+  border-bottom: 1px solid #E4D6C8 !important; border-radius: 0 !important; text-align: left !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-header::after,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-header::after {
+  content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 3px;
+  background: linear-gradient(90deg, #5F2132 0 30%, #A9824C 30% 70%, #5F2132 70% 100%);
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-header h2,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-header h2 {
+  margin: 0 !important; padding: 0 !important; font: 700 1.3rem 'Montserrat', sans-serif !important;
+  color: #3D1420 !important; letter-spacing: -.01em; text-align: left !important; background: none !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-header p,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-header p { margin: 0 !important; font-size: .82rem !important; color: #6B5563 !important; text-align: left !important; }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .ms-ventana-mascota.en-encabezado {
+  position: absolute; left: 22px; top: 50%; width: 76px; margin: 0; transform: translateY(-50%);
+}
+
+/* Cuerpo: rejilla pareja que se acomoda sola, con su propia barra de desplazamiento */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .contenedor-spg,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-grid,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-body-grid {
+  display: grid !important; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)) !important; gap: 14px 18px !important;
+  padding: 22px 28px !important; margin: 0 !important; overflow-y: auto !important; flex: 1 1 auto; min-height: 0;
+  background: transparent !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .grupo-input-spg,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .campo-spg {
+  display: flex !important; flex-direction: column !important; gap: 6px !important; margin: 0 !important; padding: 0 !important;
+  background: none !important; border: 0 !important; box-shadow: none !important; min-width: 0;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) label {
+  margin: 0 !important; font: 700 .68rem 'Montserrat', sans-serif !important; letter-spacing: .09em !important;
+  text-transform: uppercase !important; color: #7C5D31 !important; background: none !important; padding: 0 !important; text-align: left !important; align-self: stretch !important;
+}
+
+/* Campos: blancos y legibles; los que llena el sistema (solo lectura) en crema con filo dorado */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) input,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) select,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) textarea {
+  width: 100% !important; box-sizing: border-box !important; min-height: 44px; margin: 0 !important;
+  padding: 10px 14px !important; border-radius: 12px !important;
+  border: 1px solid #E4D6C8 !important; background: #FFFFFF !important; color: #3D1420 !important;
+  font: 600 .9rem 'Montserrat', sans-serif !important; box-shadow: inset 0 1px 2px rgba(61, 20, 32, .05) !important;
+  transition: border-color .15s, box-shadow .15s, background .15s;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) textarea { min-height: 88px; resize: vertical; }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) input::placeholder,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) textarea::placeholder { color: #A99AA0 !important; font-weight: 500 !important; }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) input:focus,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) select:focus,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) textarea:focus {
+  outline: none !important; border-color: #A9824C !important; box-shadow: 0 0 0 3px rgba(169, 130, 76, .22) !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) input[readonly],
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) textarea[readonly],
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) select:disabled,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) input:disabled {
+  background: #FBF6EE !important; color: #5F2132 !important; border-color: #EADBC6 !important;
+  border-left: 3px solid #A9824C !important; box-shadow: none !important; cursor: default;
+}
+
+/* Botones: Cancelar discreto y la acción principal en dorado con brillo */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-spg-botones,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-footer {
+  flex-shrink: 0; display: flex !important; justify-content: flex-end !important; align-items: center !important; gap: 12px !important;
+  padding: 16px 28px !important; margin: 0 !important; background: #FBF6EE !important; border-top: 1px solid #E4D6C8 !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-spg-botones button,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-footer button {
+  position: relative; overflow: hidden; width: auto !important; min-width: 170px; margin: 0 !important;
+  padding: 12px 26px !important; border-radius: 999px !important; cursor: pointer;
+  font: 700 .85rem 'Montserrat', sans-serif !important; letter-spacing: .03em; transition: transform .15s, filter .15s, box-shadow .2s;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .btn-spg-cancelar,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(.btn-cancelar, .btn-factura-cancelar) {
+  background: #FFFFFF !important; color: #5F2132 !important; border: 1px solid #E4D6C8 !important; box-shadow: none !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .btn-spg-cancelar:hover,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(.btn-cancelar, .btn-factura-cancelar):hover { background: #F4EFEA !important; transform: translateY(-1px); }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .btn-spg-generar,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(.btn-guardar, .btn-factura-generar) {
+  background: linear-gradient(135deg, #D8B866 0%, #A9824C 55%, #8C6A34 100%) !important; color: #3A0818 !important;
+  border: 1px solid rgba(255, 255, 255, .35) !important; box-shadow: 0 6px 16px rgba(124, 93, 49, .35), inset 0 1px 0 rgba(255, 255, 255, .35) !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .btn-spg-generar::before,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(.btn-guardar, .btn-factura-generar)::before {
+  content: ''; position: absolute; top: 0; left: -60%; width: 40%; height: 100%;
+  background: linear-gradient(115deg, transparent, rgba(255, 255, 255, .45), transparent); transform: skewX(-20deg); transition: left .55s ease;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .btn-spg-generar:hover,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(.btn-guardar, .btn-factura-generar):hover { transform: translateY(-2px); filter: brightness(1.06); }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .btn-spg-generar:hover::before,
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(.btn-guardar, .btn-factura-generar):hover::before { left: 130%; }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) button:focus-visible { outline: 2px solid #A9824C !important; outline-offset: 2px; }
+
+@media (max-width: 640px) {
+  body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-header, body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-header { padding: 14px 18px 14px 92px !important; min-height: 72px; }
+  body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .ms-ventana-mascota.en-encabezado { width: 60px; left: 16px; }
+  body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .contenedor-spg, body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .spg-grid, body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-body-grid { padding: 16px 18px !important; }
+  body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-spg-botones, body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-footer { flex-direction: column-reverse !important; padding: 14px 18px !important; }
+  body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-spg-botones button, body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > .modal-footer button { width: 100% !important; }
+}
+@media (prefers-reduced-motion: reduce) { body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) { animation: none; } }
+
+/* Texto de los campos: las hojas anteriores forzaban letra blanca (-webkit-text-fill-color) */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(input, select, textarea) { -webkit-text-fill-color: currentColor !important; opacity: 1 !important; }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(input[readonly], textarea[readonly]):is(:hover, :focus) {
+  background: #FBF6EE !important; color: #5F2132 !important; border-color: #EADBC6 !important; border-left: 3px solid #A9824C !important; box-shadow: none !important; transform: none !important;
+}
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) :is(input:not([readonly]), select, textarea:not([readonly])):hover { border-color: #D8C29A !important; transform: none !important; }
+/* Mascota dentro del encabezado, completa y centrada */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > :is(.spg-header, .modal-header) { padding-left: 104px !important; }
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .ms-ventana-mascota.en-encabezado { width: 62px !important; left: 26px !important; top: 50% !important; transform: translateY(-46%) !important; animation: msRespirar 5s ease-in-out infinite; }

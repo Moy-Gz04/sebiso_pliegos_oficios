@@ -57,15 +57,20 @@
     if (enCurso.has(modal) || apagado()) return;
     // Red de seguridad: si reaparece sola justo después de contestarla, no se vuelve a preguntar
     if (Date.now() - (modal._msRespondida || 0) < 600) { modal.classList.remove('activo', 'active', 'show', 'visible', 'abierto'); modal.style.setProperty('display', 'none', 'important'); return; }
-    const caja = modal.querySelector('.modal-contenido, .modal-content, .modal-box') || modal.firstElementChild || modal;
+    const caja = modal.querySelector('.modal-spg-contenido, .modal-contenido, .modal-content, .modal-box, .modal-confirmar-contenido') || modal.firstElementChild || modal;
     const campos = [...caja.querySelectorAll('input:not([type=hidden]), select, textarea, table, iframe, canvas, img:not(.ms-ventana-mascota img)')].filter(visible);
     const botones = [...caja.querySelectorAll('button, .btn, a.btn')].filter(b => visible(b) && !b.closest('.ms-ventana-mascota'));
 
     // Con formulario/tablas, o «cargando» sin botones: la mascota se queda en la ventana
     if (campos.length || !botones.length) {
       if (!caja.querySelector('.ms-ventana-mascota')) {
-        caja.insertAdjacentHTML('afterbegin', mascota(botones.length ? '' : 'ms-trabajando-v'));
-        caja.classList.add('ms-ventana-con-mascota');
+        // Ventanas «Generar …»: la mascota va dentro del encabezado (el cuerpo tiene su propio scroll)
+        const enc = caja.querySelector(':scope > .spg-header, :scope > .modal-header');
+        if (enc) enc.insertAdjacentHTML('afterbegin', mascota('en-encabezado'));
+        else {
+          caja.insertAdjacentHTML('afterbegin', mascota(botones.length ? '' : 'ms-trabajando-v'));
+          caja.classList.add('ms-ventana-con-mascota');
+        }
       }
       return;
     }
@@ -113,10 +118,14 @@
     }
   }
   const abierta = (m) => getComputedStyle(m).display !== 'none' && !enCurso.has(m);
-  function revisar(m) { if (m.classList && m.classList.contains('modal') && abierta(m)) tomar(m); }
+  // Ventanas: las .modal y también las que solo tienen id="modal…" (Anexo C, factura, cargando…),
+  // sin contar las piezas internas que también se llaman «modal…» (p. ej. modalAlertaMensaje)
+  const esVentana = (m) => !!m.classList && (m.classList.contains('modal') || m.classList.contains('modal-spg')
+    || (/^modal/.test(m.id || '') && !(m.parentElement && m.parentElement.closest('[id^="modal"], .modal'))));
+  function revisar(m) { if (esVentana(m) && abierta(m)) tomar(m); }
   new MutationObserver(ms => ms.forEach(r => {
     if (r.type === 'attributes') revisar(r.target);
-    else r.addedNodes.forEach(n => { if (n.nodeType === 1) { revisar(n); n.querySelectorAll && n.querySelectorAll('.modal').forEach(revisar); } });
+    else r.addedNodes.forEach(n => { if (n.nodeType === 1) { revisar(n); n.querySelectorAll && n.querySelectorAll('.modal, .modal-spg, [id^="modal"]').forEach(revisar); } });
   })).observe(document.body, { attributes: true, attributeFilter: ['style', 'class'], subtree: true, childList: true });
 
   /* ---------- alert() y confirm() ---------- */
@@ -137,5 +146,5 @@
   };
 
   // Ventanas que ya estaban abiertas al cargar
-  document.querySelectorAll('.modal').forEach(revisar);
+  document.querySelectorAll('.modal, .modal-spg, [id^="modal"]').forEach(revisar);
 })();
