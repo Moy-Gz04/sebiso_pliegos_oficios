@@ -1650,8 +1650,13 @@ async function generarViaticos() {
       const r = porLeer[i];
       if (btn) btn.textContent = `Leyendo importe del pliego (${i + 1} de ${porLeer.length})…`;
       try {
-        const resp = await fetch(`${API}/api/importe-pliego/${encodeURIComponent(r.codigo)}`, { method: "POST" });
-        const j = await resp.json();
+        // La lectura con IA a veces falla de forma pasajera: hasta 3 intentos
+        let j = {};
+        for (let intento = 0; intento < 3 && !j.ok; intento++) {
+          if (intento) await new Promise((ok) => setTimeout(ok, 1500));
+          const resp = await fetch(`${API}/api/importe-pliego/${encodeURIComponent(r.codigo)}`, { method: "POST" });
+          j = await resp.json().catch(() => ({}));
+        }
         if (j.ok) {
           r.importe_viaticos = j.importe;
           const original = ultimosRegistros.find((x) => x.codigo === r.codigo);
