@@ -21,7 +21,7 @@ function validarCamposOficio2(){
 
     const camposRequeridos = [
 
-        "oficio2Numc"
+        "oficio2Folio"
 
     ];
 
@@ -205,7 +205,7 @@ async function abrirModalOficio2(codigo){
         ========================= */
 
         document.getElementById(
-            "oficio2Numc"
+            "oficio2Folio"
         ).value =
         "";
 
@@ -467,7 +467,7 @@ async function generarOficio2(){
                 "<<NUMC>>":
 
                 document.getElementById(
-                    "oficio2Numc"
+                    "oficio2Folio"
                 ).value,
 
                 "<<NOMBRE>>":
@@ -686,7 +686,7 @@ async function generarOficio2(){
 
                     numero_oficio:
                     document.getElementById(
-                        "oficio2Numc"
+                        "oficio2Folio"
                     ).value
 
                 })

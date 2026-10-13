@@ -309,7 +309,7 @@ const CAMPOS_REQUERIDOS = {
   ],
 
   OFICIO2: [
-    { id: "oficio2Numc",           label: "Número de control"  },
+    { id: "oficio2Folio",           label: "Número de control"  },
     { id: "oficio2Persona",        label: "Persona"            },
     { id: "oficio2Municipio",      label: "Municipio"          },
     { id: "oficio2Dias",           label: "Días"               },
@@ -875,7 +875,7 @@ async function generarOficio2() {
       codigo:   codigoOficio2,
       fileName: `OFICIO2_${codigoOficio2}`,
       variables: {
-        "<<NUMC>>":      document.getElementById("oficio2Numc").value,
+        "<<NUMC>>":      document.getElementById("oficio2Folio").value,
         "<<NOMBRE>>":    document.getElementById("oficio2Persona").value,
         "<<MUNICIPIO>>": document.getElementById("oficio2Municipio").value,
         "<<DIAS>>":      document.getElementById("oficio2Dias").value,
