@@ -55,6 +55,8 @@
   const enCurso = new WeakSet();
   async function tomar(modal) {
     if (enCurso.has(modal) || apagado()) return;
+    // Red de seguridad: si reaparece sola justo después de contestarla, no se vuelve a preguntar
+    if (Date.now() - (modal._msRespondida || 0) < 600) { modal.classList.remove('activo', 'active', 'show', 'visible', 'abierto'); modal.style.setProperty('display', 'none', 'important'); return; }
     const caja = modal.querySelector('.modal-contenido, .modal-content, .modal-box') || modal.firstElementChild || modal;
     const campos = [...caja.querySelectorAll('input:not([type=hidden]), select, textarea, table, iframe, canvas, img:not(.ms-ventana-mascota img)')].filter(visible);
     const botones = [...caja.querySelectorAll('button, .btn, a.btn')].filter(b => visible(b) && !b.closest('.ms-ventana-mascota'));
@@ -94,11 +96,19 @@
         saludoOk: soloOk ? '¡Va!' : '¡Va!', textoOk: soloOk ? '' : (/cerrar sesi/i.test(todo) ? '¡Hasta pronto!' : 'En eso estoy…'),
       });
       // La ventana original se queda oculta (si la página la vuelve a abrir, se toma otra vez)
-      modal.style.removeProperty('display');
-      modal.style.display = 'none';
+      // Algunas páginas la muestran con una clase (.activo con !important): se quita también,
+      // y el «none» va con !important; si la página la vuelve a abrir (style.display = 'flex'
+      // o agregando la clase) se toma otra vez sin quedar en bucle
+      const cerrarDeVerdad = () => {
+        modal.classList.remove('activo', 'active', 'show', 'visible', 'abierto');
+        modal.style.setProperty('display', 'none', 'important');
+      };
+      cerrarDeVerdad();
       if (si) ok.click();
       else if (cancelar) cancelar.click();
+      if (!si) cerrarDeVerdad();
     } finally {
+      modal._msRespondida = Date.now();
       enCurso.delete(modal);
     }
   }
