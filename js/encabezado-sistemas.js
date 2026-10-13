@@ -1,0 +1,92 @@
+// =========================================================
+// encabezado-sistemas.js
+// El mismo encabezado y menú de los demás sistemas (Correspondencia,
+// Programas, Contratos) para todas las páginas de WEB-GOB.
+// Cada página sigue armando su barra de siempre (js-sid/sidebar_*.js o
+// js/sidebar_CP.js); este script toma de ahí los botones del menú y el
+// «Cerrar sesión» (con lo que ya hacían) y los pasa al encabezado nuevo:
+//   - banda blanca: estrella, «Gobierno del Estado de Hidalgo»,
+//     «Secretaría de Bienestar e Inclusión Social», fecha y Cerrar sesión;
+//   - banda guinda: «MENÚ» y las pestañas de la página;
+//   - el usuario (su área) fijo en la esquina inferior izquierda.
+// Cárguese después del script de la barra.
+// =========================================================
+(function () {
+  const BASE = (document.currentScript && document.currentScript.src || '').replace(/js\/encabezado-sistemas\.js.*$/, '');
+
+  const fuente = document.createElement('link');
+  fuente.rel = 'stylesheet';
+  fuente.href = 'https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap';
+  document.head.appendChild(fuente);
+  const css = document.createElement('link');
+  css.rel = 'stylesheet';
+  css.href = BASE + 'css/encabezado-sistemas.css?v=1';
+  document.head.appendChild(css);
+
+  const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+
+  function armar() {
+    const barra = document.querySelector('#sidebar-container .sidebar');
+    if (!barra || document.querySelector('.hs-encabezado')) return !!barra;
+
+    const salirViejo = barra.querySelector('.logout-btn');
+    const botones = [...barra.querySelectorAll('.sidebar-menu button, .sidebar-menu a')];
+
+    const hoy = new Date().toLocaleDateString('es-MX', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    const enc = document.createElement('header');
+    enc.className = 'hs-encabezado';
+    enc.innerHTML = `
+      <div class="hs-banda">
+        <div class="hs-marca">
+          <img class="hs-logo" src="${BASE}img/logo-hidalgo.png" alt="Estrella del Gobierno del Estado de Hidalgo">
+          <div class="hs-marca-texto">
+            <div class="hs-gobierno">Gobierno del Estado de Hidalgo</div>
+            <div class="hs-secretaria">Secretaría de Bienestar e Inclusión Social</div>
+          </div>
+        </div>
+        <div class="hs-derecha">
+          <div class="hs-fecha">${esc(hoy.charAt(0).toUpperCase() + hoy.slice(1))}</div>
+          <button type="button" class="hs-salir" id="btnLogout"><i class="ti ti-logout" aria-hidden="true"></i> Cerrar sesión</button>
+        </div>
+      </div>
+      <nav class="hs-menu" aria-label="Menú">
+        <span class="hs-menu-label">Menú</span>
+        <div class="hs-menu-items"></div>
+      </nav>`;
+
+    // Las pestañas hacen exactamente lo mismo que los botones de antes
+    const items = enc.querySelector('.hs-menu-items');
+    botones.forEach(b => {
+      const t = (b.querySelector('.menu-btn-texto') || b).textContent.trim().replace(/\s+/g, ' ');
+      if (!t) return;
+      const p = document.createElement('button');
+      p.type = 'button';
+      p.className = 'hs-menu-item' + (b.classList.contains('activo') || b.classList.contains('active') ? ' activo' : '');
+      p.textContent = t;
+      p.addEventListener('click', () => b.click());
+      items.appendChild(p);
+    });
+    enc.querySelector('.hs-salir').addEventListener('click', () => { if (salirViejo) salirViejo.click(); else if (typeof logout === 'function') logout(); });
+
+    document.body.insertBefore(enc, document.body.firstChild);
+    barra.classList.add('hs-oculta');
+    document.body.classList.add('con-encabezado-sistemas');
+
+    // El usuario (su área) fijo en la esquina inferior izquierda
+    let area = '';
+    try { area = localStorage.getItem('area') || ''; } catch (e) { /* sin storage */ }
+    if (area && !document.querySelector('.hs-usuario')) {
+      const yo = document.createElement('div');
+      yo.className = 'hs-usuario';
+      yo.innerHTML = `<span class="hs-avatar"><i class="ti ti-user" aria-hidden="true"></i></span><span class="hs-usuario-nombre">${esc(area)}</span>`;
+      document.body.appendChild(yo);
+    }
+    return true;
+  }
+
+  if (!armar()) {
+    const obs = new MutationObserver(() => { if (armar()) obs.disconnect(); });
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+    document.addEventListener('DOMContentLoaded', () => { if (armar()) obs.disconnect(); });
+  }
+})();
