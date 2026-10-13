@@ -132,3 +132,13 @@ body.con-encabezado-sistemas .contenido { padding-top: 14px; }
 #sidebar-container .sidebar { display: none !important; }
 .contenido .topbar { display: none !important; }
 .contenido { margin-top: 0 !important; }
+
+/* Campana (la misma de Programas, Contratos y Correspondencia) como marca de agua guinda muy tenue */
+body.con-encabezado-sistemas::before {
+  content: ""; position: fixed; z-index: -1; pointer-events: none;
+  left: 0; bottom: 0; height: 78vh; aspect-ratio: 213 / 384; max-width: 45vw;
+  background: #5F2132; opacity: .06;
+  -webkit-mask: url(../img/campana-fondo.png) left bottom / contain no-repeat;
+          mask: url(../img/campana-fondo.png) left bottom / contain no-repeat;
+}
+body.con-encabezado-sistemas { position: relative; isolation: isolate; }

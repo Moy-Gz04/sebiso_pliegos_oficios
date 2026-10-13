@@ -20,7 +20,7 @@
   document.head.appendChild(fuente);
   const css = document.createElement('link');
   css.rel = 'stylesheet';
-  css.href = BASE + 'css/encabezado-sistemas.css?v=5';
+  css.href = BASE + 'css/encabezado-sistemas.css?v=6';
   document.head.appendChild(css);
 
   const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
