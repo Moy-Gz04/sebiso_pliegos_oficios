@@ -78,7 +78,7 @@
     if (area && !document.querySelector('.hs-usuario')) {
       const yo = document.createElement('div');
       yo.className = 'hs-usuario';
-      yo.innerHTML = `<span class="hs-avatar"><i class="ti ti-user" aria-hidden="true"></i></span><span class="hs-usuario-nombre">${esc(area)}</span>`;
+      yo.innerHTML = `<span class="hs-avatar"><i class="ti ti-user" aria-hidden="true"></i></span><span class="hs-usuario-nombre">${esc(area === 'Administracion' ? 'Administración' : area)}</span>`;
       document.body.appendChild(yo);
     }
     return true;
