@@ -164,6 +164,124 @@
   document.addEventListener('change', e => { if (e.target.closest && e.target.closest('.modal-spg-contenido')) marcarFaltantes(); }, true);
   setInterval(() => { if (document.querySelector('.modal-spg-contenido') && [...document.querySelectorAll('.modal-spg-contenido')].some(visible)) marcarFaltantes(); }, 700);
 
+  /* ---------- Desplegables de las ventanas «Generar …» con diseño propio ----------
+     La lista nativa del navegador no se puede decorar: al abrir un <select> de estas
+     ventanas se muestra una lista propia (con buscador si es larga). Al elegir se
+     escribe en el <select> original y se avisa con «change», así la página hace lo
+     mismo de siempre. */
+  let lista = null;
+  function cerrarLista(devolverFoco = true) {
+    if (!lista) return;
+    const { panel, sel } = lista;
+    panel.remove(); sel.classList.remove('vg-abierto');
+    removeEventListener('scroll', lista.reubicar, true); removeEventListener('resize', lista.reubicar);
+    lista = null;
+    if (devolverFoco) sel.focus();
+  }
+  function abrirLista(sel) {
+    if (lista) { const era = lista.sel; cerrarLista(false); if (era === sel) return; }
+    // Opciones sin repetir (algunos catálogos traen la misma opción dos veces)
+    const vistos = new Set();
+    const ops = [...sel.options].filter(o => !o.hidden && !o.disabled || o.value === '').filter(o => {
+      const k = o.value + '|' + o.text.trim(); if (vistos.has(k)) return false; vistos.add(k); return true;
+    });
+    const panel = document.createElement('div');
+    panel.className = 'vg-lista';
+    panel.setAttribute('role', 'listbox');
+    const conBuscador = ops.length > 8;
+    panel.innerHTML = (conBuscador ? '<div class="vg-lista-buscar"><i class="ti ti-search" aria-hidden="true"></i><input type="text" placeholder="Buscar…" aria-label="Buscar opción"></div>' : '')
+      + '<div class="vg-lista-ops"></div>';
+    const cont = panel.querySelector('.vg-lista-ops');
+    let marcada = -1;
+    const pintar = (filtro = '') => {
+      const f = filtro.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+      cont.innerHTML = '';
+      ops.forEach(o => {
+        const t = o.text.trim();
+        if (f && !t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().includes(f)) return;
+        const b = document.createElement('button');
+        b.type = 'button'; b.className = 'vg-op' + (o.value === '' ? ' vg-op-vacia' : '') + (o.value === sel.value && o.value !== '' ? ' vg-op-elegida' : '');
+        b.setAttribute('role', 'option'); b.dataset.valor = o.value;
+        b.innerHTML = `<span>${t.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[c])}</span>${o.value === sel.value && o.value !== '' ? '<i class="ti ti-check" aria-hidden="true"></i>' : ''}`;
+        b.addEventListener('mousedown', e => e.preventDefault());
+        b.addEventListener('click', () => elegir(o.value));
+        cont.appendChild(b);
+      });
+      if (!cont.children.length) cont.innerHTML = '<div class="vg-op-nada">Sin coincidencias</div>';
+      marcada = [...cont.querySelectorAll('.vg-op')].findIndex(x => x.classList.contains('vg-op-elegida'));
+      resaltar();
+    };
+    const resaltar = () => {
+      const bs = [...cont.querySelectorAll('.vg-op')];
+      bs.forEach((x, i) => x.classList.toggle('vg-op-activa', i === marcada));
+      if (bs[marcada]) bs[marcada].scrollIntoView({ block: 'nearest' });
+    };
+    const elegir = (v) => {
+      sel.value = v;
+      sel.dispatchEvent(new Event('input', { bubbles: true }));
+      sel.dispatchEvent(new Event('change', { bubbles: true }));
+      cerrarLista(); marcarFaltantes();
+    };
+    const reubicar = () => {
+      const r = sel.getBoundingClientRect();
+      const abajo = innerHeight - r.bottom - 12, arriba = r.top - 12;
+      const alto = Math.min(320, Math.max(abajo, arriba));
+      panel.style.left = Math.max(8, r.left) + 'px';
+      panel.style.width = r.width + 'px';
+      panel.style.maxHeight = alto + 'px';
+      if (abajo >= 200 || abajo >= arriba) { panel.style.top = (r.bottom + 6) + 'px'; panel.style.bottom = ''; }
+      else { panel.style.bottom = (innerHeight - r.top + 6) + 'px'; panel.style.top = ''; }
+    };
+    document.body.appendChild(panel);
+    sel.classList.add('vg-abierto');
+    lista = { panel, sel, reubicar };
+    reubicar(); pintar();
+    addEventListener('scroll', reubicar, true); addEventListener('resize', reubicar);
+    const buscar = panel.querySelector('.vg-lista-buscar input');
+    if (buscar) { buscar.addEventListener('input', () => pintar(buscar.value)); setTimeout(() => buscar.focus(), 0); }
+    panel.addEventListener('keydown', e => teclas(e));
+    lista.teclas = teclas;
+    function teclas(e) {
+      const bs = [...cont.querySelectorAll('.vg-op')];
+      if (e.key === 'ArrowDown') { e.preventDefault(); marcada = Math.min(bs.length - 1, marcada + 1); resaltar(); }
+      else if (e.key === 'ArrowUp') { e.preventDefault(); marcada = Math.max(0, marcada - 1); resaltar(); }
+      else if (e.key === 'Enter') { e.preventDefault(); if (bs[marcada]) elegir(bs[marcada].dataset.valor); }
+      else if (e.key === 'Escape' || e.key === 'Tab') { e.preventDefault(); cerrarLista(); }
+    }
+  }
+  const esLista = (el) => el && el.tagName === 'SELECT' && !el.disabled && !el.multiple && el.closest('.modal-spg-contenido') && !apagado();
+  document.addEventListener('mousedown', e => {
+    if (esLista(e.target)) { e.preventDefault(); e.target.focus(); abrirLista(e.target); }
+    else if (lista && !lista.panel.contains(e.target)) cerrarLista(false);
+  }, true);
+  document.addEventListener('keydown', e => {
+    if (lista && document.activeElement === lista.sel) { lista.teclas(e); return; }
+    if (esLista(e.target) && ['Enter', ' ', 'ArrowDown', 'ArrowUp'].includes(e.key)) { e.preventDefault(); abrirLista(e.target); }
+  }, true);
+  const cssLista = document.createElement('style');
+  cssLista.textContent = `
+    .vg-lista{ position:fixed; z-index:14000; display:flex; flex-direction:column; overflow:hidden; box-sizing:border-box;
+      background:#FFFDF9; border:1px solid #E4D6C8; border-radius:16px; box-shadow:0 18px 40px rgba(42,10,21,.28), 0 0 0 1px rgba(169,130,76,.25);
+      font-family:'Montserrat',sans-serif; animation:vgLista .16s ease-out; min-width:180px; }
+    @keyframes vgLista{ from{ opacity:0; transform:translateY(-6px) scale(.98);} to{ opacity:1; transform:none; } }
+    .vg-lista-buscar{ display:flex; align-items:center; gap:8px; padding:10px 12px; border-bottom:1px solid #EFE4D6; background:#FBF6EE; }
+    .vg-lista-buscar i{ color:#A9824C; font-size:16px; }
+    .vg-lista-buscar input{ flex:1; border:0 !important; outline:0 !important; background:transparent !important; box-shadow:none !important;
+      font:600 .86rem 'Montserrat',sans-serif !important; color:#3D1420 !important; padding:2px 0 !important; min-height:0 !important; margin:0 !important; width:auto !important; }
+    .vg-lista-ops{ flex:1 1 auto; min-height:0; overflow-y:auto; padding:6px; display:flex; flex-direction:column; gap:2px; }
+    .vg-lista-ops::-webkit-scrollbar{ width:8px; } .vg-lista-ops::-webkit-scrollbar-thumb{ background:#E4D6C8; border-radius:8px; }
+    .vg-lista .vg-op{ flex-shrink:0 !important; display:flex !important; align-items:center; justify-content:space-between; gap:10px; width:100% !important; margin:0 !important;
+      padding:9px 12px !important; border:0 !important; border-radius:10px !important; background:transparent !important; color:#3D1420 !important;
+      font:600 .86rem 'Montserrat',sans-serif !important; text-align:left; cursor:pointer; box-shadow:none !important; transform:none !important; min-height:0 !important; }
+    .vg-lista .vg-op:hover, .vg-lista .vg-op.vg-op-activa{ background:#F6EEDD !important; }
+    .vg-lista .vg-op.vg-op-elegida{ background:linear-gradient(135deg,#5F2132,#3D1420) !important; color:#fff !important; }
+    .vg-lista .vg-op.vg-op-elegida i{ color:#E9C873; }
+    .vg-lista .vg-op.vg-op-vacia{ color:#9A8A90 !important; font-weight:500 !important; font-style:italic; }
+    .vg-op-nada{ padding:14px; text-align:center; color:#9A8A90; font-size:.84rem; }
+    select.vg-abierto{ border-color:#A9824C !important; box-shadow:0 0 0 3px rgba(169,130,76,.22) !important; }
+    @media (prefers-reduced-motion:reduce){ .vg-lista{ animation:none; } }`;
+  document.head.appendChild(cssLista);
+
   // Ventanas que ya estaban abiertas al cargar
   document.querySelectorAll('.modal, .modal-spg, [id^="modal"]').forEach(revisar);
 })();
