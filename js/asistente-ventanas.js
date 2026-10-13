@@ -153,7 +153,8 @@
     document.querySelectorAll('.modal-spg-contenido').forEach(caja => {
       if (!visible(caja)) return;
       caja.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), select, textarea').forEach(c => {
-        const editable = !c.readOnly && !c.disabled;
+        // Los opcionales (su texto de ayuda dice «opcional») no se marcan como faltantes
+        const editable = !c.readOnly && !c.disabled && !/opcional/i.test(c.placeholder || '') && !c.hasAttribute('data-opcional');
         const vacio = c.tagName === 'SELECT' ? !c.value : !String(c.value || '').trim();
         c.classList.toggle('vg-falta', editable && vacio);
         c.closest('.campo-spg, .grupo-input-spg')?.classList.toggle('vg-falta-label', editable && vacio);

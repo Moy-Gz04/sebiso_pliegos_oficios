@@ -207,3 +207,9 @@ body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) .vg-falta-label labe
 @media (prefers-reduced-motion: reduce) {
   body :is(.modal-spg-contenido, #vg-x) .vg-falta { animation: none !important; box-shadow: 0 0 0 3px rgba(216, 184, 102, .35) !important; }
 }
+
+/* Campos sueltos fuera de la rejilla (p. ej. «Nota»): con el mismo margen que el resto del contenido */
+body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > :is(.grupo-input-spg, .campo-spg) {
+  padding: 0 28px 20px !important; flex-shrink: 0;
+}
+@media (max-width: 640px) { body :is(.modal-spg-contenido, #vg-x):not(#vg-y):not(#vg-z) > :is(.grupo-input-spg, .campo-spg) { padding: 0 18px 16px !important; } }
