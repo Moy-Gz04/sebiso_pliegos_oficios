@@ -1668,7 +1668,7 @@ async function generarViaticos() {
       method: "POST",
       headers: { "Content-Type": "text/plain" },
       body: JSON.stringify({
-        fileName: `VIATICOS_UP-CA_${Date.now()}`,
+        fileName: `VIATICOS_UP-08_${Date.now()}`,
         filas: detalle,
       }),
     });
