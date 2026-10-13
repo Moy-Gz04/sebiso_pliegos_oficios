@@ -20,7 +20,7 @@
   document.head.appendChild(fuente);
   const css = document.createElement('link');
   css.rel = 'stylesheet';
-  css.href = BASE + 'css/encabezado-sistemas.css?v=1';
+  css.href = BASE + 'css/encabezado-sistemas.css?v=3';
   document.head.appendChild(css);
 
   const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -67,6 +67,24 @@
       items.appendChild(p);
     });
     enc.querySelector('.hs-salir').addEventListener('click', () => { if (salirViejo) salirViejo.click(); else if (typeof logout === 'function') logout(); });
+
+    // El segundo encabezado (franja guinda con el título de la página) ya no se muestra:
+    // el nombre de la UP pasa al menú, alineado a la derecha
+    const franja = document.querySelector('.contenido .topbar');
+    const sub = franja && franja.querySelector('.subtitulo');
+    if (franja) {
+      const lineas = (sub ? sub.innerText : '').split('\n').map(t => t.trim()).filter(Boolean);
+      let up = lineas[lineas.length - 1] || '';
+      if (/^\d{2}\b/.test(up)) up = 'UP ' + up;
+      if (up) {
+        const et = document.createElement('div');
+        et.className = 'hs-menu-up';
+        et.title = lineas.join(' · ');
+        et.innerHTML = `<i class="ti ti-building-community" aria-hidden="true"></i><span>${esc(up)}</span>`;
+        enc.querySelector('.hs-menu').appendChild(et);
+      }
+      franja.classList.add('hs-oculta');
+    }
 
     document.body.insertBefore(enc, document.body.firstChild);
     barra.classList.add('hs-oculta');

@@ -105,3 +105,15 @@ body.con-encabezado-sistemas .contenido { margin-top: 0 !important; min-height: 
 }
 @media print { .hs-encabezado, .hs-usuario { display: none; } }
 @media (prefers-reduced-motion: reduce) { .hs-salir, .hs-salir::before, .hs-menu-item { transition: none; } }
+
+/* El título de cada página ya no va en una franja aparte: el nombre de la UP va en el menú, a la derecha */
+.contenido .topbar.hs-oculta { display: none !important; }
+.hs-menu-up {
+  margin-left: auto; display: inline-flex; align-items: center; gap: 8px; min-width: 0; max-width: 46%;
+  padding: 6px 14px; border-radius: 999px; border: 1px solid rgba(200, 169, 81, .35); background: rgba(255, 255, 255, .06);
+  color: #E9D3A6; font-size: .74rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+}
+.hs-menu-up i { color: #A9824C; font-size: 15px; flex-shrink: 0; }
+.hs-menu-up span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+@media (max-width: 760px) { .hs-menu-up { max-width: 100%; margin: 0 0 8px; } .hs-menu { flex-wrap: wrap; } }
+body.con-encabezado-sistemas .contenido { padding-top: 14px; }
