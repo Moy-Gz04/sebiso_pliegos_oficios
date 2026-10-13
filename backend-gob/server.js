@@ -40,7 +40,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 app.use(helmet());
-app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 100 }));
+// Render pasa cada petición por su proxy: sin esto, el límite contaba a TODOS
+// los usuarios como una sola IP y bastaban 100 peticiones de cualquiera para
+// bloquear a toda la oficina 15 minutos («No se pudo conectar al servidor»).
+app.set('trust proxy', 1);
+app.use(rateLimit({ windowMs: 15 * 60 * 1000, max: 600, standardHeaders: true, legacyHeaders: false }));
+// El inicio de sesión conserva un límite propio, más estricto, contra intentos repetidos
+app.use('/api/auth/login', rateLimit({ windowMs: 15 * 60 * 1000, max: 30 }));
 
 /* =========================
    CARPETA PÚBLICA PDFs
