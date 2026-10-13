@@ -1367,11 +1367,12 @@ function validarImporteAntesDeMarcar(checkbox, codigo) {
   const input = document.getElementById(`importe-${codigo}`);
   const valor = parseFloat(input?.value);
 
-  // Esta área aún no lee el importe del pliego: se captura en la tarjeta
-  if (isNaN(valor) || valor <= 0) {
+  // Sin importe se permite si hay pliego: al generar se intenta leer del PDF del pliego
+  const registro = (typeof ultimosRegistros !== "undefined" ? ultimosRegistros : []).find((r) => r.codigo === codigo);
+  if ((isNaN(valor) || valor <= 0) && !(registro && registro.pliego_pdf)) {
     mostrarAlerta(
       "Importe requerido",
-      "Debes capturar el Importe Total del Viático (mayor a $0.00) antes de poder seleccionar este registro."
+      "Este registro todavía no tiene pliego. Escribe el importe del viático en su tarjeta para poder seleccionarlo."
     );
     return false;
   }
@@ -1634,6 +1635,11 @@ async function generarViaticos() {
       throw new Error("No se encontraron los registros seleccionados.");
     }
 
+    registrosSeleccionados.forEach((r) => {
+      const v = parseFloat(document.getElementById(`importe-${r.codigo}`)?.value);
+      if (!isNaN(v) && v > 0) r.importe_viaticos = v;
+    });
+
     /* --- Importe automático: a los que no lo tienen se les lee del PDF del pliego --- */
     const porLeer = registrosSeleccionados.filter(
       (r) => (!r.importe_viaticos || parseFloat(r.importe_viaticos) <= 0) && r.pliego_pdf
@@ -1648,6 +1654,8 @@ async function generarViaticos() {
           r.importe_viaticos = j.importe;
           const original = ultimosRegistros.find((x) => x.codigo === r.codigo);
           if (original) original.importe_viaticos = j.importe;
+          const campo = document.getElementById(`importe-${r.codigo}`);
+          if (campo && !campo.value) campo.value = j.importe;
         }
       } catch (e) { /* si falla, se pide capturarlo a mano abajo */ }
     }
@@ -1660,8 +1668,8 @@ async function generarViaticos() {
 
     if (sinImporte.length > 0) {
       throw new Error(
-        "Falta capturar el Importe de Viáticos en: " +
-        sinImporte.map((r) => r.persona).join(", ")
+        "No se pudo leer el importe del pliego de: " +
+        sinImporte.map((r) => r.persona).join(", ") + ". Escribe el importe en su tarjeta (campo «$ Importe») y vuelve a generar."
       );
     }
 

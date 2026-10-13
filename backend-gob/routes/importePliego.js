@@ -16,6 +16,19 @@ const router = express.Router();
 const SCRIPT_PLIEGOS = {
   "UP-08": "https://script.google.com/macros/s/AKfycbzkKPjRkiQOc1F_kfXQCP8smmCSQ3uk9v6UODmHj6g1dDvM150zBxuAT8CRSYUCP0qN/exec",
   "UP-CA": "https://script.google.com/macros/s/AKfycbyx52z4-tZAecEGuEwWMTzwVDNhrnvhXM1MnoofJR7nGtGaX6wGKDHtcgVApafGqDRyDg/exec",
+  // UP-01 ya tiene el Apps Script final. Las demás funcionan en cuanto su Apps Script
+  // tenga la acción «pliegoBase64» (mientras, el importe se escribe en la tarjeta).
+  "UP-01": "https://script.google.com/macros/s/AKfycbwD3N8gitTQ96hjloHznF5Qcmi44Ytg_jQhiHIyu8ncMxhHSgq5eICvkYy2FSWqWZ96Dw/exec",
+  "UP-01-S-DRM": "https://script.google.com/macros/s/AKfycbxcoyx1gD8UQjaY8yYMVduLZx3Z1moAu8jo3n2_Q1gYUF7MZvGXH64n14QegIYiWYu1hw/exec",
+  "UP-04": "https://script.google.com/macros/s/AKfycbyXc9DkoVziTd5vxjOLXHdQn9XyZ3A64UEI-4mrE5xhDO5_68kokjxjbrcIHESIjvqQ/exec",
+  "UP-05": "https://script.google.com/macros/s/AKfycbzkVpqzIiNg5HIix1qo2cXMjkXbqQAkETANi2wifCRb74PxA-ZJmJLANdEFw115-cyS/exec",
+  "UP-06": "https://script.google.com/macros/s/AKfycbzVKkhnlphC_pNi36Qm-AbMIh0JZuRlh_O8ZtWCy1Apo7h6j43K5AL1c4h-0JmfXkay/exec",
+  "UP-07": "https://script.google.com/macros/s/AKfycbxL3nNDYK02b1eGEhY4e-4ta13b4D2wfvwJu4uVVNXCrhxXZknYilutCEJpLDSmTPqr/exec",
+  "UP-13": "https://script.google.com/macros/s/AKfycbwYL4lGtIg6O1QoYZe1pIsIWYt0Xr_zShECN9O122ihWlLRzgkxexFPQ_4FDoTYjpXnHw/exec",
+  "UP-14": "https://script.google.com/macros/s/AKfycbx2aG5SttnACczmrxgqQiIIbKWPlUJ3hJ9HnUueUYE17RKTNIOiWysm6IEtlEvICjAS/exec",
+  "UP-15": "https://script.google.com/macros/s/AKfycby2UzfcMimj5fbFy_hX5apkCVV0qXQlwAyDftga30XImSQcbtOAxPtmYkvsoMfRig3r/exec",
+  "UP-16": "https://script.google.com/macros/s/AKfycbwfBDo9Og1zNoGiVdMWIu5A1oxe6U5rHOEPTrEtpHJ-7w7FePHFP0wSwCtStrgMTasm2Q/exec",
+  "UP-S": "https://script.google.com/macros/s/AKfycbxcoyx1gD8UQjaY8yYMVduLZx3Z1moAu8jo3n2_Q1gYUF7MZvGXH64n14QegIYiWYu1hw/exec",   // códigos UP-S_R-…
 };
 
 const MODELO = "gemini-3.1-flash-lite";
@@ -53,7 +66,7 @@ async function pdfDelPliegoUnaVez(scriptUrl, fileId) {
   const texto = await r.text();
   let j;
   try { j = JSON.parse(texto); } catch (e) {
-    throw new Error("El Apps Script no respondió JSON (¿falta actualizarlo?)");
+    throw new Error("El Apps Script de esta área todavía no entrega el pliego (falta actualizarlo).");
   }
   if (!j.success) throw new Error("Apps Script: " + (j.error || "sin archivo"));
   return j.base64;
