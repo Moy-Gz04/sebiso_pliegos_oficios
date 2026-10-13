@@ -128,10 +128,10 @@ router.post("/:codigo", limitador, async (req, res) => {
     if (!scriptUrl) return res.status(400).json({ ok: false, msg: "Esta área todavía no tiene lectura automática del pliego." });
     const fileId = idDeDrive(reg.pliego_pdf);
     if (!fileId) return res.status(400).json({ ok: false, msg: "Este registro no tiene pliego generado." });
-    const soloLeer = req.query.soloLeer === "1";   // prueba: lee el importe sin guardarlo
-    if (!soloLeer && (reg.estatus === "Enviado" || reg.estatus === "Pagado")) {
-      return res.status(400).json({ ok: false, msg: "No se puede editar este registro" });
-    }
+    // Registros ya enviados o pagados: el importe se lee (para el documento de viáticos)
+    // pero no se guarda, para no modificar un registro cerrado.
+    const cerrado = ["ENVIADO", "PAGADO", "ACEPTADO"].includes(String(reg.estatus || "").toUpperCase());
+    const soloLeer = req.query.soloLeer === "1" || cerrado;
 
     const base64 = await pdfDelPliego(scriptUrl, fileId);
     const { importe, evidencia } = await leerImporteConGemini(base64);
