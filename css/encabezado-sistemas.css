@@ -127,3 +127,8 @@ body.con-encabezado-sistemas .contenido { padding-top: 14px; }
 }
 @keyframes hsPlata { from { background-position: 100% 0; } to { background-position: -150% 0; } }
 @media (prefers-reduced-motion: reduce) { .hs-menu-up span { animation: none; } }
+
+/* Desde el primer instante (esta hoja va en el <head>): ni la barra ni la franja de antes se alcanzan a ver */
+#sidebar-container .sidebar { display: none !important; }
+.contenido .topbar { display: none !important; }
+.contenido { margin-top: 0 !important; }

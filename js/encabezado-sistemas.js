@@ -20,7 +20,7 @@
   document.head.appendChild(fuente);
   const css = document.createElement('link');
   css.rel = 'stylesheet';
-  css.href = BASE + 'css/encabezado-sistemas.css?v=4';
+  css.href = BASE + 'css/encabezado-sistemas.css?v=5';
   document.head.appendChild(css);
 
   const esc = (t) => String(t ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
@@ -56,16 +56,32 @@
 
     // Las pestañas hacen exactamente lo mismo que los botones de antes
     const items = enc.querySelector('.hs-menu-items');
+    // A dónde lleva cada botón (de su onclick o href), para marcar la pestaña de la página actual
+    const destino = (b) => {
+      const m = (b.getAttribute('onclick') || '').match(/['"]([^'"]+\.html[^'"]*)['"]/) || [null, b.getAttribute('href')];
+      try { return m[1] ? new URL(m[1], location.href).pathname.split('/').pop().toLowerCase() : ''; } catch (e) { return ''; }
+    };
+    const aqui = location.pathname.split('/').pop().toLowerCase();
+    const hayActivo = botones.some(b => b.classList.contains('activo') || b.classList.contains('active'));
     botones.forEach(b => {
       const t = (b.querySelector('.menu-btn-texto') || b).textContent.trim().replace(/\s+/g, ' ');
       if (!t) return;
       const p = document.createElement('button');
       p.type = 'button';
-      p.className = 'hs-menu-item' + (b.classList.contains('activo') || b.classList.contains('active') ? ' activo' : '');
+      const activo = hayActivo ? (b.classList.contains('activo') || b.classList.contains('active')) : destino(b) === aqui;
+      p.className = 'hs-menu-item' + (activo ? ' activo' : '');
+      if (activo) p.setAttribute('aria-current', 'page');
       p.textContent = t;
       p.addEventListener('click', () => b.click());
       items.appendChild(p);
     });
+    // Páginas fuera del menú (p. ej. Reportes.html): se marca la pestaña que se llama como la página
+    if (!items.querySelector('.activo')) {
+      const norm = (t) => t.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().replace(/[^a-z0-9]/g, '');
+      const nombre = norm(aqui.replace(/\.html.*$/, ''));
+      const p = [...items.children].find(x => norm(x.textContent) === nombre);
+      if (p) { p.classList.add('activo'); p.setAttribute('aria-current', 'page'); }
+    }
     enc.querySelector('.hs-salir').addEventListener('click', () => { if (salirViejo) salirViejo.click(); else if (typeof logout === 'function') logout(); });
 
     // El segundo encabezado (franja guinda con el título de la página) ya no se muestra:
@@ -73,7 +89,9 @@
     const franja = document.querySelector('.contenido .topbar');
     const sub = franja && franja.querySelector('.subtitulo');
     if (franja) {
-      const lineas = (sub ? sub.innerText : '').split('\n').map(t => t.trim()).filter(Boolean);
+      // (la franja ya está oculta desde el <head>, así que las líneas se separan por sus <br>)
+      const lineas = (sub ? sub.innerHTML : '').split(/<br\s*\/?>/i)
+        .map(t => { const d = document.createElement('div'); d.innerHTML = t; return d.textContent.replace(/\s+/g, ' ').trim(); }).filter(Boolean);
       let up = lineas[lineas.length - 1] || '';
       if (/^\d{2}\b/.test(up)) up = 'UP ' + up;
       if (up) {
