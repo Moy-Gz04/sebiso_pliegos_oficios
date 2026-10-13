@@ -15,7 +15,7 @@
   window.__asistenteExtra = true;
 
   const css = document.createElement('link');
-  css.rel = 'stylesheet'; css.href = (document.currentScript ? document.currentScript.src.replace(/js\/asistente-extra\.js.*$/, '') : '../') + 'css/asistente-extra.css?v=1';
+  css.rel = 'stylesheet'; css.href = (document.currentScript ? document.currentScript.src.replace(/js\/asistente-extra\.js.*$/, '') : '../') + 'css/asistente-extra.css?v=2';
   document.head.appendChild(css);
 
   const quieto = window.matchMedia('(prefers-reduced-motion: reduce)').matches;

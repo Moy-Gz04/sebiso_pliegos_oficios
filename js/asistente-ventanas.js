@@ -39,7 +39,7 @@
     .ms-dlg-overlay .ms-perso-color:hover, .ms-dlg-overlay .ms-perso-cerrar:hover{ background:transparent; }
     .ms-dlg-overlay .ms-dlg-cancelar, .ms-dlg-overlay .ms-dlg-cancelar:hover{ background:#F4EFEA; color:#4A0A1D; }
     .ms-dlg-overlay .ms-dlg-cancelar:hover{ background:#EDE4DB; }
-    .ms-dlg-overlay .ms-dlg-ok, .ms-dlg-overlay .ms-dlg-ok:hover{ background:linear-gradient(135deg, #C0262D, #94141E); color:#fff; }
+    .ms-dlg-overlay .ms-dlg-ok, .ms-dlg-overlay .ms-dlg-ok:hover{ background:linear-gradient(135deg, #7A1E35, #4A0A1D); color:#fff; }
     .ms-dlg-overlay .ms-dlg-ok.ms-dlg-ok-dorado, .ms-dlg-overlay .ms-dlg-ok.ms-dlg-ok-dorado:hover{ background:linear-gradient(135deg, #D8B866, #9C7A2E); color:#3A0818; }
     .ms-dlg-overlay .ms-dlg-ok.ms-dlg-ok-verde, .ms-dlg-overlay .ms-dlg-ok.ms-dlg-ok-verde:hover{ background:linear-gradient(135deg, #3E9B47, #22692A); color:#fff; }
     .ms-dlg-overlay .ms-dlg-ok:hover{ filter:brightness(1.06); }
