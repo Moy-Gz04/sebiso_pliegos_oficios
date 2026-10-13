@@ -21,25 +21,25 @@ const FOLDER_ID = "PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_PDFS_UP04";   // ⚠️ copi
  */
 
 const MAPA_PERSONAS = {
- "Nora Aidhé Luciano Martínez": 1,
- "Flor Nochebuena Manuel Gutiérrez": 2,
- "Pedro Fernando Martínez Chong": 3,
- "Adriana Labra Gómez": 4,
- "Arturo Aguilar Martínez": 5,
- "Itzia Hernandez Ureña": 6,
- "Rosa Hernández Rodríguez": 7,
- "Daniel Austria Zenil": 8,
- "Iván Cruz Segura": 9,
- "Esther Gayosso Joaquín": 10,
- "Karla Lucero Vázquez Lara": 11,
- "Maribel Orta Mejía": 12,
- "Esmeralda Vargas Lechuga": 13,
- "Cesar Reyes León": 14,
- "Adán Missael Hernández Garrido": 15,
- "Raúl Lozano Sánchez": 16,
- "María Elena Arellano Márquez": 17,
- "Aradi Badillo Cuéllar": 18,
- "Marín Ángeles Zamora": 19
+    "Nora Aidhé Luciano Martínez": 1,
+    "Flor Nochebuena Manuel Gutiérrez": 2,
+    "Pedro Fernando Martínez Chong": 3,
+    "Adriana Labra Gómez": 4,
+    "Arturo Aguilar Martínez": 5,
+    "Itzia Hernandez Ureña": 6,
+    "Rosa Hernández Rodríguez": 7,
+    "Daniel Austria Zenil": 8,
+    "Iván Cruz Segura": 9,
+    "Esther Gayosso Joaquín": 10,
+    "Karla Lucero Vázquez Lara": 11,
+    "Maribel Orta Mejía": 12,
+    "Esmeralda Vargas Lechuga": 13,
+    "Cesar Reyes León": 14,
+    "Adán Missael Hernández Garrido": 15,
+    "Raúl Lozano Sánchez": 16,
+    "María Elena Arellano Márquez": 17,
+    "Aradi Badillo Cuéllar": 18,
+    "Marín Ángeles Zamora": 19
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */
