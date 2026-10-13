@@ -59,9 +59,10 @@
     // A dónde lleva cada botón (de su onclick o href), para marcar la pestaña de la página actual
     const destino = (b) => {
       const m = (b.getAttribute('onclick') || '').match(/['"]([^'"]+\.html[^'"]*)['"]/) || [null, b.getAttribute('href')];
-      try { return m[1] ? new URL(m[1], location.href).pathname.split('/').pop().toLowerCase() : ''; } catch (e) { return ''; }
+      try { return m[1] ? new URL(m[1], location.href).pathname.split('/').pop().toLowerCase().replace(/.html$/, '') : ''; } catch (e) { return ''; }
     };
-    const aqui = location.pathname.split('/').pop().toLowerCase();
+    // (Netlify publica «UP-06.html» como «up-06»: se compara sin .html y en minúsculas)
+    const aqui = location.pathname.split('/').pop().toLowerCase().replace(/.html$/, '');
     const hayActivo = botones.some(b => b.classList.contains('activo') || b.classList.contains('active'));
     botones.forEach(b => {
       const t = (b.querySelector('.menu-btn-texto') || b).textContent.trim().replace(/\s+/g, ' ');
