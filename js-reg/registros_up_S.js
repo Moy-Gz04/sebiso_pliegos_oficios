@@ -1326,7 +1326,7 @@ async function enviarRegistro(codigo) {
 
 async function reenviarRegistro(codigo) {
   try {
-    if (!confirm("¿Deseas reenviar este registro?")) return;
+    if (!(await (window.confirmarConAsistente ? confirmarConAsistente("¿Deseas reenviar este registro?", { btnOk: "Sí, reenviar", iconoOk: "ti-send" }) : Promise.resolve(confirm("¿Deseas reenviar este registro?"))))) return;
 
     const response = await fetch(`${API}/api/registros/reenviar/${codigo}`, {
       method:  "PUT",

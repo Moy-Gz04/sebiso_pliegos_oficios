@@ -966,7 +966,7 @@ async function editarRegistro(id){
 
 async function eliminarRegistro(id){
 
-    if(!confirm("¿Desea eliminar este registro?")){
+    if(!(await (window.confirmarConAsistente ? confirmarConAsistente("¿Desea eliminar este registro?") : Promise.resolve(confirm("¿Desea eliminar este registro?"))))){
 
         return;
 
