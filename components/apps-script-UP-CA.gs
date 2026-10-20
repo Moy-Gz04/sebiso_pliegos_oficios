@@ -11,19 +11,52 @@
 // ============================================================
 
 /** ID de la plantilla de Google Docs para el oficio */
-const TEMPLATE_DOC_ID = "PEGA_AQUI_EL_ID_DE_LA_PLANTILLA_DEL_OFICIO_UP_CA";   // ⚠️ el que ya usa tu Apps Script de UP-CA
+const TEMPLATE_DOC_ID = "16WqHLoXRmICU8gadWghc0EhPmycYyXMQiKVrzLgYgvw";
 
 /** ID de la carpeta de Drive donde se guardan los PDFs generados */
-const FOLDER_ID = "PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_PDFS_UP_CA";   // ⚠️ el que ya usa tu Apps Script de UP-CA
-
+const FOLDER_ID = "1E0jXlN-NCeBUMl8Fv_vzgVLhbKgKiDja";
 /**
  * Mapa de nombres → número de hoja (D_n / F_n).
  * Cada persona tiene sus propias hojas de datos y formato.
  */
 
-// ⚠️ Copia aquí el MAPA_PERSONAS de tu Apps Script actual de UP-CA (nombre → número de hoja D_n / F_n)
 const MAPA_PERSONAS = {
-
+    "Mtra. Rosa Leticia Muñoz Chávez": 1,
+    "Elizabeth Margarita Noguez Romero": 2,
+    "María Sara Ortiz González": 3,
+    "Roberto Carlos López Estrada": 4,
+    "Ariana Salas Lugo": 5,
+    "Ana Brisna Cervantes Hidalgo": 6,
+    "Martha Patricia Barragán García": 7,
+    "Laura Trinidad Hernández Díaz": 8,
+    "Erick Acosta Téllez": 9,
+    "Gabriela Hernández Bustos": 10,
+    "María Fernanda Guzmán Escamilla": 11,
+    "Oscar Adrián Escorza Arroyo": 12,
+    "María del Pilar Vega Reyes": 13,
+    "Alejandro Oswaldo Villegas Ortiz": 14,
+    "Victor Hugo Pérez Guati Rojo": 15,
+    "Carlos Rodrigo Rojas Ruiz": 16,
+    "Perla Aleli Barrera Godínez": 17,
+    "Ana Luisa Baños Castro": 18,
+    "Maythe Monserrat Escarela Pérez": 19,
+    "Cristhian Omar Cordero Estrada": 20,
+    "Juan Ángel Aguilar Mendoza": 21,
+    "Christian Fernando Valderrama Uribe": 22,
+    "Arely López Vargas": 23,
+    "Alfonso Gudiño Zamora": 24,
+    "Rubén Serrano Morales": 25,
+    "Mary Carmen López Hernández": 26,
+    "Diana Munguía Alarcón": 27,
+    "Lizeth Vidal Cano": 28,
+    "Carlos Chargoy Rodríguez": 29,
+    "Vianey Cristina Solares Moreno": 30,
+    "Francisco Reyes Vázquez": 31,
+    "Susana Jiménez Hernández": 32,
+    "Luz María Luque Gómez": 33,
+    "María Elena Tello Sánchez": 34,
+    "Ernesto Martínez Aguilar": 35,
+    "Ana María Rodríguez Rosales": 36
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */
@@ -138,7 +171,7 @@ function procesarPliego_(numero, nombre, data) {
   const anoF        = data.anoF;
   const localidades = data.localidades;
 
-  const fechaOficio = "Pachuca de Soto; a " + diaF + " de " + mesF + " de " + anoF;
+  const fechaOficio = (diaF + " DE " + mesF + " " + anoF).toUpperCase();
 
   // Columnas A-P igual que antes; Q = mes fin, R = número de días
   shDB.getRange(2, 1, 1, 18).setValues([[
@@ -350,35 +383,33 @@ function generarPDF_(numero, id, nombre) {
   const doc  = DocumentApp.openById(copia.getId());
   const body = doc.getBody();
 
-  body.replaceText("<<NOMBRE>>",     safe_(nombre));
-  body.replaceText("<<CAT>>",        safe_(categoria));
-  body.replaceText("<<NOEMPLEADO>>", safe_(no_trab));
-  body.replaceText("<<RFC>>",        safe_(rfc));
-  body.replaceText("<<FECHAOF>>",    safe_(fechaOf));
+  body.replaceText("<<NOMBRE>>",     up_(nombre));
+  body.replaceText("<<CAT>>",        up_(categoria));
+  body.replaceText("<<NOEMPLEADO>>", up_(no_trab));
+  body.replaceText("<<RFC>>",        up_(rfc));
+  body.replaceText("<<FECHAOF>>",    up_(fechaOf));
 
-  if (cruzaMes) {
-    // Con dos meses, el texto de días ya trae cada mes. En la plantilla
-    // "<<DIAS>> de <<MESOF>>" se sustituye COMPLETO por ese texto, para
-    // que no quede "…2 de octubre de octubre". Lo que sigue después de
-    // <<MESOF>> (ej. " de <<ANOOF>>") se conserva igual.
-    if (body.findText("<<DIAS>>.*<<MESOF>>")) {
-      body.replaceText("<<DIAS>>.*<<MESOF>>", safe_(diasTexto));
-    } else {
-      body.replaceText("<<DIAS>>", safe_(diasTexto));
-    }
+  // Todo el oficio va en MAYÚSCULAS y sin año en los días:
+  // "30 DE SEPTIEMBRE 1 Y 2 DE OCTUBRE" / "3, 4 Y 5 DE OCTUBRE".
+  const diasOficio = textoDiasOficio_(diain, diafin, mes, cruzaMes ? mesFin : "");
+  if (body.findText("<<DIAS>>.*(<<ANOOF>>|<<ANIO>>)")) {
+    // Reemplaza desde <<DIAS>> hasta el año: ya no se escribe "los días", el mes ni el año
+    body.replaceText("<<DIAS>>.*(<<ANOOF>>|<<ANIO>>)", diasOficio);
+  } else if (body.findText("<<DIAS>>.*<<MESOF>>")) {
+    body.replaceText("<<DIAS>>.*<<MESOF>>", diasOficio);
   } else {
-    body.replaceText("<<DIAS>>",     safe_(diasTexto));
+    body.replaceText("<<DIAS>>", diasOficio);
   }
 
-  body.replaceText("<<MESOF>>",      safe_(mesF));
-  body.replaceText("<<ANOOF>>",      safe_(anoF));
-  body.replaceText("<<ANIO>>",       safe_(anoF));   // la plantilla de la UP-08 usa <<ANIO>>
-  body.replaceText("<<MUNICIPIO>>",  safe_(municipio + " - " + localidad));
-  body.replaceText("<<ACTIVIDADES>>",safe_(motivo));
-  body.replaceText("<<E_FIRMAR>>",   safe_(e_firma));
-  body.replaceText("<<E_PUESTO>>",   safe_(e_puesto));
-  body.replaceText("<<UNIDAD>>",     safe_(unidad));
-  body.replaceText("<<DEPT>>",       safe_(depto));
+  body.replaceText("<<MESOF>>",      up_(mesF));
+  body.replaceText("<<ANOOF>>",      up_(anoF));
+  body.replaceText("<<ANIO>>",       up_(anoF));   // la plantilla de la UP-08 usa <<ANIO>>
+  body.replaceText("<<MUNICIPIO>>",  up_(municipioTexto_(municipio, localidad)));
+  body.replaceText("<<ACTIVIDADES>>",up_(motivo));
+  body.replaceText("<<E_FIRMAR>>",   up_(e_firma));
+  body.replaceText("<<E_PUESTO>>",   up_(e_puesto));
+  body.replaceText("<<UNIDAD>>",     up_(unidad));
+  body.replaceText("<<DEPT>>",       up_(depto));
 
   doc.saveAndClose();
 
@@ -808,4 +839,51 @@ function respuestaJson_(obj) {
 function probarContrasenaServidor() {
   const s = PropertiesService.getScriptProperties().getProperty("SECRETO_SERVIDOR");
   Logger.log(s ? "OK - SECRETO_SERVIDOR guardada (" + s.length + " caracteres)" : "FALTA - no hay SECRETO_SERVIDOR");
+}
+
+
+// ============================================================
+//  TEXTOS DEL OFICIO (todo en MAYÚSCULAS)
+// ============================================================
+
+/** Convierte a texto en MAYÚSCULAS (null/undefined → ""). */
+function up_(value) {
+  return safe_(value).toString().toUpperCase();
+}
+
+/** Municipio y localidad separados por coma; sin guion ni coma colgante. */
+function municipioTexto_(municipio, localidad) {
+  const m = safe_(municipio).toString().trim();
+  const l = safe_(localidad).toString().trim();
+  return l ? m + ", " + l : m;
+}
+
+/**
+ * Días de la comisión para el oficio, sin "los días" ni año:
+ *   (3, 5, "octubre")                       → "3, 4 Y 5 DE OCTUBRE"
+ *   (5, 5, "octubre")                       → "5 DE OCTUBRE"
+ *   (30, 2, "septiembre", "octubre")        → "30 DE SEPTIEMBRE 1 Y 2 DE OCTUBRE"
+ */
+function textoDiasOficio_(diaInicio, diaFin, mes, mesFin) {
+  diaInicio = Number(diaInicio);
+  diaFin    = Number(diaFin);
+  if (!diaInicio || !diaFin) return "";
+  const M = String(mes).toUpperCase().trim();
+
+  if (!mesFin || mesFin === mes) {
+    if (diaFin < diaInicio) return "";
+    const dias = [];
+    for (let d = diaInicio; d <= diaFin; d++) dias.push(d);
+    return unirDias_(dias).toUpperCase().replace(" Y ", " Y ") + " DE " + M;
+  }
+
+  const iMes = MESES.indexOf(String(mes).toLowerCase().trim());
+  if (iMes < 0) return "";
+  const ultimoDia = new Date(new Date().getFullYear(), iMes + 1, 0).getDate();
+  const dias1 = [], dias2 = [];
+  for (let d = diaInicio; d <= ultimoDia; d++) dias1.push(d);
+  for (let d = 1; d <= diaFin; d++) dias2.push(d);
+  if (!dias1.length || !dias2.length) return "";
+  return unirDias_(dias1).toUpperCase() + " DE " + M + " " +
+         unirDias_(dias2).toUpperCase() + " DE " + String(mesFin).toUpperCase().trim();
 }
