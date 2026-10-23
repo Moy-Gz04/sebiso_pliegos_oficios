@@ -74,6 +74,9 @@
     <div class="tv-tarjeta">
         <div class="tv-scroll">
             <table id="tvTabla">
+                <colgroup>
+                    <col style="width:96px"><col><col style="width:150px"><col style="width:112px"><col style="width:24%"><col style="width:132px"><col style="width:52px">
+                </colgroup>
                 <thead>
                     <tr>
                         <th data-campo="up_clave">U.P.</th>
@@ -86,14 +89,12 @@
                     </tr>
                 </thead>
                 <tbody id="tvCuerpo"></tbody>
-                <tfoot>
-                    <tr>
-                        <td colspan="5"><b id="tvConteo">0 registros</b> · <span id="tvPersonas">0</span> personas</td>
-                        <td class="tv-num"><b id="tvTotal">$0.00</b></td>
-                        <td></td>
-                    </tr>
-                </tfoot>
             </table>
+        </div>
+        <!-- totales: fuera del área que se desplaza, siempre en el mismo lugar -->
+        <div class="tv-pie">
+            <span><b id="tvConteo">0 registros</b> · <span id="tvPersonas">0</span> personas</span>
+            <span class="tv-pie-total">Total <b id="tvTotal">$0.00</b></span>
         </div>
     </div>
 
@@ -152,8 +153,10 @@
 .tv-pestana:focus-visible{ outline:2px solid var(--d); outline-offset:2px; }
 .tv-tarjeta{ border-top-left-radius:0 !important; }
 .tv-tarjeta{ background:#fff; border:1px solid var(--borde); border-radius:14px; box-shadow:0 1px 2px rgba(32,16,23,.04), 0 8px 24px rgba(32,16,23,.05); overflow:hidden; }
-.tv-scroll{ max-height:calc(100vh - 290px); min-height:280px; overflow:auto; }
-#tvTabla{ width:100%; border-collapse:collapse; font-size:13px; }
+/* altura fija: la tabla mide lo mismo con 6 o con 134 registros, no brinca al cambiar de U.P. */
+.tv-scroll{ height:max(380px, calc(100vh - 360px)); overflow-y:auto; overflow-x:hidden; scrollbar-gutter:stable; }
+#tvTabla{ width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; }
+#tvTabla td{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 #tvTabla th{ position:sticky; top:0; z-index:1; background:var(--g); color:#fff; text-align:left; padding:11px 12px; font-weight:700; font-size:12px; letter-spacing:.3px; white-space:nowrap; }
 #tvTabla th[data-campo]{ cursor:pointer; user-select:none; }
 #tvTabla th[data-campo]::after{ content:"↕"; margin-left:6px; opacity:.35; font-size:11px; }
@@ -161,7 +164,9 @@
 #tvTabla th[data-orden="desc"]::after{ content:"↓"; opacity:1; color:#E7CD86; }
 #tvTabla td{ padding:9px 12px; border-bottom:1px solid #F1EAE1; vertical-align:middle; }
 #tvTabla tbody tr:hover td{ background:var(--suave); }
-#tvTabla tfoot td{ position:sticky; bottom:0; background:#F6EEDD; color:var(--g); padding:11px 12px; border-top:2px solid var(--d); font-size:13px; }
+.tv-pie{ display:flex; justify-content:space-between; align-items:center; gap:12px; padding:12px 18px; background:#F6EEDD; border-top:2px solid var(--d); color:var(--g); font-size:13px; }
+.tv-pie-total{ font-variant-numeric:tabular-nums; }
+.tv-pie-total b{ font-size:15px; margin-left:6px; }
 .tv-num{ text-align:right !important; font-variant-numeric:tabular-nums; white-space:nowrap; }
 .tv-mono{ font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--txt2); }
 .tv-up{ display:inline-block; padding:2px 8px; border-radius:999px; background:#F9F0F3; color:var(--g); font-weight:700; font-size:11.5px; white-space:nowrap; }
@@ -173,7 +178,9 @@
 .tv-flecha{ display:inline-block; width:14px; color:var(--d2); }
 .tv-cuenta{ margin-left:8px; font-size:11.5px; color:var(--txt2); }
 .tv-detalle td:first-child{ padding-left:30px; }
-.tv-vacio{ text-align:center; padding:40px 12px !important; color:var(--txt2); }
+.tv-vacio{ text-align:center; padding:40px 12px !important; color:var(--txt2); white-space:normal !important; }
+#tvTabla tbody tr:nth-child(even):not(.tv-grupo) td{ background:#FDFBF8; }
+.tv-grupo td{ white-space:nowrap; }
 .tv-oculto{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
 .tv-dialogo{ border:0; border-radius:16px; padding:0; width:min(520px,92vw); box-shadow:0 30px 80px rgba(20,6,12,.35); }
 .tv-dialogo::backdrop{ background:rgba(30,10,18,.45); }
@@ -260,7 +267,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<script src="../js-viaticos/tabla-viaticos.js?v=2"></script>
+<script src="../js-viaticos/tabla-viaticos.js?v=3"></script>
 
   <script src="../js/minisebiso-flotante.js?v=2"></script>
   <script src="../js/asistente-extra.js?v=1"></script>

@@ -26,7 +26,7 @@ document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar(){
     $("tvBuscar").addEventListener("input", (e) => { estado.texto = e.target.value; pintar(); });
-    $("tvPestanas").addEventListener("click", (e) => { const b = e.target.closest(".tv-pestana"); if (!b) return; estado.up = b.dataset.up; estado.abiertos.clear(); pintar(); });
+    $("tvPestanas").addEventListener("click", (e) => { const b = e.target.closest(".tv-pestana"); if (!b) return; estado.up = b.dataset.up; estado.abiertos.clear(); pintar(); document.querySelector(".tv-scroll").scrollTop = 0; });
     $("tvMes").addEventListener("change", (e) => { estado.mes = e.target.value; pintar(); });
     $("tvAgrupar").addEventListener("change", (e) => { estado.agrupar = e.target.value; estado.abiertos.clear(); pintar(); });
     $("tvLimpiar").addEventListener("click", () => {
@@ -89,10 +89,10 @@ function comparar(a, b){
 const filaHTML = (r, sub) => `
     <tr class="${sub ? "tv-detalle" : ""}">
         <td><span class="tv-up">U.P. ${esc(r.up_clave)}</span></td>
-        <td>${esc(r.nombre_servidor)}</td>
+        <td title="${esc(r.nombre_servidor)}">${esc(r.nombre_servidor)}</td>
         <td class="tv-mono">${esc(r.rfc)}</td>
         <td>${esc(r.mes[0] + r.mes.slice(1).toLowerCase())}</td>
-        <td>${esc(r.municipio)}</td>
+        <td title="${esc(r.municipio)}">${esc(r.municipio)}</td>
         <td class="tv-num">${dinero(r.importe)}</td>
         <td class="tv-acc"><button type="button" class="tv-borrar" title="Eliminar registro" aria-label="Eliminar registro de ${esc(r.nombre_servidor)}" data-id="${r.id}">✕</button></td>
     </tr>`;
