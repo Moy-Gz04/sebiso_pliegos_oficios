@@ -281,42 +281,42 @@ router.post("/importar", async (req, res) => {
 
         `;
 
+        /* Sin duplicados: si el mismo Excel se vuelve a subir (por ejemplo con renglones
+           nuevos al final), solo se agrega lo que todavía no está. Se cuenta cuántas veces
+           existe cada renglón (nombre, RFC, mes, municipio, importe), para respetar los
+           renglones que se repiten a propósito dentro del archivo. */
+        const clave = (f) => [f.nombre_servidor, f.rfc, f.mes, f.municipio, Number(f.importe || 0).toFixed(2)]
+            .map(v => String(v ?? '').trim().toUpperCase()).join('|');
+        const existentes = new Map();
+        const previos = await client.query(
+            'SELECT nombre_servidor, rfc, mes, municipio, importe FROM viaticos WHERE unidad_id = $1',
+            [unidad_id]
+        );
+        previos.rows.forEach(f => existentes.set(clave(f), (existentes.get(clave(f)) || 0) + 1));
+
+        let insertados = 0, omitidos = 0;
         for (const fila of registros) {
-
-            await client.query(
-
-                sql,
-
-                [
-
-                    unidad_id,
-
-                    fila.nombre_servidor,
-
-                    fila.rfc,
-
-                    fila.mes,
-
-                    fila.municipio,
-
-                    fila.importe
-
-                ]
-
-            );
-
+            const k = clave(fila);
+            if ((existentes.get(k) || 0) > 0) { existentes.set(k, existentes.get(k) - 1); omitidos++; continue; }
+            await client.query(sql, [
+                unidad_id,
+                String(fila.nombre_servidor || '').trim(),
+                String(fila.rfc || '').trim().toUpperCase(),
+                String(fila.mes || '').trim().toUpperCase(),
+                String(fila.municipio || '').trim().toUpperCase(),
+                Number(fila.importe || 0)
+            ]);
+            insertados++;
         }
 
         await client.query("COMMIT");
 
         res.json({
-
             ok: true,
-
-            mensaje: `${registros.length} registros importados correctamente.`,
-
+            mensaje: `${insertados} registro(s) agregado(s)` + (omitidos ? `; ${omitidos} ya existían.` : '.'),
+            insertados,
+            omitidos,
             total: registros.length
-
         });
 
     }

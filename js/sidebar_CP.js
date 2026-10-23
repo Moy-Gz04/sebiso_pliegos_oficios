@@ -16,7 +16,7 @@ const PAGINA_REGISTROS =
 const PAGINA_PAGOS =
 'G.html';
 
-const PAGINA_REPORTES =
+const PAGINA_REPORTES =   // pestaña «Viáticos por U.P.»
 'viaticos.html';
 
 /* =========================
@@ -100,7 +100,7 @@ document.getElementById(
 
             </button>
 
-            <!-- REPORTES -->
+            <!-- VIÁTICOS POR U.P. -->
 
             <button
                 type="button"
@@ -114,7 +114,7 @@ document.getElementById(
                     window.location.href='${PAGINA_REPORTES}'
                 ">
 
-                Reportes
+                Viáticos por U.P.
 
             </button>
 
