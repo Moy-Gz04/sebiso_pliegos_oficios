@@ -26,12 +26,12 @@ document.addEventListener("DOMContentLoaded", iniciar);
 
 async function iniciar(){
     $("tvBuscar").addEventListener("input", (e) => { estado.texto = e.target.value; pintar(); });
-    $("tvUp").addEventListener("change", (e) => { estado.up = e.target.value; pintar(); });
+    $("tvPestanas").addEventListener("click", (e) => { const b = e.target.closest(".tv-pestana"); if (!b) return; estado.up = b.dataset.up; estado.abiertos.clear(); pintar(); });
     $("tvMes").addEventListener("change", (e) => { estado.mes = e.target.value; pintar(); });
     $("tvAgrupar").addEventListener("change", (e) => { estado.agrupar = e.target.value; estado.abiertos.clear(); pintar(); });
     $("tvLimpiar").addEventListener("click", () => {
         estado.texto = estado.up = estado.mes = estado.agrupar = "";
-        $("tvBuscar").value = ""; $("tvUp").value = ""; $("tvMes").value = ""; $("tvAgrupar").value = "";
+        $("tvBuscar").value = ""; $("tvMes").value = ""; $("tvAgrupar").value = "";
         pintar();
     });
     document.querySelectorAll("#tvTabla thead th[data-campo]").forEach(th => th.addEventListener("click", () => {
@@ -52,8 +52,6 @@ async function iniciar(){
 async function cargarUnidades(){
     try {
         UNIDADES = await (await fetch(`${API}/api/viaticos/unidades`)).json();
-        const opciones = UNIDADES.map(u => `<option value="${u.clave}">U.P. ${u.clave} · ${esc(u.nombre)}</option>`).join("");
-        $("tvUp").innerHTML = `<option value="">Todas las U.P.</option>` + opciones;
         $("tvUpForm").innerHTML = UNIDADES.map(u => `<option value="${u.id}">U.P. ${u.clave} · ${esc(u.nombre)}</option>`).join("");
     } catch (e) { console.error(e); }
 }
@@ -106,7 +104,20 @@ const AGRUPAR = {
     municipio: { titulo: "Municipio", etiqueta: (r) => r.municipio },
 };
 
+/* Pestañas: «Todas» y una por U.P. con registros; el número cuenta con la búsqueda y el mes aplicados */
+function pintarPestanas(){
+    const q = norm(estado.texto).trim();
+    const base = REGISTROS.filter(r => (!estado.mes || r.mes === estado.mes) &&
+        (!q || norm(`${r.nombre_servidor} ${r.rfc} ${r.municipio} ${r.mes} U.P. ${r.up_clave} ${r.up_nombre}`).includes(q)));
+    const claves = [...new Set(REGISTROS.map(r => r.up_clave))].sort();
+    const nombre = (c) => (UNIDADES.find(u => u.clave === c) || REGISTROS.find(r => r.up_clave === c) || {}).nombre || (REGISTROS.find(r => r.up_clave === c) || {}).up_nombre || "";
+    const pest = (up, titulo, n, tip) => `<button type="button" class="tv-pestana" role="tab" data-up="${up}" aria-selected="${estado.up === up}" title="${esc(tip)}">${titulo}<small>${n} reg.</small></button>`;
+    $("tvPestanas").innerHTML = pest("", "Todas", base.length, "Todas las unidades presupuestales") +
+        claves.map(c => pest(c, `U.P. ${esc(c)}`, base.filter(r => r.up_clave === c).length, nombre(c))).join("");
+}
+
 function pintar(){
+    pintarPestanas();
     const lista = filtrados().sort(comparar);
     const total = lista.reduce((s, r) => s + r.importe, 0);
     $("tvConteo").textContent = `${lista.length} registro${lista.length === 1 ? "" : "s"}`;

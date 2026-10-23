@@ -58,7 +58,6 @@
 
     <div class="tv-barra">
         <label class="tv-buscar"><i class="bi bi-search"></i><input type="search" id="tvBuscar" placeholder="Buscar servidor público, RFC, municipio…" aria-label="Buscar"></label>
-        <select id="tvUp" aria-label="Filtrar por U.P."></select>
         <select id="tvMes" aria-label="Filtrar por mes"></select>
         <select id="tvAgrupar" aria-label="Agrupar por">
             <option value="">Sin agrupar</option>
@@ -69,6 +68,8 @@
         </select>
         <button type="button" class="tv-limpiar" id="tvLimpiar">Limpiar</button>
     </div>
+
+    <div class="tv-pestanas" id="tvPestanas" role="tablist" aria-label="Unidades presupuestales"></div>
 
     <div class="tv-tarjeta">
         <div class="tv-scroll">
@@ -141,6 +142,14 @@
 .tv-barra select{ padding:9px 30px 9px 12px; border:1.5px solid var(--borde); border-radius:10px; background:#fff; font:500 13px 'Montserrat',sans-serif; color:var(--txt); max-width:260px; }
 .tv-limpiar{ border:0; background:none; color:var(--txt2); font:600 12.5px 'Montserrat',sans-serif; cursor:pointer; padding:8px 6px; }
 .tv-limpiar:hover{ color:var(--g); }
+.tv-pestanas{ display:flex; gap:4px; overflow-x:auto; padding:0 6px; scrollbar-width:thin; }
+.tv-pestana{ flex:0 0 auto; display:flex; flex-direction:column; align-items:flex-start; gap:1px; padding:8px 14px 9px; border:1px solid var(--borde); border-bottom:0;
+             border-radius:10px 10px 0 0; background:var(--suave); color:var(--txt2); font:600 12.5px 'Montserrat',sans-serif; cursor:pointer; position:relative; top:1px; }
+.tv-pestana small{ font-size:10.5px; font-weight:600; opacity:.8; }
+.tv-pestana:hover{ color:var(--g); background:#fff; }
+.tv-pestana[aria-selected="true"]{ background:var(--g); border-color:var(--g); color:#fff; }
+.tv-pestana:focus-visible{ outline:2px solid var(--d); outline-offset:2px; }
+.tv-tarjeta{ border-top-left-radius:0 !important; }
 .tv-tarjeta{ background:#fff; border:1px solid var(--borde); border-radius:14px; box-shadow:0 1px 2px rgba(32,16,23,.04), 0 8px 24px rgba(32,16,23,.05); overflow:hidden; }
 .tv-scroll{ max-height:calc(100vh - 290px); min-height:280px; overflow:auto; }
 #tvTabla{ width:100%; border-collapse:collapse; font-size:13px; }
@@ -250,7 +259,7 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<script src="../js-viaticos/tabla-viaticos.js?v=1"></script>
+<script src="../js-viaticos/tabla-viaticos.js?v=2"></script>
 
   <script src="../js/minisebiso-flotante.js?v=2"></script>
   <script src="../js/asistente-extra.js?v=1"></script>
