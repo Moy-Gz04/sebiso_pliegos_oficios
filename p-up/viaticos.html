@@ -52,6 +52,7 @@
         <div class="tv-acciones">
             <button type="button" class="tv-btn" id="tvImportar"><i class="bi bi-file-earmark-excel"></i> Importar Excel</button>
             <button type="button" class="tv-btn tv-btn-principal" id="tvAgregar"><i class="bi bi-plus-lg"></i> Agregar</button>
+            <button type="button" class="tv-btn tv-btn-dorado" id="tvReporte"><i class="bi bi-file-earmark-pdf"></i> Generar reporte</button>
             <input type="file" id="tvArchivo" accept=".xlsx,.xls" hidden>
         </div>
     </header>
@@ -118,6 +119,46 @@
         </form>
     </dialog>
 
+    <dialog class="tv-dialogo tr-dialogo" id="trDialogo" aria-labelledby="trTitulo">
+        <form id="trForm" method="dialog">
+            <h2 id="trTitulo">Generar reporte</h2>
+            <div class="tr-campo">
+                <span class="tr-label">Unidad presupuestal <label class="tr-todas"><input type="checkbox" id="trTodas"> Todas</label></span>
+                <div class="tr-unidades" id="trUnidades"></div>
+            </div>
+            <div class="tv-dos">
+                <label>Desde<select id="trDesde"></select></label>
+                <label>Hasta<select id="trHasta"></select></label>
+            </div>
+            <label>Fecha del reporte<input type="date" id="trFecha"></label>
+            <div class="tr-campo">
+                <span class="tr-label">Secciones</span>
+                <div class="tr-secciones">
+                    <label><input type="checkbox" id="trSecResumen" checked> Resumen</label>
+                    <label><input type="checkbox" id="trSecMes" checked> Por mes</label>
+                    <label><input type="checkbox" id="trSecPersona" checked> Por servidor público</label>
+                    <label><input type="checkbox" id="trSecMunicipio" checked> Municipios</label>
+                    <label><input type="checkbox" id="trSecDetalle" checked> Detalle de comisiones</label>
+                </div>
+            </div>
+            <p class="tr-aviso" id="trAviso" role="status"></p>
+            <div class="tv-dialogo-acc">
+                <button type="button" class="tv-btn" id="trCancelar">Cancelar</button>
+                <button type="submit" class="tv-btn tv-btn-principal" id="trGenerar">Generar reporte</button>
+            </div>
+        </form>
+        <div class="tr-vista" id="trVista" hidden>
+            <div class="tr-vista-barra">
+                <button type="button" class="tv-btn" id="trVolver"><i class="bi bi-arrow-left"></i> Cambiar opciones</button>
+                <span>
+                    <button type="button" class="tv-btn" id="trImprimir"><i class="bi bi-printer"></i> Imprimir</button>
+                    <button type="button" class="tv-btn tv-btn-dorado" id="trDescargar"><i class="bi bi-download"></i> Descargar PDF</button>
+                </span>
+            </div>
+            <iframe id="trFrame" title="Vista previa del reporte"></iframe>
+        </div>
+    </dialog>
+
 </section>
 
 <style>
@@ -134,6 +175,30 @@
 .tv-btn-principal{ background:var(--g); border-color:var(--g); color:#fff; }
 .tv-btn-principal:hover{ background:var(--g2); border-color:var(--g2); }
 .tv-btn:disabled{ opacity:.6; cursor:wait; }
+.tv-btn-dorado{ background:linear-gradient(135deg,#C9A24E,#A9824C); border-color:transparent; color:#3A0818; }
+.tv-btn-dorado:hover{ background:linear-gradient(135deg,#D6B062,#B08A3A); border-color:transparent; }
+.tr-dialogo{ width:min(620px,94vw); }
+.tr-dialogo:has(.tr-vista:not([hidden])){ width:min(900px,96vw); }
+.tr-campo{ display:flex; flex-direction:column; gap:6px; }
+.tr-label{ display:flex; align-items:center; justify-content:space-between; font-size:11.5px; font-weight:700; color:var(--txt2); text-transform:uppercase; letter-spacing:.4px; }
+.tr-todas{ flex-direction:row !important; align-items:center; gap:6px !important; text-transform:none !important; letter-spacing:0 !important; font-size:12px !important; color:var(--g) !important; cursor:pointer; }
+.tr-unidades{ display:grid; grid-template-columns:minmax(0,1fr); gap:4px; max-height:220px; overflow-y:auto; overflow-x:hidden; padding:2px; }
+.tr-up{ min-width:0; }
+.tr-up{ flex-direction:row !important; align-items:center; gap:10px !important; padding:7px 10px; border:1px solid #EFE6DA; border-radius:9px; text-transform:none !important; letter-spacing:0 !important;
+        font-size:12.5px !important; font-weight:500 !important; color:var(--txt) !important; cursor:pointer; }
+.tr-up:hover{ background:var(--suave); }
+.tr-up span{ flex:1; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.tr-up b{ color:var(--g); margin-right:4px; }
+.tr-up em{ font-style:normal; font-weight:700; color:var(--txt2); font-size:11.5px; }
+.tr-dialogo input[type=checkbox]{ accent-color:#5F2132; width:16px; height:16px; padding:0; }
+.tr-secciones{ display:flex; flex-wrap:wrap; gap:6px 16px; }
+.tr-secciones label{ flex-direction:row !important; align-items:center; gap:7px !important; text-transform:none !important; letter-spacing:0 !important; font-size:12.5px !important; font-weight:500 !important; color:var(--txt) !important; cursor:pointer; }
+.tr-aviso{ margin:0; min-height:1em; font-size:12.5px; color:#A32D2D; }
+.tr-vista{ display:flex; flex-direction:column; gap:10px; padding:16px; }
+.tr-vista[hidden]{ display:none; }
+.tr-vista-barra{ display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+.tr-vista-barra span{ display:flex; gap:8px; }
+.tr-vista iframe{ width:100%; height:72vh; border:1px solid var(--borde); border-radius:10px; background:#fff; }
 .tv-btn:focus-visible,.tv-limpiar:focus-visible,.tv select:focus-visible,.tv-borrar:focus-visible,.tv-grupo:focus-visible{ outline:2px solid var(--g); outline-offset:2px; }
 .tv-barra{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
 .tv-buscar{ flex:1 1 280px; display:flex; align-items:center; gap:8px; padding:0 12px; border:1.5px solid var(--borde); border-radius:10px; background:#fff; }
@@ -267,7 +332,10 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
 <script src="../js-viaticos/tabla-viaticos.js?v=3"></script>
+<script src="../js-viaticos/reporte-viaticos.js?v=2"></script>
 
   <script src="../js/minisebiso-flotante.js?v=2"></script>
   <script src="../js/asistente-extra.js?v=1"></script>
