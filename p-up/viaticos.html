@@ -7,15 +7,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
 
-    <title>Control de Viáticos</title>
+    <title>Viáticos por U.P.</title>
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
-
-    <!-- DataTables -->
-    <link rel="stylesheet"
-    href="https://cdn.datatables.net/2.3.2/css/dataTables.dataTables.min.css">
 
     <!-- CSS -->
     <link rel="stylesheet" href="../css/ssidebar.css">
@@ -44,555 +40,145 @@
                    páginas que carguen este mismo archivo.
 -->
 <div class="contenido">
-<div class="viaticos">
 
-<div class="contenedor">
+<!-- Viáticos por U.P.: una sola tabla dinámica con todos los registros (js-viaticos/tabla-viaticos.js) -->
+<section class="tv">
 
-    <!--=========================
-        HEADER
-    ==========================-->
-
-    <div class="encabezado">
-
+    <header class="tv-cabeza">
         <div>
-
-            <h1>
-
-                <i class="bi bi-cash-stack"></i>
-
-                Control de Viáticos
-
-            </h1>
-
-            <p>
-
-                Administración de comisiones oficiales por Unidad Presupuestal
-
-            </p>
-
+            <p class="tv-eyebrow">Administración</p>
+            <h1>Viáticos por U.P.</h1>
         </div>
+        <div class="tv-acciones">
+            <button type="button" class="tv-btn" id="tvImportar"><i class="bi bi-file-earmark-excel"></i> Importar Excel</button>
+            <button type="button" class="tv-btn tv-btn-principal" id="tvAgregar"><i class="bi bi-plus-lg"></i> Agregar</button>
+            <input type="file" id="tvArchivo" accept=".xlsx,.xls" hidden>
+        </div>
+    </header>
 
-        <button
-            id="nuevo"
-            class="btn-principal">
-
-            <i class="bi bi-plus-circle-fill"></i>
-
-            Nuevo Registro
-
-        </button>
-
+    <div class="tv-barra">
+        <label class="tv-buscar"><i class="bi bi-search"></i><input type="search" id="tvBuscar" placeholder="Buscar servidor público, RFC, municipio…" aria-label="Buscar"></label>
+        <select id="tvUp" aria-label="Filtrar por U.P."></select>
+        <select id="tvMes" aria-label="Filtrar por mes"></select>
+        <select id="tvAgrupar" aria-label="Agrupar por">
+            <option value="">Sin agrupar</option>
+            <option value="up_clave">Agrupar por U.P.</option>
+            <option value="nombre_servidor">Agrupar por servidor público</option>
+            <option value="mes">Agrupar por mes</option>
+            <option value="municipio">Agrupar por municipio</option>
+        </select>
+        <button type="button" class="tv-limpiar" id="tvLimpiar">Limpiar</button>
     </div>
 
-    <!--=========================
-        ÁREA ACTUAL
-    ==========================-->
-
-    <div class="unidad-actual">
-
-        <i class="bi bi-building"></i>
-
-        <span id="unidadActual">
-
-            Seleccione un Área Presupuestal
-
-        </span>
-
+    <div class="tv-tarjeta">
+        <div class="tv-scroll">
+            <table id="tvTabla">
+                <thead>
+                    <tr>
+                        <th data-campo="up_clave">U.P.</th>
+                        <th data-campo="nombre_servidor">Servidor público</th>
+                        <th data-campo="rfc">RFC</th>
+                        <th data-campo="mes">Mes</th>
+                        <th data-campo="municipio">Municipio</th>
+                        <th data-campo="importe" class="tv-num">Importe</th>
+                        <th class="tv-acc"><span class="tv-oculto">Acciones</span></th>
+                    </tr>
+                </thead>
+                <tbody id="tvCuerpo"></tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="5"><b id="tvConteo">0 registros</b> · <span id="tvPersonas">0</span> personas</td>
+                        <td class="tv-num"><b id="tvTotal">$0.00</b></td>
+                        <td></td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
     </div>
 
-    <!--=========================
-        FILTROS
-    ==========================-->
-
-    <div class="panel-filtros">
-
-        <div class="fila">
-
-            <div class="titulo">
-
-                <i class="bi bi-building"></i>
-
-                Área Presupuestal
-
+    <dialog class="tv-dialogo" id="tvDialogo" aria-labelledby="tvDialogoTitulo">
+        <form id="tvForm" method="dialog">
+            <h2 id="tvDialogoTitulo">Agregar viático</h2>
+            <label>U.P.<select id="tvUpForm" required></select></label>
+            <label>Servidor público<input id="tvNombre" required maxlength="160" autocomplete="off"></label>
+            <div class="tv-dos">
+                <label>RFC<input id="tvRfc" required maxlength="13" autocomplete="off" style="text-transform:uppercase"></label>
+                <label>Mes<select id="tvMesForm" required></select></label>
             </div>
-
-            <div class="campo-select">
-
-                <select id="unidad"></select>
-
+            <div class="tv-dos">
+                <label>Municipio visitado<input id="tvMunicipio" required maxlength="120" autocomplete="off" style="text-transform:uppercase"></label>
+                <label>Importe<input id="tvImporte" type="number" min="0.01" step="0.01" required inputmode="decimal"></label>
             </div>
-
-        </div>
-
-        <div class="fila-grid">
-
-            <div>
-
-                <label>
-
-                    <i class="bi bi-calendar3"></i>
-
-                    Mes
-
-                </label>
-
-                <select id="mes">
-
-                    <option value="">Todos</option>
-
-                    <option>ENERO</option>
-                    <option>FEBRERO</option>
-                    <option>MARZO</option>
-                    <option>ABRIL</option>
-                    <option>MAYO</option>
-                    <option>JUNIO</option>
-                    <option>JULIO</option>
-                    <option>AGOSTO</option>
-                    <option>SEPTIEMBRE</option>
-                    <option>OCTUBRE</option>
-                    <option>NOVIEMBRE</option>
-                    <option>DICIEMBRE</option>
-
-                </select>
-
+            <div class="tv-dialogo-acc">
+                <button type="button" class="tv-btn" id="tvCancelar">Cancelar</button>
+                <button type="submit" class="tv-btn tv-btn-principal" id="tvGuardar">Guardar</button>
             </div>
-
-            <div>
-
-                <label>
-
-                    <i class="bi bi-geo-alt"></i>
-
-                    Municipio
-
-                </label>
-
-                <input
-                    id="municipio"
-                    type="text"
-                    placeholder="Todos">
-
-            </div>
-
-            <div>
-
-                <label>
-
-                    <i class="bi bi-person"></i>
-
-                    Servidor Público
-
-                </label>
-
-                <input
-                    id="servidor"
-                    type="text"
-                    placeholder="Nombre del Servidor Público">
-
-            </div>
-
-        </div>
-
-        <div class="acciones">
-
-            <button
-                id="buscar"
-                class="btn-buscar">
-
-                <i class="bi bi-search"></i>
-
-                Buscar
-
-            </button>
-
-            <button
-                id="limpiar"
-                class="btn-secundario">
-
-                <i class="bi bi-arrow-clockwise"></i>
-
-                Limpiar
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <!--=========================
-        TARJETAS
-    ==========================-->
-
-    <div class="cards">
-
-        <div class="card">
-
-            <div class="icono-card verde">
-
-                <i class="bi bi-cash-stack"></i>
-
-            </div>
-
-            <div>
-
-                <h3>Presupuesto</h3>
-
-                <span id="totalPresupuesto">
-
-                    $0.00
-
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="icono-card azul">
-
-                <i class="bi bi-people-fill"></i>
-
-            </div>
-
-            <div>
-
-                <h3>Personas</h3>
-
-                <span id="totalPersonas">
-
-                    0
-
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="icono-card vino">
-
-                <i class="bi bi-journal-text"></i>
-
-            </div>
-
-            <div>
-
-                <h3>Comisiones</h3>
-
-                <span id="totalComisiones">
-
-                    0
-
-                </span>
-
-            </div>
-
-        </div>
-
-        <div class="card">
-
-            <div class="icono-card naranja">
-
-                <i class="bi bi-graph-up-arrow"></i>
-
-            </div>
-
-            <div>
-
-                <h3>Promedio</h3>
-
-                <span id="promedio">
-
-                    $0.00
-
-                </span>
-
-            </div>
-
-        </div>
-
-    </div>
-
-    <!--=========================
-        TABLA
-    ==========================-->
-
-    <div class="tabla-card">
-
-        <div class="tabla-header">
-
-            <h2>
-
-                <i class="bi bi-table"></i>
-
-                Registros de Viáticos
-
-            </h2>
-
-        </div>
-
-        <div class="tabla">
-
-            <table id="tablaViaticos" class="display stripe hover" style="width:100%">
-
-    <thead>
-
-        <tr>
-
-            <th>Servidor Público</th>
-
-            <th>RFC</th>
-
-            <th>Mes</th>
-
-            <th>Municipio</th>
-
-            <th>Importe</th>
-
-            <th style="width:120px">Acciones</th>
-
-        </tr>
-
-    </thead>
-
-    <tbody>
-
-    </tbody>
-
-</table>
-
-        </div>
-
-    </div>
-
-</div>
-
-<!--======================================
-        MODAL
-=======================================-->
-
-<div class="modal" id="modalRegistro">
-
-    <div class="modal-contenido">
-
-        <div class="modal-header">
-
-            <div>
-
-                <h2>
-
-                    <i class="bi bi-journal-plus"></i>
-
-                    Nuevo Registro
-
-                </h2>
-
-                <small>
-
-                    Capture un registro manualmente o importe un archivo Excel.
-
-                </small>
-
-            </div>
-
-            <button id="cerrarModal" class="cerrar">
-
-                <i class="bi bi-x-lg"></i>
-
-            </button>
-
-        </div>
-
-        <div class="tabs">
-
-            <button
-                class="tab activa"
-                data-tab="manual">
-
-                <i class="bi bi-pencil-square"></i>
-
-                Captura Manual
-
-            </button>
-
-            <button
-                class="tab"
-                data-tab="excel">
-
-                <i class="bi bi-file-earmark-excel-fill"></i>
-
-                Importar Excel
-
-            </button>
-
-        </div>
-
-        <!--======================================
-                MANUAL
-        =======================================-->
-
-        <div id="manual" class="tab-content activo">
-
-            <div class="grid-form">
-
-                <div class="grupo">
-
-                    <label>
-
-                        Servidor Público
-
-                    </label>
-
-                    <input
-                        id="nombreRegistro"
-                        type="text">
-
-                </div>
-
-                <div class="grupo">
-
-                    <label>
-
-                        RFC
-
-                    </label>
-
-                    <input
-                        id="rfcRegistro"
-                        maxlength="13">
-
-                </div>
-
-                <div class="grupo">
-
-                    <label>
-
-                        Mes
-
-                    </label>
-
-                    <select id="mesRegistro">
-
-                        <option>ENERO</option>
-                        <option>FEBRERO</option>
-                        <option>MARZO</option>
-                        <option>ABRIL</option>
-                        <option>MAYO</option>
-                        <option>JUNIO</option>
-                        <option>JULIO</option>
-                        <option>AGOSTO</option>
-                        <option>SEPTIEMBRE</option>
-                        <option>OCTUBRE</option>
-                        <option>NOVIEMBRE</option>
-                        <option>DICIEMBRE</option>
-
-                    </select>
-
-                </div>
-
-                <div class="grupo">
-
-                    <label>
-
-                        Municipio
-
-                    </label>
-
-                    <input id="municipioRegistro">
-
-                </div>
-
-                <div class="grupo">
-
-                    <label>
-
-                        Importe
-
-                    </label>
-
-                    <input
-                        id="importeRegistro"
-                        type="number">
-
-                </div>
-
-            </div>
-
-            <div class="footer-modal">
-
-                <button
-                    class="btn-cancelar"
-                    id="cancelarModal">
-
-                    <i class="bi bi-x-circle"></i>
-
-                    Cancelar
-
-                </button>
-
-                <button
-                    id="guardarRegistro"
-                    class="btn-guardar">
-
-                    <i class="bi bi-check-circle-fill"></i>
-
-                    Guardar Registro
-
-                </button>
-
-            </div>
-
-        </div>
-
-        <!--======================================
-                EXCEL
-        =======================================-->
-
-        <div id="excel" class="tab-content">
-
-            <div class="excel-box">
-
-                <i class="bi bi-file-earmark-excel-fill excel-icono"></i>
-
-                <h3>
-
-                    Importar archivo Excel
-
-                </h3>
-
-                <p>
-
-                    Puede subir el Excel con una hoja por U.P. (por ejemplo «UP 01», «UP04»…): cada hoja se guarda en su U.P. Si el archivo trae una sola hoja sin U.P., se guarda en el Área Presupuestal elegida arriba. Lo que ya esté registrado no se duplica.
-
-                </p>
-
-                <input
-                    type="file"
-                    id="archivoExcel"
-                    accept=".xlsx,.xls">
-
-                <br><br>
-
-                <button
-                    id="importarExcel"
-                    class="btn-importar">
-
-                    <i class="bi bi-upload"></i>
-
-                    Importar Archivo
-
-                </button>
-
-            </div>
-
-        </div>
-
-    </div>
-
-</div>
-
+        </form>
+    </dialog>
+
+</section>
+
+<style>
+.tv{ --g:#5F2132; --g2:#3D1420; --d:#A9824C; --d2:#7C5D31; --borde:#E4D6C8; --suave:#FBF6EE; --txt:#201017; --txt2:#6B5563;
+     font-family:'Montserrat',system-ui,sans-serif; color:var(--txt); max-width:1280px; margin:0 auto; padding:24px 24px 48px; box-sizing:border-box; }
+.tv *{ box-sizing:border-box; }
+.tv-cabeza{ display:flex; align-items:flex-end; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:16px; }
+.tv-eyebrow{ margin:0; font-size:11px; font-weight:700; letter-spacing:1.4px; text-transform:uppercase; color:var(--d); }
+.tv h1{ margin:2px 0 0; font-size:26px; font-weight:800; color:var(--g); letter-spacing:-.3px; }
+.tv-acciones{ display:flex; gap:8px; }
+.tv-btn{ display:inline-flex; align-items:center; gap:7px; padding:9px 16px; border-radius:999px; border:1.5px solid var(--borde); background:#fff; color:var(--g);
+         font:600 13px 'Montserrat',sans-serif; cursor:pointer; transition:background .15s,border-color .15s; }
+.tv-btn:hover{ background:var(--suave); border-color:var(--d); }
+.tv-btn-principal{ background:var(--g); border-color:var(--g); color:#fff; }
+.tv-btn-principal:hover{ background:var(--g2); border-color:var(--g2); }
+.tv-btn:disabled{ opacity:.6; cursor:wait; }
+.tv-btn:focus-visible,.tv-limpiar:focus-visible,.tv select:focus-visible,.tv-borrar:focus-visible,.tv-grupo:focus-visible{ outline:2px solid var(--g); outline-offset:2px; }
+.tv-barra{ display:flex; flex-wrap:wrap; gap:8px; align-items:center; margin-bottom:12px; }
+.tv-buscar{ flex:1 1 280px; display:flex; align-items:center; gap:8px; padding:0 12px; border:1.5px solid var(--borde); border-radius:10px; background:#fff; }
+.tv-buscar i{ color:var(--txt2); }
+.tv-buscar input{ flex:1; border:0; outline:0; padding:9px 0; font:500 13px 'Montserrat',sans-serif; background:transparent; min-width:0; }
+.tv-buscar:focus-within{ border-color:var(--g); box-shadow:0 0 0 3px rgba(95,33,50,.1); }
+.tv-barra select{ padding:9px 30px 9px 12px; border:1.5px solid var(--borde); border-radius:10px; background:#fff; font:500 13px 'Montserrat',sans-serif; color:var(--txt); max-width:260px; }
+.tv-limpiar{ border:0; background:none; color:var(--txt2); font:600 12.5px 'Montserrat',sans-serif; cursor:pointer; padding:8px 6px; }
+.tv-limpiar:hover{ color:var(--g); }
+.tv-tarjeta{ background:#fff; border:1px solid var(--borde); border-radius:14px; box-shadow:0 1px 2px rgba(32,16,23,.04), 0 8px 24px rgba(32,16,23,.05); overflow:hidden; }
+.tv-scroll{ max-height:calc(100vh - 290px); min-height:280px; overflow:auto; }
+#tvTabla{ width:100%; border-collapse:collapse; font-size:13px; }
+#tvTabla th{ position:sticky; top:0; z-index:1; background:var(--g); color:#fff; text-align:left; padding:11px 12px; font-weight:700; font-size:12px; letter-spacing:.3px; white-space:nowrap; }
+#tvTabla th[data-campo]{ cursor:pointer; user-select:none; }
+#tvTabla th[data-campo]::after{ content:"↕"; margin-left:6px; opacity:.35; font-size:11px; }
+#tvTabla th[data-orden="asc"]::after{ content:"↑"; opacity:1; color:#E7CD86; }
+#tvTabla th[data-orden="desc"]::after{ content:"↓"; opacity:1; color:#E7CD86; }
+#tvTabla td{ padding:9px 12px; border-bottom:1px solid #F1EAE1; vertical-align:middle; }
+#tvTabla tbody tr:hover td{ background:var(--suave); }
+#tvTabla tfoot td{ position:sticky; bottom:0; background:#F6EEDD; color:var(--g); padding:11px 12px; border-top:2px solid var(--d); font-size:13px; }
+.tv-num{ text-align:right !important; font-variant-numeric:tabular-nums; white-space:nowrap; }
+.tv-mono{ font-family:ui-monospace,Consolas,monospace; font-size:12px; color:var(--txt2); }
+.tv-up{ display:inline-block; padding:2px 8px; border-radius:999px; background:#F9F0F3; color:var(--g); font-weight:700; font-size:11.5px; white-space:nowrap; }
+.tv-acc{ width:44px; text-align:center !important; }
+.tv-borrar{ width:28px; height:28px; border-radius:50%; border:0; background:none; color:#B5A6AD; cursor:pointer; font-size:13px; }
+.tv-borrar:hover{ background:#FCE4EC; color:#A32D2D; }
+.tv-grupo td{ background:#FBF7F2; cursor:pointer; font-size:13px; }
+.tv-grupo:hover td{ background:#F6EEDD !important; }
+.tv-flecha{ display:inline-block; width:14px; color:var(--d2); }
+.tv-cuenta{ margin-left:8px; font-size:11.5px; color:var(--txt2); }
+.tv-detalle td:first-child{ padding-left:30px; }
+.tv-vacio{ text-align:center; padding:40px 12px !important; color:var(--txt2); }
+.tv-oculto{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+.tv-dialogo{ border:0; border-radius:16px; padding:0; width:min(520px,92vw); box-shadow:0 30px 80px rgba(20,6,12,.35); }
+.tv-dialogo::backdrop{ background:rgba(30,10,18,.45); }
+.tv-dialogo form{ display:flex; flex-direction:column; gap:12px; padding:22px 24px; font-family:'Montserrat',sans-serif; }
+.tv-dialogo h2{ margin:0 0 4px; font-size:18px; color:var(--g); }
+.tv-dialogo label{ display:flex; flex-direction:column; gap:5px; font-size:11.5px; font-weight:700; color:var(--txt2); text-transform:uppercase; letter-spacing:.4px; }
+.tv-dialogo input,.tv-dialogo select{ padding:9px 11px; border:1.5px solid var(--borde); border-radius:9px; font:500 13.5px 'Montserrat',sans-serif; color:var(--txt); text-transform:none; letter-spacing:0; }
+.tv-dialogo input:focus,.tv-dialogo select:focus{ outline:0; border-color:var(--g); box-shadow:0 0 0 3px rgba(95,33,50,.1); }
+.tv-dos{ display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.tv-dialogo-acc{ display:flex; justify-content:flex-end; gap:8px; margin-top:6px; }
+@media (max-width:720px){ .tv{ padding:16px 12px 40px; } .tv-barra select{ flex:1 1 45%; max-width:none; } .tv-dos{ grid-template-columns:1fr; } }
+</style>
+
+<!-- contenedor de estilos de css/viaticos.css (la ventana de cerrar sesión los usa) -->
+<div class="viaticos">
 <!--======================================
         MODAL CERRAR SESIÓN
 =======================================-->
@@ -660,17 +246,11 @@
 <script src="../js/sidebar_CP.js"></script>
   <script src="../js/encabezado-sistemas.js?v=8"></script>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
-
-<script src="https://cdn.datatables.net/2.3.2/js/dataTables.min.js"></script>
-
 <!-- Librería para leer Excel -->
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
-<script src="../js-viaticos/config.js"></script>
-
-<script src="../js-viaticos/viaticos.js?v=20261023"></script>
+<script src="../js-viaticos/tabla-viaticos.js?v=1"></script>
 
   <script src="../js/minisebiso-flotante.js?v=2"></script>
   <script src="../js/asistente-extra.js?v=1"></script>

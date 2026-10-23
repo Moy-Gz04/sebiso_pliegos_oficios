@@ -345,4 +345,39 @@ router.post("/importar", async (req, res) => {
 
 });
 
+
+/*=====================================================
+TODOS LOS VIÁTICOS (tabla dinámica: todas las U.P.)
+=====================================================*/
+router.get("/todos", async (req, res) => {
+    try {
+        const r = await pool.query(`
+            SELECT v.id, v.nombre_servidor, v.rfc, v.mes, v.municipio, v.importe, v.fecha_registro,
+                   v.unidad_id, u.clave AS up_clave, u.nombre AS up_nombre
+            FROM viaticos v
+            JOIN unidades_presupuestales u ON u.id = v.unidad_id
+            ORDER BY u.clave, v.id`);
+        res.json({ ok: true, registros: r.rows });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ ok: false, mensaje: "Error al consultar." });
+    }
+});
+
+/*=====================================================
+ELIMINAR UN REGISTRO
+=====================================================*/
+router.delete("/:id", async (req, res) => {
+    try {
+        const id = Number(req.params.id);
+        if (!Number.isInteger(id) || id <= 0) return res.status(400).json({ ok: false, mensaje: "Registro inválido." });
+        const r = await pool.query("DELETE FROM viaticos WHERE id = $1 RETURNING id", [id]);
+        if (!r.rowCount) return res.status(404).json({ ok: false, mensaje: "El registro ya no existe." });
+        res.json({ ok: true });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ ok: false, mensaje: "Error al eliminar." });
+    }
+});
+
 module.exports = router;
