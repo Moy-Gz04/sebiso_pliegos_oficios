@@ -35,7 +35,8 @@ const personas = [
     "Luz María Luque Gómez",
     "María Elena Tello Sánchez",
     "Ernesto Martínez Aguilar",
-    "Ana María Rodríguez Rosales"
+    "Ana María Rodríguez Rosales",
+    "Juan Javier Jaramillo Sanchez"
 
 ];
 

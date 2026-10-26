@@ -49,6 +49,90 @@ const personas = [
         nombre: "Rosa María Pérez García",
         categoria: "Jefe de Departamento",
         rfc: "PEGR800119V78"
+    },
+
+    {
+        nombre: "Dariana Olvera Mendoza",
+        categoria: "Subdirectora Adjunta-A",
+        rfc: "OEMD990201JC7"
+    },
+
+    {
+        nombre: "Juan Alexis Garcia Garcia",
+        categoria: "Supervisor/Analista",
+        rfc: "GAGJ010324EG5"
+    },
+
+    {
+        nombre: "Mahali Vázquez Vega",
+        categoria: "Asesor Técnico/Gestor-A",
+        rfc: "VAVM800522A66"
+    },
+
+    {
+        nombre: "Emmanuel Huerta Monzalvo",
+        categoria: "Subdirector de Area-C",
+        rfc: "HUME830530FQ6"
+    },
+
+    {
+        nombre: "Sergio Eduardo Ruiz Arriaga",
+        categoria: "Jefe de Area-A",
+        rfc: "RUAS010321AY0"
+    },
+
+    {
+        nombre: "Paul Giovanni Sanchez Nieto",
+        categoria: "Supervisor/Analista",
+        rfc: "SANP930918G27"
+    },
+
+    {
+        nombre: "Susana Ruiz Reyes",
+        categoria: "Jefe de Departamento-C",
+        rfc: "RURS930809FZA"
+    },
+
+    {
+        nombre: "Jorge Alberto Vargas Romero",
+        categoria: "Subdirector de Area-C",
+        rfc: "VARJ860609MP9"
+    },
+
+    {
+        nombre: "Misael Lopez Macario",
+        categoria: "Jefe de Departamento-C",
+        rfc: "LOMM810706AZ4"
+    },
+
+    {
+        nombre: "Josue Raymundo Sanchez Avalos",
+        categoria: "Jefe de Departamento-C",
+        rfc: "SAAJ900306IX3"
+    },
+
+    {
+        nombre: "Diana Laura Fernández Monroy",
+        categoria: "Subdirector de Area-C",
+        rfc: "FEMD971105U62"
+    },
+
+    {
+        nombre: "Esperanza Quezada Xaxni",
+        categoria: "Subdirector A",
+        rfc: "QUXE810801FV7"
+    },
+
+    {
+        nombre: "Karina Anaí Hernández Soto",
+        categoria: "Jefatura de Área B",
+        rfc: "HESK861006423"
+    },
+
+    {
+        nombre: "Juan Javier Jaramillo Sanchez",
+        categoria: "Subdirector Adjunto",
+        rfc: "JASJ760213UL4"
     }
 
 ];

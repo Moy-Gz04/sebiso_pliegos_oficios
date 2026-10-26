@@ -217,6 +217,12 @@ const personas = [
         nombre: "Ana María Rodríguez Rosales",
         categoria: "Supervisor/Analista",
         rfc: "RORA991223R70"
+    },
+
+    {
+        nombre: "Juan Javier Jaramillo Sanchez",
+        categoria: "Subdirector Adjunto",
+        rfc: "JASJ760213UL4"
     }
 
 ];
