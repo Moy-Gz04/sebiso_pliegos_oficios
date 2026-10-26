@@ -22,9 +22,9 @@ const personas = [
     },
 
     {
-        nombre: "Alelí Gutiérrez García",
+        nombre: "Ivan Mera Curiel",
         categoria: "Jefe de Departamento",
-        rfc: "GUGA8604122W4"
+        rfc: "MECI830622MT3"
     },
 
     {
@@ -40,15 +40,27 @@ const personas = [
     },
 
     {
-        nombre: "Luis Eumir Pérez Juárez",
+        nombre: "Abadi Josefina Jurado Garnica",
         categoria: "Jefe de Departamento",
-        rfc: "PEJL770623KJA"
+        rfc: "JUGA850312P07"
     },
 
     {
         nombre: "Rosa María Pérez García",
         categoria: "Jefe de Departamento",
         rfc: "PEGR800119V78"
+    },
+
+    {
+        nombre: "Karla Paola Méndez Morales",
+        categoria: "Jefe de Departamento",
+        rfc: "MEMK901010NV0"
+    },
+
+    {
+        nombre: "Liliana Yazmin Franco Castro",
+        categoria: "Jefe de Departamento",
+        rfc: "FACL860608LL7"
     },
 
     {
