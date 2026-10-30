@@ -56,6 +56,13 @@ function abrirEditar(id) {
 async function abrirValidar(id) {
   const r = REGISTROS.find(x => x.id === id);
   if (!r) return;
+  const vacios = COLUMNAS.filter(([c]) => !String(r[c] ?? "").trim()).map(([, t]) => t);
+  if (!r.validado && vacios.length) {
+    const M = window.MiniSEBISO, texto = "No se puede confirmar: faltan datos";
+    if (M?.preguntar && !M.apagado) M.preguntar({ titulo: "¡Atención!", pregunta: texto, detalle: esc(`${r.nombre}. Falta: ${vacios.join(", ")}.`), soloOk: true, btnOk: "Entendido", iconoOk: "ti-check", saludoOk: "¡Va!", textoOk: "Te espero cuando esté completo." });
+    else window.alert(`${texto}\n${r.nombre}\nFalta: ${vacios.join(", ")}`);
+    return;
+  }
   const pregunta = r.validado ? "¿Quitar la confirmación?" : "¿Confirmas que los datos son correctos?";
   const M = window.MiniSEBISO;
   const si = M?.preguntar && !M.apagado

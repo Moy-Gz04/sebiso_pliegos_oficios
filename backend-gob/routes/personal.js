@@ -59,6 +59,12 @@ router.put("/:id/validar", async (req, res) => {
   if (!Number.isInteger(id)) return res.status(400).json({ ok: false, mensaje: "Registro no válido." });
   const validado = req.body?.validado === true;
   try {
+    if (validado) {
+      const { rows: [r] } = await pool.query(`SELECT ${CAMPOS.join(", ")} FROM personal_up WHERE id = $1 AND up = $2`, [id, req.usuario.area]);
+      if (r && CAMPOS.some(c => !String(r[c] ?? "").trim())) {
+        return res.status(400).json({ ok: false, mensaje: "No se puede confirmar un registro con campos vacíos." });
+      }
+    }
     const { rows } = await pool.query(
       `UPDATE personal_up SET validado = $1, validado_por = $2, validado_en = CASE WHEN $1 THEN NOW() END
        WHERE id = $3 AND up = $4 RETURNING ${COLUMNAS}`,
