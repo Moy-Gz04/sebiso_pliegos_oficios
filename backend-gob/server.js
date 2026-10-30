@@ -30,6 +30,7 @@ const viaticosRoutes = require("./routes/viaticos");
 const viaticosGeneradosRoutes = require("./routes/viaticosGenerados");
 const iaRoutes = require("./routes/ia");
 const importePliegoRoutes = require("./routes/importePliego");
+const personalRoutes = require("./routes/personal");
 
 
 /* =========================
@@ -69,6 +70,7 @@ app.use("/api/viaticos", viaticosRoutes);
 app.use("/api/viaticos-generados", viaticosGeneradosRoutes);
 app.use("/api/ia", iaRoutes);
 app.use("/api/importe-pliego", importePliegoRoutes);
+app.use("/api/personal", personalRoutes);
 
 /* =========================
    ROOT

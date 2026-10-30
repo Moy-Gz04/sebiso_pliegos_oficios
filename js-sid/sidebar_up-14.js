@@ -28,6 +28,11 @@ const PAGINAS = [
         nombre:"Viáticos",
         ruta:"../vistas-v/viaticos_up14.html"
     },
+
+    {
+        nombre:"Datos del Personal",
+        ruta:"../p-up/Personal_UP-14.html"
+    },
 ];
 
 
@@ -61,6 +66,16 @@ const ICONOS_MENU = {
             <rect x="3" y="6" width="18" height="13" rx="2"/>
             <path d="M3 10h18"/>
             <circle cx="16.5" cy="14.5" r="1.5"/>
+        </svg>
+    `,
+
+    "Datos del Personal": `
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="8" r="3.5"/>
+            <path d="M3 20a6 6 0 0 1 12 0"/>
+            <line x1="17" y1="9" x2="21" y2="9"/>
+            <line x1="17" y1="13" x2="21" y2="13"/>
         </svg>
     `,
 

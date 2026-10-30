@@ -1,0 +1,66 @@
+<script>
+const token = localStorage.getItem('token');
+const area = localStorage.getItem('area');
+if(!token || area !== 'UP-14'){ window.location.href = '../index.html'; }
+</script>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link rel="icon" href="../favicon.ico">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Datos del Personal · UP-14</title>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="../css/ssidebar.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="../css/encabezado-sistemas.css?v=6">
+<link rel="stylesheet" href="../css/minisebiso-flotante.css?v=3">
+<link rel="stylesheet" href="../css/asistente-extra.css?v=2">
+<link rel="stylesheet" href="../css/personal-up.css?v=1">
+</head>
+<body data-up="UP-14">
+<div id="sidebar-container"></div>
+<div class="contenido">
+<section class="tv">
+  <header class="tv-cabeza">
+    <div><p class="tv-eyebrow">UP-14</p><h1>Datos del Personal</h1></div>
+  </header>
+  <div class="tv-barra">
+    <label class="tv-buscar"><i class="bi bi-search"></i><input type="search" id="tvBuscar" placeholder="Buscar nombre, RFC, cargo, No. trabajador…" aria-label="Buscar"></label>
+  </div>
+  <div class="tv-tarjeta">
+    <div class="tv-scroll"><table id="pTabla"><thead id="pCabeza"></thead><tbody id="tvCuerpo"></tbody></table></div>
+    <div class="tv-pie"><b id="tvConteo">0 registros</b></div>
+  </div>
+  <dialog class="tv-dialogo p-dialogo" id="pDialogo" aria-labelledby="pTitulo">
+    <form id="pForm" method="dialog">
+      <h2 id="pTitulo">Editar registro</h2>
+      <div class="p-rejilla">
+        <label>ID<input id="f_consecutivo" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+        <label class="p-ancho">Nombre<input id="f_nombre" required maxlength="200" autocomplete="off"></label>
+        <label>No. trabajador<input id="f_no_trabajador" maxlength="200" autocomplete="off"></label>
+        <label class="p-ancho">Adscripción<input id="f_adscripcion" maxlength="200" autocomplete="off"></label>
+        <label>Cargo<input id="f_cargo" maxlength="200" autocomplete="off"></label>
+        <label>Nivel<input id="f_nivel" maxlength="200" autocomplete="off"></label>
+        <label>Nivel aplicación<input id="f_nivel_aplicacion" maxlength="200" autocomplete="off"></label>
+        <label>RFC<input id="f_rfc" maxlength="13" autocomplete="off" style="text-transform:uppercase"></label>
+        <label class="p-ancho">No. cuenta<input id="f_no_cuenta" maxlength="200" autocomplete="off"></label>
+        <label class="p-todo">Unidad Administrativa<input id="f_unidad" maxlength="200" autocomplete="off"></label>
+        <label class="p-todo">Departamento o Área<input id="f_departamento" maxlength="200" autocomplete="off"></label>
+      </div>
+      <p class="p-aviso" id="pAviso" role="alert"></p>
+      <div class="tv-dialogo-acc">
+        <button type="button" class="tv-btn" id="pCancelar">Cancelar</button>
+        <button type="submit" class="tv-btn tv-btn-principal" id="pGuardar">Guardar cambios</button>
+      </div>
+    </form>
+  </dialog>
+</section>
+</div>
+<script src="../js-sid/sidebar_up-14.js"></script>
+<script src="../js/encabezado-sistemas.js?v=8"></script>
+<script src="../js-viaticos/personal-up.js?v=1"></script>
+<script src="../js/minisebiso-flotante.js?v=2"></script>
+<script src="../js/asistente-extra.js?v=1"></script>
+</body>
+</html>
