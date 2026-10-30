@@ -5,6 +5,7 @@ const router = express.Router();
 
 const CAMPOS = ["consecutivo", "nombre", "adscripcion", "cargo", "nivel", "rfc", "nivel_aplicacion",
   "no_cuenta", "no_trabajador", "unidad", "departamento"];
+const EDITABLES = CAMPOS.filter(c => c !== "consecutivo");
 const LARGO_MAX = 200;
 const COLUMNAS = `id, up, ${CAMPOS.join(", ")}, validado`;
 
@@ -35,13 +36,12 @@ router.get("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   const id = Number(req.params.id);
   if (!Number.isInteger(id)) return res.status(400).json({ ok: false, mensaje: "Registro no válido." });
-  const v = CAMPOS.map(c => String(req.body?.[c] ?? "").trim().slice(0, LARGO_MAX));
-  if (!v[1]) return res.status(400).json({ ok: false, mensaje: "El nombre es obligatorio." });
-  if (v[0] && !/^\d{1,6}$/.test(v[0])) return res.status(400).json({ ok: false, mensaje: "El ID debe ser un número." });
-  v[5] = v[5].toUpperCase().slice(0, 13);
+  const v = EDITABLES.map(c => String(req.body?.[c] ?? "").trim().slice(0, LARGO_MAX));
+  if (!v[0]) return res.status(400).json({ ok: false, mensaje: "El nombre es obligatorio." });
+  v[4] = v[4].toUpperCase().slice(0, 13);
   try {
-    const sets = CAMPOS.map((c, i) => `${c} = $${i + 1}`).join(", ");
-    const n = CAMPOS.length;
+    const sets = EDITABLES.map((c, i) => `${c} = $${i + 1}`).join(", ");
+    const n = EDITABLES.length;
     const { rows } = await pool.query(
       `UPDATE personal_up SET ${sets}, actualizado_por = $${n + 1}, actualizado_en = NOW(), validado = FALSE, validado_por = NULL, validado_en = NULL
        WHERE id = $${n + 2} AND up = $${n + 3} RETURNING ${COLUMNAS}`,

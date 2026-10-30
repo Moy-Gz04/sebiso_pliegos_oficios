@@ -35,7 +35,7 @@ function pintar() {
     : `<i class="bi bi-check-circle-fill"></i> <span>Todos confirmados</span>`;
   $("pCabeza").innerHTML = `<tr>${COLUMNAS.map(([, t]) => `<th>${t}</th>`).join("")}<th class="p-acc">Acciones</th></tr>`;
   $("tvCuerpo").innerHTML = filas.length ? filas.map(r => `<tr class="${r.validado ? "p-validado" : ""}">
-      ${COLUMNAS.map(([c, t]) => `<td data-t="${t}" class="${c === "rfc" || c === "no_cuenta" ? "tv-mono" : ""} ${c === "rfc" || c === "consecutivo" || c === "no_cuenta" ? "p-entero" : ""}">${esc(r[c])}</td>`).join("")}
+      ${COLUMNAS.map(([c, t]) => `<td data-t="${t}" class="${c === "rfc" || c === "no_cuenta" ? "tv-mono" : ""} ${c === "rfc" || c === "consecutivo" || c === "no_cuenta" ? "p-entero" : ""} ${String(r[c] ?? "").trim() ? "" : "p-falta"}">${esc(r[c])}</td>`).join("")}
       <td class="p-acc" data-t=""><span class="p-botones">
         <button type="button" class="p-icono p-validar" data-id="${r.id}" aria-pressed="${!!r.validado}" title="${r.validado ? "Quitar confirmación" : "Confirmar datos"}" aria-label="${r.validado ? "Quitar confirmación" : "Confirmar datos"} de ${esc(r.nombre)}"><i class="bi bi-check-lg"></i></button>
         <button type="button" class="p-icono p-editar" data-id="${r.id}" title="Editar" aria-label="Editar a ${esc(r.nombre)}"><i class="bi bi-pencil"></i></button>
@@ -44,11 +44,16 @@ function pintar() {
   $("tvConteo").textContent = `${filas.length} ${filas.length === 1 ? "registro" : "registros"}`;
 }
 
+function marcarVacios() {
+  COLUMNAS.forEach(([c]) => $("f_" + c).classList.toggle("p-falta", !$("f_" + c).value.trim()));
+}
+
 function abrirEditar(id) {
   const r = REGISTROS.find(x => x.id === id);
   if (!r) return;
   estado.editando = id;
   COLUMNAS.forEach(([c]) => { $("f_" + c).value = r[c] ?? ""; });
+  marcarVacios();
   $("pAviso").textContent = "";
   $("pDialogo").showModal();
 }
@@ -105,6 +110,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   });
   document.querySelector(".tv-cabeza").insertAdjacentHTML("beforeend", '<div class="p-contador" id="pContador" role="status" aria-live="polite"></div>');
   $("pForm").addEventListener("submit", guardar);
+  $("pForm").addEventListener("input", marcarVacios);
   $("pCancelar").addEventListener("click", () => $("pDialogo").close());
   $("tvCuerpo").innerHTML = `<tr><td colspan="12" class="tv-vacio">Cargando personal…</td></tr>`;
   try {

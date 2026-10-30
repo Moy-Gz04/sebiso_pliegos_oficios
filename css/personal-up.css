@@ -147,3 +147,6 @@
 .p-contador{ display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; background:#F6EEDD; border:1.5px solid var(--d); color:var(--g); font-size:13px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums; }
 .p-contador b{ font-size:18px; font-weight:800; }
 .p-contador-listo{ background:#D6F0DF; border-color:#1E7B45; color:#1F4D33; }
+#pTabla tbody tr td.p-falta, #pTabla tbody tr:hover td.p-falta{ background:#F0D98C; box-shadow:inset 0 0 0 1px #BC955C; }
+.p-rejilla input.p-falta{ background:#F8EBC0; border-color:#BC955C; }
+.p-rejilla input[readonly]{ background:#EFEAE4; color:var(--txt2); cursor:not-allowed; }

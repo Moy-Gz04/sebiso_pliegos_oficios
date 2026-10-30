@@ -17,7 +17,7 @@ if(!token || area !== 'UP-07'){ window.location.href = '../index.html'; }
 <link rel="stylesheet" href="../css/encabezado-sistemas.css?v=6">
 <link rel="stylesheet" href="../css/minisebiso-flotante.css?v=3">
 <link rel="stylesheet" href="../css/asistente-extra.css?v=2">
-<link rel="stylesheet" href="../css/personal-up.css?v=4">
+<link rel="stylesheet" href="../css/personal-up.css?v=5">
 </head>
 <body data-up="UP-07">
 <div id="sidebar-container"></div>
@@ -37,7 +37,7 @@ if(!token || area !== 'UP-07'){ window.location.href = '../index.html'; }
     <form id="pForm" method="dialog">
       <h2 id="pTitulo">Editar registro</h2>
       <div class="p-rejilla">
-        <label>ID<input id="f_consecutivo" inputmode="numeric" maxlength="6" autocomplete="off"></label>
+        <label>ID<input id="f_consecutivo" readonly tabindex="-1" autocomplete="off"></label>
         <label class="p-ancho">Nombre<input id="f_nombre" required maxlength="200" autocomplete="off"></label>
         <label>No. trabajador<input id="f_no_trabajador" maxlength="200" autocomplete="off"></label>
         <label class="p-ancho">Adscripción<input id="f_adscripcion" maxlength="200" autocomplete="off"></label>
@@ -60,8 +60,9 @@ if(!token || area !== 'UP-07'){ window.location.href = '../index.html'; }
 </div>
 <script src="../js-sid/sidebar_up-07.js"></script>
 <script src="../js/encabezado-sistemas.js?v=8"></script>
-<script src="../js-viaticos/personal-up.js?v=4"></script>
+<script src="../js-viaticos/personal-up.js?v=5"></script>
 <script src="../js/minisebiso-flotante.js?v=2"></script>
 <script src="../js/asistente-extra.js?v=1"></script>
+<script src="../js/asistente-ventanas.js?v=9"></script>
 </body>
 </html>
