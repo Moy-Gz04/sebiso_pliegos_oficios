@@ -6,6 +6,7 @@ const router = express.Router();
 const CAMPOS = ["consecutivo", "nombre", "adscripcion", "cargo", "nivel", "rfc", "nivel_aplicacion",
   "no_cuenta", "no_trabajador", "unidad", "departamento"];
 const LARGO_MAX = 200;
+const COLUMNAS = `id, up, ${CAMPOS.join(", ")}, validado`;
 
 // RFC y cuentas bancarias: cada sesión solo alcanza el personal de su propia U.P.
 router.use((req, res, next) => {
@@ -22,7 +23,7 @@ router.get("/", async (req, res) => {
   if (req.query.up !== req.usuario.area) return res.status(403).json({ ok: false, mensaje: "Sin acceso a esta U.P." });
   try {
     const { rows } = await pool.query(
-      `SELECT id, up, ${CAMPOS.join(", ")} FROM personal_up WHERE up = $1
+      `SELECT ${COLUMNAS} FROM personal_up WHERE up = $1
        ORDER BY NULLIF(consecutivo, '')::int NULLS LAST, nombre`, [req.usuario.area]);
     res.json({ ok: true, registros: rows });
   } catch (e) {
@@ -42,14 +43,31 @@ router.put("/:id", async (req, res) => {
     const sets = CAMPOS.map((c, i) => `${c} = $${i + 1}`).join(", ");
     const n = CAMPOS.length;
     const { rows } = await pool.query(
-      `UPDATE personal_up SET ${sets}, actualizado_por = $${n + 1}, actualizado_en = NOW()
-       WHERE id = $${n + 2} AND up = $${n + 3} RETURNING id, up, ${CAMPOS.join(", ")}`,
+      `UPDATE personal_up SET ${sets}, actualizado_por = $${n + 1}, actualizado_en = NOW(), validado = FALSE, validado_por = NULL, validado_en = NULL
+       WHERE id = $${n + 2} AND up = $${n + 3} RETURNING ${COLUMNAS}`,
       [...v, String(req.usuario.id), id, req.usuario.area]);
     if (!rows.length) return res.status(404).json({ ok: false, mensaje: "El registro no existe en tu U.P." });
     res.json({ ok: true, registro: rows[0] });
   } catch (e) {
     console.error(e);
     res.status(500).json({ ok: false, mensaje: "No se pudo guardar el registro." });
+  }
+});
+
+router.put("/:id/validar", async (req, res) => {
+  const id = Number(req.params.id);
+  if (!Number.isInteger(id)) return res.status(400).json({ ok: false, mensaje: "Registro no válido." });
+  const validado = req.body?.validado === true;
+  try {
+    const { rows } = await pool.query(
+      `UPDATE personal_up SET validado = $1, validado_por = $2, validado_en = CASE WHEN $1 THEN NOW() END
+       WHERE id = $3 AND up = $4 RETURNING ${COLUMNAS}`,
+      [validado, validado ? String(req.usuario.id) : null, id, req.usuario.area]);
+    if (!rows.length) return res.status(404).json({ ok: false, mensaje: "El registro no existe en tu U.P." });
+    res.json({ ok: true, registro: rows[0] });
+  } catch (e) {
+    console.error(e);
+    res.status(500).json({ ok: false, mensaje: "No se pudo guardar la confirmación." });
   }
 });
 

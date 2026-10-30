@@ -132,3 +132,17 @@
     gap:10px;
 }
 
+
+.p-botones{ display:inline-flex; gap:6px; }
+.p-icono{ width:32px; height:32px; display:inline-grid; place-items:center; padding:0; border-radius:50%; border:1.5px solid var(--borde); background:#fff; color:var(--g); font-size:14px; cursor:pointer; }
+.p-icono:hover{ background:var(--suave); border-color:var(--d); }
+.p-icono:focus-visible{ outline:2px solid var(--g); outline-offset:2px; }
+.p-validar{ color:#1E7B45; }
+.p-validar:hover{ background:#E3F4E9; border-color:#1E7B45; }
+.p-validar[aria-pressed="true"]{ background:#1E7B45; border-color:#1E7B45; color:#fff; }
+#pTabla tbody tr.p-validado td{ background:#D6F0DF; }
+#pTabla tbody tr.p-validado:hover td{ background:#C6E9D3; }
+#pTabla tbody tr.p-validado .tv-mono{ color:#1F4D33; }
+.p-confirma{ width:min(420px,92vw); }
+.p-confirma h2{ font-size:17px; }
+.p-confirma p:not(.p-aviso){ margin:0; font-size:14px; font-weight:600; }

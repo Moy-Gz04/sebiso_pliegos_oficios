@@ -29,9 +29,12 @@ function visibles() {
 function pintar() {
   const filas = visibles();
   $("pCabeza").innerHTML = `<tr>${COLUMNAS.map(([, t]) => `<th>${t}</th>`).join("")}<th class="p-acc">Acciones</th></tr>`;
-  $("tvCuerpo").innerHTML = filas.length ? filas.map(r => `<tr>
+  $("tvCuerpo").innerHTML = filas.length ? filas.map(r => `<tr class="${r.validado ? "p-validado" : ""}">
       ${COLUMNAS.map(([c, t]) => `<td data-t="${t}" class="${c === "rfc" || c === "no_cuenta" ? "tv-mono" : ""} ${c === "rfc" || c === "consecutivo" || c === "no_cuenta" ? "p-entero" : ""}">${esc(r[c])}</td>`).join("")}
-      <td class="p-acc" data-t=""><button type="button" class="tv-btn p-editar" data-id="${r.id}"><i class="bi bi-pencil"></i> Editar</button></td>
+      <td class="p-acc" data-t=""><span class="p-botones">
+        <button type="button" class="p-icono p-validar" data-id="${r.id}" aria-pressed="${!!r.validado}" title="${r.validado ? "Quitar confirmación" : "Confirmar datos"}" aria-label="${r.validado ? "Quitar confirmación" : "Confirmar datos"} de ${esc(r.nombre)}"><i class="bi bi-check-lg"></i></button>
+        <button type="button" class="p-icono p-editar" data-id="${r.id}" title="Editar" aria-label="Editar a ${esc(r.nombre)}"><i class="bi bi-pencil"></i></button>
+      </span></td>
     </tr>`).join("") : `<tr><td colspan="${COLUMNAS.length + 1}" class="tv-vacio">No hay personal que coincida con la búsqueda.</td></tr>`;
   $("tvConteo").textContent = `${filas.length} ${filas.length === 1 ? "registro" : "registros"}`;
 }
@@ -43,6 +46,33 @@ function abrirEditar(id) {
   COLUMNAS.forEach(([c]) => { $("f_" + c).value = r[c] ?? ""; });
   $("pAviso").textContent = "";
   $("pDialogo").showModal();
+}
+
+function abrirValidar(id) {
+  const r = REGISTROS.find(x => x.id === id);
+  if (!r) return;
+  estado.validando = id;
+  $("pcTitulo").textContent = r.validado ? "¿Quitar la confirmación?" : "¿Confirmas que los datos son correctos?";
+  $("pcTexto").textContent = r.nombre;
+  $("pcAviso").textContent = "";
+  $("pConfirma").showModal();
+}
+
+async function confirmarValidar(e) {
+  e.preventDefault();
+  const r = REGISTROS.find(x => x.id === estado.validando);
+  const btn = $("pcSi");
+  btn.disabled = true;
+  try {
+    const { registro } = await api(`/api/personal/${r.id}/validar`, { method: "PUT", body: JSON.stringify({ validado: !r.validado }) });
+    REGISTROS[REGISTROS.indexOf(r)] = registro;
+    $("pConfirma").close();
+    pintar();
+  } catch (err) {
+    $("pcAviso").textContent = err.message;
+  } finally {
+    btn.disabled = false;
+  }
 }
 
 async function guardar(e) {
@@ -64,7 +94,23 @@ async function guardar(e) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   $("tvBuscar").addEventListener("input", (e) => { estado.texto = e.target.value; pintar(); });
-  $("tvCuerpo").addEventListener("click", (e) => { const b = e.target.closest(".p-editar"); if (b) abrirEditar(Number(b.dataset.id)); });
+  $("tvCuerpo").addEventListener("click", (e) => {
+    const editar = e.target.closest(".p-editar"), validar = e.target.closest(".p-validar");
+    if (editar) abrirEditar(Number(editar.dataset.id));
+    if (validar) abrirValidar(Number(validar.dataset.id));
+  });
+  document.body.insertAdjacentHTML("beforeend", `<dialog class="tv-dialogo p-confirma" id="pConfirma" aria-labelledby="pcTitulo">
+    <form method="dialog" id="pcForm">
+      <h2 id="pcTitulo"></h2>
+      <p id="pcTexto"></p>
+      <p class="p-aviso" id="pcAviso" role="alert"></p>
+      <div class="tv-dialogo-acc">
+        <button type="button" class="tv-btn" id="pcNo">No</button>
+        <button type="submit" class="tv-btn tv-btn-principal" id="pcSi">Sí</button>
+      </div>
+    </form></dialog>`);
+  $("pcNo").addEventListener("click", () => $("pConfirma").close());
+  $("pcForm").addEventListener("submit", confirmarValidar);
   $("pForm").addEventListener("submit", guardar);
   $("pCancelar").addEventListener("click", () => $("pDialogo").close());
   $("tvCuerpo").innerHTML = `<tr><td colspan="12" class="tv-vacio">Cargando personal…</td></tr>`;
