@@ -28,6 +28,11 @@ function visibles() {
 
 function pintar() {
   const filas = visibles();
+  const faltan = REGISTROS.filter(r => !r.validado).length;
+  $("pContador").classList.toggle("p-contador-listo", faltan === 0);
+  $("pContador").innerHTML = faltan
+    ? `<b>${faltan}</b> <span>de ${REGISTROS.length} por confirmar</span>`
+    : `<i class="bi bi-check-circle-fill"></i> <span>Todos confirmados</span>`;
   $("pCabeza").innerHTML = `<tr>${COLUMNAS.map(([, t]) => `<th>${t}</th>`).join("")}<th class="p-acc">Acciones</th></tr>`;
   $("tvCuerpo").innerHTML = filas.length ? filas.map(r => `<tr class="${r.validado ? "p-validado" : ""}">
       ${COLUMNAS.map(([c, t]) => `<td data-t="${t}" class="${c === "rfc" || c === "no_cuenta" ? "tv-mono" : ""} ${c === "rfc" || c === "consecutivo" || c === "no_cuenta" ? "p-entero" : ""}">${esc(r[c])}</td>`).join("")}
@@ -48,30 +53,22 @@ function abrirEditar(id) {
   $("pDialogo").showModal();
 }
 
-function abrirValidar(id) {
+async function abrirValidar(id) {
   const r = REGISTROS.find(x => x.id === id);
   if (!r) return;
-  estado.validando = id;
-  $("pcTitulo").textContent = r.validado ? "¿Quitar la confirmación?" : "¿Confirmas que los datos son correctos?";
-  $("pcTexto").textContent = r.nombre;
-  $("pcAviso").textContent = "";
-  $("pConfirma").showModal();
-}
-
-async function confirmarValidar(e) {
-  e.preventDefault();
-  const r = REGISTROS.find(x => x.id === estado.validando);
-  const btn = $("pcSi");
-  btn.disabled = true;
+  const pregunta = r.validado ? "¿Quitar la confirmación?" : "¿Confirmas que los datos son correctos?";
+  const M = window.MiniSEBISO;
+  const si = M?.preguntar && !M.apagado
+    ? await M.preguntar({ titulo: "¡Hola!", pregunta, detalle: esc(r.nombre), btnOk: "Sí", btnCancel: "No", iconoOk: "ti-check", estiloOk: "dorado", saludoOk: "¡Va!", textoOk: "Lo guardo ahora mismo…" })
+    : window.confirm(`${pregunta}
+${r.nombre}`);
+  if (!si) return;
   try {
     const { registro } = await api(`/api/personal/${r.id}/validar`, { method: "PUT", body: JSON.stringify({ validado: !r.validado }) });
     REGISTROS[REGISTROS.indexOf(r)] = registro;
-    $("pConfirma").close();
     pintar();
   } catch (err) {
-    $("pcAviso").textContent = err.message;
-  } finally {
-    btn.disabled = false;
+    M?.preguntar && !M.apagado ? M.preguntar({ titulo: "¡Ups!", pregunta: esc(err.message), soloOk: true }) : window.alert(err.message);
   }
 }
 
@@ -99,18 +96,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (editar) abrirEditar(Number(editar.dataset.id));
     if (validar) abrirValidar(Number(validar.dataset.id));
   });
-  document.body.insertAdjacentHTML("beforeend", `<dialog class="tv-dialogo p-confirma" id="pConfirma" aria-labelledby="pcTitulo">
-    <form method="dialog" id="pcForm">
-      <h2 id="pcTitulo"></h2>
-      <p id="pcTexto"></p>
-      <p class="p-aviso" id="pcAviso" role="alert"></p>
-      <div class="tv-dialogo-acc">
-        <button type="button" class="tv-btn" id="pcNo">No</button>
-        <button type="submit" class="tv-btn tv-btn-principal" id="pcSi">Sí</button>
-      </div>
-    </form></dialog>`);
-  $("pcNo").addEventListener("click", () => $("pConfirma").close());
-  $("pcForm").addEventListener("submit", confirmarValidar);
+  document.querySelector(".tv-cabeza").insertAdjacentHTML("beforeend", '<div class="p-contador" id="pContador" role="status" aria-live="polite"></div>');
   $("pForm").addEventListener("submit", guardar);
   $("pCancelar").addEventListener("click", () => $("pDialogo").close());
   $("tvCuerpo").innerHTML = `<tr><td colspan="12" class="tv-vacio">Cargando personal…</td></tr>`;

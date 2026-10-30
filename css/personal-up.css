@@ -143,6 +143,7 @@
 #pTabla tbody tr.p-validado td{ background:#D6F0DF; }
 #pTabla tbody tr.p-validado:hover td{ background:#C6E9D3; }
 #pTabla tbody tr.p-validado .tv-mono{ color:#1F4D33; }
-.p-confirma{ width:min(420px,92vw); }
-.p-confirma h2{ font-size:17px; }
-.p-confirma p:not(.p-aviso){ margin:0; font-size:14px; font-weight:600; }
+.tv-cabeza{ display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.p-contador{ display:inline-flex; align-items:center; gap:8px; padding:6px 14px; border-radius:999px; background:#F6EEDD; border:1.5px solid var(--d); color:var(--g); font-size:13px; font-weight:600; white-space:nowrap; font-variant-numeric:tabular-nums; }
+.p-contador b{ font-size:18px; font-weight:800; }
+.p-contador-listo{ background:#D6F0DF; border-color:#1E7B45; color:#1F4D33; }
