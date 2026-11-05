@@ -44,7 +44,8 @@ const MAPA_PERSONAS = {
     "Karina Anaí Hernández Soto": 21,
     "Karla Paola Méndez Morales": 22,
     "Liliana Yazmin Franco Castro": 23,
-    "Juan Javier Jaramillo Sanchez": 24
+    "Juan Javier Jaramillo Sanchez": 24,
+    "Sergio Yamir Balderas Bautista": 25
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */

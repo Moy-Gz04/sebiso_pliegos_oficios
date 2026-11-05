@@ -145,6 +145,12 @@ const personas = [
         nombre: "Juan Javier Jaramillo Sanchez",
         categoria: "Subdirector Adjunto",
         rfc: "JASJ760213UL4"
+    },
+
+    {
+        nombre: "Sergio Yamir Balderas Bautista",
+        categoria: "Director de Área",
+        rfc: "BABS861218K11"
     }
 
 ];

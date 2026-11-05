@@ -23,7 +23,8 @@ const personas = [
     "Diana Laura Fernández Monroy",
     "Esperanza Quezada Xaxni",
     "Karina Anaí Hernández Soto",
-    "Juan Javier Jaramillo Sanchez"
+    "Juan Javier Jaramillo Sanchez",
+    "Sergio Yamir Balderas Bautista"
 
 ];
 
