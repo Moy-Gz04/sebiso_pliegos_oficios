@@ -24,11 +24,27 @@ const MAPA_PERSONAS = {
     "L.A.P. Jorge Miguel García Vázquez": 1,
     "Maribel Molina Hernández": 2,
     "José Luis González Martínez": 3,
-    "Alelí Gutiérrez García": 4,
+    "Ivan Mera Curiel": 4,
     "Francisca Hernández Monroy": 5,
     "Erick Espinosa Lorenzo": 6,
-    "Luis Eumir Pérez Juárez": 7,
-    "Rosa María Pérez García": 8
+    "Abadi Josefina Jurado Garnica": 7,
+    "Rosa María Pérez García": 8,
+    "Dariana Olvera Mendoza": 9,
+    "Juan Alexis Garcia Garcia": 10,
+    "Mahali Vázquez Vega": 11,
+    "Emmanuel Huerta Monzalvo": 12,
+    "Sergio Eduardo Ruiz Arriaga": 13,
+    "Paul Giovanni Sanchez Nieto": 14,
+    "Susana Ruiz Reyes": 15,
+    "Jorge Alberto Vargas Romero": 16,
+    "Misael Lopez Macario": 17,
+    "Josue Raymundo Sanchez Avalos": 18,
+    "Diana Laura Fernández Monroy": 19,
+    "Esperanza Quezada Xaxni": 20,
+    "Karina Anaí Hernández Soto": 21,
+    "Karla Paola Méndez Morales": 22,
+    "Liliana Yazmin Franco Castro": 23,
+    "Juan Javier Jaramillo Sanchez": 24
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */
