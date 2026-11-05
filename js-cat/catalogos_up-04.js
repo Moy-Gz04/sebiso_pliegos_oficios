@@ -17,7 +17,8 @@ const personas = [
   "Raúl Lozano Sánchez",
   "María Elena Arellano Márquez",
   "Aradi Badillo Cuéllar",
-  "Marín Ángeles Zamora"
+  "Marín Ángeles Zamora",
+    "Odalis Morales Hernandez"
 ];
 
 /* ============================================================

@@ -39,7 +39,8 @@ const MAPA_PERSONAS = {
     "Raúl Lozano Sánchez": 16,
     "María Elena Arellano Márquez": 17,
     "Aradi Badillo Cuéllar": 18,
-    "Marín Ángeles Zamora": 19
+    "Marín Ángeles Zamora": 19,
+    "Odalis Morales Hernandez": 20
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */

@@ -15,7 +15,7 @@ const personas = [
   {
     nombre: "Pedro Fernando Martínez Chong",
     categoria: "Subdirector de Área",
-    rfc: "MACP850824C58"
+    rfc: "MACP630824G38"
   },
   {
     nombre: "Adriana Labra Gómez",
@@ -96,7 +96,13 @@ const personas = [
     nombre: "Marín Ángeles Zamora",
     categoria: "Jefe De Departamento",
     rfc: "AEZM8705319Q5"
-  }
+  },
+
+    {
+        nombre: "Odalis Morales Hernandez",
+        categoria: "Jefatura de Oficina",
+        rfc: "MOHO001009422"
+    }
 ];
 /* =========================
    CATÁLOGO DE MESES
