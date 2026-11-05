@@ -21,7 +21,7 @@ const FOLDER_ID = "PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_PDFS_UP13";   // ⚠️ copi
  */
 
 const MAPA_PERSONAS = {
-    "Areli Maya Monzalvo": 1,
+    "Linda Yamyleth Mendoza Luna": 1,
     "Fernando Estrada Cruz": 2,
     "César Alonso Ángeles Trejo": 3,
     "Karla Maritza Huerta Guarneros": 4,

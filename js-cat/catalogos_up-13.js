@@ -1,5 +1,5 @@
 const personas = [
-  "Areli Maya Monzalvo",
+  "Linda Yamyleth Mendoza Luna",
   "Fernando Estrada Cruz",
   "César Alonso Ángeles Trejo",
   "Karla Maritza Huerta Guarneros",

@@ -4,9 +4,9 @@
 const personas = [
 
     {
-        nombre: "Areli Maya Monzalvo",
-        categoria: "Subsecretaria A",
-        rfc: "MAMA7811078G7"
+        nombre: "Linda Yamyleth Mendoza Luna",
+        categoria: "Asesor Técnico/Gestor",
+        rfc: "MELL800803FB6"
     },
 
     {
