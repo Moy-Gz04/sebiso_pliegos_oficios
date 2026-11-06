@@ -128,7 +128,8 @@ const catalogoUP = [
 const catalogoRubro = [
 
     "8402050",
-    "6114190"
+    "6114190",
+    "5107030"
 ];
 
 
