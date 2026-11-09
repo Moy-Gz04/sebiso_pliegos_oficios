@@ -44,12 +44,12 @@ const personas = [
   },
   {
     nombre: "Iván Cruz Segura",
-    categoria: "Jefe de Departamento C",
+    categoria: "Jefatura de Departamento C",
     rfc: "CUSI950421819"
   },
   {
     nombre: "Esther Gayosso Joaquín",
-    categoria: "Jefe de Área",
+    categoria: "Jefatura de Oficina B",
     rfc: "GAJE8006202C0"
   },
   {
@@ -94,14 +94,14 @@ const personas = [
   },
   {
     nombre: "Marín Ángeles Zamora",
-    categoria: "Jefe De Departamento",
+    categoria: "Subdirector Adjunto A",
     rfc: "AEZM8705319Q5"
   },
 
     {
         nombre: "Odalis Morales Hernandez",
-        categoria: "Jefatura de Oficina",
-        rfc: "MOHO001009422"
+        categoria: "Jefatura de Oficina A",
+        rfc: "MOHO0010074Z2"
     }
 ];
 /* =========================
