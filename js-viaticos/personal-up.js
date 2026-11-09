@@ -1,5 +1,6 @@
 const API = "https://sebiso-pliegos-oficios-1.onrender.com";
 const UP = document.body.dataset.up;
+const SOLO_LECTURA = document.body.dataset.soloLectura === "1";
 const COLUMNAS = [
   ["consecutivo", "ID"], ["nombre", "Nombre"], ["adscripcion", "Adscripción"], ["cargo", "Cargo"], ["nivel", "Nivel"],
   ["rfc", "RFC"], ["nivel_aplicacion", "Nivel aplicación"], ["no_cuenta", "No. cuenta"],
@@ -38,7 +39,7 @@ function pintar() {
       ${COLUMNAS.map(([c, t]) => `<td data-t="${t}" class="${c === "rfc" || c === "no_cuenta" ? "tv-mono" : ""} ${c === "rfc" || c === "consecutivo" || c === "no_cuenta" ? "p-entero" : ""} ${String(r[c] ?? "").trim() ? "" : "p-falta"}">${esc(r[c])}</td>`).join("")}
       <td class="p-acc" data-t=""><span class="p-botones">
         <button type="button" class="p-icono p-validar" data-id="${r.id}" aria-pressed="${!!r.validado}" title="${r.validado ? "Quitar confirmación" : "Confirmar datos"}" aria-label="${r.validado ? "Quitar confirmación" : "Confirmar datos"} de ${esc(r.nombre)}"><i class="bi bi-check-lg"></i></button>
-        <button type="button" class="p-icono p-editar" data-id="${r.id}" title="Editar" aria-label="Editar a ${esc(r.nombre)}"><i class="bi bi-pencil"></i></button>
+        ${SOLO_LECTURA ? "" : `<button type="button" class="p-icono p-editar" data-id="${r.id}" title="Editar" aria-label="Editar a ${esc(r.nombre)}"><i class="bi bi-pencil"></i></button>`}
       </span></td>
     </tr>`).join("") : `<tr><td colspan="${COLUMNAS.length + 1}" class="tv-vacio">No hay personal que coincida con la búsqueda.</td></tr>`;
   $("tvConteo").textContent = `${filas.length} ${filas.length === 1 ? "registro" : "registros"}`;
@@ -105,13 +106,15 @@ document.addEventListener("DOMContentLoaded", async () => {
   $("tvBuscar").addEventListener("input", (e) => { estado.texto = e.target.value; pintar(); });
   $("tvCuerpo").addEventListener("click", (e) => {
     const editar = e.target.closest(".p-editar"), validar = e.target.closest(".p-validar");
-    if (editar) abrirEditar(Number(editar.dataset.id));
+    if (editar && !SOLO_LECTURA) abrirEditar(Number(editar.dataset.id));
     if (validar) abrirValidar(Number(validar.dataset.id));
   });
   document.querySelector(".tv-cabeza").insertAdjacentHTML("beforeend", '<div class="p-contador" id="pContador" role="status" aria-live="polite"></div>');
-  $("pForm").addEventListener("submit", guardar);
-  $("pForm").addEventListener("input", marcarVacios);
-  $("pCancelar").addEventListener("click", () => $("pDialogo").close());
+  if (!SOLO_LECTURA) {
+    $("pForm").addEventListener("submit", guardar);
+    $("pForm").addEventListener("input", marcarVacios);
+    $("pCancelar").addEventListener("click", () => $("pDialogo").close());
+  }
   $("tvCuerpo").innerHTML = `<tr><td colspan="12" class="tv-vacio">Cargando personal…</td></tr>`;
   try {
     REGISTROS = (await api("/api/personal?up=" + encodeURIComponent(UP))).registros;
