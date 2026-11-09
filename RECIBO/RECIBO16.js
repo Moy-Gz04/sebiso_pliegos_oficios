@@ -200,8 +200,7 @@ async function abrirModalFactura(codigo) {
         document.getElementById("facturaNombreProyecto").value = registro.nombre_proyecto || "Atención Integral 005";
 
         /* ── Oficios (ya transformados con espacios → "/") ───── */
-        const inputOficio = document.getElementById("facturaOficio");
-        if (inputOficio) inputOficio.value = oficioLimpio;
+        llenarOficioAutorizacion("facturaOficio", oficioLimpio);
 
         const inputAdecuacion = document.getElementById("facturaAdecuacion");
         if (inputAdecuacion) inputAdecuacion.value = adecuacionLimpia;

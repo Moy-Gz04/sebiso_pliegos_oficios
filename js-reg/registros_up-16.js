@@ -605,7 +605,7 @@ document.getElementById(
     "oficio2NombreProyecto"
 ).value =
 catalogoNombreProyecto[0] || "Atención Integral 005";
-    document.getElementById("oficio2Ofaut").value      = transformarNombreArchivo(oficioAutorizacion);
+    llenarOficioAutorizacion("oficio2Ofaut", transformarNombreArchivo(oficioAutorizacion));
     document.getElementById("oficio2OficioAdec").value  = transformarNombreArchivo(oficioAdecuacion);
     document.getElementById("oficio2Adec").value           = registro.cuenta          || "";
     document.getElementById("oficio2Monto").value          = formatearMoneda(registro.spg_monto       || 0);

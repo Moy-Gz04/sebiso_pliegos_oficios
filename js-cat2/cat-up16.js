@@ -754,3 +754,21 @@ document.addEventListener(
     }
 
 );
+
+/* =========================
+   OFICIO DE AUTORIZACIÓN
+   Lista: el último oficio registrado (seleccionado por defecto)
+   más los oficios extra que se pueden elegir a mano.
+========================= */
+
+const OFICIOS_AUTORIZACION_EXTRA = [
+    "SH-2428-2026"
+];
+
+function llenarOficioAutorizacion(id, actual) {
+    const select = document.getElementById(id);
+    if (!select) return;
+    const opciones = [...new Set([actual, ...OFICIOS_AUTORIZACION_EXTRA].filter(Boolean))];
+    select.innerHTML = opciones.map(o => '<option value="' + o + '">' + o + '</option>').join("");
+    select.value = actual || opciones[0] || "";
+}

@@ -302,7 +302,7 @@ async function abrirModalOficio2(codigo){
 
         }
 
-        document.getElementById("oficio2Ofaut").value      = transformarNombreArchivo(oficioAutorizacion);
+        llenarOficioAutorizacion("oficio2Ofaut", transformarNombreArchivo(oficioAutorizacion));
         document.getElementById("oficio2OficioAdec").value  = transformarNombreArchivo(oficioAdecuacion);
 
         document.getElementById(
