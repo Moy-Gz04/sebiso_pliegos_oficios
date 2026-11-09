@@ -11,7 +11,26 @@ const personas = [
     "Francisca Hernández Monroy",
     "Erick Espinosa Lorenzo",
     "Luis Eumir Pérez Juárez",
-    "Rosa María Pérez García"
+    "Rosa María Pérez García",
+    "Dariana Olvera Mendoza",
+    "Juan Alexis Garcia Garcia",
+    "Mahali Vázquez Vega",
+    "Emmanuel Huerta Monzalvo",
+    "Sergio Eduardo Ruiz Arriaga",
+    "Paul Giovanni Sanchez Nieto",
+    "Susana Ruiz Reyes",
+    "Jorge Alberto Vargas Romero",
+    "Misael Lopez Macario",
+    "Josue Raymundo Sanchez Avalos",
+    "Diana Laura Fernández Monroy",
+    "Esperanza Quezada Xaxni",
+    "Karina Anaí Hernández Soto",
+    "Ivan Mera Curiel",
+    "Abadi Josefina Jurado Garnica",
+    "Karla Paola Méndez Morales",
+    "Liliana Yazmin Franco Castro",
+    "Juan Javier Jaramillo Sanchez",
+    "Sergio Yamir Balderas Bautista"
 
 ];
 

@@ -11,55 +11,55 @@ const personas = [
 
     {
         nombre: "Maribel Molina Hernández",
-        categoria: "Director de Área",
+        categoria: "Director de Área-B",
         rfc: "MOHM730206472"
     },
 
     {
         nombre: "José Luis González Martínez",
-        categoria: "Director de Área",
+        categoria: "Director de Área-A",
         rfc: "GOML731201BVA"
     },
 
     {
         nombre: "Ivan Mera Curiel",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "MECI830622MT3"
     },
 
     {
         nombre: "Francisca Hernández Monroy",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "HEMF71012967A"
     },
 
     {
         nombre: "Erick Espinosa Lorenzo",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "EILE890901FH6"
     },
 
     {
         nombre: "Abadi Josefina Jurado Garnica",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "JUGA850312P07"
     },
 
     {
         nombre: "Rosa María Pérez García",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "PEGR800119V78"
     },
 
     {
         nombre: "Karla Paola Méndez Morales",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "MEMK901010NV0"
     },
 
     {
         nombre: "Liliana Yazmin Franco Castro",
-        categoria: "Jefe de Departamento",
+        categoria: "Jefe de Departamento-C",
         rfc: "FACL860608LL7"
     },
 
@@ -149,7 +149,7 @@ const personas = [
 
     {
         nombre: "Sergio Yamir Balderas Bautista",
-        categoria: "Director de Área",
+        categoria: "Director de Área-A",
         rfc: "BABS861218K11"
     }
 
