@@ -24,7 +24,10 @@ const personas = [
     "Esperanza Quezada Xaxni",
     "Karina Anaí Hernández Soto",
     "Juan Javier Jaramillo Sanchez",
-    "Sergio Yamir Balderas Bautista"
+    "Sergio Yamir Balderas Bautista",
+    "Victor Hugo Pérez Guati Rojo",
+    "Carlos Rodrigo Rojas Ruiz",
+    "Perla Aleli Barrera Godínez"
 
 ];
 

@@ -45,7 +45,10 @@ const MAPA_PERSONAS = {
     "Karla Paola Méndez Morales": 22,
     "Liliana Yazmin Franco Castro": 23,
     "Juan Javier Jaramillo Sanchez": 24,
-    "Sergio Yamir Balderas Bautista": 25
+    "Sergio Yamir Balderas Bautista": 25,
+    "Victor Hugo Pérez Guati Rojo": 26,
+    "Carlos Rodrigo Rojas Ruiz": 27,
+    "Perla Aleli Barrera Godínez": 28
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */

@@ -151,6 +151,24 @@ const personas = [
         nombre: "Sergio Yamir Balderas Bautista",
         categoria: "Director de Área-A",
         rfc: "BABS861218K11"
+    },
+
+    {
+        nombre: "Victor Hugo Pérez Guati Rojo",
+        categoria: "Director de Área B",
+        rfc: "PEGV700506FW2"
+    },
+
+    {
+        nombre: "Carlos Rodrigo Rojas Ruiz",
+        categoria: "Subdirector de Área C",
+        rfc: "RORC760312AP4"
+    },
+
+    {
+        nombre: "Perla Aleli Barrera Godínez",
+        categoria: "Subdirector Adjunto A",
+        rfc: "BAGP020901LK4"
     }
 
 ];

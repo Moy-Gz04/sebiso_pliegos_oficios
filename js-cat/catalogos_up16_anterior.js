@@ -30,7 +30,10 @@ const personas = [
     "Karla Paola Méndez Morales",
     "Liliana Yazmin Franco Castro",
     "Juan Javier Jaramillo Sanchez",
-    "Sergio Yamir Balderas Bautista"
+    "Sergio Yamir Balderas Bautista",
+    "Victor Hugo Pérez Guati Rojo",
+    "Carlos Rodrigo Rojas Ruiz",
+    "Perla Aleli Barrera Godínez"
 
 ];
 
