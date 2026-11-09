@@ -56,7 +56,7 @@
   async function tomar(modal) {
     if (enCurso.has(modal) || apagado()) return;
     // Red de seguridad: si reaparece sola justo después de contestarla, no se vuelve a preguntar
-    if (Date.now() - (modal._msRespondida || 0) < 600) { modal.classList.remove('activo', 'active', 'show', 'visible', 'abierto'); modal.style.setProperty('display', 'none', 'important'); return; }
+    if (Date.now() - (modal._msRespondida || 0) < 600) { modal.classList.remove('activo', 'active', 'show', 'visible', 'abierto'); modal.style.setProperty('display', 'none', 'important'); modal._msOculta = true; return; }
     const caja = modal.querySelector('.modal-spg-contenido, .modal-contenido, .modal-content, .modal-box, .modal-confirmar-contenido') || modal.firstElementChild || modal;
     const campos = [...caja.querySelectorAll('input:not([type=hidden]), select, textarea, table, iframe, canvas, img:not(.ms-ventana-mascota img)')].filter(visible);
     const botones = [...caja.querySelectorAll('button, .btn, a.btn')].filter(b => visible(b) && !b.closest('.ms-ventana-mascota'));
@@ -86,6 +86,7 @@
 
     enCurso.add(modal);
     modal.style.setProperty('display', 'none', 'important');
+    modal._msOculta = true;
     try {
       const peligro = /elimin|borrar|cerrar sesi/i.test(todo);
       const si = await M.preguntar({
@@ -107,6 +108,7 @@
       const cerrarDeVerdad = () => {
         modal.classList.remove('activo', 'active', 'show', 'visible', 'abierto');
         modal.style.setProperty('display', 'none', 'important');
+        modal._msOculta = true;
       };
       cerrarDeVerdad();
       if (si) ok.click();
@@ -124,7 +126,17 @@
     || (/^modal/.test(m.id || '') && !(m.parentElement && m.parentElement.closest('[id^="modal"], .modal'))));
   function revisar(m) { if (esVentana(m) && abierta(m)) tomar(m); }
   new MutationObserver(ms => ms.forEach(r => {
-    if (r.type === 'attributes') revisar(r.target);
+    if (r.type === 'attributes') {
+      const m = r.target;
+      // Si la página vuelve a abrir una ventana que el asistente dejó oculta (agregándole la clase
+      // «activo», etc.), se le quita el «display:none !important» que le puso; si no, quedaría
+      // invisible y la segunda vez que se use (p. ej. eliminar otro registro) no pasaría nada.
+      if (r.attributeName === 'class' && m._msOculta && !enCurso.has(m) && /(^|\s)(activo|active|show|visible|abierto)(\s|$)/.test(m.className)) {
+        m._msOculta = false;
+        m.style.removeProperty('display');
+      }
+      revisar(m);
+    }
     else r.addedNodes.forEach(n => { if (n.nodeType === 1) { revisar(n); n.querySelectorAll && n.querySelectorAll('.modal, .modal-spg, [id^="modal"]').forEach(revisar); } });
   })).observe(document.body, { attributes: true, attributeFilter: ['style', 'class'], subtree: true, childList: true });
 
