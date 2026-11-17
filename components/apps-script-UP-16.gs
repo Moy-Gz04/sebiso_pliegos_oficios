@@ -11,10 +11,10 @@
 // ============================================================
 
 /** ID de la plantilla de Google Docs para el oficio */
-const TEMPLATE_DOC_ID = "PEGA_AQUI_EL_ID_DE_LA_PLANTILLA_DEL_OFICIO_UP16";   // ⚠️ copiarlo del Apps Script actual de UP-16
+const TEMPLATE_DOC_ID = "16WqHLoXRmICU8gadWghc0EhPmycYyXMQiKVrzLgYgvw";
 
 /** ID de la carpeta de Drive donde se guardan los PDFs generados */
-const FOLDER_ID = "PEGA_AQUI_EL_ID_DE_LA_CARPETA_DE_PDFS_UP16";   // ⚠️ copiarlo del Apps Script actual de UP-16
+const FOLDER_ID = "1SGRwHooyeBRnpAwGvm9JdjVa2387xBQI";
 /**
  * Mapa de nombres → número de hoja (D_n / F_n).
  * Cada persona tiene sus propias hojas de datos y formato.
