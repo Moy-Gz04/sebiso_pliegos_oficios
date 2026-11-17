@@ -162,6 +162,7 @@ function procesarPliego_(numero, nombre, data) {
   const mesF        = data.mesF;
   const anoF        = data.anoF;
   const localidades = data.localidades;
+  const noOficio    = String(data.noOficio || "").replace(/\D/g, "");
 
   const fechaOficio = (diaF + " DE " + mesF + " " + anoF).toUpperCase();
 
@@ -186,6 +187,8 @@ function procesarPliego_(numero, nombre, data) {
     mesFin,
     contarDias_(diaInicio, diaFin, mes, mesFin, anoF)
   ]]);
+
+  shDB.getRange(2, 20).setValue(noOficio);   // T = No. de oficio
 
   SpreadsheetApp.flush();
 
@@ -323,7 +326,8 @@ function generarPDF_(numero, id, nombre) {
   const shE   = ss.getSheetByName("ENCARGADOS");
 
   // ── Datos de D_n ──────────────────────────────────────────
-  const datos     = shD.getRange("A2:S2").getValues()[0];
+  const datos     = shD.getRange("A2:T2").getValues()[0];
+  const noOficio  = String(datos[19] || "");
   const municipio   = datos[3];
   const mes         = datos[7];
   const motivo      = datos[8];
@@ -380,6 +384,8 @@ function generarPDF_(numero, id, nombre) {
   body.replaceText("<<NOEMPLEADO>>", up_(no_trab));
   body.replaceText("<<RFC>>",        up_(rfc));
   body.replaceText("<<FECHAOF>>",    up_(fechaOf));
+  body.replaceText("<<NUMERITO>>",   noOficio);   // SEBISO//DGSP/OC/<<NUMERITO>>/2026
+  body.replaceText("<<NOOFICIO>>",   noOficio);
 
   // Todo el oficio va en MAYÚSCULAS y sin año en los días:
   // "30 DE SEPTIEMBRE 1 Y 2 DE OCTUBRE" / "3, 4 Y 5 DE OCTUBRE".
