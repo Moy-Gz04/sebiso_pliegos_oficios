@@ -31,7 +31,11 @@ const personas = [
     "Lic. Danna Odemaris Fuentes Olguin",
     "Tec. Ana Maria Martinez Rubio",
     "C. Emma Sharai Mejia Garcia",
-    "L.P. Griselda Yareli Gutierrez Cano"
+    "L.P. Griselda Yareli Gutierrez Cano",
+    "Lic. Yadira Sánchez Vázquez",
+    "Elaine Quetzalli Bautista Cruz",
+    "María de los Ángeles Percastegui Jiménez",
+    "Ma. Guadalupe Urbano Castillo"
 
 ];
 

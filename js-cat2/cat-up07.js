@@ -193,6 +193,30 @@ const personas = [
         nombre: "L.P. Griselda Yareli Gutierrez Cano",
         categoria: "",
         rfc: ""
+    },
+
+    {
+        nombre: "Lic. Yadira Sánchez Vázquez",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Elaine Quetzalli Bautista Cruz",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "María de los Ángeles Percastegui Jiménez",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Ma. Guadalupe Urbano Castillo",
+        categoria: "",
+        rfc: ""
     }
 
 ];

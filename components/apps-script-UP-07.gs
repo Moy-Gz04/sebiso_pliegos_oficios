@@ -52,7 +52,11 @@ const MAPA_PERSONAS = {
     "Lic. Danna Odemaris Fuentes Olguin": 29,
     "Tec. Ana Maria Martinez Rubio": 30,
     "C. Emma Sharai Mejia Garcia": 31,
-    "L.P. Griselda Yareli Gutierrez Cano": 32
+    "L.P. Griselda Yareli Gutierrez Cano": 32,
+    "Lic. Yadira Sánchez Vázquez": 33,
+    "Elaine Quetzalli Bautista Cruz": 34,
+    "María de los Ángeles Percastegui Jiménez": 35,
+    "Ma. Guadalupe Urbano Castillo": 36
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */
