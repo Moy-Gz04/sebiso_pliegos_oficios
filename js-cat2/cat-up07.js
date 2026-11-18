@@ -97,6 +97,102 @@ const personas = [
         nombre: "Wendy Nayeli Espinosa Hernández",
         categoria: "H06 Asesor Técnico/Gestor",
         rfc: "EIHW010210MUA"
+    },
+
+    {
+        nombre: "Lic. Nestor Martin Castillo Ventura",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Ing. Javier Ortiz Nochebuena",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Lic. Agustin Misael Velazquez Monroy",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "C. Guillermo Ayala Parra",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "M.C.C. Carlos Abundio Contreras González",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Ing. Cesar Lozano López",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Mtro. Alejandro Salinas Ayotitla",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Lic. Axel Armando Huerta Guarneros",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Ing. Antonio de Jesus Cruz Romero",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "C. Ángel Velasco Rocha",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "C. Carlos Alberto Hernández Acosta",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "C. Luz Juliana Bautista Duran",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Lic. Danna Odemaris Fuentes Olguin",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "Tec. Ana Maria Martinez Rubio",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "C. Emma Sharai Mejia Garcia",
+        categoria: "",
+        rfc: ""
+    },
+
+    {
+        nombre: "L.P. Griselda Yareli Gutierrez Cano",
+        categoria: "",
+        rfc: ""
     }
 
 ];

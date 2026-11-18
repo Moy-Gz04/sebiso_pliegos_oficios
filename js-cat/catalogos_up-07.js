@@ -15,7 +15,23 @@ const personas = [
     "Grindelia Espinosa Figueroa",
     "José Ivan Manzano Tapia",
     "Asucena Vergara Téllez",
-    "Wendy Nayeli Espinosa Hernández"
+    "Wendy Nayeli Espinosa Hernández",
+    "Lic. Nestor Martin Castillo Ventura",
+    "Ing. Javier Ortiz Nochebuena",
+    "Lic. Agustin Misael Velazquez Monroy",
+    "C. Guillermo Ayala Parra",
+    "M.C.C. Carlos Abundio Contreras González",
+    "Ing. Cesar Lozano López",
+    "Mtro. Alejandro Salinas Ayotitla",
+    "Lic. Axel Armando Huerta Guarneros",
+    "Ing. Antonio de Jesus Cruz Romero",
+    "C. Ángel Velasco Rocha",
+    "C. Carlos Alberto Hernández Acosta",
+    "C. Luz Juliana Bautista Duran",
+    "Lic. Danna Odemaris Fuentes Olguin",
+    "Tec. Ana Maria Martinez Rubio",
+    "C. Emma Sharai Mejia Garcia",
+    "L.P. Griselda Yareli Gutierrez Cano"
 
 ];
 

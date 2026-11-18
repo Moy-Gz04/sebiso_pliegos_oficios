@@ -36,7 +36,23 @@ const MAPA_PERSONAS = {
     "Grindelia Espinosa Figueroa": 13,
     "José Ivan Manzano Tapia": 14,
     "Asucena Vergara Téllez": 15,
-    "Wendy Nayeli Espinosa Hernández": 16
+    "Wendy Nayeli Espinosa Hernández": 16,
+    "Lic. Nestor Martin Castillo Ventura": 17,
+    "Ing. Javier Ortiz Nochebuena": 18,
+    "Lic. Agustin Misael Velazquez Monroy": 19,
+    "C. Guillermo Ayala Parra": 20,
+    "M.C.C. Carlos Abundio Contreras González": 21,
+    "Ing. Cesar Lozano López": 22,
+    "Mtro. Alejandro Salinas Ayotitla": 23,
+    "Lic. Axel Armando Huerta Guarneros": 24,
+    "Ing. Antonio de Jesus Cruz Romero": 25,
+    "C. Ángel Velasco Rocha": 26,
+    "C. Carlos Alberto Hernández Acosta": 27,
+    "C. Luz Juliana Bautista Duran": 28,
+    "Lic. Danna Odemaris Fuentes Olguin": 29,
+    "Tec. Ana Maria Martinez Rubio": 30,
+    "C. Emma Sharai Mejia Garcia": 31,
+    "L.P. Griselda Yareli Gutierrez Cano": 32
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */
