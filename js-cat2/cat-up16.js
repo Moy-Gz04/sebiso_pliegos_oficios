@@ -169,6 +169,12 @@ const personas = [
         nombre: "Perla Aleli Barrera Godínez",
         categoria: "Subdirector Adjunto A",
         rfc: "BAGP020901LK4"
+    },
+
+    {
+        nombre: "Maythe Monserrat Escarela Pérez",
+        categoria: "Jefe de Area-A",
+        rfc: "EAPM880624I23"
     }
 
 ];

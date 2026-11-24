@@ -48,7 +48,8 @@ const MAPA_PERSONAS = {
     "Sergio Yamir Balderas Bautista": 25,
     "Victor Hugo Pérez Guati Rojo": 26,
     "Carlos Rodrigo Rojas Ruiz": 27,
-    "Perla Aleli Barrera Godínez": 28
+    "Perla Aleli Barrera Godínez": 28,
+    "Maythe Monserrat Escarela Pérez": 29
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */

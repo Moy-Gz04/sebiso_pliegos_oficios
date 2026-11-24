@@ -27,7 +27,8 @@ const personas = [
     "Sergio Yamir Balderas Bautista",
     "Victor Hugo Pérez Guati Rojo",
     "Carlos Rodrigo Rojas Ruiz",
-    "Perla Aleli Barrera Godínez"
+    "Perla Aleli Barrera Godínez",
+    "Maythe Monserrat Escarela Pérez"
 
 ];
 
