@@ -52,6 +52,11 @@ const MAPA_PERSONAS = {
     "Maythe Monserrat Escarela Pérez": 29
 };
 
+/** Normaliza un nombre para comparar: sin espacios raros/dobles, acentos en forma compuesta */
+function normNombre_(t) {
+  return String(t || "").normalize("NFC").replace(/[\s ]+/g, " ").trim().toLowerCase();
+}
+
 /** Nombres de los meses, en el mismo formato que manda la web */
 const MESES = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -226,7 +231,7 @@ function pintarDatosEnF_(numero) {
   let filaPersona = null;
 
   for (let i = 0; i < dataEnc.length; i++) {
-    if (dataEnc[i][1] === nombre) {
+    if (normNombre_(dataEnc[i][1]) === normNombre_(nombre)) {
       filaPersona = dataEnc[i];
       break;
     }
@@ -349,7 +354,7 @@ function generarPDF_(numero, id, nombre) {
   let filaPersona = null;
 
   for (let i = 1; i < dataEnc.length; i++) {
-    if (dataEnc[i][1] === nombre) {
+    if (normNombre_(dataEnc[i][1]) === normNombre_(nombre)) {
       filaPersona = dataEnc[i];
       break;
     }
