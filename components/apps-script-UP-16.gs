@@ -57,6 +57,15 @@ function normNombre_(t) {
   return String(t || "").normalize("NFC").replace(/[\s ]+/g, " ").trim().toLowerCase();
 }
 
+/** Diagnóstico para el mensaje de error: hoja usada, filas y códigos del nombre buscado vs. el parecido en la hoja */
+function diagEncargados_(shE, nombre) {
+  const cod = t => Array.from(String(t)).map(c => c.charCodeAt(0) > 127 || c === " " ? c.charCodeAt(0) : c).join(",");
+  const col = shE.getRange(1, 2, shE.getLastRow(), 1).getValues().map(r => r[0]);
+  const parecido = col.filter(v => String(v).toLowerCase().indexOf("maythe") !== -1);
+  return " [libro: " + SpreadsheetApp.getActive().getName() + " | hoja: " + shE.getName() + " | filas: " + col.length +
+         " | buscado: " + cod(nombre) + " | parecidos: " + (parecido.length ? parecido.map(cod).join(" || ") : "ninguno") + "]";
+}
+
 /** Nombres de los meses, en el mismo formato que manda la web */
 const MESES = [
   "enero", "febrero", "marzo", "abril", "mayo", "junio",
@@ -238,7 +247,7 @@ function pintarDatosEnF_(numero) {
   }
 
   if (!filaPersona) {
-    throw new Error("No se encontró en ENCARGADOS: " + nombre);
+    throw new Error("No se encontró en ENCARGADOS: " + nombre + diagEncargados_(shE, nombre));
   }
 
   // ── Extraer columnas de ENCARGADOS ────────────────────────
@@ -360,7 +369,7 @@ function generarPDF_(numero, id, nombre) {
     }
   }
 
-  if (!filaPersona) throw new Error("No encontrado en ENCARGADOS: " + nombre);
+  if (!filaPersona) throw new Error("No encontrado en ENCARGADOS: " + nombre + diagEncargados_(shE, nombre));
 
   const categoria = filaPersona[3];
   const rfc       = filaPersona[5];
