@@ -1,5 +1,5 @@
 // ============================================================
-//  UP-07 — Crear hojas D_33…D_36 y F_33…F_36 duplicando D_2 y F_2
+//  UP-07 — Crear hojas D_37 y F_37 duplicando D_2 y F_2
 //  Ejecutar UNA vez: función crearHojasFaltantes
 //  - Si la hoja ya existe, la salta (no la sobrescribe).
 //  - Las fórmulas de F_n que apuntaban a D_2 se cambian a D_n.
@@ -7,7 +7,7 @@
 // ============================================================
 
 function crearHojasFaltantes() {
-  const DESDE = 33, HASTA = 36;
+  const DESDE = 37, HASTA = 37;
   const ss = SpreadsheetApp.getActive();
   const baseD = ss.getSheetByName("D_2");
   const baseF = ss.getSheetByName("F_2");

@@ -35,7 +35,8 @@ const personas = [
     "Lic. Yadira Sánchez Vázquez",
     "Elaine Quetzalli Bautista Cruz",
     "María de los Ángeles Percastegui Jiménez",
-    "Ma. Guadalupe Urbano Castillo"
+    "Ma. Guadalupe Urbano Castillo",
+    "Yessica Yazmin Callejas Vega"
 
 ];
 

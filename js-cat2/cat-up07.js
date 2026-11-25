@@ -217,6 +217,12 @@ const personas = [
         nombre: "Ma. Guadalupe Urbano Castillo",
         categoria: "",
         rfc: ""
+    },
+
+    {
+        nombre: "Yessica Yazmin Callejas Vega",
+        categoria: "9C",
+        rfc: "CAVY9402171C3"
     }
 
 ];

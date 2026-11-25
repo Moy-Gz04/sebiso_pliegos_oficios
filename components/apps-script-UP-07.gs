@@ -56,7 +56,8 @@ const MAPA_PERSONAS = {
     "Lic. Yadira Sánchez Vázquez": 33,
     "Elaine Quetzalli Bautista Cruz": 34,
     "María de los Ángeles Percastegui Jiménez": 35,
-    "Ma. Guadalupe Urbano Castillo": 36
+    "Ma. Guadalupe Urbano Castillo": 36,
+    "Yessica Yazmin Callejas Vega": 37
 };
 
 /** Nombres de los meses, en el mismo formato que manda la web */
